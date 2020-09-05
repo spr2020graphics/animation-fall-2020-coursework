@@ -41,7 +41,7 @@ a3i32 a3keyframePoolCreate(a3_KeyframePool* keyframePool_out, const a3ui32 count
 	if (count < 0)
 	{
 		// Don't init with negative numbers please.
-		return -2;
+		return -1;
 	}
 
 	if (keyframePool_out != NULL)
@@ -66,7 +66,10 @@ a3i32 a3keyframePoolCreate(a3_KeyframePool* keyframePool_out, const a3ui32 count
 // release keyframe pool
 a3i32 a3keyframePoolRelease(a3_KeyframePool* keyframePool)
 {
-	return -1;
+	free(keyframePool->keyframeArray);
+	free(keyframePool);
+
+	return 1;
 }
 
 // initialize keyframe
@@ -86,13 +89,35 @@ a3i32 a3keyframeInit(a3_Keyframe* keyframe_out, const a3real duration, const a3u
 // allocate clip pool
 a3i32 a3clipPoolCreate(a3_ClipPool* clipPool_out, const a3ui32 count)
 {
-	return -1;
+	if (count < 0)
+	{
+		return -1;
+	}
+
+	if (clipPool_out != NULL)
+	{
+		a3clipPoolRelease(clipPool_out);
+	}
+
+	clipPool_out = (a3_ClipPool*)malloc(sizeof(a3_ClipPool));
+	clipPool_out->count = count;
+	clipPool_out->clipArray = malloc(sizeof(a3_Clip) * count);
+
+	for (a3ui32 i = 0; i < count; i++)
+	{
+		a3clipInit(&clipPool_out->clipArray[i], A3_CLIP_DEFAULTNAME, clipPool_out->clipArray[i].keyframePool, clipPool_out->clipArray[i].firstKeyframeIndex, clipPool_out->clipArray[i].lastKeyframeIndex);
+	}
+
+	return 1;
 }
 
 // release clip pool
 a3i32 a3clipPoolRelease(a3_ClipPool* clipPool)
 {
-	return -1;
+	free(clipPool->clipArray);
+	free(clipPool);
+
+	return 1;
 }
 
 // initialize clip with first and last indices
