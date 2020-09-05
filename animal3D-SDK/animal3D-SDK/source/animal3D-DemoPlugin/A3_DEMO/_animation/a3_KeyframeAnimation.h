@@ -58,6 +58,12 @@ struct a3_Keyframe
 {
 	// index in keyframe pool
 	a3ui32 index;
+	// positive float specifying how long this keyframe is active
+	a3f32 duration;
+	// reciprocal of duration.
+	a3f32 durInv;
+	//the value of this keyframe
+	a3i32 data;
 };
 
 // pool of keyframe descriptors

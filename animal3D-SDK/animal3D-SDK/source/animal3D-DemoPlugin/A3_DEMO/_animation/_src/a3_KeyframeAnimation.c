@@ -50,7 +50,14 @@ a3i32 a3keyframePoolRelease(a3_KeyframePool* keyframePool)
 // initialize keyframe
 a3i32 a3keyframeInit(a3_Keyframe* keyframe_out, const a3real duration, const a3ui32 value_x)
 {
-	return -1;
+	if (keyframe_out == NULL)
+	{
+		return -1;
+	}
+	keyframe_out->duration = duration;
+	keyframe_out->durInv = 1.0f / duration;
+	keyframe_out->data = value_x;
+	return 1;
 }
 
 
