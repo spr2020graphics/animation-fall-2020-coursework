@@ -38,7 +38,25 @@
 // allocate keyframe pool
 a3i32 a3keyframePoolCreate(a3_KeyframePool* keyframePool_out, const a3ui32 count)
 {
-	return -1;
+	if (count < 0)
+	{
+		// Don't init with negative numbers please.
+		return -2;
+	}
+
+	keyframePool_out = (a3_KeyframePool*)malloc(sizeof(a3_KeyframePool));
+
+	keyframePool_out->count = count;
+	keyframePool_out->keyframeArray = malloc(sizeof(a3_Keyframe) * count);
+
+	
+	for (a3ui32 i = 0; i < count; i++)
+	{
+		keyframePool_out->keyframeArray[i].duration = 1.0f;
+		keyframePool_out->keyframeArray[i].durInv = 1.0f / 1.0f;
+		keyframePool_out->keyframeArray[i].index = i;
+		keyframePool_out->keyframeArray[i].data = 0;
+	}
 }
 
 // release keyframe pool
