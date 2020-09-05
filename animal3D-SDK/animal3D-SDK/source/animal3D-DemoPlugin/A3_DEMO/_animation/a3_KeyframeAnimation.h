@@ -98,6 +98,19 @@ struct a3_Clip
 
 	// index in clip pool
 	a3ui32 index;
+
+	//positive float specifying how long the clip runs for.
+	a3f32 duration;
+
+	//reciprocal of duration
+	a3f32 durInv;
+
+	a3ui32 keyframeCount;
+
+	//indices of the first and last keyframes
+	a3ui32 firstKeyframeIndex, lastKeyframeIndex;
+
+	a3_KeyframePool* keyframePool;
 };
 
 // group of clips
