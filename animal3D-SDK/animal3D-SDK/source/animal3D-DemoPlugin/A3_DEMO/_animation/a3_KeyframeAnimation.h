@@ -110,7 +110,7 @@ struct a3_Clip
 	//indices of the first and last keyframes
 	a3ui32 firstKeyframeIndex, lastKeyframeIndex;
 
-	const a3_KeyframePool* keyframePool;
+	const a3_KeyframePool* keyframes;
 };
 
 // group of clips
