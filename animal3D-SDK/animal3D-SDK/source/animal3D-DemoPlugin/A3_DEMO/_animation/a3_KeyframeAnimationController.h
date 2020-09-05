@@ -42,11 +42,42 @@ typedef struct a3_ClipController			a3_ClipController;
 
 //-----------------------------------------------------------------------------
 
+enum
+{
+	PLAYBACK_BACKWARD = -1,
+	PLAYBACK_PAUSE,
+	PLAYBACK_FORWARD
+};
+
 // clip controller
 // metaphor: playhead
 struct a3_ClipController
 {
 	a3byte name[a3keyframeAnimation_nameLenMax];
+
+	// Index of clip to control in the referenced clip pool, aka which clip is currently playing
+	a3ui32 clipIndex;
+
+	// Current time relative to start of clip [0, currentClipDuration)
+	a3f32 clipTime;
+
+	// Normalized clip time, between 0 and 1
+	a3f32 clipParameter;
+
+	// Index of the current keyframe in the current clip's keyframe pool (essentially the progress in the clip)
+	a3ui32 keyframeIndex;
+
+	// Current time relative to current keyframe (between 0 and current keyframe's duration)
+	a3f32 keyframeTime;
+
+	// Normalized keyframe time, between 0 and 1
+	a3f32 keyframeParameter;
+
+	// Corresponds to the above enum
+	a3i32 playbackDir;
+
+	// Referenced pool of clips this controller has control over (we have the clip index above)
+	a3_ClipPool* clipPool;
 };
 
 
