@@ -141,7 +141,7 @@ a3i32 a3clipGetIndexInPool(const a3_ClipPool* clipPool, const a3byte clipName[a3
 
 	for (a3ui32 i = 0; i < poolCount; i++)
 	{
-		if (strcmp(clipPool->clipArray[i].name, clipName))
+		if (strcmp(clipPool->clipArray[i].name, clipName) == 0)
 		{
 			return clipPool->clipArray[i].index;
 		}
