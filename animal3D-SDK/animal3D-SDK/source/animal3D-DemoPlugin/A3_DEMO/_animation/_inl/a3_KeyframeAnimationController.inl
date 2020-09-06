@@ -38,6 +38,18 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 // set clip to play
 inline a3i32 a3clipControllerSetClip(a3_ClipController* clipCtrl, const a3_ClipPool* clipPool, const a3ui32 clipIndex_pool)
 {
+	clipCtrl->clipPool = clipPool;
+	clipCtrl->clipIndex = clipIndex_pool;
+
+	clipCtrl->clipTime = 0;
+	clipCtrl->clipParameter = 0;
+
+	//set keyframe info, including grabbing the first keyframe index
+	clipCtrl->keyframeIndex = clipCtrl->clipPool->clipArray[clipCtrl->clipIndex].firstKeyframeIndex;
+	clipCtrl->keyframeTime = 0;
+	clipCtrl->keyframeParameter = 0;
+
+	clipCtrl->playbackDir = 0;
 	return -1;
 }
 
