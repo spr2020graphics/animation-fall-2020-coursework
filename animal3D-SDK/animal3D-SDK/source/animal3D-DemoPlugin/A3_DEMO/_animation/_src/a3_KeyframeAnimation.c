@@ -44,6 +44,7 @@ a3i32 a3keyframePoolCreate(a3_KeyframePool* keyframePool_out, const a3ui32 count
 		return -1;
 	}
 
+	//keyframePool_out is probably not null anyway because we get a warning if we pass a null keyframe pool, but this clears it out before we do anything.
 	if (keyframePool_out != NULL)
 	{
 		a3keyframePoolRelease(keyframePool_out);
@@ -70,7 +71,7 @@ a3i32 a3keyframePoolRelease(a3_KeyframePool* keyframePool)
 	return 1;
 }
 
-// initialize keyframe
+// initialize keyframe with default values. Passing in a null keyframe returns -1.
 a3i32 a3keyframeInit(a3_Keyframe* keyframe_out, const a3real duration, const a3ui32 value_x)
 {
 	if (keyframe_out == NULL)
@@ -92,6 +93,7 @@ a3i32 a3clipPoolCreate(a3_ClipPool* clipPool_out, const a3ui32 count)
 		return -1;
 	}
 
+	//clipPool_out is probably not null anyway because we get a warning if we pass a null keyframe pool, but this clears it out before we do anything.
 	if (clipPool_out != NULL)
 	{
 		a3clipPoolRelease(clipPool_out);
@@ -126,10 +128,11 @@ a3i32 a3clipInit(a3_Clip* clip_out, const a3byte clipName[a3keyframeAnimation_na
 	{
 		return -1;
 	}
-	memcpy(clip_out->name, clipName, a3keyframeAnimation_nameLenMax);
+	memcpy(clip_out->name, clipName, a3keyframeAnimation_nameLenMax); //copies the clipName into clip_out->name. The first way we tried this yielded an error.
 	clip_out->keyframes = keyframePool;
 	clip_out->firstKeyframeIndex = firstKeyframeIndex;
 	clip_out->lastKeyframeIndex = finalKeyframeIndex;
+	clip_out->keyframeCount = finalKeyframeIndex - firstKeyframeIndex + 1; //need to include both!
 	return 1;
 }
 
