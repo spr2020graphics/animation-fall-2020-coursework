@@ -25,6 +25,7 @@
 #include "../a3_KeyframeAnimationController.h"
 
 #include <string.h>
+#include <stdlib.h>
 
 
 //-----------------------------------------------------------------------------

@@ -77,7 +77,7 @@ struct a3_ClipController
 	a3i32 playbackDir;
 
 	// Referenced pool of clips this controller has control over (we have the clip index above)
-	a3_ClipPool* clipPool;
+	const a3_ClipPool* clipPool;
 };
 
 
