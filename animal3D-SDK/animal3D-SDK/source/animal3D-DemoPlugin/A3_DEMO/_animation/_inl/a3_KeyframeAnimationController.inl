@@ -32,6 +32,57 @@
 // update clip controller
 inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt)
 {
+	 //https://stackoverflow.com/questions/1608318/is-bool-a-native-c-type
+	_Bool resolved = false;	// 'bool' didn't work, probably cause it's actually an STD macro
+
+	// Pre-resolution
+	a3real directionalDT = clipCtrl->playbackDir * dt;	// playbackDir is -1, 0, or 1, this moves time in the right direction
+	clipCtrl->clipTime += directionalDT;
+	clipCtrl->keyframeTime += directionalDT;
+
+	//Resolution
+	while (!resolved)
+	{
+		// Pause case
+		if (dt == 0.0f)
+		{
+			resolved = true;
+		}
+		else if (clipCtrl->clipTime >= clipCtrl->clipPool->clipArray[clipCtrl->clipIndex].duration)	// FORWARD: Playhead at or past clip end (if current clip time >= clip duration)
+		{
+			// Might need to do other work here, like cache the difference/overstep and handle 'looping' to beginning
+			resolved = true;
+		}
+		else if (clipCtrl->keyframeTime >= clipCtrl->clipPool->clipArray[clipCtrl->clipIndex].keyframes->keyframeArray[clipCtrl->keyframeIndex].duration)	// FORWARD: Playhead enters next keyframe (if current keyframeTime >= current keyframe duration)
+		{
+			// Might need to do other stuff here, not sure what
+			resolved = true;
+		}
+		else if (clipCtrl->clipTime < 0.0f)	// REVERSE: Playhead has reached/passed the beginning of the clip
+		{
+			// Might need to do other work here, like cache the difference/overstep and handle 'looping' to end
+			resolved = true;
+		}
+		else if (clipCtrl->keyframeTime < 0.0f)	// REVERSE: Playhead enters previous keyframe
+		{
+			// Might need to do other stuff here, not sure what
+			resolved = true;
+		}
+		else if (directionalDT < 0.0f)	// REVERSE: Playhead moving backward in time, but not to next keyframe
+		{
+			resolved = true;
+		}
+		else if (directionalDT > 0.0f)	// FORWARD: Playhead moving forward in time, but not to next keyframe
+		{
+			resolved = true;
+		}
+	}
+
+	// Post-resolution (normalize parameters)
+	clipCtrl->clipParameter = clipCtrl->clipTime * clipCtrl->clipPool->clipArray[clipCtrl->clipIndex].durInv;
+	clipCtrl->keyframeParameter = clipCtrl->keyframeTime * clipCtrl->clipPool->clipArray[clipCtrl->clipIndex].keyframes->keyframeArray[clipCtrl->keyframeIndex].durInv;
+
+
 	return -1;
 }
 
