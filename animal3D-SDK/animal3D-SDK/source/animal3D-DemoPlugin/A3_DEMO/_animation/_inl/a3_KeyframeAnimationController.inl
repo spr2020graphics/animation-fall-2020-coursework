@@ -43,6 +43,8 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 	//Resolution
 	while (!resolved)
 	{
+		// The order of these cases matters.
+
 		// Pause case
 		if (dt == 0.0f)
 		{
@@ -52,24 +54,47 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 		{
 			// Might need to do other work here, like cache the difference/overstep and handle 'looping' to beginning
 			// Reset keyframeIndex to firstKeyframeIndex, use overstep to 'loop' to beginning, reset keyframeTime and clipTime accordingly
+
+			a3real overstep = clipCtrl->clipTime - clipCtrl->clipPool->clipArray[clipCtrl->clipIndex].duration;
+
+			clipCtrl->keyframeIndex = clipCtrl->clipPool->clipArray[clipCtrl->clipIndex].firstKeyframeIndex;
+			clipCtrl->keyframeTime = overstep;
+			clipCtrl->clipTime = overstep;
+
 			resolved = true;
 		}
 		else if (clipCtrl->keyframeTime >= clipCtrl->clipPool->clipArray[clipCtrl->clipIndex].keyframes->keyframeArray[clipCtrl->keyframeIndex].duration)	// FORWARD: Playhead enters next keyframe (if current keyframeTime >= current keyframe duration)
 		{
 			// Might need to do other stuff here, not sure what
 			// increment keyframeIndex, reset clipCtrl->keyframeTime to 0.0f + overstep? or just 0.0f;
+
+			clipCtrl->keyframeIndex++;
+			
+			clipCtrl->keyframeTime = 0.0f;
+
 			resolved = true;
 		}
 		else if (clipCtrl->clipTime < 0.0f)	// REVERSE: Playhead has reached/passed the beginning of the clip
 		{
 			// Might need to do other work here, like cache the difference/overstep and handle 'looping' to end
 			// reset keyframeIndex to lastKeyframeIndex, use overstep to 'loop' to end, reset keyframeTime and clipTime accordingly
+
+			a3real overstep = 0.0f - clipCtrl->clipTime;
+
+			clipCtrl->keyframeIndex = clipCtrl->clipPool->clipArray[clipCtrl->clipIndex].lastKeyframeIndex;
+			clipCtrl->keyframeTime = clipCtrl->clipPool->clipArray[clipCtrl->clipIndex].keyframes->keyframeArray[clipCtrl->keyframeIndex].duration - overstep;
+			clipCtrl->clipTime = clipCtrl->clipPool->clipArray[clipCtrl->clipIndex].duration - overstep;
+
 			resolved = true;
 		}
 		else if (clipCtrl->keyframeTime < 0.0f)	// REVERSE: Playhead enters previous keyframe
 		{
 			// Might need to do other stuff here, not sure what
-			// decrement keyframeIndex, reset clipCtrl->keyframeTime to the new keyframe's duration
+			// decrement keyframeIndex, reset clipCtrl->keyframeTime to the new keyframe's duration - overstep? or just duration
+
+			clipCtrl->keyframeIndex--;
+			clipCtrl->keyframeTime = clipCtrl->clipPool->clipArray[clipCtrl->clipIndex].keyframes->keyframeArray[clipCtrl->keyframeIndex].duration;
+
 			resolved = true;
 		}
 		else if (directionalDT < 0.0f)	// REVERSE: Playhead moving backward in time, but not to next keyframe
@@ -87,7 +112,7 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 	clipCtrl->keyframeParameter = clipCtrl->keyframeTime * clipCtrl->clipPool->clipArray[clipCtrl->clipIndex].keyframes->keyframeArray[clipCtrl->keyframeIndex].durInv;
 
 
-	return -1;
+	return 1;
 }
 
 // set clip to play
