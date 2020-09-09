@@ -178,7 +178,13 @@ void a3demo_render_clipController(a3_DemoState const* demoState,
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
 		"SELECTED CONTROLLER (rotate 'r') %d | CLIP COUNT: %d | KEYFRAME COUNT: %d",demoState->controllerIndex, demoState->clipCount, demoState->keyframeCount);
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"WORLD AXES (toggle 'x') %s | OBJECT AXES ('z') %s", boolText[demoState->displayWorldAxes], boolText[demoState->displayObjectAxes]);
+		"CLIP CONTROLLER: %s | CLIP: %s (%d)    CLIP CONTROLLER: %s | CLIP: %s (%d)",
+		demoState->controller_topleft->name,
+		demoState->controller_topleft->clipPool->clipArray[demoState->controller_topleft->clipIndex].name,
+		a3clipGetIndexInPool(demoState->controller_topleft->clipPool, demoState->controller_topleft->clipPool->clipArray[demoState->controller_topleft->clipIndex].name),  //this is here so it gets used at all. We don't need it
+		demoState->controller_topright->name,
+		demoState->controller_topright->clipPool->clipArray[demoState->controller_topright->clipIndex].name,
+		a3clipGetIndexInPool(demoState->controller_topright->clipPool, demoState->controller_topright->clipPool->clipArray[demoState->controller_topright->clipIndex].name));
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
 		"TANGENT BASES ('B') %s | WIREFRAME ('F') %s", boolText[demoState->displayTangentBases], boolText[demoState->displayWireframe]);
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,

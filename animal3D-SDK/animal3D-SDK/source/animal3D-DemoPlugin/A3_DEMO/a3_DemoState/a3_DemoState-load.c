@@ -777,7 +777,7 @@ void a3demo_loadClipData(a3_DemoState* demoState)
 	}
 	for (a3ui8 controller = 0; controller < demoState->controllerCount; controller++)
 	{
-		a3clipControllerInit(demoState->controllers + controller, "Controller", demoState->clipPool, controller);
+		a3clipControllerInit(demoState->controllers + controller, "Ctrl", demoState->clipPool, controller);
 	}
 }
 
