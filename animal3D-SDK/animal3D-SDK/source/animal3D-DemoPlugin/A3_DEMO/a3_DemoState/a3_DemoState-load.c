@@ -77,7 +77,7 @@
 #include "../a3_DemoState.h"
 
 #include <stdio.h>
-
+#include <stdlib.h>
 
 //-----------------------------------------------------------------------------
 // GENERAL UTILITIES
@@ -760,6 +760,25 @@ inline void a3_refreshDrawable_internal(a3_VertexDrawable *drawable, a3_VertexAr
 	drawable->vertexArray = vertexArray;
 	if (drawable->indexType)
 		drawable->indexBuffer = indexBuffer;
+}
+
+void a3demo_loadClipData(a3_DemoState* demoState)
+{
+	demoState->controllerIndex = 0;
+	demoState->keyframeCount = 32;
+	demoState->clipCount = 8;
+	demoState->controllerCount = 4;
+
+	a3keyframePoolCreate(demoState->keyPool, demoState->keyframeCount);
+	a3clipPoolCreate(demoState->clipPool, demoState->clipCount);
+	for (a3ui8 clip = 0; clip < demoState->clipCount; clip++)
+	{
+		a3clipInit(demoState->clipPool->clipArray + clip, "Clip", demoState->keyPool, clip * demoState->keyframeCount / demoState->clipCount, (clip + 1) * demoState->keyframeCount / demoState->clipCount - 1);
+	}
+	for (a3ui8 controller = 0; controller < demoState->controllerCount; controller++)
+	{
+		a3clipControllerInit(demoState->controllers + controller, "Controller", demoState->clipPool, controller);
+	}
 }
 
 

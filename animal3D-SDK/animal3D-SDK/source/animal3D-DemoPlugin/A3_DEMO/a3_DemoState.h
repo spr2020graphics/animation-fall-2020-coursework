@@ -44,6 +44,7 @@
 #include "_a3_demo_utilities/a3_DemoShaderProgram.h"
 
 #include "a3_DemoMode0_Starter.h"
+#include "_animation/a3_KeyframeAnimationController.h"
 
 
 //-----------------------------------------------------------------------------
@@ -77,7 +78,7 @@ enum a3_DemoState_TextDisplayName
 	demoState_textControls,			// display controls
 	demoState_textControls_gen,		// display general controls
 	demoState_textData,				// display data
-
+	demoState_textClipController,	// display debug info for clips
 	demoState_text_max
 };
 
@@ -305,10 +306,26 @@ struct a3_DemoState
 
 	// managed objects, no touchie
 	a3_VertexDrawable dummyDrawable[1];
-
-
 	//-------------------------------------------------------------------------
 	// the end
+
+	union {
+		a3_ClipController controllers[4];
+		struct {
+			a3_ClipController
+				controller_topleft[1],
+				controller_topright[1],
+				controller_botleft[1],
+				controller_botright[1];
+		};
+	};
+	a3ui8 controllerIndex;
+	a3_KeyframePool keyPool[1];
+	a3_ClipPool clipPool[1];
+
+	a3ui8 keyframeCount;
+	a3ui8 clipCount;
+	a3ui8 controllerCount;
 };
 
 

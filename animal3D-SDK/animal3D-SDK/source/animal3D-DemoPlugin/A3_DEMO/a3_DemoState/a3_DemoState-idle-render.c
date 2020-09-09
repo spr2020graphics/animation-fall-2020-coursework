@@ -163,6 +163,55 @@ void a3demo_render_data(const a3_DemoState* demoState,
 		"Reload all shader programs: 'P' ****CHECK CONSOLE FOR ERRORS!**** ");
 }
 
+// render hud for test interface
+void a3demo_render_clipController(a3_DemoState const* demoState,
+	a3_TextRenderer const* text, a3vec4 const col,
+	a3f32 const textAlign, a3f32 const textDepth, a3f32 const textOffsetDelta, a3f32 textOffset)
+{
+	// boolean text
+	a3byte const boolText[2][4] = {
+		"OFF",
+		"ON ",
+	};
+
+	// toggles
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"SELECTED CONTROLLER (rotate 'r') %d | CLIP COUNT: %d | KEYFRAME COUNT: %d",demoState->controllerIndex, demoState->clipCount, demoState->keyframeCount);
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"WORLD AXES (toggle 'x') %s | OBJECT AXES ('z') %s", boolText[demoState->displayWorldAxes], boolText[demoState->displayObjectAxes]);
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"TANGENT BASES ('B') %s | WIREFRAME ('F') %s", boolText[demoState->displayTangentBases], boolText[demoState->displayWireframe]);
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"ANIMATION (toggle 'm') %s", boolText[demoState->updateAnimation]);
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"STENCIL TEST (toggle 'i') %s", boolText[demoState->stencilTest]);
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"SKIP INTERMEDIATE PASSES (toggle 'I') %s", boolText[demoState->skipIntermediatePasses]);
+
+	// global controls
+	textOffset = -0.8f;
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"Toggle text display:        't' (toggle) | 'T' (alloc/dealloc) ");
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"Reload all shader programs: 'P' ****CHECK CONSOLE FOR ERRORS!**** ");
+
+	// input-dependent controls
+	textOffset = -0.6f;
+	if (a3XboxControlIsConnected(demoState->xcontrol))
+	{
+		a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+			"Xbox controller camera control: ");
+		a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+			"    Left joystick = rotate | Right joystick, triggers = move");
+	}
+	else
+	{
+		a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+			"Keyboard/mouse camera control: ");
+		a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+			"    Left click & drag = rotate | WASDEQ = move | wheel = zoom");
+	}
+}
 /*
 // bloom iteration
 void a3demo_render_bloomIteration(a3_DemoState const* demoState, a3real2 pixelSize, a3_Framebuffer const* fbo_prev,
@@ -240,6 +289,9 @@ void a3demo_render(a3_DemoState const* demoState, a3f64 const dt)
 				// general data
 			case demoState_textData:
 				a3demo_render_data(demoState, text, col, textAlign + x, textDepth, textOffsetDelta, textOffset + y);
+				break;
+			case demoState_textClipController:
+				a3demo_render_clipController(demoState, text, col, textAlign + x, textDepth, textOffsetDelta, textOffset + y);
 				break;
 			}
 		}

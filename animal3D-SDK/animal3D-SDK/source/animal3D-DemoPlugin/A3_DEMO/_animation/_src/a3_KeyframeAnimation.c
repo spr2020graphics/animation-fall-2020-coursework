@@ -44,13 +44,6 @@ a3i32 a3keyframePoolCreate(a3_KeyframePool* keyframePool_out, const a3ui32 count
 		return -1;
 	}
 
-	//keyframePool_out is probably not null anyway because we get a warning if we pass a null keyframe pool, but this clears it out before we do anything.
-	if (keyframePool_out != NULL)
-	{
-		a3keyframePoolRelease(keyframePool_out);
-	}
-
-	keyframePool_out = (a3_KeyframePool*)malloc(sizeof(a3_KeyframePool));
 	keyframePool_out->count = count;
 	keyframePool_out->keyframeArray = malloc(sizeof(a3_Keyframe) * count);
 
@@ -66,7 +59,7 @@ a3i32 a3keyframePoolCreate(a3_KeyframePool* keyframePool_out, const a3ui32 count
 a3i32 a3keyframePoolRelease(a3_KeyframePool* keyframePool)
 {
 	free(keyframePool->keyframeArray);
-	free(keyframePool);
+	//free(keyframePool);
 
 	return 1;
 }
@@ -93,13 +86,6 @@ a3i32 a3clipPoolCreate(a3_ClipPool* clipPool_out, const a3ui32 count)
 		return -1;
 	}
 
-	//clipPool_out is probably not null anyway because we get a warning if we pass a null keyframe pool, but this clears it out before we do anything.
-	if (clipPool_out != NULL)
-	{
-		a3clipPoolRelease(clipPool_out);
-	}
-
-	clipPool_out = (a3_ClipPool*)malloc(sizeof(a3_ClipPool));
 	clipPool_out->count = count;
 	clipPool_out->clipArray = malloc(sizeof(a3_Clip) * count);
 
@@ -116,7 +102,7 @@ a3i32 a3clipPoolCreate(a3_ClipPool* clipPool_out, const a3ui32 count)
 a3i32 a3clipPoolRelease(a3_ClipPool* clipPool)
 {
 	free(clipPool->clipArray);
-	free(clipPool);
+	//free(clipPool);
 
 	return 1;
 }
