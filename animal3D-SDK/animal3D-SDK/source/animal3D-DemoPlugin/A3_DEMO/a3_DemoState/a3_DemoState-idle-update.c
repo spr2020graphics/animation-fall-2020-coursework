@@ -135,6 +135,12 @@ void a3demo_update(a3_DemoState *demoState, a3f64 const dt)
 {
 	demoState->demoModeCallbacksPtr->handleUpdate(demoState,
 		demoState->demoModeCallbacksPtr->demoMode, dt);
+
+
+	for (int i = 0; i < demoState->controllerCount; i++)
+	{
+		a3clipControllerUpdate(&demoState->controllers[i], (a3real)dt);
+	}
 }
 
 
