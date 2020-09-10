@@ -182,6 +182,16 @@ void a3demo_render_clipController(a3_DemoState const* demoState,
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
 		"SWITCH CLIP INDEX (%u) ('1' prev | next '2')", demoState->controllers[demoState->controllerIndex].clipIndex);
 
+	// select clip
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"SWITCH START KEYFRAME (%u) ('3' prev | next '4')",
+		demoState->controllers[demoState->controllerIndex].clipPool->clipArray[demoState->controllers[demoState->controllerIndex].clipIndex].firstKeyframeIndex);
+
+	// select clip
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"SWITCH LAST KEYFRAME (%u) ('5' prev | next '6')",
+		demoState->controllers[demoState->controllerIndex].clipPool->clipArray[demoState->controllers[demoState->controllerIndex].clipIndex].lastKeyframeIndex);
+
 	const a3_ClipController* ctrl_tl = demoState->controller_top_left;
 	const a3_Clip* clip_tl = &ctrl_tl->clipPool->clipArray[ctrl_tl->clipIndex];
 	const a3_ClipController* ctrl_tr = demoState->controller_top_right;
@@ -236,14 +246,14 @@ void a3demo_render_clipController(a3_DemoState const* demoState,
 		clip_tr->firstKeyframeIndex, clip_tr->lastKeyframeIndex);
 
 	//TL line 4
-	a3textDraw(text, textAlign + 0.25f, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"CURRENT FRAME: %d",
-		ctrl_tl->keyframeIndex);
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"CURRENT FRAME: %d | VALUE: %d",
+		ctrl_tl->keyframeIndex, clip_tl->keyframes->keyframeArray[ctrl_tl->keyframeIndex].data);
 
 	//TR line 4
-	a3textDraw(text, textAlign + 1.25f, textOffset, textDepth, col.r, col.g, col.b, col.a,
-		"CURRENT FRAME: %d",
-		ctrl_tr->keyframeIndex);
+	a3textDraw(text, textAlign + 1.0f, textOffset, textDepth, col.r, col.g, col.b, col.a,
+		"CURRENT FRAME: %d | VALUE: %d",
+		ctrl_tr->keyframeIndex, clip_tr->keyframes->keyframeArray[ctrl_tr->keyframeIndex].data);
 
 	textOffset += 4 * textOffsetDelta;
 
@@ -291,14 +301,14 @@ void a3demo_render_clipController(a3_DemoState const* demoState,
 		clip_br->firstKeyframeIndex, clip_br->lastKeyframeIndex);
 
 	//BL line 4
-	a3textDraw(text, textAlign + 0.25f, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"CURRENT FRAME: %d",
-		ctrl_bl->keyframeIndex);
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"CURRENT FRAME: %d | VALUE: %d",
+		ctrl_bl->keyframeIndex, clip_bl->keyframes->keyframeArray[ctrl_bl->keyframeIndex].data);
 
 	//BR line 4
-	a3textDraw(text, textAlign + 1.25f, textOffset, textDepth, col.r, col.g, col.b, col.a,
-		"CURRENT FRAME: %d",
-		ctrl_br->keyframeIndex);
+	a3textDraw(text, textAlign + 1.0f, textOffset, textDepth, col.r, col.g, col.b, col.a,
+		"CURRENT FRAME: %d | VALUE: %d",
+		ctrl_br->keyframeIndex, clip_br->keyframes->keyframeArray[ctrl_br->keyframeIndex].data);
 
 	// global controls
 	textOffset = -0.8f;

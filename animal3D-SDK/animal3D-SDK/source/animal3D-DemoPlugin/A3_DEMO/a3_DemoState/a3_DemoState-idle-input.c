@@ -145,6 +145,24 @@ void a3demo_input_keyCharPress(a3_DemoState* demoState, a3i32 const asciiKey)
 		a3demoCtrlCasesLoop(demoState->demoMode, demoState_mode_max, '.', ',');
 		a3demoCtrlCaseIncLoop(demoState->controllerIndex, demoState->controllerCount, 'r');
 		a3demoCtrlCasesLoop(demoState->controllers[demoState->controllerIndex].clipIndex, demoState->clipCount, '2', '1');
+		a3demoCtrlCasesCap(
+			demoState->controllers[demoState->controllerIndex].clipPool
+			->clipArray[demoState->controllers[demoState->controllerIndex].clipIndex]
+			.firstKeyframeIndex,
+			demoState->controllers[demoState->controllerIndex].clipPool
+			->clipArray[demoState->controllers[demoState->controllerIndex].clipIndex]
+			.lastKeyframeIndex, //highest is the last frame
+			(a3ui32)0, //lowest is zero
+			'4', '3');
+
+		a3demoCtrlCasesCap(
+			demoState->controllers[demoState->controllerIndex].clipPool
+			->clipArray[demoState->controllers[demoState->controllerIndex].clipIndex]
+			.lastKeyframeIndex, demoState->keyframeCount - (a3ui32)1, //highest is the keycount - 1
+			demoState->controllers[demoState->controllerIndex].clipPool
+			->clipArray[demoState->controllers[demoState->controllerIndex].clipIndex]
+			.firstKeyframeIndex, //lowest is the first frame
+			'6', '5');
 
 		// toggle grid
 		a3demoCtrlCaseToggle(demoState->displayGrid, 'g');
