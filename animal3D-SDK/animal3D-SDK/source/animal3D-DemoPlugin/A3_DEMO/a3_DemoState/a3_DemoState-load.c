@@ -78,6 +78,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <math.h>
 
 //-----------------------------------------------------------------------------
 // GENERAL UTILITIES
@@ -771,9 +773,36 @@ void a3demo_loadClipData(a3_DemoState* demoState)
 
 	a3keyframePoolCreate(demoState->keyPool, demoState->keyframeCount);
 	a3clipPoolCreate(demoState->clipPool, demoState->clipCount);
+
+	//creating names dynamically was posing a problem and this system seems to work.
+	a3byte** names = malloc(demoState->clipCount * sizeof(a3byte*));
+	for (a3ui8 i = 0; i < demoState->clipCount; i++)
+	{
+		/**
+		 4 characters for "Clip" (using the text caused issues, so I'm doing it character-by character
+		 and then enough characters to fit the string representation of demoState->clipCount. A number's digit count can be expressed as floor(log10(x)) + 1.
+		*/
+		int charlen = 4 + (int)floor(log10((int)demoState->clipCount)) + 1;
+		if (names != NULL) //intellisense wanted this. in case there is insufficient memory
+		{
+			names[i] = malloc(charlen * sizeof(a3byte));
+			if (names[i] != NULL)
+			{
+				names[i][0] = 'C';
+				names[i][1] = 'l'; //there's an intellisense warning on this line. There is no reason for it.
+				names[i][2] = 'i';
+				names[i][3] = 'p';
+				_itoa(i, names[i] + 4, 10);
+			}
+		}
+	}
+
 	for (a3ui8 clip = 0; clip < demoState->clipCount; clip++)
 	{
-		a3clipInit(demoState->clipPool->clipArray + clip, "Clip", demoState->keyPool, clip * demoState->keyframeCount / demoState->clipCount, (clip + 1) * demoState->keyframeCount / demoState->clipCount - 1);
+		if (names != NULL && names[clip] != NULL)
+		{
+			a3clipInit(demoState->clipPool->clipArray + clip, names[clip], demoState->keyPool, clip * demoState->keyframeCount / demoState->clipCount, (clip + 1) * demoState->keyframeCount / demoState->clipCount - 1);
+		}
 	}
 	for (a3ui8 controller = 0; controller < demoState->controllerCount; controller++)
 	{

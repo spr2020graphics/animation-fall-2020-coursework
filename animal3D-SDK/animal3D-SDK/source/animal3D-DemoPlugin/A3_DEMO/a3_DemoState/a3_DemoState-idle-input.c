@@ -143,6 +143,8 @@ void a3demo_input_keyCharPress(a3_DemoState* demoState, a3i32 const asciiKey)
 		// change pipeline mode
 		a3demoCtrlCasesLoop(demoState->demoMode, demoState_mode_max, '>', '<');
 		a3demoCtrlCasesLoop(demoState->demoMode, demoState_mode_max, '.', ',');
+		a3demoCtrlCaseIncLoop(demoState->controllerIndex, demoState->controllerCount, 'r');
+		a3demoCtrlCasesLoop(demoState->controllers[demoState->controllerIndex].clipIndex, demoState->clipCount, '2', '1');
 
 		// toggle grid
 		a3demoCtrlCaseToggle(demoState->displayGrid, 'g');

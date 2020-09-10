@@ -17,7 +17,7 @@
 /*
 	animal3D SDK: Minimal 3D Animation Framework
 	By Daniel S. Buckstein
-	
+
 	a3_DemoState_idle-render.c/.cpp
 	Demo state function implementations.
 
@@ -174,25 +174,131 @@ void a3demo_render_clipController(a3_DemoState const* demoState,
 		"ON ",
 	};
 
-	// toggles
+	// toggle controller
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"SELECTED CONTROLLER (rotate 'r') %d | CLIP COUNT: %d | KEYFRAME COUNT: %d",demoState->controllerIndex, demoState->clipCount, demoState->keyframeCount);
+		"SELECTED CONTROLLER (rotate 'r') %d | CLIP COUNT: %d | KEYFRAME COUNT: %d", demoState->controllerIndex, demoState->clipCount, demoState->keyframeCount);
+
+	// select clip
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"CLIP CONTROLLER: %s | CLIP: %s (%d)    CLIP CONTROLLER: %s | CLIP: %s (%d)",
-		demoState->controller_topleft->name,
-		demoState->controller_topleft->clipPool->clipArray[demoState->controller_topleft->clipIndex].name,
-		a3clipGetIndexInPool(demoState->controller_topleft->clipPool, demoState->controller_topleft->clipPool->clipArray[demoState->controller_topleft->clipIndex].name),  //this is here so it gets used at all. We don't need it
-		demoState->controller_topright->name,
-		demoState->controller_topright->clipPool->clipArray[demoState->controller_topright->clipIndex].name,
-		a3clipGetIndexInPool(demoState->controller_topright->clipPool, demoState->controller_topright->clipPool->clipArray[demoState->controller_topright->clipIndex].name));
+		"SWITCH CLIP INDEX (%u) ('1' prev | next '2')", demoState->controllers[demoState->controllerIndex].clipIndex);
+
+	const a3_ClipController* ctrl_tl = demoState->controller_top_left;
+	const a3_Clip* clip_tl = &ctrl_tl->clipPool->clipArray[ctrl_tl->clipIndex];
+	const a3_ClipController* ctrl_tr = demoState->controller_top_right;
+	const a3_Clip* clip_tr = &ctrl_tr->clipPool->clipArray[ctrl_tr->clipIndex];
+	const a3_ClipController* ctrl_bl = demoState->controller_bot_left;
+	const a3_Clip* clip_bl = &ctrl_bl->clipPool->clipArray[ctrl_bl->clipIndex];
+	const a3_ClipController* ctrl_br = demoState->controller_bot_right;
+	const a3_Clip* clip_br = &ctrl_br->clipPool->clipArray[ctrl_br->clipIndex];
+
+	textOffset += textOffsetDelta;
+	//TL line 1
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"TANGENT BASES ('B') %s | WIREFRAME ('F') %s", boolText[demoState->displayTangentBases], boolText[demoState->displayWireframe]);
+		"CLIP CONTROLLER: %s | CLIP: %s (%d)",
+		ctrl_tl->name,
+		clip_tl->name,
+		a3clipGetIndexInPool(ctrl_tl->clipPool, clip_tl->name));  //this is here so it gets used at all. We don't need it
+	//TR line 1
+	a3textDraw(text, textAlign + 1.0f, textOffset, textDepth, col.r, col.g, col.b, col.a,
+		"CLIP CONTROLLER: %s | CLIP: %s (%d)",
+		ctrl_tr->name,
+		clip_tr->name,
+		a3clipGetIndexInPool(ctrl_tr->clipPool, clip_tr->name));
+
+	//TL line 2
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"ANIMATION (toggle 'm') %s", boolText[demoState->updateAnimation]);
+		"CLIP TIME: %d | PARAMETER: %d",
+		ctrl_tl->clipTime, ctrl_tl->clipParameter);
+
+	//TR line 2
+	a3textDraw(text, textAlign + 1.0f, textOffset, textDepth, col.r, col.g, col.b, col.a,
+		"CLIP TIME: %d | PARAMETER: %d",
+		ctrl_tr->clipTime, ctrl_tr->clipParameter);
+
+	//TL line 3
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"STENCIL TEST (toggle 'i') %s", boolText[demoState->stencilTest]);
+		"KEYFRAME TIME: %d | PARAMETER: %d",
+		ctrl_tl->keyframeTime, ctrl_tl->keyframeParameter);
+
+	//TR line 3
+	a3textDraw(text, textAlign + 1.0f, textOffset, textDepth, col.r, col.g, col.b, col.a,
+		"KEYFRAME TIME: %d | PARAMETER: %d",
+		ctrl_tr->keyframeTime, ctrl_tr->keyframeParameter);
+
+	//TL line 3
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"SKIP INTERMEDIATE PASSES (toggle 'I') %s", boolText[demoState->skipIntermediatePasses]);
+		"START FRAME: %d | LAST FRAME: %d",
+		clip_tl->firstKeyframeIndex, clip_tl->lastKeyframeIndex);
+
+	//TR line 3
+	a3textDraw(text, textAlign + 1.0f, textOffset, textDepth, col.r, col.g, col.b, col.a,
+		"START FRAME: %d | LAST FRAME: %d",
+		clip_tr->firstKeyframeIndex, clip_tr->lastKeyframeIndex);
+
+	//TL line 4
+	a3textDraw(text, textAlign + 0.25f, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"CURRENT FRAME: %d",
+		ctrl_tl->keyframeIndex);
+
+	//TR line 4
+	a3textDraw(text, textAlign + 1.25f, textOffset, textDepth, col.r, col.g, col.b, col.a,
+		"CURRENT FRAME: %d",
+		ctrl_tr->keyframeIndex);
+
+	textOffset += 4 * textOffsetDelta;
+
+	//BL line 1
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"CLIP CONTROLLER: %s | CLIP: %s (%d)",
+		ctrl_bl->name,
+		clip_bl->name,
+		a3clipGetIndexInPool(ctrl_bl->clipPool, clip_bl->name));
+	//BR line 1
+	a3textDraw(text, textAlign + 1.0f, textOffset, textDepth, col.r, col.g, col.b, col.a,
+		"CLIP CONTROLLER: %s | CLIP: %s (%d)",
+		ctrl_br->name,
+		clip_br->name,
+		a3clipGetIndexInPool(ctrl_br->clipPool, clip_br->name));
+
+	//BL line 2
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"CLIP TIME: %d | PARAMETER: %d",
+		ctrl_bl->clipTime, ctrl_bl->clipParameter);
+
+	//BR line 2
+	a3textDraw(text, textAlign + 1.0f, textOffset, textDepth, col.r, col.g, col.b, col.a,
+		"CLIP TIME: %d | PARAMETER: %d",
+		ctrl_br->clipTime, ctrl_br->clipParameter);
+
+	//BL line 3
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"KEYFRAME TIME: %d | PARAMETER: %d",
+		ctrl_bl->keyframeTime, ctrl_bl->keyframeParameter);
+
+	//BR line 3
+	a3textDraw(text, textAlign + 1.0f, textOffset, textDepth, col.r, col.g, col.b, col.a,
+		"KEYFRAME TIME: %d | PARAMETER: %d",
+		ctrl_br->keyframeTime, ctrl_br->keyframeParameter);
+
+	//BL line 3
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"START FRAME: %d | LAST FRAME: %d",
+		clip_bl->firstKeyframeIndex, clip_bl->lastKeyframeIndex);
+
+	//BR line 3
+	a3textDraw(text, textAlign + 1.0f, textOffset, textDepth, col.r, col.g, col.b, col.a,
+		"START FRAME: %d | LAST FRAME: %d",
+		clip_br->firstKeyframeIndex, clip_br->lastKeyframeIndex);
+
+	//BL line 4
+	a3textDraw(text, textAlign + 0.25f, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"CURRENT FRAME: %d",
+		ctrl_bl->keyframeIndex);
+
+	//BR line 4
+	a3textDraw(text, textAlign + 1.25f, textOffset, textDepth, col.r, col.g, col.b, col.a,
+		"CURRENT FRAME: %d",
+		ctrl_br->keyframeIndex);
 
 	// global controls
 	textOffset = -0.8f;

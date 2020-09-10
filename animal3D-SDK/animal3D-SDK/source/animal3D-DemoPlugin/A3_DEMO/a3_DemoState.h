@@ -313,10 +313,10 @@ struct a3_DemoState
 		a3_ClipController controllers[4];
 		struct {
 			a3_ClipController
-				controller_topleft[1],
-				controller_topright[1],
-				controller_botleft[1],
-				controller_botright[1];
+				controller_top_left[1],
+				controller_top_right[1],
+				controller_bot_left[1],
+				controller_bot_right[1];
 		};
 	};
 	a3ui8 controllerIndex;
