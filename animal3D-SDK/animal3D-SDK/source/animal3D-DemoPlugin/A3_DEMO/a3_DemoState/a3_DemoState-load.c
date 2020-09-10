@@ -789,7 +789,7 @@ void a3demo_loadClipData(a3_DemoState* demoState)
 			}
 
 		}
-		a3keyframeInit(&demoState->keyPool->keyframeArray[i], (float)(rand() % 5), val);
+		a3keyframeInit(&demoState->keyPool->keyframeArray[i], (float)(rand() % 5) * 1000.0f, val);
 	}
 
 
