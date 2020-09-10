@@ -36,7 +36,7 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 	_Bool resolved = false;	// 'bool' didn't work, probably cause it's actually an STD macro
 
 	// Pre-resolution
-	a3real directionalDT = clipCtrl->playbackDir * dt;	// playbackDir is -1, 0, or 1, this moves time in the right direction
+	a3real directionalDT = clipCtrl->playbackDir * dt * clipCtrl->speedMod;	// playbackDir is -1, 0, or 1, this moves time in the right direction. speedMod is a float in the range[0, infinity)
 	clipCtrl->clipTime += directionalDT;
 	clipCtrl->keyframeTime += directionalDT;
 

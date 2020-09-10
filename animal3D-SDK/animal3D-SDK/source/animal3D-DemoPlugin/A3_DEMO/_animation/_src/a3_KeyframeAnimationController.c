@@ -53,6 +53,7 @@ a3i32 a3clipControllerInit(a3_ClipController* clipCtrl_out, const a3byte ctrlNam
 	clipCtrl_out->keyframeParameter = 0;
 
 	clipCtrl_out->playbackDir = 0;
+	clipCtrl_out->speedMod = 1;
 	return 1;
 
 }

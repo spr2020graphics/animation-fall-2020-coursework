@@ -326,6 +326,8 @@ struct a3_DemoState
 	a3ui8 keyframeCount;
 	a3ui8 clipCount;
 	a3ui8 controllerCount;
+	a3f32 globalSpeedMod;
+	a3i32 globalPlaybackDir;
 };
 
 

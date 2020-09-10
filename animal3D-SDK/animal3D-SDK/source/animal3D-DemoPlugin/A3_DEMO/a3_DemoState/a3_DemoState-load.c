@@ -770,8 +770,16 @@ void a3demo_loadClipData(a3_DemoState* demoState)
 	demoState->keyframeCount = 32;
 	demoState->clipCount = 8;
 	demoState->controllerCount = 4;
+	demoState->globalPlaybackDir = 0;
+	demoState->globalSpeedMod = 1.0f;
 
 	a3keyframePoolCreate(demoState->keyPool, demoState->keyframeCount);
+	for (a3ui8 i = 0; i < demoState->keyframeCount; i++)
+	{
+		a3keyframeInit(&demoState->keyPool->keyframeArray[i], (float)(rand() % 5), (a3ui32)(rand()) % 100);
+	}
+
+
 	a3clipPoolCreate(demoState->clipPool, demoState->clipCount);
 
 	//creating names dynamically was posing a problem and this system seems to work.

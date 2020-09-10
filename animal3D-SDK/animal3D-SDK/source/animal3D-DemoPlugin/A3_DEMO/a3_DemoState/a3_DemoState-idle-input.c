@@ -33,6 +33,7 @@
 #include "../a3_DemoState.h"
 
 #include "../_a3_demo_utilities/a3_DemoMacros.h"
+#include <stdlib.h>
 
 
 //-----------------------------------------------------------------------------
@@ -143,8 +144,14 @@ void a3demo_input_keyCharPress(a3_DemoState* demoState, a3i32 const asciiKey)
 		// change pipeline mode
 		a3demoCtrlCasesLoop(demoState->demoMode, demoState_mode_max, '>', '<');
 		a3demoCtrlCasesLoop(demoState->demoMode, demoState_mode_max, '.', ',');
+
+		//rotate through controllers (one way)
 		a3demoCtrlCaseIncLoop(demoState->controllerIndex, demoState->controllerCount, 'r');
+
+		//rotate through clips
 		a3demoCtrlCasesLoop(demoState->controllers[demoState->controllerIndex].clipIndex, demoState->clipCount, '2', '1');
+
+		//control the first frame of the selected clip
 		a3demoCtrlCasesCap(
 			demoState->controllers[demoState->controllerIndex].clipPool
 			->clipArray[demoState->controllers[demoState->controllerIndex].clipIndex]
@@ -155,6 +162,7 @@ void a3demo_input_keyCharPress(a3_DemoState* demoState, a3i32 const asciiKey)
 			(a3ui32)0, //lowest is zero
 			'4', '3');
 
+		//control the last frame of the selected clip
 		a3demoCtrlCasesCap(
 			demoState->controllers[demoState->controllerIndex].clipPool
 			->clipArray[demoState->controllers[demoState->controllerIndex].clipIndex]
@@ -163,6 +171,28 @@ void a3demo_input_keyCharPress(a3_DemoState* demoState, a3i32 const asciiKey)
 			->clipArray[demoState->controllers[demoState->controllerIndex].clipIndex]
 			.firstKeyframeIndex, //lowest is the first frame
 			'6', '5');
+
+		a3demoCtrlCaseToggle(demoState->controllers[demoState->controllerIndex].playbackDir, 'p');
+		a3demoCtrlCaseToggle(demoState->globalPlaybackDir, 'P');
+
+	case 'v':
+		demoState->controllers[demoState->controllerIndex].playbackDir *= -1;
+		break;
+	case 'V':
+		demoState->globalPlaybackDir *= -1;
+		break;
+	case '7':
+		demoState->controllers[demoState->controllerIndex].speedMod = max(0.1f, demoState->controllers[demoState->controllerIndex].speedMod - 0.1f);
+		break;
+	case '8':
+		demoState->controllers[demoState->controllerIndex].speedMod += 0.1f;
+		break;
+	case '&':
+		demoState->globalSpeedMod = max(0.1f, demoState->globalSpeedMod - 0.1f);
+		break;
+	case '*':
+		demoState->globalSpeedMod += 0.1f;
+		break;
 
 		// toggle grid
 		a3demoCtrlCaseToggle(demoState->displayGrid, 'g');

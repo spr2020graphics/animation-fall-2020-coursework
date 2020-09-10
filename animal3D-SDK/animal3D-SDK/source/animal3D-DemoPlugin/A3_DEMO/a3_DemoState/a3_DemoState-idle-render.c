@@ -176,7 +176,10 @@ void a3demo_render_clipController(a3_DemoState const* demoState,
 
 	// toggle controller
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"SELECTED CONTROLLER (rotate 'r') %d | CLIP COUNT: %d | KEYFRAME COUNT: %d", demoState->controllerIndex, demoState->clipCount, demoState->keyframeCount);
+		"SELECTED CONTROLLER (rotate 'r') %d | CLIP COUNT: %d | KEYFRAME COUNT: %d",
+		demoState->controllerIndex,
+		demoState->clipCount,
+		demoState->keyframeCount);
 
 	// select clip
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
@@ -191,6 +194,18 @@ void a3demo_render_clipController(a3_DemoState const* demoState,
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
 		"SWITCH LAST KEYFRAME (%u) ('5' prev | next '6')",
 		demoState->controllers[demoState->controllerIndex].clipPool->clipArray[demoState->controllers[demoState->controllerIndex].clipIndex].lastKeyframeIndex);
+
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"PAUSE ('p' local, 'P' global (%s))",
+		demoState->globalPlaybackDir == 0 ? "TRUE" : "FALSE");
+
+	a3textDraw(text, textAlign + 1.0f, textOffset, textDepth, col.r, col.g, col.b, col.a,
+		"SPEED ('7'/'8' local, '&'/'*' GLOBAL (%.1f))",
+		demoState->globalSpeedMod);
+
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"SWITCH PLAYBACK DIR ('v' local, 'V' global (%d))",
+		demoState->globalPlaybackDir);
 
 	const a3_ClipController* ctrl_tl = demoState->controller_top_left;
 	const a3_Clip* clip_tl = &ctrl_tl->clipPool->clipArray[ctrl_tl->clipIndex];
@@ -255,7 +270,21 @@ void a3demo_render_clipController(a3_DemoState const* demoState,
 		"CURRENT FRAME: %d | VALUE: %d",
 		ctrl_tr->keyframeIndex, clip_tr->keyframes->keyframeArray[ctrl_tr->keyframeIndex].data);
 
-	textOffset += 4 * textOffsetDelta;
+	//TL line 5
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"PAUSED: %s | PLAYDIR: %d | SPEEDMOD: %.1f",
+		ctrl_tl->playbackDir == 0 ? "TRUE " : "FALSE",
+		ctrl_tl->playbackDir,
+		ctrl_tl->speedMod); //sets it to 2 decimal places maximum
+
+	//TR line 5
+	a3textDraw(text, textAlign + 1.0f, textOffset, textDepth, col.r, col.g, col.b, col.a,
+		"PAUSED: %s | PLAYDIR: %d | SPEEDMOD: %.1f",
+		ctrl_tr->playbackDir == 0 ? "TRUE " : "FALSE",
+		ctrl_tr->playbackDir,
+		ctrl_tr->speedMod); //sets it to 2 decimal places maximum
+
+	textOffset += textOffsetDelta;
 
 	//BL line 1
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
@@ -309,6 +338,20 @@ void a3demo_render_clipController(a3_DemoState const* demoState,
 	a3textDraw(text, textAlign + 1.0f, textOffset, textDepth, col.r, col.g, col.b, col.a,
 		"CURRENT FRAME: %d | VALUE: %d",
 		ctrl_br->keyframeIndex, clip_br->keyframes->keyframeArray[ctrl_br->keyframeIndex].data);
+
+	//BL line 5
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"PAUSED: %s | PLAYDIR: %d | SPEEDMOD: %.1f",
+		ctrl_bl->playbackDir == 0 ? "TRUE " : "FALSE",
+		ctrl_bl->playbackDir,
+		ctrl_bl->speedMod); //sets it to 2 decimal places maximum
+
+	//BR line 5
+	a3textDraw(text, textAlign + 1.0f, textOffset, textDepth, col.r, col.g, col.b, col.a,
+		"PAUSED: %s | PLAYDIR: %d | SPEEDMOD: %.1f",
+		ctrl_br->playbackDir == 0 ? "TRUE " : "FALSE",
+		ctrl_br->playbackDir,
+		ctrl_br->speedMod); //sets it to 2 decimal places maximum
 
 	// global controls
 	textOffset = -0.8f;

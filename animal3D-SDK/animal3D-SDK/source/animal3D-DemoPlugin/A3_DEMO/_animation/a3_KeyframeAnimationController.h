@@ -78,6 +78,8 @@ struct a3_ClipController
 
 	// Referenced pool of clips this controller has control over (we have the clip index above)
 	const a3_ClipPool* clipPool;
+
+	a3f32 speedMod;
 };
 
 
