@@ -789,7 +789,7 @@ void a3demo_loadClipData(a3_DemoState* demoState)
 			}
 
 		}
-		a3keyframeInit(&demoState->keyPool->keyframeArray[i], (float)(rand() % 5) * 1000.0f, val);
+		a3keyframeInit(&demoState->keyPool->keyframeArray[i], (float)((rand() % 4) + 1), val);
 	}
 
 
@@ -823,6 +823,7 @@ void a3demo_loadClipData(a3_DemoState* demoState)
 		if (names != NULL && names[clip] != NULL)
 		{
 			a3clipInit(demoState->clipPool->clipArray + clip, names[clip], demoState->keyPool, clip * demoState->keyframeCount / demoState->clipCount, (clip + 1) * demoState->keyframeCount / demoState->clipCount - 1);
+			a3clipCalculateDuration(demoState->clipPool->clipArray + clip);
 		}
 	}
 	for (a3ui8 controller = 0; controller < demoState->controllerCount; controller++)

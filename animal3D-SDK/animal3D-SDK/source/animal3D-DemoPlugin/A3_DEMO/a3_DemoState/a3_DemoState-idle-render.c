@@ -232,22 +232,22 @@ void a3demo_render_clipController(a3_DemoState const* demoState,
 
 	//TL line 2
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"CLIP TIME: %d | PARAMETER: %d",
+		"CLIP TIME: %.3f | PARAMETER: %.3f",
 		ctrl_tl->clipTime, ctrl_tl->clipParameter);
 
 	//TR line 2
 	a3textDraw(text, textAlign + 1.0f, textOffset, textDepth, col.r, col.g, col.b, col.a,
-		"CLIP TIME: %d | PARAMETER: %d",
+		"CLIP TIME: %.3f | PARAMETER: %.3f",
 		ctrl_tr->clipTime, ctrl_tr->clipParameter);
 
 	//TL line 3
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"KEYFRAME TIME: %d | PARAMETER: %d",
+		"KEYFRAME TIME: %.3f | PARAMETER: %.3f",
 		ctrl_tl->keyframeTime, ctrl_tl->keyframeParameter);
 
 	//TR line 3
 	a3textDraw(text, textAlign + 1.0f, textOffset, textDepth, col.r, col.g, col.b, col.a,
-		"KEYFRAME TIME: %d | PARAMETER: %d",
+		"KEYFRAME TIME: %.3f | PARAMETER: %.3f",
 		ctrl_tr->keyframeTime, ctrl_tr->keyframeParameter);
 
 	//TL line 3
@@ -311,12 +311,12 @@ void a3demo_render_clipController(a3_DemoState const* demoState,
 
 	//BL line 3
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"KEYFRAME TIME: %d | PARAMETER: %d",
+		"KEYFRAME TIME: %.3f | PARAMETER: %.3f",
 		ctrl_bl->keyframeTime, ctrl_bl->keyframeParameter);
 
 	//BR line 3
 	a3textDraw(text, textAlign + 1.0f, textOffset, textDepth, col.r, col.g, col.b, col.a,
-		"KEYFRAME TIME: %d | PARAMETER: %d",
+		"KEYFRAME TIME: %.3f | PARAMETER: %.3f",
 		ctrl_br->keyframeTime, ctrl_br->keyframeParameter);
 
 	//BL line 3
