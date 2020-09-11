@@ -62,7 +62,9 @@ struct a3_ClipController
 	a3f32 clipParameter;
 
 	// Index of the current keyframe in the current clip's keyframe pool (essentially the progress in the clip)
-	a3ui32 keyframeIndex;
+	a3ui32 keyframeIndex; //keyframeIndex1
+
+	// TODO: MAKE KEYFRAME0PTR and KEYFRAME1PTR
 
 	// Current time relative to current keyframe (between 0 and current keyframe's duration)
 	a3f32 keyframeTime;
@@ -91,6 +93,9 @@ a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt);
 
 // set clip to play (Scott Dagen)
 a3i32 a3clipControllerSetClip(a3_ClipController* clipCtrl, const a3_ClipPool* clipPool, const a3ui32 clipIndex_pool);
+
+// evaluate the current value at time
+a3i32 a3clipControllerEvaluate(a3_ClipController const* clipCtrl, a3_Sample* sample_out);
 
 
 //-----------------------------------------------------------------------------

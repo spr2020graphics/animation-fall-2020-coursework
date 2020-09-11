@@ -782,20 +782,24 @@ void a3demo_loadClipData(a3_DemoState* demoState)
 	a3keyframePoolCreate(demoState->keyPool, demoState->keyframeCount);
 	for (a3ui8 i = 0; i < demoState->keyframeCount; i++)
 	{
-		a3ui32 val = 0; //creates keyframes in a 0,2,1,3,2,4,3,5,4,6,5,7 pattern (+2, -1)
+		a3_Sample* samp = malloc(sizeof(a3_Sample));
+		a3real val = 0; //creates keyframes in a 0,2,1,3,2,4,3,5,4,6,5,7 pattern (+2, -1)
 		if (i != 0)
 		{
 			if (i % 2 == 1)
 			{
-				val = demoState->keyPool->keyframeArray[i-1].data + 2;
+				val = demoState->keyPool->keyframeArray[i-1].sample.value + 2;
 			}
 			else
 			{
-				val = demoState->keyPool->keyframeArray[i-1].data - 1;
+				val = demoState->keyPool->keyframeArray[i-1].sample.value - 1;
 			}
 
 		}
-		a3keyframeInit(&demoState->keyPool->keyframeArray[i], (float)((rand() % 4) + 1), val);
+		samp->sample.x = 0;
+		samp->sample.y = val;
+
+		a3keyframeInit(&demoState->keyPool->keyframeArray[i], (float)((rand() % 4) + 1), samp);
 	}
 
 	a3clipPoolCreate(demoState->clipPool, demoState->clipCount);

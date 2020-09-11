@@ -65,4 +65,27 @@ a3i32 a3clipControllerInit(a3_ClipController* clipCtrl_out, const a3byte ctrlNam
 }
 
 
+// Evaluate controller
+a3i32 a3clipControllerEvaluate(a3_ClipController const* clipCtrl, a3_Sample* sample_out)
+{
+	if (clipCtrl && clipCtrl->clipPool && sample_out)
+	{
+		 // No interpolation - step function
+		 *sample_out = clipCtrl->clipPool->clipArray[clipCtrl->clipIndex].keyframes->keyframeArray[clipCtrl->keyframeIndex].sample;
+
+		 // 0: step: return current keyframe sample
+		 // 1: nearest: (u is keyframeParameter) - if (u < 0.5) return currentKeyframe; else return nextKeyframe
+
+		 // *sample_out = clipCtrl->keyframeParameter < a3real_half
+		 //					? clipCtrl->keyframe0Ptr->sample
+		 //					: clipCtrl->keyframe1Ptr->sample;
+
+
+
+		 return clipCtrl->keyframeIndex;
+	}
+
+	return -1;
+}
+
 //-----------------------------------------------------------------------------
