@@ -795,40 +795,68 @@ void a3demo_loadClipData(a3_DemoState* demoState)
 
 	a3clipPoolCreate(demoState->clipPool, demoState->clipCount);
 
-	//creating names dynamically was posing a problem and this system seems to work.
-	a3byte** names = malloc(demoState->clipCount * sizeof(a3byte*));
+	/**
+	creating names dynamically was posing a problem and this system seems to work.
+	any time we tried to use the string "Clip" and appending a number would result in the string
+	not being cleared after the next iteration (probably a wayward compiler optimization). This led to names like
+	"Clip0", "Clip01", "Clip012", "Clip0123". It became less of a headache to assemble the names character by character.
+	*/
+	a3byte** clipNames = malloc(demoState->clipCount * sizeof(a3byte*));
+	a3byte** ctrlNames = malloc(demoState->controllerCount * sizeof(a3byte*));
 	for (a3ui8 i = 0; i < demoState->clipCount; i++)
 	{
 		/**
-		 4 characters for "Clip" (using the text caused issues, so I'm doing it character-by character
+		 4 characters for "Clip" (using a string caused issues, so I'm doing it character-by character)
 		 and then enough characters to fit the string representation of demoState->clipCount. A number's digit count can be expressed as floor(log10(x)) + 1.
 		*/
 		int charlen = 4 + (int)floor(log10((int)demoState->clipCount)) + 1;
-		if (names != NULL) //intellisense wanted this. in case there is insufficient memory
+		if (clipNames != NULL) //intellisense wanted this. in case there is insufficient memory
 		{
-			names[i] = malloc(charlen * sizeof(a3byte));
-			if (names[i] != NULL)
+			clipNames[i] = malloc(charlen * sizeof(a3byte));
+			if (clipNames[i] != NULL)
 			{
-				names[i][0] = 'C';
-				names[i][1] = 'l'; //there's an intellisense warning on this line. There is no reason for it.
-				names[i][2] = 'i';
-				names[i][3] = 'p';
-				_itoa(i, names[i] + 4, 10);
+				clipNames[i][0] = 'C';
+				clipNames[i][1] = 'l'; //there's an intellisense warning on this line. There is no reason for it.
+				clipNames[i][2] = 'i';
+				clipNames[i][3] = 'p';
+				_itoa(i, clipNames[i] + 4, 10);
+			}
+		}
+	}
+
+	//the same comment from above applies here too
+	for (a3ui8 i = 0; i < demoState->controllerCount; i++)
+	{
+		/**
+		 4 characters for "Clip" (using a string caused issues, so I'm doing it character-by character)
+		 and then enough characters to fit the string representation of demoState->clipCount. A number's digit count can be expressed as floor(log10(x)) + 1.
+		*/
+		int charlen = 4 + (int)floor(log10((int)demoState->controllerCount)) + 1;
+		if (ctrlNames != NULL) //intellisense wanted this. in case there is insufficient memory
+		{
+			ctrlNames[i] = malloc(charlen * sizeof(a3byte));
+			if (ctrlNames[i] != NULL)
+			{
+				ctrlNames[i][0] = 'C';
+				ctrlNames[i][1] = 't'; //there's an intellisense warning on this line. There is no reason for it.
+				ctrlNames[i][2] = 'r';
+				ctrlNames[i][3] = 'l';
+				_itoa(i, ctrlNames[i] + 4, 10);
 			}
 		}
 	}
 
 	for (a3ui8 clip = 0; clip < demoState->clipCount; clip++)
 	{
-		if (names != NULL && names[clip] != NULL)
+		if (clipNames != NULL && clipNames[clip] != NULL)
 		{
-			a3clipInit(demoState->clipPool->clipArray + clip, names[clip], demoState->keyPool, clip * demoState->keyframeCount / demoState->clipCount, (clip + 1) * demoState->keyframeCount / demoState->clipCount - 1);
+			a3clipInit(demoState->clipPool->clipArray + clip, clipNames[clip], demoState->keyPool, clip * demoState->keyframeCount / demoState->clipCount, (clip + 1) * demoState->keyframeCount / demoState->clipCount - 1);
 			a3clipCalculateDuration(demoState->clipPool->clipArray + clip);
 		}
 	}
 	for (a3ui8 controller = 0; controller < demoState->controllerCount; controller++)
 	{
-		a3clipControllerInit(demoState->controllers + controller, "Ctrl", demoState->clipPool, controller);
+		a3clipControllerInit(demoState->controllers + controller, ctrlNames[controller], demoState->clipPool, controller);
 	}
 }
 
