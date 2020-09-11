@@ -32,8 +32,7 @@
 // update clip controller
 inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt)
 {
-	 //https://stackoverflow.com/questions/1608318/is-bool-a-native-c-type
-	a3boolean resolved = false;	// 'bool' didn't work, probably cause it's actually an STD macro
+	a3boolean resolved = false;
 
 	// Pre-resolution
 	a3real directionalDT = clipCtrl->playbackDir * dt * clipCtrl->speedMod;	// playbackDir is -1, 0, or 1, this moves time in the right direction. speedMod is a float in the range[0, infinity)

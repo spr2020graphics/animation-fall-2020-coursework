@@ -44,13 +44,13 @@ a3i32 a3clipControllerInit(a3_ClipController* clipCtrl_out, const a3byte ctrlNam
 	clipCtrl_out->clipPool = clipPool;
 	clipCtrl_out->clipIndex = clipIndex_pool; //index within pool
 
-	clipCtrl_out->clipTime = 0;
-	clipCtrl_out->clipParameter = 0;
+	clipCtrl_out->clipTime = 0.0f;
+	clipCtrl_out->clipParameter = 0.0f;
 
 	//set keyframe info, including grabbing the first keyframe index
 	clipCtrl_out->keyframeIndex = clipCtrl_out->clipPool->clipArray[clipCtrl_out->clipIndex].firstKeyframeIndex;
-	clipCtrl_out->keyframeTime = 0;
-	clipCtrl_out->keyframeParameter = 0;
+	clipCtrl_out->keyframeTime = 0.0f;
+	clipCtrl_out->keyframeParameter = 0.0f;
 
 	clipCtrl_out->playbackDir = 0;
 	clipCtrl_out->speedMod = 1;
