@@ -23,8 +23,7 @@
 */
 
 /*
-	Animation Framework Addons
-
+	Animation Framework Addons by Scott Dagen and Cameron Schneider
 */
 
 #include "../a3_KeyframeAnimation.h"
@@ -52,10 +51,14 @@ a3i32 a3keyframePoolCreate(a3_KeyframePool* keyframePool_out, const a3ui32 count
 	keyframePool_out->count = count;
 	keyframePool_out->keyframeArray = malloc(sizeof(a3_Keyframe) * count);
 
+	//loop through all frames to create, then init them with 0. Each frame needs a re-init later (probably, unless you want a lot of 0 keyframes)
 	for (a3ui32 i = 0; i < count; i++)
 	{
-		keyframePool_out->keyframeArray[i].index = i;
-		a3keyframeInit(&keyframePool_out->keyframeArray[i], 1, 0);
+		if (keyframePool_out->keyframeArray != NULL)
+		{
+			keyframePool_out->keyframeArray[i].index = i; //intellisense error for buffer overrun
+			a3keyframeInit(&keyframePool_out->keyframeArray[i], 1, 0);
+		}
 	}
 	return 1;
 }
@@ -94,10 +97,14 @@ a3i32 a3clipPoolCreate(a3_ClipPool* clipPool_out, const a3ui32 count)
 	clipPool_out->count = count;
 	clipPool_out->clipArray = malloc(sizeof(a3_Clip) * count);
 
+	//loop through all clips to create and init with default values. Needs another init call later for anything to work.
 	for (a3ui32 i = 0; i < count; i++)
 	{
-		clipPool_out->clipArray[i].index = i;
-		a3clipInit(&clipPool_out->clipArray[i], A3_CLIP_DEFAULTNAME, NULL, 0, 0);
+		if (clipPool_out->clipArray != NULL)
+		{
+			clipPool_out->clipArray[i].index = i; //intellisense error for buffer overrun
+			a3clipInit(&clipPool_out->clipArray[i], A3_CLIP_DEFAULTNAME, NULL, 0, 0);
+		}
 	}
 
 	return 1;
