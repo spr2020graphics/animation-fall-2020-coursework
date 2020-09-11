@@ -275,14 +275,14 @@ void a3demo_render_clipController(a3_DemoState const* demoState,
 		"PAUSED: %s | PLAYDIR: %d | SPEEDMOD: %.1f",
 		ctrl_tl->playbackDir == 0 ? "TRUE " : "FALSE",
 		ctrl_tl->playbackDir,
-		ctrl_tl->speedMod); //sets it to 2 decimal places maximum
+		ctrl_tl->speedMod);
 
 	//TR line 5
 	a3textDraw(text, textAlign + 1.0f, textOffset, textDepth, col.r, col.g, col.b, col.a,
 		"PAUSED: %s | PLAYDIR: %d | SPEEDMOD: %.1f",
 		ctrl_tr->playbackDir == 0 ? "TRUE " : "FALSE",
 		ctrl_tr->playbackDir,
-		ctrl_tr->speedMod); //sets it to 2 decimal places maximum
+		ctrl_tr->speedMod);
 
 	textOffset += textOffsetDelta;
 
@@ -344,14 +344,14 @@ void a3demo_render_clipController(a3_DemoState const* demoState,
 		"PAUSED: %s | PLAYDIR: %d | SPEEDMOD: %.1f",
 		ctrl_bl->playbackDir == 0 ? "TRUE " : "FALSE",
 		ctrl_bl->playbackDir,
-		ctrl_bl->speedMod); //sets it to 2 decimal places maximum
+		ctrl_bl->speedMod);
 
 	//BR line 5
 	a3textDraw(text, textAlign + 1.0f, textOffset, textDepth, col.r, col.g, col.b, col.a,
 		"PAUSED: %s | PLAYDIR: %d | SPEEDMOD: %.1f",
 		ctrl_br->playbackDir == 0 ? "TRUE " : "FALSE",
 		ctrl_br->playbackDir,
-		ctrl_br->speedMod); //sets it to 2 decimal places maximum
+		ctrl_br->speedMod);
 
 	// global controls
 	textOffset = -0.8f;
