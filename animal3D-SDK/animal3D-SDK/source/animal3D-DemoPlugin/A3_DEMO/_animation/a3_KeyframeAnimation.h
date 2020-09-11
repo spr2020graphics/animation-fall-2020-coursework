@@ -105,6 +105,7 @@ struct a3_Clip
 	//reciprocal of duration
 	a3f32 durInv;
 
+	// Number of keyframes used by this clip
 	a3ui32 keyframeCount;
 
 	//indices of the first and last keyframes
