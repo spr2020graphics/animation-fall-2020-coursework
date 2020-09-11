@@ -70,17 +70,32 @@ a3i32 a3clipControllerEvaluate(a3_ClipController const* clipCtrl, a3_Sample* sam
 {
 	if (clipCtrl && clipCtrl->clipPool && sample_out)
 	{
-		 // No interpolation - step function
+		 // 0: No interpolation - step function
 		 *sample_out = clipCtrl->clipPool->clipArray[clipCtrl->clipIndex].keyframes->keyframeArray[clipCtrl->keyframeIndex].sample;
 
 		 // 0: step: return current keyframe sample
 		 // 1: nearest: (u is keyframeParameter) - if (u < 0.5) return currentKeyframe; else return nextKeyframe
+		 // 2: lerp: k0 + (k1 - k0) * u
+		 // 3: Catmull-Rom: CatmullRom(kp, k0, k1, k2, u) (kp is previous)
+		 // 4: Cubic-Hermite: Hermite(k0, m0, k1, m1, u) = Hermite(k0, h0 - k0, k1, h1 - k1, u); (using rate-of-change as m0, m1)
 
+		 // 1: nearest
 		 // *sample_out = clipCtrl->keyframeParameter < a3real_half
 		 //					? clipCtrl->keyframe0Ptr->sample
 		 //					: clipCtrl->keyframe1Ptr->sample;
 
+		 // 2: lerp
+		 sample_out->time = clipCtrl->keyframeTime;
+		 sample_out->value = a3lerp(0, 0, 1); //a3lerp(clipCtrl->keyframe0Ptr->sample.value, clipCtrl->keyframe1Ptr->sample.value, clipCtrl->keyframeParam)
 
+
+		 // 3: Catmull-Rom
+		 // sample_out->time = clipCtrl->keyframeTime;
+		 // sample_out->value = a3CatmullRom(kp->sample.value, k0->sample.value, k1->sample.value, k2->sample.value, clipCtrl->keyframeParameter)
+
+
+		 // 4: Hermite
+		 // a3HermiteControl(k0->sample.value, k1->sample.value, k0->handle.value, k1->handle.value, clipCtrl->keyframeParam);
 
 		 return clipCtrl->keyframeIndex;
 	}

@@ -796,7 +796,7 @@ void a3demo_loadClipData(a3_DemoState* demoState)
 			}
 
 		}
-		samp->sample.x = 0;
+		samp->sample.x = 0;	// Need to assign this correctly
 		samp->sample.y = val;
 
 		a3keyframeInit(&demoState->keyPool->keyframeArray[i], (float)((rand() % 4) + 1), samp);

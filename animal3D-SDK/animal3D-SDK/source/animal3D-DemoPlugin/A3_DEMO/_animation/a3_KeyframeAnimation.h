@@ -82,7 +82,8 @@ struct a3_Keyframe
 	a3f32 durInv;
 
 	// Actual data for the keyframe (more to be done)
-	a3_Sample sample;
+	// Handle is going to be an arbitrary 'point' off to the side of an actual keyframe to form a curve (a control point)
+	a3_Sample sample, handle;
 };
 
 // pool of keyframe descriptors (Cameron Schneider)

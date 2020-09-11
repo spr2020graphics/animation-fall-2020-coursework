@@ -62,7 +62,7 @@ struct a3_ClipController
 	a3f32 clipParameter;
 
 	// Index of the current keyframe in the current clip's keyframe pool (essentially the progress in the clip)
-	a3ui32 keyframeIndex; //keyframeIndex1
+	a3ui32 keyframeIndex; //keyframeIndex1 (also need more for Catmull, but we should just use math on the indices, and use a function to retrieve a pointer to the right keyframe to avoid those long statements)
 
 	// TODO: MAKE KEYFRAME0PTR and KEYFRAME1PTR
 
