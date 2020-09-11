@@ -172,8 +172,8 @@ void a3demo_input_keyCharPress(a3_DemoState* demoState, a3i32 const asciiKey)
 			.firstKeyframeIndex + 1, //lowest is the first frame + 1
 			'6', '5');
 
-		a3demoCtrlCaseToggle(demoState->controllers[demoState->controllerIndex].playbackDir, 'p');
-		a3demoCtrlCaseToggle(demoState->globalPlaybackDir, 'P');
+		a3demoCtrlCaseToggle(demoState->controllers[demoState->controllerIndex].playbackDir, 'o');
+		a3demoCtrlCaseToggle(demoState->globalPlaybackDir, 'O');
 
 	case 'v':
 		demoState->controllers[demoState->controllerIndex].playbackDir *= -1;
