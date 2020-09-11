@@ -196,7 +196,7 @@ void a3demo_render_clipController(a3_DemoState const* demoState,
 		demoState->controllers[demoState->controllerIndex].clipPool->clipArray[demoState->controllers[demoState->controllerIndex].clipIndex].lastKeyframeIndex);
 
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"PAUSE ('p' local, 'P' global (%s))",
+		"PAUSE ('o' local, 'O' global (%s))",
 		demoState->globalPlaybackDir == 0 ? "TRUE" : "FALSE");
 
 	a3textDraw(text, textAlign + 1.0f, textOffset, textDepth, col.r, col.g, col.b, col.a,
