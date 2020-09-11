@@ -42,13 +42,6 @@ typedef struct a3_ClipController			a3_ClipController;
 
 //-----------------------------------------------------------------------------
 
-enum
-{
-	PLAYBACK_BACKWARD = -1,
-	PLAYBACK_PAUSE,
-	PLAYBACK_FORWARD
-};
-
 // clip controller
 // metaphor: playhead
 struct a3_ClipController
@@ -79,6 +72,7 @@ struct a3_ClipController
 	// Referenced pool of clips this controller has control over (we have the clip index above)
 	const a3_ClipPool* clipPool;
 
+	// Local modifier for playback speed, used per-controller
 	a3f32 speedMod;
 };
 
