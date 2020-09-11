@@ -158,7 +158,7 @@ void a3demo_input_keyCharPress(a3_DemoState* demoState, a3i32 const asciiKey)
 			.firstKeyframeIndex,
 			demoState->controllers[demoState->controllerIndex].clipPool
 			->clipArray[demoState->controllers[demoState->controllerIndex].clipIndex]
-			.lastKeyframeIndex, //highest is the last frame
+			.lastKeyframeIndex - 1, //highest is the last frame - 1
 			(a3ui32)0, //lowest is zero
 			'4', '3');
 
@@ -169,7 +169,7 @@ void a3demo_input_keyCharPress(a3_DemoState* demoState, a3i32 const asciiKey)
 			.lastKeyframeIndex, demoState->keyframeCount - (a3ui32)1, //highest is the keycount - 1
 			demoState->controllers[demoState->controllerIndex].clipPool
 			->clipArray[demoState->controllers[demoState->controllerIndex].clipIndex]
-			.firstKeyframeIndex, //lowest is the first frame
+			.firstKeyframeIndex + 1, //lowest is the first frame + 1
 			'6', '5');
 
 		a3demoCtrlCaseToggle(demoState->controllers[demoState->controllerIndex].playbackDir, 'p');
@@ -223,6 +223,17 @@ void a3demo_input_keyCharPress(a3_DemoState* demoState, a3i32 const asciiKey)
 
 		// toggle stencil test
 		a3demoCtrlCaseToggle(demoState->skipIntermediatePasses, 'I');
+	}
+
+	switch (asciiKey)
+	{
+	case '3':
+	case '4':
+	case '5':
+	case '6':
+		a3clipCalculateDuration(&demoState->controllers[demoState->controllerIndex].clipPool
+			->clipArray[demoState->controllers[demoState->controllerIndex].clipIndex]);
+		break;
 	}
 
 
