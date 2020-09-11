@@ -40,6 +40,7 @@
 extern "C"
 {
 #else	// !__cplusplus
+typedef union a3_Sample						a3_Sample;
 typedef struct a3_Keyframe					a3_Keyframe;
 typedef struct a3_KeyframePool				a3_KeyframePool;
 typedef struct a3_Clip						a3_Clip;
@@ -56,6 +57,19 @@ enum
 };
 
 
+// generic sample: value of function at time
+union a3_Sample
+{
+	// Uses union & data struct to encapsulate time and value in sample (x, y)
+	a3vec2 sample;
+
+	struct  
+	{
+		a3real time, value;
+	};
+};
+
+
 // description of single keyframe (Scott Dagen)
 // metaphor: moment
 struct a3_Keyframe
@@ -66,8 +80,9 @@ struct a3_Keyframe
 	a3f32 duration;
 	// reciprocal of duration.
 	a3f32 durInv;
-	//the value of this keyframe
-	a3i32 data;
+
+	// Actual data for the keyframe (more to be done)
+	a3_Sample sample;
 };
 
 // pool of keyframe descriptors (Cameron Schneider)
@@ -88,7 +103,7 @@ a3i32 a3keyframePoolCreate(a3_KeyframePool* keyframePool_out, const a3ui32 count
 a3i32 a3keyframePoolRelease(a3_KeyframePool* keyframePool);
 
 // initialize keyframe (Scott Dagen)
-a3i32 a3keyframeInit(a3_Keyframe* keyframe_out, const a3real duration, const a3ui32 value_x);
+a3i32 a3keyframeInit(a3_Keyframe* keyframe_out, const a3real duration, const a3_Sample* samp);
 
 
 //-----------------------------------------------------------------------------

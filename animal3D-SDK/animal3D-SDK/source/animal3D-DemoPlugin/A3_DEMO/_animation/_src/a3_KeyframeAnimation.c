@@ -54,10 +54,14 @@ a3i32 a3keyframePoolCreate(a3_KeyframePool* keyframePool_out, const a3ui32 count
 	//loop through all frames to create, then init them with 0. Each frame needs a re-init later (probably, unless you want a lot of 0 keyframes)
 	for (a3ui32 i = 0; i < count; i++)
 	{
+		a3_Sample* samp = malloc(sizeof(a3_Sample));
+		samp->sample.x = 0;
+		samp->sample.y = 0;
+
 		if (keyframePool_out->keyframeArray != NULL)
 		{
 			keyframePool_out->keyframeArray[i].index = i; //intellisense error for buffer overrun
-			a3keyframeInit(&keyframePool_out->keyframeArray[i], 1, 0);
+			a3keyframeInit(&keyframePool_out->keyframeArray[i], 1, samp);
 		}
 	}
 	return 1;
@@ -73,7 +77,7 @@ a3i32 a3keyframePoolRelease(a3_KeyframePool* keyframePool)
 }
 
 // initialize keyframe with default values. Passing in a null keyframe returns -1.
-a3i32 a3keyframeInit(a3_Keyframe* keyframe_out, const a3real duration, const a3ui32 value_x)
+a3i32 a3keyframeInit(a3_Keyframe* keyframe_out, const a3real duration, const a3_Sample* samp)
 {
 	if (keyframe_out == NULL)
 	{
@@ -81,7 +85,7 @@ a3i32 a3keyframeInit(a3_Keyframe* keyframe_out, const a3real duration, const a3u
 	}
 	keyframe_out->duration = duration;
 	keyframe_out->durInv = 1.0f / duration;
-	keyframe_out->data = value_x;
+	keyframe_out->sample = *samp;
 	return 1;
 }
 
