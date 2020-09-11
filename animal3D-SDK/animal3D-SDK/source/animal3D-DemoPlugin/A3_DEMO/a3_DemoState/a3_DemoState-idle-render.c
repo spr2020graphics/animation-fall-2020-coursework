@@ -301,12 +301,12 @@ void a3demo_render_clipController(a3_DemoState const* demoState,
 
 	//BL line 2
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"CLIP TIME: %d | PARAMETER: %d",
+		"CLIP TIME: %.3f | PARAMETER: %.3f",
 		ctrl_bl->clipTime, ctrl_bl->clipParameter);
 
 	//BR line 2
 	a3textDraw(text, textAlign + 1.0f, textOffset, textDepth, col.r, col.g, col.b, col.a,
-		"CLIP TIME: %d | PARAMETER: %d",
+		"CLIP TIME: %.3f | PARAMETER: %.3f",
 		ctrl_br->clipTime, ctrl_br->clipParameter);
 
 	//BL line 3
