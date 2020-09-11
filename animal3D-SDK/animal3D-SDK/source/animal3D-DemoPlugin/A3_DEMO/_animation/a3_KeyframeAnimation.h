@@ -22,6 +22,10 @@
 	Data structures for fundamental keyframe animation.
 */
 
+/*
+	Animation Framework Addons by Cameron Schneider and Scott Dagen
+*/
+
 #ifndef __ANIMAL3D_KEYFRAMEANIMATION_H
 #define __ANIMAL3D_KEYFRAMEANIMATION_H
 
@@ -52,7 +56,7 @@ enum
 };
 
 
-// description of single keyframe
+// description of single keyframe (Scott Dagen)
 // metaphor: moment
 struct a3_Keyframe
 {
@@ -66,7 +70,7 @@ struct a3_Keyframe
 	a3i32 data;
 };
 
-// pool of keyframe descriptors
+// pool of keyframe descriptors (Cameron Schneider)
 struct a3_KeyframePool
 {
 	// array of keyframes
@@ -77,19 +81,19 @@ struct a3_KeyframePool
 };
 
 
-// allocate keyframe pool
+// allocate keyframe pool (Cameron Schneider)
 a3i32 a3keyframePoolCreate(a3_KeyframePool* keyframePool_out, const a3ui32 count);
 
-// release keyframe pool
+// release keyframe pool (Cameron Schneider)
 a3i32 a3keyframePoolRelease(a3_KeyframePool* keyframePool);
 
-// initialize keyframe
+// initialize keyframe (Scott Dagen)
 a3i32 a3keyframeInit(a3_Keyframe* keyframe_out, const a3real duration, const a3ui32 value_x);
 
 
 //-----------------------------------------------------------------------------
 
-// description of single clip
+// description of single clip (Scott Dagen)
 // metaphor: timeline
 struct a3_Clip
 {
@@ -114,7 +118,7 @@ struct a3_Clip
 	const a3_KeyframePool* keyframes;
 };
 
-// group of clips
+// group of clips (Cameron Schneider)
 struct a3_ClipPool
 {
 	// array of clips
@@ -125,22 +129,22 @@ struct a3_ClipPool
 };
 
 
-// allocate clip pool
+// allocate clip pool (Cameron Schneider)
 a3i32 a3clipPoolCreate(a3_ClipPool* clipPool_out, const a3ui32 count);
 
-// release clip pool
+// release clip pool (Cameron Schneider)
 a3i32 a3clipPoolRelease(a3_ClipPool* clipPool);
 
-// initialize clip with first and last indices
+// initialize clip with first and last indices (Scott Dagen)
 a3i32 a3clipInit(a3_Clip* clip_out, const a3byte clipName[a3keyframeAnimation_nameLenMax], const a3_KeyframePool* keyframePool, const a3ui32 firstKeyframeIndex, const a3ui32 finalKeyframeIndex);
 
-// get clip index from pool
+// get clip index from pool (Scott Dagen)
 a3i32 a3clipGetIndexInPool(const a3_ClipPool* clipPool, const a3byte clipName[a3keyframeAnimation_nameLenMax]);
 
-// calculate clip duration as sum of keyframes' durations
+// calculate clip duration as sum of keyframes' durations (Scott Dagen)
 a3i32 a3clipCalculateDuration(a3_Clip* clip);
 
-// calculate keyframes' durations by distributing clip's duration
+// calculate keyframes' durations by distributing clip's duration (Scott Dagen)
 a3i32 a3clipDistributeDuration(a3_Clip* clip, const a3real newClipDuration);
 
 

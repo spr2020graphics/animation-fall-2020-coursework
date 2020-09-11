@@ -23,6 +23,10 @@
 	limited in what one can do with this; could potentially be so much more.
 */
 
+/*
+	Animation Framework Addons by Cameron Schneider and Scott Dagen
+*/
+
 #ifndef __ANIMAL3D_KEYFRAMEANIMATIONCONTROLLER_H
 #define __ANIMAL3D_KEYFRAMEANIMATIONCONTROLLER_H
 
@@ -42,7 +46,7 @@ typedef struct a3_ClipController			a3_ClipController;
 
 //-----------------------------------------------------------------------------
 
-// clip controller
+// clip controller (Cameron Schneider & Scott Dagen)
 // metaphor: playhead
 struct a3_ClipController
 {
@@ -79,13 +83,13 @@ struct a3_ClipController
 
 //-----------------------------------------------------------------------------
 
-// initialize clip controller
+// initialize clip controller (Cameron Schneider)
 a3i32 a3clipControllerInit(a3_ClipController* clipCtrl_out, const a3byte ctrlName[a3keyframeAnimation_nameLenMax], const a3_ClipPool* clipPool, const a3ui32 clipIndex_pool);
 
-// update clip controller
+// update clip controller (Cameron Schneider)
 a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt);
 
-// set clip to play
+// set clip to play (Scott Dagen)
 a3i32 a3clipControllerSetClip(a3_ClipController* clipCtrl, const a3_ClipPool* clipPool, const a3ui32 clipIndex_pool);
 
 
