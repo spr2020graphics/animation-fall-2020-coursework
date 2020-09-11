@@ -27,6 +27,10 @@
 	********************************************
 */
 
+/*
+	Animation Framework Addons by Scott Dagen
+*/
+
 
 #include "_a3_dylib_config_export.h"
 

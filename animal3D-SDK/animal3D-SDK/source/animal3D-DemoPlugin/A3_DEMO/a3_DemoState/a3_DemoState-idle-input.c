@@ -28,6 +28,11 @@
 	****************************************************
 */
 
+
+/*
+	Animation Framework Addons by Scott Dagen
+*/
+
 //-----------------------------------------------------------------------------
 
 #include "../a3_DemoState.h"
@@ -172,15 +177,19 @@ void a3demo_input_keyCharPress(a3_DemoState* demoState, a3i32 const asciiKey)
 			.firstKeyframeIndex + 1, //lowest is the first frame + 1
 			'6', '5');
 
+		//local and global pauses
 		a3demoCtrlCaseToggle(demoState->controllers[demoState->controllerIndex].playbackDir, 'o');
 		a3demoCtrlCaseToggle(demoState->globalPlaybackDir, 'O');
 
+		//reverse playback (local and global)
 	case 'v':
 		demoState->controllers[demoState->controllerIndex].playbackDir *= -1;
 		break;
 	case 'V':
 		demoState->globalPlaybackDir *= -1;
 		break;
+
+		//alter speed modifier (local/global)
 	case '7':
 		demoState->controllers[demoState->controllerIndex].speedMod = max(0.1f, demoState->controllers[demoState->controllerIndex].speedMod - 0.1f);
 		break;
@@ -225,6 +234,7 @@ void a3demo_input_keyCharPress(a3_DemoState* demoState, a3i32 const asciiKey)
 		a3demoCtrlCaseToggle(demoState->skipIntermediatePasses, 'I');
 	}
 
+	//if the clip start or end frame was changed, recalculate duration
 	switch (asciiKey)
 	{
 	case '3':

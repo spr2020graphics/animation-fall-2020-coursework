@@ -28,6 +28,10 @@
 	****************************************************
 */
 
+/*
+	Animation Framework Addons by Scott Dagen
+*/
+
 //-----------------------------------------------------------------------------
 
 // uncomment this to link extension library (if available)
@@ -766,6 +770,7 @@ inline void a3_refreshDrawable_internal(a3_VertexDrawable *drawable, a3_VertexAr
 
 void a3demo_loadClipData(a3_DemoState* demoState)
 {
+	//initialize basic data
 	demoState->controllerIndex = 0;
 	demoState->keyframeCount = 32;
 	demoState->clipCount = 8;
@@ -773,6 +778,7 @@ void a3demo_loadClipData(a3_DemoState* demoState)
 	demoState->globalPlaybackDir = 0;
 	demoState->globalSpeedMod = 1.0f;
 
+	//create keyframe pool and keyframes. The complex for loop is to have a more varied pattern of keyframe values
 	a3keyframePoolCreate(demoState->keyPool, demoState->keyframeCount);
 	for (a3ui8 i = 0; i < demoState->keyframeCount; i++)
 	{
@@ -791,7 +797,6 @@ void a3demo_loadClipData(a3_DemoState* demoState)
 		}
 		a3keyframeInit(&demoState->keyPool->keyframeArray[i], (float)((rand() % 4) + 1), val);
 	}
-
 
 	a3clipPoolCreate(demoState->clipPool, demoState->clipCount);
 
@@ -827,12 +832,8 @@ void a3demo_loadClipData(a3_DemoState* demoState)
 	//the same comment from above applies here too
 	for (a3ui8 i = 0; i < demoState->controllerCount; i++)
 	{
-		/**
-		 4 characters for "Clip" (using a string caused issues, so I'm doing it character-by character)
-		 and then enough characters to fit the string representation of demoState->clipCount. A number's digit count can be expressed as floor(log10(x)) + 1.
-		*/
 		int charlen = 4 + (int)floor(log10((int)demoState->controllerCount)) + 1;
-		if (ctrlNames != NULL) //intellisense wanted this. in case there is insufficient memory
+		if (ctrlNames != NULL) //intellisense wanted this in case there is insufficient memory
 		{
 			ctrlNames[i] = malloc(charlen * sizeof(a3byte));
 			if (ctrlNames[i] != NULL)
@@ -846,6 +847,7 @@ void a3demo_loadClipData(a3_DemoState* demoState)
 		}
 	}
 
+	//initialize clips
 	for (a3ui8 clip = 0; clip < demoState->clipCount; clip++)
 	{
 		if (clipNames != NULL && clipNames[clip] != NULL)
@@ -854,9 +856,13 @@ void a3demo_loadClipData(a3_DemoState* demoState)
 			a3clipCalculateDuration(demoState->clipPool->clipArray + clip);
 		}
 	}
+	//initialize controllers
 	for (a3ui8 controller = 0; controller < demoState->controllerCount; controller++)
 	{
-		a3clipControllerInit(demoState->controllers + controller, ctrlNames[controller], demoState->clipPool, controller);
+		if (ctrlNames != NULL && ctrlNames[controller] != NULL)
+		{
+			a3clipControllerInit(demoState->controllers + controller, ctrlNames[controller], demoState->clipPool, controller);
+		}
 	}
 }
 

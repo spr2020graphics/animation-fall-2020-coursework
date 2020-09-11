@@ -26,6 +26,11 @@
 	********************************************
 */
 
+
+/*
+	Animation Framework Addons by Scott Dagen
+*/
+
 #ifndef __ANIMAL3D_DEMOSTATE_H
 #define __ANIMAL3D_DEMOSTATE_H
 
@@ -309,6 +314,7 @@ struct a3_DemoState
 	//-------------------------------------------------------------------------
 	// the end
 
+	//beginning of animation variables
 	union {
 		a3_ClipController controllers[4];
 		struct {
@@ -327,7 +333,8 @@ struct a3_DemoState
 	a3ui8 clipCount;
 	a3ui8 controllerCount;
 	a3f32 globalSpeedMod;
-	a3i32 globalPlaybackDir;
+	a3i32 globalPlaybackDir; //serves as a secondary modifier/lock on top of the clip controller play directions.
+	//end of animation variables
 };
 
 

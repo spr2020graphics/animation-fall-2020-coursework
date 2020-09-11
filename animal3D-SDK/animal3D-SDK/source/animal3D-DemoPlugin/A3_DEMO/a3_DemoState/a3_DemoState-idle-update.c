@@ -28,6 +28,10 @@
 	****************************************************
 */
 
+/*
+	Animation Framework Addons by Cameron Schneider
+*/
+
 //-----------------------------------------------------------------------------
 
 #include "../a3_DemoState.h"
@@ -131,11 +135,7 @@ void a3demo_update_pointLight(a3_DemoSceneObject* obj_camera, a3_DemoPointLight*
 //-----------------------------------------------------------------------------
 // UPDATE
 
-/// <summary>
-/// 
-/// </summary>
-/// <param name="demoState"></param>
-/// <param name="dt"></param>
+/// <param name="dt">delta time, in SECONDS</param>
 void a3demo_update(a3_DemoState *demoState, a3f64 const dt)
 {
 	demoState->demoModeCallbacksPtr->handleUpdate(demoState,

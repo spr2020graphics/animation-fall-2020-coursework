@@ -22,6 +22,10 @@
 	Implementation of keyframe animation controller.
 */
 
+/*
+	Animation Framework Addons by Scott Dagen
+*/
+
 #include "../a3_KeyframeAnimationController.h"
 
 #include <string.h>
@@ -38,24 +42,26 @@ a3i32 a3clipControllerInit(a3_ClipController* clipCtrl_out, const a3byte ctrlNam
 	{
 		clipCtrl_out = (a3_ClipController*)malloc(sizeof(a3_ClipController));
 	}
+	if (clipCtrl_out != NULL)
+	{
+		memcpy(clipCtrl_out->name, ctrlName, a3keyframeAnimation_nameLenMax);
 
-	memcpy(clipCtrl_out->name, ctrlName, a3keyframeAnimation_nameLenMax);
+		clipCtrl_out->clipPool = clipPool;
+		clipCtrl_out->clipIndex = clipIndex_pool; //index within pool
 
-	clipCtrl_out->clipPool = clipPool;
-	clipCtrl_out->clipIndex = clipIndex_pool; //index within pool
+		clipCtrl_out->clipTime = 0;
+		clipCtrl_out->clipParameter = 0;
 
-	clipCtrl_out->clipTime = 0;
-	clipCtrl_out->clipParameter = 0;
+		//set keyframe info, including grabbing the first keyframe index
+		clipCtrl_out->keyframeIndex = clipCtrl_out->clipPool->clipArray[clipCtrl_out->clipIndex].firstKeyframeIndex;
+		clipCtrl_out->keyframeTime = 0;
+		clipCtrl_out->keyframeParameter = 0;
 
-	//set keyframe info, including grabbing the first keyframe index
-	clipCtrl_out->keyframeIndex = clipCtrl_out->clipPool->clipArray[clipCtrl_out->clipIndex].firstKeyframeIndex;
-	clipCtrl_out->keyframeTime = 0;
-	clipCtrl_out->keyframeParameter = 0;
-
-	clipCtrl_out->playbackDir = 0;
-	clipCtrl_out->speedMod = 1;
-	return 1;
-
+		clipCtrl_out->playbackDir = 0;
+		clipCtrl_out->speedMod = 1;
+		return 1;
+	}
+	return -1; //if it failed to malloc, return -1.
 }
 
 
