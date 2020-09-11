@@ -272,12 +272,12 @@ void a3demo_render_clipController(a3_DemoState const* demoState,
 	//TL line 5: current frame and value
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
 		"CURRENT FRAME: %d | VALUE: %d",
-		ctrl_tl->keyframeIndex, clip_tl->keyframes->keyframeArray[ctrl_tl->keyframeIndex].sample.value);
+		ctrl_tl->keyframeIndex, clip_tl->keyframes->keyframeArray[ctrl_tl->keyframeIndex].data);
 
 	//TR line 5: current frame and value
 	a3textDraw(text, textAlign + 1.0f, textOffset, textDepth, col.r, col.g, col.b, col.a,
 		"CURRENT FRAME: %d | VALUE: %d",
-		ctrl_tr->keyframeIndex, clip_tr->keyframes->keyframeArray[ctrl_tr->keyframeIndex].sample.value);
+		ctrl_tr->keyframeIndex, clip_tr->keyframes->keyframeArray[ctrl_tr->keyframeIndex].data);
 
 	//TL line 6: paused, direction, and speed
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
@@ -341,12 +341,12 @@ void a3demo_render_clipController(a3_DemoState const* demoState,
 	//BL line 5: current frame and value
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
 		"CURRENT FRAME: %d | VALUE: %d",
-		ctrl_bl->keyframeIndex, clip_bl->keyframes->keyframeArray[ctrl_bl->keyframeIndex].sample.value);
+		ctrl_bl->keyframeIndex, clip_bl->keyframes->keyframeArray[ctrl_bl->keyframeIndex].data);
 
 	//BR line 5: current frame and value
 	a3textDraw(text, textAlign + 1.0f, textOffset, textDepth, col.r, col.g, col.b, col.a,
 		"CURRENT FRAME: %d | VALUE: %d",
-		ctrl_br->keyframeIndex, clip_br->keyframes->keyframeArray[ctrl_br->keyframeIndex].sample.value);
+		ctrl_br->keyframeIndex, clip_br->keyframes->keyframeArray[ctrl_br->keyframeIndex].data);
 
 	//BL line 6: paused, direction, and speed
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
