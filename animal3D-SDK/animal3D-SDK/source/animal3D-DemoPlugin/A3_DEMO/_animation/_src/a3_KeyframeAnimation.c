@@ -22,6 +22,11 @@
 	Implementation of keyframe animation interfaces.
 */
 
+/*
+	Animation Framework Addons
+
+*/
+
 #include "../a3_KeyframeAnimation.h"
 
 #include <stdlib.h>
@@ -59,7 +64,7 @@ a3i32 a3keyframePoolCreate(a3_KeyframePool* keyframePool_out, const a3ui32 count
 a3i32 a3keyframePoolRelease(a3_KeyframePool* keyframePool)
 {
 	free(keyframePool->keyframeArray);
-	//free(keyframePool);
+	free(keyframePool);
 
 	return 1;
 }
@@ -102,7 +107,7 @@ a3i32 a3clipPoolCreate(a3_ClipPool* clipPool_out, const a3ui32 count)
 a3i32 a3clipPoolRelease(a3_ClipPool* clipPool)
 {
 	free(clipPool->clipArray);
-	//free(clipPool);
+	free(clipPool);
 
 	return 1;
 }
