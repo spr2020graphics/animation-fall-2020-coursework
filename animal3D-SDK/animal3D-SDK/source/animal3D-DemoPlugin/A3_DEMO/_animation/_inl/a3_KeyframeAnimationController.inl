@@ -57,9 +57,13 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 			// NEEDS TRANSITION BEHAVIOR
 			// Reset keyframeIndex to firstKeyframeIndex, use overstep to 'loop' to beginning, reset keyframeTime and clipTime accordingly
 
-			switch (clipCtrl->clipPool->clipArray[clipCtrl->clipIndex].forwardTransition.transition)
+			a3real overstep = clipCtrl->clipTime - clipCtrl->clipPool->clipArray[clipCtrl->clipIndex].duration;
+
+			a3_ClipTransition forwardTrans = clipCtrl->clipPool->clipArray[clipCtrl->clipIndex].forwardTransition;
+
+			switch (forwardTrans.transition)
 			{
-			case a3clipTransitionPause:
+			case a3clipTransitionPause:	  // Pause at the end
 			{
 				a3_Keyframe frame;	// This is a temporary variable, doesn't need to be a pointer
 				a3clipControllerGetKeyframeFromIndex(clipCtrl, clipCtrl->keyframeIndex, &frame);
@@ -70,27 +74,53 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 				clipCtrl->playbackDir = 0;
 				break;
 			}
-			case a3clipTransitionForward:
+			case a3clipTransitionForwardFrame:	  // Forward pause at end of first frame, plays only first frame
+				clipCtrl->delayedPause = true;	  // Set delayed pause so we play through the first frame, and pause later
+
+			case a3clipTransitionForward:	// Keep playing from beginning, add overstep
+
+				clipCtrl->clipPool = forwardTrans.targetClipPool;
+				clipCtrl->clipIndex = forwardTrans.targetClipIndex;
+				clipCtrl->keyframeIndex = clipCtrl->clipPool->clipArray[clipCtrl->clipIndex].firstKeyframeIndex;
+				clipCtrl->keyframeTime = overstep;
+				clipCtrl->clipTime = overstep;
+				clipCtrl->playbackDir = 1;
 				break;
-			case a3clipTransitionForwardPause:
+			case a3clipTransitionForwardPause:	  // Pause at start of first frame
+
+				clipCtrl->keyframeIndex = clipCtrl->clipPool->clipArray[clipCtrl->clipIndex].firstKeyframeIndex;
+				clipCtrl->keyframeTime = 0.0f;
+				clipCtrl->clipTime = 0.0f;
+				clipCtrl->playbackDir = 0;
 				break;
-			case a3clipTransitionForwardSkip:
-				break;
-			case a3clipTransitionForwardFrame:
+			case a3clipTransitionForwardSkip:	// Play from start of second frame
+			{
+				clipCtrl->clipPool = forwardTrans.targetClipPool;
+				clipCtrl->clipIndex = forwardTrans.targetClipIndex;
+
+				a3_Keyframe firstFrame, secondFrame;	// This is a temporary variable, doesn't need to be a pointer
+				a3ui32 secondIndex = clipCtrl->clipPool->clipArray[clipCtrl->clipIndex].firstKeyframeIndex + 1;
+				a3clipControllerGetKeyframeFromIndex(clipCtrl, secondIndex, &secondFrame);
+				a3clipControllerGetKeyframeFromIndex(clipCtrl, clipCtrl->clipPool->clipArray[clipCtrl->clipIndex].firstKeyframeIndex, &firstFrame);
+
+				clipCtrl->keyframeIndex = secondIndex;
+				clipCtrl->keyframeTime = 0.0f;
+				clipCtrl->clipTime = firstFrame.duration + overstep;
+				clipCtrl->playbackDir = 1;
 				break;
 			}
-
-			a3real overstep = clipCtrl->clipTime - clipCtrl->clipPool->clipArray[clipCtrl->clipIndex].duration;
-
-			clipCtrl->keyframeIndex = clipCtrl->clipPool->clipArray[clipCtrl->clipIndex].firstKeyframeIndex;
-			clipCtrl->keyframeTime = overstep;
-			clipCtrl->clipTime = overstep;
+			}
 
 			resolved = true;
 		}
 		else if (clipCtrl->keyframeTime >= clipCtrl->clipPool->clipArray[clipCtrl->clipIndex].keyframes->keyframeArray[clipCtrl->keyframeIndex].duration)	// FORWARD: Playhead enters next keyframe (if current keyframeTime >= current keyframe duration)
 		{
 			// increment keyframeIndex, reset clipCtrl->keyframeTime to just 0.0f;
+
+			if (clipCtrl->delayedPause)
+			{
+				clipCtrl->playbackDir = 0;
+			}
 
 			clipCtrl->keyframeIndex++;
 			

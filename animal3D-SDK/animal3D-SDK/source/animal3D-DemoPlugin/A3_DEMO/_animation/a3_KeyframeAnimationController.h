@@ -80,6 +80,8 @@ struct a3_ClipController
 
 	// Local modifier for playback speed, used per-controller
 	a3f32 speedMod;
+
+	a3boolean delayedPause;
 };
 
 
