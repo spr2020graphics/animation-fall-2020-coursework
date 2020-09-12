@@ -30,7 +30,6 @@
 #ifndef __ANIMAL3D_KEYFRAMEANIMATIONCONTROLLER_INL
 #define __ANIMAL3D_KEYFRAMEANIMATIONCONTROLLER_INL
 
-
 //-----------------------------------------------------------------------------
 
 // update clip controller
@@ -130,6 +129,21 @@ inline a3i32 a3clipControllerSetClip(a3_ClipController* clipCtrl, const a3_ClipP
 
 	clipCtrl->playbackDir = 0;
 	return -1;
+}
+
+
+inline a3i32 a3clipControllerGetKeyframeFromIndex(a3_ClipController* clipCtrl, const a3ui32 index, a3_Keyframe* keyframe_out)
+{
+	if (index >= clipCtrl->clipPool->clipArray->firstKeyframeIndex && index <= clipCtrl->clipPool->clipArray->lastKeyframeIndex)
+	{
+		*keyframe_out = clipCtrl->clipPool->clipArray[clipCtrl->clipIndex].keyframes->keyframeArray[index];
+		return 1;
+	}
+	else
+	{
+		// specified index not in current clip's range
+		return -1;
+	}
 }
 
 
