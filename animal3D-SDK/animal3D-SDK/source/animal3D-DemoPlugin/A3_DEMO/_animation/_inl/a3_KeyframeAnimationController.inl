@@ -117,9 +117,11 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 		{
 			// increment keyframeIndex, reset clipCtrl->keyframeTime to just 0.0f;
 
+			// Handling transition case for playing through first frame, stopping on second
 			if (clipCtrl->delayedPause)
 			{
 				clipCtrl->playbackDir = 0;
+				clipCtrl->delayedPause = false;
 			}
 
 			clipCtrl->keyframeIndex++;
