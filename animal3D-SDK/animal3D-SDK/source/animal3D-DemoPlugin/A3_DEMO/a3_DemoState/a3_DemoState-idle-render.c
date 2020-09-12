@@ -214,153 +214,44 @@ void a3demo_render_clipController(a3_DemoState const* demoState,
 		"SWITCH PLAYBACK DIR ('v' local, 'V' global (%d))",
 		demoState->globalPlaybackDir);
 
-	const a3_ClipController* ctrl_tl = demoState->controller_top_left;
-	const a3_Clip* clip_tl = &ctrl_tl->clipPool->clipArray[ctrl_tl->clipIndex];
-	const a3_ClipController* ctrl_tr = demoState->controller_top_right;
-	const a3_Clip* clip_tr = &ctrl_tr->clipPool->clipArray[ctrl_tr->clipIndex];
-	const a3_ClipController* ctrl_bl = demoState->controller_bot_left;
-	const a3_Clip* clip_bl = &ctrl_bl->clipPool->clipArray[ctrl_bl->clipIndex];
-	const a3_ClipController* ctrl_br = demoState->controller_bot_right;
-	const a3_Clip* clip_br = &ctrl_br->clipPool->clipArray[ctrl_br->clipIndex];
+	const a3_ClipController* ctrl = &demoState->controllers[demoState->controllerIndex];
+	const a3_Clip* clip = &ctrl->clipPool->clipArray[ctrl->clipIndex];
 
 	textOffset += textOffsetDelta;
 
 	//TL line 1: Controller + Clip name
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
 		"CLIP CONTROLLER: %s | CLIP: %s (%d)",
-		ctrl_tl->name,
-		clip_tl->name,
-		a3clipGetIndexInPool(ctrl_tl->clipPool, clip_tl->name));  //this is here so it gets used at all. We don't need it
-
-	//TR line 1: Controller + Clip name
-	a3textDraw(text, textAlign + 1.0f, textOffset, textDepth, col.r, col.g, col.b, col.a,
-		"CLIP CONTROLLER: %s | CLIP: %s (%d)",
-		ctrl_tr->name,
-		clip_tr->name,
-		a3clipGetIndexInPool(ctrl_tr->clipPool, clip_tr->name));
+		ctrl->name,
+		clip->name,
+		a3clipGetIndexInPool(ctrl->clipPool, clip->name));  //this is here so it gets used at all. We don't need it
 
 	//TL line 2: Clip Time/Parameter
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
 		"CLIP TIME: %.3f | PARAMETER: %.3f",
-		ctrl_tl->clipTime, ctrl_tl->clipParameter);
-
-	//TR line 2: Clip Time/Parameter
-	a3textDraw(text, textAlign + 1.0f, textOffset, textDepth, col.r, col.g, col.b, col.a,
-		"CLIP TIME: %.3f | PARAMETER: %.3f",
-		ctrl_tr->clipTime, ctrl_tr->clipParameter);
+		ctrl->clipTime, ctrl->clipParameter);
 
 	//TL line 3: Keyframe Time/Parameter
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
 		"KEYFRAME TIME: %.3f | PARAMETER: %.3f",
-		ctrl_tl->keyframeTime, ctrl_tl->keyframeParameter);
-
-	//TR line 3: Keyframe Time/Parameter
-	a3textDraw(text, textAlign + 1.0f, textOffset, textDepth, col.r, col.g, col.b, col.a,
-		"KEYFRAME TIME: %.3f | PARAMETER: %.3f",
-		ctrl_tr->keyframeTime, ctrl_tr->keyframeParameter);
+		ctrl->keyframeTime, ctrl->keyframeParameter);
 
 	//TL line 4: start/end frames
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
 		"START FRAME: %d | LAST FRAME: %d",
-		clip_tl->firstKeyframeIndex, clip_tl->lastKeyframeIndex);
-
-	//TR line 4: start/end frames
-	a3textDraw(text, textAlign + 1.0f, textOffset, textDepth, col.r, col.g, col.b, col.a,
-		"START FRAME: %d | LAST FRAME: %d",
-		clip_tr->firstKeyframeIndex, clip_tr->lastKeyframeIndex);
+		clip->firstKeyframeIndex, clip->lastKeyframeIndex);
 
 	//TL line 5: current frame and value
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
 		"CURRENT FRAME: %d | VALUE: %d",
-		ctrl_tl->keyframeIndex, clip_tl->keyframes->keyframeArray[ctrl_tl->keyframeIndex].sample.value);
-
-	//TR line 5: current frame and value
-	a3textDraw(text, textAlign + 1.0f, textOffset, textDepth, col.r, col.g, col.b, col.a,
-		"CURRENT FRAME: %d | VALUE: %d",
-		ctrl_tr->keyframeIndex, clip_tr->keyframes->keyframeArray[ctrl_tr->keyframeIndex].sample.value);
+		ctrl->keyframeIndex, clip->keyframes->keyframeArray[ctrl->keyframeIndex].sample.value);
 
 	//TL line 6: paused, direction, and speed
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
 		"PAUSED: %s | PLAYDIR: %d | SPEEDMOD: %.1f",
-		ctrl_tl->playbackDir == 0 ? "TRUE " : "FALSE",
-		ctrl_tl->playbackDir,
-		ctrl_tl->speedMod);
-
-	//TR line 6: paused, direction, and speed
-	a3textDraw(text, textAlign + 1.0f, textOffset, textDepth, col.r, col.g, col.b, col.a,
-		"PAUSED: %s | PLAYDIR: %d | SPEEDMOD: %.1f",
-		ctrl_tr->playbackDir == 0 ? "TRUE " : "FALSE",
-		ctrl_tr->playbackDir,
-		ctrl_tr->speedMod);
-
-	textOffset += textOffsetDelta;
-
-	//BL line 1: Controller + Clip name
-	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"CLIP CONTROLLER: %s | CLIP: %s (%d)",
-		ctrl_bl->name,
-		clip_bl->name,
-		a3clipGetIndexInPool(ctrl_bl->clipPool, clip_bl->name));
-	//BR line 1: Controller + Clip name
-	a3textDraw(text, textAlign + 1.0f, textOffset, textDepth, col.r, col.g, col.b, col.a,
-		"CLIP CONTROLLER: %s | CLIP: %s (%d)",
-		ctrl_br->name,
-		clip_br->name,
-		a3clipGetIndexInPool(ctrl_br->clipPool, clip_br->name));
-
-	//BL line 2: Clip Time/Parameter
-	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"CLIP TIME: %.3f | PARAMETER: %.3f",
-		ctrl_bl->clipTime, ctrl_bl->clipParameter);
-
-	//BR line 2: Clip Time/Parameter
-	a3textDraw(text, textAlign + 1.0f, textOffset, textDepth, col.r, col.g, col.b, col.a,
-		"CLIP TIME: %.3f | PARAMETER: %.3f",
-		ctrl_br->clipTime, ctrl_br->clipParameter);
-
-	//BL line 3: Keyframe Time/Parameter
-	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"KEYFRAME TIME: %.3f | PARAMETER: %.3f",
-		ctrl_bl->keyframeTime, ctrl_bl->keyframeParameter);
-
-	//BR line 3: Keyframe Time/Parameter
-	a3textDraw(text, textAlign + 1.0f, textOffset, textDepth, col.r, col.g, col.b, col.a,
-		"KEYFRAME TIME: %.3f | PARAMETER: %.3f",
-		ctrl_br->keyframeTime, ctrl_br->keyframeParameter);
-
-	//BL line 4: start/end frames
-	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"START FRAME: %d | LAST FRAME: %d",
-		clip_bl->firstKeyframeIndex, clip_bl->lastKeyframeIndex);
-
-	//BR line 4: start/end frames
-	a3textDraw(text, textAlign + 1.0f, textOffset, textDepth, col.r, col.g, col.b, col.a,
-		"START FRAME: %d | LAST FRAME: %d",
-		clip_br->firstKeyframeIndex, clip_br->lastKeyframeIndex);
-
-	//BL line 5: current frame and value
-	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"CURRENT FRAME: %d | VALUE: %d",
-		ctrl_bl->keyframeIndex, clip_bl->keyframes->keyframeArray[ctrl_bl->keyframeIndex].sample.value);
-
-	//BR line 5: current frame and value
-	a3textDraw(text, textAlign + 1.0f, textOffset, textDepth, col.r, col.g, col.b, col.a,
-		"CURRENT FRAME: %d | VALUE: %d",
-		ctrl_br->keyframeIndex, clip_br->keyframes->keyframeArray[ctrl_br->keyframeIndex].sample.value);
-
-	//BL line 6: paused, direction, and speed
-	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"PAUSED: %s | PLAYDIR: %d | SPEEDMOD: %.1f",
-		ctrl_bl->playbackDir == 0 ? "TRUE " : "FALSE",
-		ctrl_bl->playbackDir,
-		ctrl_bl->speedMod);
-
-	//BR line 6: paused, direction, and speed
-	a3textDraw(text, textAlign + 1.0f, textOffset, textDepth, col.r, col.g, col.b, col.a,
-		"PAUSED: %s | PLAYDIR: %d | SPEEDMOD: %.1f",
-		ctrl_br->playbackDir == 0 ? "TRUE " : "FALSE",
-		ctrl_br->playbackDir,
-		ctrl_br->speedMod);
+		ctrl->playbackDir == 0 ? "TRUE " : "FALSE",
+		ctrl->playbackDir,
+		ctrl->speedMod);
 
 	// global controls
 	textOffset = -0.8f;
