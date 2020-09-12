@@ -134,7 +134,7 @@ inline a3i32 a3clipControllerSetClip(a3_ClipController* clipCtrl, const a3_ClipP
 
 inline a3i32 a3clipControllerGetKeyframeFromIndex(a3_ClipController* clipCtrl, const a3ui32 index, a3_Keyframe* keyframe_out)
 {
-	if (index >= clipCtrl->clipPool->clipArray->firstKeyframeIndex && index <= clipCtrl->clipPool->clipArray->lastKeyframeIndex)
+	if (index >= clipCtrl->clipPool->clipArray[clipCtrl->clipIndex].firstKeyframeIndex && index <= clipCtrl->clipPool->clipArray[clipCtrl->clipIndex].lastKeyframeIndex)
 	{
 		*keyframe_out = clipCtrl->clipPool->clipArray[clipCtrl->clipIndex].keyframes->keyframeArray[index];
 		return 1;
