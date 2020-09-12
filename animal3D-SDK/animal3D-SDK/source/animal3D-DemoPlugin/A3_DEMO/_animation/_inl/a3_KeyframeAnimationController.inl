@@ -149,7 +149,7 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 				break;
 			}
 			case a3clipTransitionReverseFrame:
-				//clipCtrl->delayedPause = true;
+				clipCtrl->delayedPause = true;
 			case a3clipTransitionReverse:
 			{
 				clipCtrl->clipPool = revTransition->targetClipPool;
