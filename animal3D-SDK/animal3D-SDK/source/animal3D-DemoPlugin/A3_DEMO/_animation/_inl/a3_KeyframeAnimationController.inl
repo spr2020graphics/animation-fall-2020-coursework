@@ -54,7 +54,31 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 		}
 		else if (clipCtrl->clipTime >= clipCtrl->clipPool->clipArray[clipCtrl->clipIndex].duration)	// FORWARD: Playhead at or past clip end (if current clip time >= clip duration)
 		{
+			// NEEDS TRANSITION BEHAVIOR
 			// Reset keyframeIndex to firstKeyframeIndex, use overstep to 'loop' to beginning, reset keyframeTime and clipTime accordingly
+
+			switch (clipCtrl->clipPool->clipArray[clipCtrl->clipIndex].forwardTransition.transition)
+			{
+			case a3clipTransitionPause:
+			{
+				a3_Keyframe frame;	// This is a temporary variable, doesn't need to be a pointer
+				a3clipControllerGetKeyframeFromIndex(clipCtrl, clipCtrl->keyframeIndex, &frame);
+
+				clipCtrl->keyframeIndex = clipCtrl->clipPool->clipArray[clipCtrl->clipIndex].lastKeyframeIndex;
+				clipCtrl->keyframeTime = frame.duration;
+				clipCtrl->clipTime = clipCtrl->clipPool->clipArray[clipCtrl->clipIndex].duration;
+				clipCtrl->playbackDir = 0;
+				break;
+			}
+			case a3clipTransitionForward:
+				break;
+			case a3clipTransitionForwardPause:
+				break;
+			case a3clipTransitionForwardSkip:
+				break;
+			case a3clipTransitionForwardFrame:
+				break;
+			}
 
 			a3real overstep = clipCtrl->clipTime - clipCtrl->clipPool->clipArray[clipCtrl->clipIndex].duration;
 
@@ -76,6 +100,7 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 		}
 		else if (clipCtrl->clipTime < 0.0f)	// REVERSE: Playhead has reached/passed the beginning of the clip
 		{
+			// NEEDS TRANSITION BEHAVIOR
 			// reset keyframeIndex to lastKeyframeIndex, use overstep to 'loop' to end, reset keyframeTime and clipTime accordingly
 
 			a3real overstep = 0.0f - clipCtrl->clipTime;
