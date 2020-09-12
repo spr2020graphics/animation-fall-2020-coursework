@@ -164,7 +164,7 @@ struct a3_ClipTransition
 	//null = pause
 	a3_ClipPool* targetClipPool;
 	a3ui32 targetClipIndex;
-	ClipTransitionBehavior transition;
+	a3_ClipTransitionBehavior transition;
 	a3f32 cachedOverstep;
 };
 
