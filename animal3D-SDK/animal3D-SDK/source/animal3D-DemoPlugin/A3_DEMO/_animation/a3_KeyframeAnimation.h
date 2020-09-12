@@ -124,6 +124,18 @@ a3i32 a3keyframeInit(a3_Keyframe* keyframe_out, const a3real duration, const a3_
 
 //-----------------------------------------------------------------------------
 
+struct a3_ClipTransition
+{
+	//null = pause
+	a3_ClipPool* targetClipPool;
+
+	a3ui32 targetClipIndex;
+
+	a3_ClipTransitionBehavior transition;
+
+	a3f32 cachedOverstep;
+};
+
 // description of single clip (Scott Dagen)
 // metaphor: timeline
 struct a3_Clip
@@ -146,6 +158,8 @@ struct a3_Clip
 	//indices of the first and last keyframes
 	a3ui32 firstKeyframeIndex, lastKeyframeIndex;
 
+	a3_ClipTransition forwardTransition, reverseTransition;
+
 	const a3_KeyframePool* keyframes;
 };
 
@@ -157,18 +171,6 @@ struct a3_ClipPool
 
 	// number of clips
 	a3ui32 count;
-};
-
-struct a3_ClipTransition
-{
-	//null = pause
-	a3_ClipPool* targetClipPool;
-
-	a3ui32 targetClipIndex;
-
-	a3_ClipTransitionBehavior transition;
-
-	a3f32 cachedOverstep;
 };
 
 
