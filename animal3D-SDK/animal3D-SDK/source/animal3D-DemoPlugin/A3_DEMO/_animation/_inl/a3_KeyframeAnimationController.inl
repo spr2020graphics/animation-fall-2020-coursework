@@ -146,6 +146,20 @@ inline a3i32 a3clipControllerGetKeyframeFromIndex(a3_ClipController* clipCtrl, c
 	}
 }
 
+inline a3i32 a3clipControllerGetClipFromIndex(a3_ClipController* clipCtrl, const a3ui32 index, a3_Clip* clip_out)
+{
+	if (index >= 0 && index < clipCtrl->clipPool->count)
+	{
+		*clip_out = clipCtrl->clipPool->clipArray[index];
+		return 1;
+	}
+	else
+	{
+		// invalid index
+		return -1;
+	}
+}
+
 
 //-----------------------------------------------------------------------------
 

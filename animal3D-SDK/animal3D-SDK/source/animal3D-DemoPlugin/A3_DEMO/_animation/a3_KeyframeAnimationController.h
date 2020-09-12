@@ -97,6 +97,9 @@ a3i32 a3clipControllerSetClip(a3_ClipController* clipCtrl, const a3_ClipPool* cl
 // get a specified keyframe from the current clip
 a3i32 a3clipControllerGetKeyframeFromIndex(a3_ClipController* clipCtrl, const a3ui32 index, a3_Keyframe* keyframe_out);
 
+// get a specified clip from the current clip pool
+a3i32 a3clipControllerGetClipFromIndex(a3_ClipController* clipCtrl, const a3ui32 index, a3_Clip* clip_out);
+
 // evaluate the current value at time
 a3i32 a3clipControllerEvaluate(a3_ClipController const* clipCtrl, a3_Sample* sample_out);
 
