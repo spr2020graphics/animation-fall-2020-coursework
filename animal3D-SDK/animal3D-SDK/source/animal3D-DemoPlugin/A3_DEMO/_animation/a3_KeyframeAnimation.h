@@ -45,6 +45,8 @@ typedef struct a3_Keyframe					a3_Keyframe;
 typedef struct a3_KeyframePool				a3_KeyframePool;
 typedef struct a3_Clip						a3_Clip;
 typedef struct a3_ClipPool					a3_ClipPool;
+typedef struct a3_ClipTransition			a3_ClipTransition;
+typedef enum a3_ClipTransitionBehavior		a3_ClipTransitionBehavior;
 #endif	// __cplusplus
 
 
@@ -54,6 +56,19 @@ typedef struct a3_ClipPool					a3_ClipPool;
 enum
 {
 	a3keyframeAnimation_nameLenMax = 32,
+};
+
+enum a3_ClipTransitionBehavior
+{
+	a3clipTransitionPause,
+	a3clipTransitionForward,
+	a3clipTransitionForwardPause, //pause at start of first frame
+	a3clipTransitionReverse,
+	a3clipTransitionReversePause, //pause at "end" of last frame
+	a3clipTransitionForwardSkip, //play from second frame
+	a3clipTransitionForwardFrame, //play only first frame
+	a3clipTransitionReverseSkip, //play reverse from second-to-last
+	a3clipTransitionReverseFrame //play only last frame
 };
 
 
@@ -142,6 +157,15 @@ struct a3_ClipPool
 
 	// number of clips
 	a3ui32 count;
+};
+
+struct a3_ClipTransition
+{
+	//null = pause
+	a3_ClipPool* targetClipPool;
+	a3ui32 targetClipIndex;
+	ClipTransitionBehavior transition;
+	a3f32 cachedOverstep;
 };
 
 
