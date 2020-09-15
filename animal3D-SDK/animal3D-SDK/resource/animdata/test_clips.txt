@@ -1,5 +1,6 @@
 # This denotes a comment, any line beginning with this is ignored by the parser
-# @ denotes a new keyframe declaration, like Dan's clip examples
+# @ denotes a new clip declaration, like Dan's clip examples
+# $ denotes a new keyframe declaration
 
 # Clip duration should be able to be overridden by keyframe durations
 
@@ -19,3 +20,20 @@
 
 @ clip1 false 0 3 > <
 @ clip2 false 4 8 >| <|
+
+
+
+# $ keyframe_dur keyframe_index keyframe_value
+
+# First clip
+$ 0.5 0 0
+$ 1.0 1 1
+$ 1.5 2 2
+$ 2.0 3 3
+
+# Second Clip
+$ 0.5 4 0
+$ 1.0 5 2
+$ 1.5 6 1
+$ 2.0 7 3
+$ 0.75 8 0
