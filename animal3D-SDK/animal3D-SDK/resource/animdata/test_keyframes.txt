@@ -1,13 +1,18 @@
 # This denotes a comment, any line beginning with this is ignored by the parser
 # @ denotes a new keyframe declaration, like Dan's clip examples
 
-# We could do a shortcut using <x, y, z> to create a keyframe for each coordinate channel, since 1 KF only has 1 value
-# We could also do "x= " or "y= " or "z= " to determine what the value means
-# But in the end, we choose what the value corresponds to when we evaluate the clip's current state
 
 # @ keyframe_dur keyframe_index keyframe_value
 
-@ 0.5 0 x=0
-@ 1.0 1 x=2
-@ 1.5 2 x=5
-@ 2.0 3 x=1
+# First clip
+@ 0.5 0 0
+@ 1.0 1 1
+@ 1.5 2 2
+@ 2.0 3 3
+
+# Second Clip
+@ 0.5 4 0
+@ 1.0 5 2
+@ 1.5 6 1
+@ 2.0 7 3
+@ 0.75 8 0
