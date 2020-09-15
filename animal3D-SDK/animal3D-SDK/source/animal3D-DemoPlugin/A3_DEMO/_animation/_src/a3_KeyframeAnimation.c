@@ -155,30 +155,4 @@ a3i32 a3clipGetIndexInPool(const a3_ClipPool* clipPool, const a3byte clipName[a3
 	return -1;
 }
 
-a3i32 a3clipParse(a3_DemoState* state, a3byte const* data)
-{
-	return 0;
-}
-
-a3i32 a3keyframeParse(a3_DemoState* state, a3byte const* data)
-{
-	return 0;
-}
-
-/// <summary>
-/// Using a void* to avoid a circular include in a3_KeyframeAnimation.h, though we should move it elsewhere (a3_KeyframeParser.h?)
-/// </summary>
-/// <param name="state"></param>
-/// <param name="data"></param>
-/// <returns></returns>
-a3i32 a3animationParseFile(void* state, a3byte const* data)
-{
-	a3_DemoState* dState = (a3_DemoState*)state;
-	int clipPoolSize = 0;
-	dState->clipCount = clipPoolSize;
-	a3clipPoolCreate(dState->clipPool, dState->clipCount);
-	return 0;
-}
-
-
 //-----------------------------------------------------------------------------
