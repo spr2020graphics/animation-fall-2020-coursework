@@ -772,7 +772,7 @@ void a3demo_loadClipData(a3_DemoState* demoState)
 {
 	//the following code is derived from our material parser from Graphics 2 because it's a good skeleton for file loading
 	a3_Stream fs[1] = { 0 };
-	a3ui32 fileLength = a3streamLoadContents(&fs[0], "../../../../resource/materials/testmat.txt"); //change to file name
+	a3ui32 fileLength = a3streamLoadContents(&fs[0], "../../../../resource/animdata/test_keyframes.txt"); //change to file name
 	printf("%d", fileLength);
 	a3byte fromFile = fileLength > 0;
 	//lab 1
