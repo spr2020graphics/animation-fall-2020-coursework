@@ -17,7 +17,7 @@
 /*
 	animal3D SDK: Minimal 3D Animation Framework
 	By Daniel S. Buckstein
-	
+
 	a3_DemoState_loading.c/.cpp
 	Demo state function implementations.
 
@@ -104,7 +104,7 @@ a3real4x4r a3demo_setAtlasTransform_internal(a3real4x4p m_out,
 
 
 // initialize dummy drawable
-inline void a3demo_initDummyDrawable_internal(a3_DemoState *demoState)
+inline void a3demo_initDummyDrawable_internal(a3_DemoState* demoState)
 {
 	// dummy drawable for point drawing: copy any of the existing ones, 
 	//	set vertex count to 1 and primitive to points (0x0000)
@@ -151,12 +151,12 @@ inline void a3demo_initDummyDrawable_internal(a3_DemoState *demoState)
 // LOADING
 
 // utility to load geometry
-void a3demo_loadGeometry(a3_DemoState *demoState)
+void a3demo_loadGeometry(a3_DemoState* demoState)
 {
 	// tmp descriptor for loaded model
 	typedef struct a3_TAG_DEMOSTATELOADEDMODEL {
-		const a3byte *filePath;
-		const a3real *transform;
+		const a3byte* filePath;
+		const a3real* transform;
 		a3_ModelLoaderFlag flag;
 	} a3_DemoStateLoadedModel;
 
@@ -169,18 +169,18 @@ void a3demo_loadGeometry(a3_DemoState *demoState)
 	};
 
 	// pointer to shared vbo/ibo
-	a3_VertexBuffer *vbo_ibo;
-	a3_VertexArrayDescriptor *vao;
-	a3_VertexDrawable *currentDrawable;
+	a3_VertexBuffer* vbo_ibo;
+	a3_VertexArrayDescriptor* vao;
+	a3_VertexDrawable* currentDrawable;
 	a3ui32 sharedVertexStorage = 0, sharedIndexStorage = 0;
 	a3ui32 numVerts = 0;
 	a3ui32 i;
-//	a3ui32 j;
+	//	a3ui32 j;
 
 
-	// file streaming (if requested)
+		// file streaming (if requested)
 	a3_FileStream fileStream[1] = { 0 };
-	const a3byte *const geometryStream = "./data/geom_data_gpro_coursebase.dat";
+	const a3byte* const geometryStream = "./data/geom_data_gpro_coursebase.dat";
 
 	// geometry data
 	a3_GeometryData displayShapesData[2] = { 0 };
@@ -192,7 +192,7 @@ void a3demo_loadGeometry(a3_DemoState *demoState)
 
 	// common index format
 	a3_IndexFormatDescriptor sceneCommonIndexFormat[1] = { 0 };
-	a3ui32 bufferOffset, *const bufferOffsetPtr = &bufferOffset;
+	a3ui32 bufferOffset, * const bufferOffsetPtr = &bufferOffset;
 
 
 	// procedural scene objects
@@ -331,10 +331,10 @@ void a3demo_loadGeometry(a3_DemoState *demoState)
 	sharedVertexStorage += a3geometryGenerateDrawable(currentDrawable, proceduralShapesData + 4, vao, vbo_ibo, sceneCommonIndexFormat, 0, 0);
 	currentDrawable = demoState->draw_unit_torus;
 	sharedVertexStorage += a3geometryGenerateDrawable(currentDrawable, proceduralShapesData + 5, vao, vbo_ibo, sceneCommonIndexFormat, 0, 0);
-	
+
 	currentDrawable = demoState->draw_teapot;
 	sharedVertexStorage += a3geometryGenerateDrawable(currentDrawable, loadedModelsData + 0, vao, vbo_ibo, sceneCommonIndexFormat, 0, 0);
-	
+
 
 	// release data when done
 	for (i = 0; i < displayShapesCount; ++i)
@@ -351,7 +351,7 @@ void a3demo_loadGeometry(a3_DemoState *demoState)
 
 
 // utility to load shaders
-void a3demo_loadShaders(a3_DemoState *demoState)
+void a3demo_loadShaders(a3_DemoState* demoState)
 {
 	// structure to help with shader management
 	typedef struct a3_TAG_DEMOSTATESHADER {
@@ -364,7 +364,7 @@ void a3demo_loadShaders(a3_DemoState *demoState)
 	} a3_DemoStateShader;
 
 	// direct to demo programs
-	a3_DemoStateShaderProgram *currentDemoProg;
+	a3_DemoStateShaderProgram* currentDemoProg;
 	a3i32 flag;
 	a3ui32 i;
 
@@ -399,8 +399,8 @@ void a3demo_loadShaders(a3_DemoState *demoState)
 			a3_DemoStateShader
 				passTexcoord_transform_vs[1],
 				passTangentBasis_transform_vs[1],
-			//	passTangentBasis_morph5_transform_vs[1],
-			//	passTangentBasis_skin_transform_vs[1],
+				//	passTangentBasis_morph5_transform_vs[1],
+				//	passTangentBasis_skin_transform_vs[1],
 				passTexcoord_transform_instanced_vs[1],
 				passTangentBasis_transform_instanced_vs[1];//,
 			//	passTangentBasis_morph5_transform_instanced_vs[1],
@@ -437,29 +437,29 @@ void a3demo_loadShaders(a3_DemoState *demoState)
 			// 00-common
 			{ { { 0 },	"shdr-vs:pass-tex-trans",			a3shader_vertex  ,	1,{ A3_DEMO_VS"00-common/e/passTexcoord_transform_vs4x.glsl" } } },
 			{ { { 0 },	"shdr-vs:pass-tb-trans",			a3shader_vertex  ,	1,{ A3_DEMO_VS"00-common/e/passTangentBasis_transform_vs4x.glsl" } } },
-		//	{ { { 0 },	"shdr-vs:pass-tb-morph5-t",			a3shader_vertex  ,	1,{ A3_DEMO_VS"00-common/e/passTangentBasis_morph5_transform_vs4x.glsl" } } },
-		//	{ { { 0 },	"shdr-vs:pass-tb-skin-t",			a3shader_vertex  ,	1,{ A3_DEMO_VS"00-common/e/passTangentBasis_skin_transform_vs4x.glsl" } } },
-			{ { { 0 },	"shdr-vs:pass-tex-trans-inst",		a3shader_vertex  ,	1,{ A3_DEMO_VS"00-common/e/passTexcoord_transform_instanced_vs4x.glsl" } } },
-			{ { { 0 },	"shdr-vs:pass-tbn-trans-inst",		a3shader_vertex  ,	1,{ A3_DEMO_VS"00-common/e/passTangentBasis_transform_instanced_vs4x.glsl" } } },
-		//	{ { { 0 },	"shdr-vs:pass-tb-morph5-t-inst",	a3shader_vertex  ,	1,{ A3_DEMO_VS"00-common/e/passTangentBasis_morph5_transform_instanced_vs4x.glsl" } } },
-		//	{ { { 0 },	"shdr-vs:pass-tb-skin-t-inst",		a3shader_vertex  ,	1,{ A3_DEMO_VS"00-common/e/passTangentBasis_skin_transform_instanced_vs4x.glsl" } } },
+			//	{ { { 0 },	"shdr-vs:pass-tb-morph5-t",			a3shader_vertex  ,	1,{ A3_DEMO_VS"00-common/e/passTangentBasis_morph5_transform_vs4x.glsl" } } },
+			//	{ { { 0 },	"shdr-vs:pass-tb-skin-t",			a3shader_vertex  ,	1,{ A3_DEMO_VS"00-common/e/passTangentBasis_skin_transform_vs4x.glsl" } } },
+				{ { { 0 },	"shdr-vs:pass-tex-trans-inst",		a3shader_vertex  ,	1,{ A3_DEMO_VS"00-common/e/passTexcoord_transform_instanced_vs4x.glsl" } } },
+				{ { { 0 },	"shdr-vs:pass-tbn-trans-inst",		a3shader_vertex  ,	1,{ A3_DEMO_VS"00-common/e/passTangentBasis_transform_instanced_vs4x.glsl" } } },
+				//	{ { { 0 },	"shdr-vs:pass-tb-morph5-t-inst",	a3shader_vertex  ,	1,{ A3_DEMO_VS"00-common/e/passTangentBasis_morph5_transform_instanced_vs4x.glsl" } } },
+				//	{ { { 0 },	"shdr-vs:pass-tb-skin-t-inst",		a3shader_vertex  ,	1,{ A3_DEMO_VS"00-common/e/passTangentBasis_skin_transform_instanced_vs4x.glsl" } } },
 
-			// gs
-			// 00-common
-			{ { { 0 },	"shdr-gs:draw-tb",					a3shader_geometry,	2,{ A3_DEMO_GS"00-common/e/drawTangentBasis_gs4x.glsl",
-																					A3_DEMO_GS"00-common/e/utilCommon_gs4x.glsl",} } },
+					// gs
+					// 00-common
+					{ { { 0 },	"shdr-gs:draw-tb",					a3shader_geometry,	2,{ A3_DEMO_GS"00-common/e/drawTangentBasis_gs4x.glsl",
+																							A3_DEMO_GS"00-common/e/utilCommon_gs4x.glsl",} } },
 
-			// fs
-			// base
-			{ { { 0 },	"shdr-fs:draw-col-unif",			a3shader_fragment,	1,{ A3_DEMO_FS"e/drawColorUnif_fs4x.glsl" } } },
-			{ { { 0 },	"shdr-fs:draw-col-attr",			a3shader_fragment,	1,{ A3_DEMO_FS"e/drawColorAttrib_fs4x.glsl" } } },
-			// 00-common
-			{ { { 0 },	"shdr-fs:draw-tex",					a3shader_fragment,	1,{ A3_DEMO_FS"00-common/e/drawTexture_fs4x.glsl" } } },
-		//	{ { { 0 },	"shdr-fs:draw-Lambert",				a3shader_fragment,	1,{ A3_DEMO_FS"00-common/e/drawLambert_fs4x.glsl" } } },
-		//	{ { { 0 },	"shdr-fs:draw-Phong",				a3shader_fragment,	1,{ A3_DEMO_FS"00-common/e/drawPhong_fs4x.glsl" } } },
-		}
+																							// fs
+																							// base
+																							{ { { 0 },	"shdr-fs:draw-col-unif",			a3shader_fragment,	1,{ A3_DEMO_FS"e/drawColorUnif_fs4x.glsl" } } },
+																							{ { { 0 },	"shdr-fs:draw-col-attr",			a3shader_fragment,	1,{ A3_DEMO_FS"e/drawColorAttrib_fs4x.glsl" } } },
+																							// 00-common
+																							{ { { 0 },	"shdr-fs:draw-tex",					a3shader_fragment,	1,{ A3_DEMO_FS"00-common/e/drawTexture_fs4x.glsl" } } },
+																							//	{ { { 0 },	"shdr-fs:draw-Lambert",				a3shader_fragment,	1,{ A3_DEMO_FS"00-common/e/drawLambert_fs4x.glsl" } } },
+																							//	{ { { 0 },	"shdr-fs:draw-Phong",				a3shader_fragment,	1,{ A3_DEMO_FS"00-common/e/drawPhong_fs4x.glsl" } } },
+																							}
 	};
-	a3_DemoStateShader *const shaderListPtr = (a3_DemoStateShader *)(&shaderList), *shaderPtr;
+	a3_DemoStateShader* const shaderListPtr = (a3_DemoStateShader*)(&shaderList), * shaderPtr;
 	const a3ui32 numUniqueShaders = sizeof(shaderList) / sizeof(a3_DemoStateShader);
 
 
@@ -632,7 +632,7 @@ void a3demo_loadShaders(a3_DemoState *demoState)
 
 // utility to load textures
 void a3demo_loadTextures(a3_DemoState* demoState)
-{	
+{
 	// indexing
 	a3_Texture* tex;
 	a3ui32 i;
@@ -761,7 +761,7 @@ void a3demo_loadFramebuffers(a3_DemoState* demoState)
 //-----------------------------------------------------------------------------
 
 // internal utility for refreshing drawable
-inline void a3_refreshDrawable_internal(a3_VertexDrawable *drawable, a3_VertexArrayDescriptor *vertexArray, a3_IndexBuffer *indexBuffer)
+inline void a3_refreshDrawable_internal(a3_VertexDrawable* drawable, a3_VertexArrayDescriptor* vertexArray, a3_IndexBuffer* indexBuffer)
 {
 	drawable->vertexArray = vertexArray;
 	if (drawable->indexType)
@@ -770,103 +770,117 @@ inline void a3_refreshDrawable_internal(a3_VertexDrawable *drawable, a3_VertexAr
 
 void a3demo_loadClipData(a3_DemoState* demoState)
 {
-	//initialize basic data
-	demoState->controllerIndex = 0;
-	demoState->keyframeCount = 32;
-	demoState->clipCount = 8;
-	demoState->controllerCount = 4;
-	demoState->globalPlaybackDir = 0;
-	demoState->globalSpeedMod = 1.0f;
-
-	//create keyframe pool and keyframes. The complex for loop is to have a more varied pattern of keyframe values
-	a3keyframePoolCreate(demoState->keyPool, demoState->keyframeCount);
-	for (a3ui8 i = 0; i < demoState->keyframeCount; i++)
+	//the following code is derived from our material parser from Graphics 2 because it's a good skeleton for file loading
+	a3_Stream fs[1] = { 0 };
+	a3ui32 fileLength = a3streamLoadContents(&fs[0], "../../../../resource/materials/testmat.txt"); //change to file name
+	printf("%d", fileLength);
+	a3byte fromFile = fileLength > 0;
+	//lab 1
+	if (!fromFile)
 	{
-		a3_Sample* samp = malloc(sizeof(a3_Sample));
-		a3real val = 0; //creates keyframes in a 0,2,1,3,2,4,3,5,4,6,5,7 pattern (+2, -1)
-		if (i != 0)
+		//initialize basic data
+		demoState->controllerIndex = 0;
+		demoState->keyframeCount = 32;
+		demoState->clipCount = 8;
+		demoState->controllerCount = 4;
+		demoState->globalPlaybackDir = 0;
+		demoState->globalSpeedMod = 1.0f;
+
+		//create keyframe pool and keyframes. The complex for loop is to have a more varied pattern of keyframe values
+		a3keyframePoolCreate(demoState->keyPool, demoState->keyframeCount);
+		for (a3ui8 i = 0; i < demoState->keyframeCount; i++)
 		{
-			if (i % 2 == 1)
+			a3_Sample* samp = malloc(sizeof(a3_Sample));
+			a3real val = 0; //creates keyframes in a 0,2,1,3,2,4,3,5,4,6,5,7 pattern (+2, -1)
+			if (i != 0)
 			{
-				val = demoState->keyPool->keyframeArray[i-1].sample.value + 2;
-			}
-			else
-			{
-				val = demoState->keyPool->keyframeArray[i-1].sample.value - 1;
-			}
+				if (i % 2 == 1)
+				{
+					val = demoState->keyPool->keyframeArray[i - 1].sample.value + 2;
+				}
+				else
+				{
+					val = demoState->keyPool->keyframeArray[i - 1].sample.value - 1;
+				}
 
+			}
+			samp->sample.x = 0;	// Need to assign this correctly
+			samp->sample.y = val;
+
+			a3keyframeInit(&demoState->keyPool->keyframeArray[i], (float)((rand() % 4) + 1), samp);
 		}
-		samp->sample.x = 0;	// Need to assign this correctly
-		samp->sample.y = val;
 
-		a3keyframeInit(&demoState->keyPool->keyframeArray[i], (float)((rand() % 4) + 1), samp);
-	}
+		a3clipPoolCreate(demoState->clipPool, demoState->clipCount);
 
-	a3clipPoolCreate(demoState->clipPool, demoState->clipCount);
-
-	/**
-	creating names dynamically was posing a problem and this system seems to work.
-	any time we tried to use the string "Clip" and appending a number would result in the string
-	not being cleared after the next iteration (probably a wayward compiler optimization). This led to names like
-	"Clip0", "Clip01", "Clip012", "Clip0123". It became less of a headache to assemble the names character by character.
-	*/
-	a3byte** clipNames = malloc(demoState->clipCount * sizeof(a3byte*));
-	a3byte** ctrlNames = malloc(demoState->controllerCount * sizeof(a3byte*));
-	for (a3ui8 i = 0; i < demoState->clipCount; i++)
-	{
 		/**
-		 4 characters for "Clip" (using a string caused issues, so I'm doing it character-by character)
-		 and then enough characters to fit the string representation of demoState->clipCount. A number's digit count can be expressed as floor(log10(x)) + 1.
+		creating names dynamically was posing a problem and this system seems to work.
+		any time we tried to use the string "Clip" and appending a number would result in the string
+		not being cleared after the next iteration (probably a wayward compiler optimization). This led to names like
+		"Clip0", "Clip01", "Clip012", "Clip0123". It became less of a headache to assemble the names character by character.
 		*/
-		int charlen = 4 + (int)floor(log10((int)demoState->clipCount)) + 1;
-		if (clipNames != NULL) //intellisense wanted this. in case there is insufficient memory
+		a3byte** clipNames = malloc(demoState->clipCount * sizeof(a3byte*));
+		a3byte** ctrlNames = malloc(demoState->controllerCount * sizeof(a3byte*));
+		for (a3ui8 i = 0; i < demoState->clipCount; i++)
 		{
-			clipNames[i] = malloc(charlen * sizeof(a3byte));
-			if (clipNames[i] != NULL)
+			/**
+			 4 characters for "Clip" (using a string caused issues, so I'm doing it character-by character)
+			 and then enough characters to fit the string representation of demoState->clipCount. A number's digit count can be expressed as floor(log10(x)) + 1.
+			*/
+			int charlen = 4 + (int)floor(log10((int)demoState->clipCount)) + 1;
+			if (clipNames != NULL) //intellisense wanted this. in case there is insufficient memory
 			{
-				clipNames[i][0] = 'C';
-				clipNames[i][1] = 'l'; //there's an intellisense warning on this line. There is no reason for it.
-				clipNames[i][2] = 'i';
-				clipNames[i][3] = 'p';
-				_itoa(i, clipNames[i] + 4, 10);
+				clipNames[i] = malloc(charlen * sizeof(a3byte));
+				if (clipNames[i] != NULL)
+				{
+					clipNames[i][0] = 'C';
+					clipNames[i][1] = 'l'; //there's an intellisense warning on this line. There is no reason for it.
+					clipNames[i][2] = 'i';
+					clipNames[i][3] = 'p';
+					_itoa(i, clipNames[i] + 4, 10);
+				}
+			}
+		}
+
+		//the same comment from above applies here too
+		for (a3ui8 i = 0; i < demoState->controllerCount; i++)
+		{
+			int charlen = 4 + (int)floor(log10((int)demoState->controllerCount)) + 1;
+			if (ctrlNames != NULL) //intellisense wanted this in case there is insufficient memory
+			{
+				ctrlNames[i] = malloc(charlen * sizeof(a3byte));
+				if (ctrlNames[i] != NULL)
+				{
+					ctrlNames[i][0] = 'C';
+					ctrlNames[i][1] = 't'; //there's an intellisense warning on this line. There is no reason for it.
+					ctrlNames[i][2] = 'r';
+					ctrlNames[i][3] = 'l';
+					_itoa(i, ctrlNames[i] + 4, 10);
+				}
+			}
+		}
+
+		//initialize clips
+		for (a3ui8 clip = 0; clip < demoState->clipCount; clip++)
+		{
+			if (clipNames != NULL && clipNames[clip] != NULL)
+			{
+				a3clipInit(demoState->clipPool->clipArray + clip, clipNames[clip], demoState->keyPool, clip * demoState->keyframeCount / demoState->clipCount, (clip + 1) * demoState->keyframeCount / demoState->clipCount - 1);
+				a3clipCalculateDuration(demoState->clipPool->clipArray + clip);
+			}
+		}
+		//initialize controllers
+		for (a3ui8 controller = 0; controller < demoState->controllerCount; controller++)
+		{
+			if (ctrlNames != NULL && ctrlNames[controller] != NULL)
+			{
+				a3clipControllerInit(demoState->controllers + controller, ctrlNames[controller], demoState->clipPool, controller);
 			}
 		}
 	}
-
-	//the same comment from above applies here too
-	for (a3ui8 i = 0; i < demoState->controllerCount; i++)
+	else
 	{
-		int charlen = 4 + (int)floor(log10((int)demoState->controllerCount)) + 1;
-		if (ctrlNames != NULL) //intellisense wanted this in case there is insufficient memory
-		{
-			ctrlNames[i] = malloc(charlen * sizeof(a3byte));
-			if (ctrlNames[i] != NULL)
-			{
-				ctrlNames[i][0] = 'C';
-				ctrlNames[i][1] = 't'; //there's an intellisense warning on this line. There is no reason for it.
-				ctrlNames[i][2] = 'r';
-				ctrlNames[i][3] = 'l';
-				_itoa(i, ctrlNames[i] + 4, 10);
-			}
-		}
-	}
-
-	//initialize clips
-	for (a3ui8 clip = 0; clip < demoState->clipCount; clip++)
-	{
-		if (clipNames != NULL && clipNames[clip] != NULL)
-		{
-			a3clipInit(demoState->clipPool->clipArray + clip, clipNames[clip], demoState->keyPool, clip * demoState->keyframeCount / demoState->clipCount, (clip + 1) * demoState->keyframeCount / demoState->clipCount - 1);
-			a3clipCalculateDuration(demoState->clipPool->clipArray + clip);
-		}
-	}
-	//initialize controllers
-	for (a3ui8 controller = 0; controller < demoState->controllerCount; controller++)
-	{
-		if (ctrlNames != NULL && ctrlNames[controller] != NULL)
-		{
-			a3clipControllerInit(demoState->controllers + controller, ctrlNames[controller], demoState->clipPool, controller);
-		}
+		//parser
+		a3streamObjectRead(&fs[0], demoState, (a3_StreamReadFunc)a3animationParseFile);
 	}
 }
 
