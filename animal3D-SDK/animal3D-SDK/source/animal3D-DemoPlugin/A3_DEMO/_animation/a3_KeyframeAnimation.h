@@ -190,9 +190,6 @@ a3i32 a3clipCalculateDuration(a3_Clip* clip);
 // calculate keyframes' durations by distributing clip's duration (Scott Dagen)
 a3i32 a3clipDistributeDuration(a3_Clip* clip, const a3real newClipDuration);
 
-a3i32 a3animationParseFile(void* demoState, a3byte const* data);
-
-
 //-----------------------------------------------------------------------------
 
 

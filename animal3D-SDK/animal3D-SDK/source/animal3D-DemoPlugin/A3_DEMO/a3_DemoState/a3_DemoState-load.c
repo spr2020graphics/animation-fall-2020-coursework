@@ -79,6 +79,7 @@
 //-----------------------------------------------------------------------------
 
 #include "../a3_DemoState.h"
+#include "A3_DEMO/_animation/a3_KeyframeAnimationIO.h"
 
 #include <stdio.h>
 #include <stdlib.h>
