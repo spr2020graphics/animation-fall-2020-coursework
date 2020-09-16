@@ -2,9 +2,52 @@
 #include <string.h>
 #include <stdio.h>
 
+
 a3i32 a3clipParse(a3_DemoState* state, a3byte const* data)
 {
+	//@ clip_name use_clip_duration first_frame last_frame forward_trans forward_trans_dest reverse_trans reverse_trans_dest clip_duration
+	//char clipName[a3keyframeAnimation_nameLenMax];
+	//char forwardTransClipName[a3keyframeAnimation_nameLenMax];
+	//char reverseTransClipName[a3keyframeAnimation_nameLenMax];
+	a3boolean useClipDuration = false;
+	a3ui16 firstFrame = 0;
+	a3ui16 lastFrame = 0;
+	//a3_ClipTransition forwardTrans, reverseTrans;
+	a3real clipDuration = 0.0f;
 
+	int lineIndex = 0;
+	int characterIndex = -1;
+	char* token = strtok((char*)data, " ");
+	char* temp = strchr(token, ' ');	//https://stackoverflow.com/questions/3217629/how-do-i-find-the-index-of-a-character-within-a-string-in-c
+
+	characterIndex = (int)(temp - token);
+
+	while (token != NULL)
+	{
+		switch (lineIndex)
+		{
+		case 0:
+			// Assign clip name
+			
+			break;
+		case 1:
+			break;
+		case 2:
+			break;
+		case 3:
+			break;
+		case 4:
+			break;
+		case 5:
+			break;
+		case 6:
+			break;
+		case 7:
+			break;
+		default:
+			break;
+		}
+	}
 
 	return 0;
 }
@@ -69,7 +112,7 @@ a3i32 a3animationParseFile(a3_DemoState* state, a3byte const* data)
 			break;
 		}
 
-		token = strtok(NULL, "\n");
+		token = strtok((char*)data + strlen(token) + 1, "\n");
 	}
 
 	return 0;

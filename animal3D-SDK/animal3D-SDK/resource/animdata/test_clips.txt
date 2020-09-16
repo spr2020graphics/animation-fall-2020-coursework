@@ -18,8 +18,8 @@
 
 # @ clip_name use_clip_duration first_frame last_frame forward_trans reverse_trans clip_duration
 
-@ clip1 false 0 3 > <
-@ clip2 false 4 8 >| <|
+@ clip1 false 0 3 > clip2 < clip2
+@ clip2 false 4 8 >| clip1 <| clip1
 
 
 
