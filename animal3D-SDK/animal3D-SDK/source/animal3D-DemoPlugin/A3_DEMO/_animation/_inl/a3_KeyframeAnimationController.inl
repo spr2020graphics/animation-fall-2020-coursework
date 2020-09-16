@@ -30,6 +30,8 @@
 #ifndef __ANIMAL3D_KEYFRAMEANIMATIONCONTROLLER_INL
 #define __ANIMAL3D_KEYFRAMEANIMATIONCONTROLLER_INL
 
+#include "..\a3_KeyframeAnimation.h"
+
 //-----------------------------------------------------------------------------
 
 // update clip controller
@@ -80,7 +82,7 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 			case a3clipTransitionForward:	// Keep playing from beginning, add overstep
 
 				clipCtrl->clipPool = forwardTrans.targetClipPool;
-				clipCtrl->clipIndex = forwardTrans.targetClipIndex;
+				clipCtrl->clipIndex = a3clipGetIndexInPool(forwardTrans.targetClipPool, forwardTrans.targetClipName);
 				clipCtrl->keyframeIndex = clipCtrl->clipPool->clipArray[clipCtrl->clipIndex].firstKeyframeIndex;
 				clipCtrl->keyframeTime = overstep;
 				clipCtrl->clipTime = overstep;
@@ -88,6 +90,8 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 				break;
 			case a3clipTransitionForwardPause:	  // Pause at start of first frame
 
+				clipCtrl->clipPool = forwardTrans.targetClipPool;
+				clipCtrl->clipIndex = a3clipGetIndexInPool(forwardTrans.targetClipPool, forwardTrans.targetClipName);
 				clipCtrl->keyframeIndex = clipCtrl->clipPool->clipArray[clipCtrl->clipIndex].firstKeyframeIndex;
 				clipCtrl->keyframeTime = 0.0f;
 				clipCtrl->clipTime = 0.0f;
@@ -96,8 +100,7 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 			case a3clipTransitionForwardSkip:	// Play from start of second frame
 			{
 				clipCtrl->clipPool = forwardTrans.targetClipPool;
-				clipCtrl->clipIndex = forwardTrans.targetClipIndex;
-
+				clipCtrl->clipIndex = a3clipGetIndexInPool(forwardTrans.targetClipPool, forwardTrans.targetClipName);
 				a3_Keyframe firstFrame, secondFrame;	// This is a temporary variable, doesn't need to be a pointer
 				a3ui32 secondIndex = clipCtrl->clipPool->clipArray[clipCtrl->clipIndex].firstKeyframeIndex + 1;
 				a3clipControllerGetKeyframeFromIndex(clipCtrl, secondIndex, &secondFrame);
@@ -155,7 +158,7 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 			case a3clipTransitionReverse:
 			{
 				clipCtrl->clipPool = revTransition->targetClipPool;
-				clipCtrl->clipIndex = revTransition->targetClipIndex;
+				clipCtrl->clipIndex = a3clipGetIndexInPool(revTransition->targetClipPool, revTransition->targetClipName);
 				clipCtrl->keyframeIndex = clipCtrl->clipPool->clipArray[clipCtrl->clipIndex].lastKeyframeIndex;
 				a3_Keyframe frame;    // This is a temporary variable, doesn't need to be a pointer
 				a3clipControllerGetKeyframeFromIndex(clipCtrl, clipCtrl->keyframeIndex, &frame);
@@ -167,7 +170,7 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 			case a3clipTransitionReversePause:
 			{
 				clipCtrl->clipPool = revTransition->targetClipPool;
-				clipCtrl->clipIndex = revTransition->targetClipIndex;
+				clipCtrl->clipIndex = a3clipGetIndexInPool(revTransition->targetClipPool, revTransition->targetClipName);
 				clipCtrl->keyframeIndex = clipCtrl->clipPool->clipArray[clipCtrl->clipIndex].lastKeyframeIndex;
 				a3_Keyframe frame;    // This is a temporary variable, doesn't need to be a pointer
 				a3clipControllerGetKeyframeFromIndex(clipCtrl, clipCtrl->keyframeIndex, &frame);
@@ -179,7 +182,7 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 			case a3clipTransitionReverseSkip:
 			{
 				clipCtrl->clipPool = revTransition->targetClipPool;
-				clipCtrl->clipIndex = revTransition->targetClipIndex;
+				clipCtrl->clipIndex = a3clipGetIndexInPool(revTransition->targetClipPool, revTransition->targetClipName);
 				clipCtrl->keyframeIndex = clipCtrl->clipPool->clipArray[clipCtrl->clipIndex].lastKeyframeIndex - 1;
 				a3_Keyframe frame;    // This is a temporary variable, doesn't need to be a pointer
 				a3clipControllerGetKeyframeFromIndex(clipCtrl, clipCtrl->keyframeIndex, &frame);

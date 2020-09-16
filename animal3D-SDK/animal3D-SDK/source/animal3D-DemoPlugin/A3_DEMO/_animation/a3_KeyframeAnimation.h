@@ -127,7 +127,7 @@ struct a3_ClipTransition
 	//null = pause
 	a3_ClipPool* targetClipPool;
 
-	a3ui32 targetClipIndex;
+	a3byte targetClipName[a3keyframeAnimation_nameLenMax];
 
 	a3_ClipTransitionBehavior transition;
 
