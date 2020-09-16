@@ -1,8 +1,11 @@
 #include "A3_DEMO/_animation/a3_KeyframeAnimationIO.h"
-
+#include <string.h>
+#include <stdio.h>
 
 a3i32 a3clipParse(a3_DemoState* state, a3byte const* data)
 {
+
+
 	return 0;
 }
 
@@ -27,6 +30,7 @@ a3i32 a3animationParseFile(a3_DemoState* state, a3byte const* data)
 	// Just a delimiter function, using it to pull out whole lines, since the material file is formatted in a certain way
 	token = strtok((char*)data, "\n");
 
+	// Counts the number of clips and keyframes so we can initialize pools
 	while (token != NULL)
 	{
 		switch (token[0])
@@ -42,9 +46,31 @@ a3i32 a3animationParseFile(a3_DemoState* state, a3byte const* data)
 		default:
 			break;
 		}
+
+		token = strtok(NULL, "\n");
 	}
 
 	state->clipCount = clipPoolSize;
+	state->keyframeCount = keyframePoolSize;
 	a3clipPoolCreate(state->clipPool, state->clipCount);
+
+	token = strtok((char*)data, "\n");
+	while (token != NULL)
+	{
+		switch (token[0])
+		{
+		case '@':
+			a3clipParse(state, token);
+			break;
+		case '$':
+			a3keyframeParse(state, token);
+			break;
+		default:
+			break;
+		}
+
+		token = strtok(NULL, "\n");
+	}
+
 	return 0;
 }
