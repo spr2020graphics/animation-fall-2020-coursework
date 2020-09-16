@@ -24,7 +24,7 @@ a3i32 a3clipParse(a3_DemoState* state, a3byte const* data)
 	int lineIndex = 0;
 	char* token = strtok((char*)parseDataCopy, " ");
 
-	while (token != NULL && lineIndex < 9)
+	while (token != NULL && lineIndex <= 9)
 	{
 		switch (lineIndex)
 		{
@@ -141,6 +141,39 @@ a3i32 a3clipParse(a3_DemoState* state, a3byte const* data)
 
 a3i32 a3keyframeParse(a3_DemoState* state, a3byte const* data)
 {
+	//create a copy of the passed-in data to avoid modifying it (strtok has side effects)
+	char* parseDataCopy = calloc(strlen((char*)data), sizeof(char));
+	memcpy(parseDataCopy, (char*)data, strlen((char*)data));
+	a3ui32 index;
+	a3f32 duration;
+	a3_Sample sample;
+	int lineIndex = 0;
+	char* token = strtok((char*)parseDataCopy, " ");
+
+	while (token != NULL && lineIndex <= 3)
+	{
+		switch (lineIndex)
+		{
+		case 1:
+			// Assign keyframe duration
+			duration = (float)atof(token);
+			break;
+		case 2:
+			index = atoi(token);
+			break;
+		case 3:
+			sample.value = (float)atof(token);
+			break;
+		default:
+			break;
+		}
+
+		token = strtok(token + strlen(token) + 1, " ");
+		lineIndex++;
+	}
+
+	a3keyframeInit(state->keyPool->keyframeArray + index, duration, &sample);
+
 	return 0;
 }
 
@@ -183,6 +216,7 @@ a3i32 a3animationParseFile(a3_DemoState* state, a3byte const* data)
 	state->clipCount = clipPoolSize;
 	state->keyframeCount = keyframePoolSize;
 	a3clipPoolCreate(state->clipPool, state->clipCount);
+	a3keyframePoolCreate(state->keyPool, state->keyframeCount);
 	token = strtok((char*)data, "\n");
 	while (token != NULL)
 	{
