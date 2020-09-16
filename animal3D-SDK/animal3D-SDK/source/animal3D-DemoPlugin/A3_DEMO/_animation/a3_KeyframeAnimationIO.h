@@ -1,3 +1,9 @@
+/*
+	Animation Framework Addons by Cameron Schneider and Scott Dagen
+	a3_KeyframeAnimationIO.h: loads animation data from a file
+*/
+
+
 #ifndef __ANIMAL3D_KEYFRAMEANIMATIONIO_H
 #define __ANIMAL3D_KEYFRAMEANIMATIONIO_H
 
