@@ -111,8 +111,7 @@ a3i32 a3animationParseFile(a3_DemoState* state, a3byte const* data)
 		default:
 			break;
 		}
-
-		token = strtok((char*)data + strlen(token) + 1, "\n");
+		token = strtok(token + strlen(token) + 1, "\n");
 	}
 
 	return 0;
