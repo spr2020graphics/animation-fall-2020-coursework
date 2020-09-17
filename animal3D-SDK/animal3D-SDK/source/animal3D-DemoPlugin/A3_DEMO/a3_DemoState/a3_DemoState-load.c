@@ -887,6 +887,8 @@ void a3demo_loadClipData(a3_DemoState* demoState)
 
 		demoState->waypointCount = 8;
 		demoState->controllerCount = 6;
+		demoState->globalPlaybackDir = 0;
+		demoState->globalSpeedMod = 1.0f;
 		demoState->waypoints = calloc(8, sizeof(a3vec3));
 		for (int i = 0; i < demoState->waypointCount; i++)
 		{
