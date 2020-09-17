@@ -24,6 +24,7 @@ a3i32 a3clipParse(a3_DemoState* state, a3byte const* data, const a3ui32 clipInde
 
 	while (token != NULL && lineIndex <= 9)
 	{
+		//this chops off the \r that appears after the last data entry in a line. It's unclear why it exists but this gets rid of it.
 		char* s = strchr(token, '\r');
 		if (s != NULL)
 		{
@@ -172,6 +173,7 @@ a3i32 a3keyframeParse(a3_DemoState* state, a3byte const* data)
 
 	while (token != NULL && lineIndex <= 3)
 	{
+		//this chops off the \r that appears after the last data entry in a line. It's unclear why it exists but this gets rid of it.
 		char* s = strchr(token, '\r');
 		if (s != NULL)
 		{
