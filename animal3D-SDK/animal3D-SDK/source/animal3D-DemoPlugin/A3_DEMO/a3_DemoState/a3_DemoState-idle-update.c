@@ -146,6 +146,10 @@ void a3demo_update(a3_DemoState *demoState, a3f64 const dt)
 	{
 		a3clipControllerUpdate(&demoState->controllers[i], (a3real)dt * demoState->globalPlaybackDir * demoState->globalSpeedMod);
 	}
+	a3_ClipController* ctrl = &demoState->controllers[0];
+	a3_Clip* clip = ctrl->clipPool->clipArray + ctrl->clipIndex;
+	a3real val = (clip->keyframes->keyframeArray + ctrl->keyframeIndex)->sample.value;
+	demoState->demoMode0_starter->object_scene[2].position = demoState->waypoints[(int)val];
 }
 
 

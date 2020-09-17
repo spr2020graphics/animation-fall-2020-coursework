@@ -85,6 +85,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include <corecrt_math_defines.h>
 
 //-----------------------------------------------------------------------------
 // GENERAL UTILITIES
@@ -882,6 +883,27 @@ void a3demo_loadClipData(a3_DemoState* demoState)
 	{
 		//parser
 		a3streamObjectRead(&fs[0], demoState, (a3_StreamReadFunc)a3animationParseFile);
+		a3f64 radAngles[] = { M_PI_4, M_PI_2, 3 * M_PI_4, M_PI, 5 * M_PI_4, 3 * M_PI_2 * 2, 7 * M_PI_4, 2 * M_PI };
+
+		demoState->waypointCount = 8;
+		demoState->controllerCount = 6;
+		demoState->waypoints = calloc(8, sizeof(a3vec3));
+		for (int i = 0; i < demoState->waypointCount; i++)
+		{
+			(demoState->waypoints + i)->x = (a3f32)cos(radAngles[i]);
+			(demoState->waypoints + i)->y = (a3f32)sin(radAngles[i]);
+			float heightInput = (a3f32)(i * M_PI / 8.0f);
+			(demoState->waypoints + i)->z = (a3f32)cos(heightInput);
+		}
+
+		a3byte* ctrlNames[] = { "Box", "Sphere", "Cylinder", "Capsule", "Torus", "Teapot" };
+		for (a3ui8 controller = 0; controller < demoState->controllerCount; controller++)
+		{
+			if (ctrlNames != NULL && ctrlNames[controller] != NULL)
+			{
+				a3clipControllerInit(demoState->controllers + controller, ctrlNames[controller], demoState->clipPool, controller % demoState->clipCount);
+			}
+		}
 	}
 }
 
