@@ -892,10 +892,10 @@ void a3demo_loadClipData(a3_DemoState* demoState)
 		demoState->waypoints = calloc(8, sizeof(a3vec3));
 		for (int i = 0; i < demoState->waypointCount; i++)
 		{
-			(demoState->waypoints + i)->x = (a3f32)cos(radAngles[i]);
-			(demoState->waypoints + i)->y = (a3f32)sin(radAngles[i]);
-			float heightInput = (a3f32)(i * M_PI / 8.0f);
-			(demoState->waypoints + i)->z = (a3f32)cos(heightInput);
+			(demoState->waypoints + i)->x = 6 * (a3f32)cos(radAngles[i]);
+			(demoState->waypoints + i)->y = 6 * (a3f32)sin(radAngles[i]);
+			float heightInput = 6 * (a3f32)(i * M_PI / 8.0f);
+			(demoState->waypoints + i)->z = 6 * (a3f32)cos(heightInput);
 		}
 
 		a3byte* ctrlNames[] = { "Box", "Sphere", "Cylinder", "Capsule", "Torus", "Teapot" };
