@@ -150,11 +150,11 @@ a3i32 a3clipParse(a3_DemoState* state, a3byte const* data, const a3ui32 clipInde
 
 	if (useClipDuration)
 	{
-		a3clipCalculateDuration(state->clipPool->clipArray + clipIndex);
+		a3clipDistributeDuration(state->clipPool->clipArray + clipIndex, clipDuration);
 	}
 	else
 	{
-		a3clipDistributeDuration(state->clipPool->clipArray + clipIndex, clipDuration);
+		a3clipCalculateDuration(state->clipPool->clipArray + clipIndex);
 	}
 
 	return 0;
