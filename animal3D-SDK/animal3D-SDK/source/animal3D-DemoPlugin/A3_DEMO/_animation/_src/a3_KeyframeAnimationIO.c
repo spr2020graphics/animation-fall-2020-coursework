@@ -24,6 +24,11 @@ a3i32 a3clipParse(a3_DemoState* state, a3byte const* data, const a3ui32 clipInde
 
 	while (token != NULL && lineIndex <= 9)
 	{
+		char* s = strchr(token, '\r');
+		if (s != NULL)
+		{
+			s[0] = '\0';
+		}
 		switch (lineIndex)
 		{
 		case 1: // Assign clip name
@@ -167,6 +172,11 @@ a3i32 a3keyframeParse(a3_DemoState* state, a3byte const* data)
 
 	while (token != NULL && lineIndex <= 3)
 	{
+		char* s = strchr(token, '\r');
+		if (s != NULL)
+		{
+			s[0] = '\0';
+		}
 		switch (lineIndex)
 		{
 		case 1:
@@ -182,7 +192,6 @@ a3i32 a3keyframeParse(a3_DemoState* state, a3byte const* data)
 		default:
 			break;
 		}
-
 		token = strtok(token + strlen(token) + 1, " ");
 		lineIndex++;
 	}
