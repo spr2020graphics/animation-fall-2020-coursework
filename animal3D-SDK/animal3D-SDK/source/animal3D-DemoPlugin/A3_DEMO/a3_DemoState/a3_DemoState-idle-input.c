@@ -154,7 +154,18 @@ void a3demo_input_keyCharPress(a3_DemoState* demoState, a3i32 const asciiKey)
 		a3demoCtrlCaseIncLoop(demoState->controllerIndex, demoState->controllerCount, 'r');
 
 		//rotate through clips
-		a3demoCtrlCasesLoop(demoState->controllers[demoState->controllerIndex].clipIndex, demoState->clipCount, '2', '1');
+	case '1':
+		a3clipControllerSetClip(
+			demoState->controllers + demoState->controllerIndex,
+			demoState->clipPool,
+			a3demoCtrlDecLoop(demoState->controllers[demoState->controllerIndex].clipIndex, demoState->clipCount));
+		break;
+	case '2':
+		a3clipControllerSetClip(
+			demoState->controllers + demoState->controllerIndex,
+			demoState->clipPool,
+			a3demoCtrlIncLoop(demoState->controllers[demoState->controllerIndex].clipIndex, demoState->clipCount));
+		break;
 
 		//control the first frame of the selected clip
 		a3demoCtrlCasesCap(
