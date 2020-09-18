@@ -315,6 +315,7 @@ struct a3_DemoState
 	// the end
 
 	//beginning of animation variables
+	//union of controllers, one per scene object
 	union {
 		a3_ClipController controllers[6];
 		struct {
@@ -336,8 +337,8 @@ struct a3_DemoState
 	a3ui8 controllerCount;
 	a3f32 globalSpeedMod;
 	a3i32 globalPlaybackDir; //serves as a secondary modifier/lock on top of the clip controller play directions.
-	a3ui8 waypointCount;
-	a3vec3 *waypoints;
+	a3ui8 waypointCount; //these are hardcoded currently to allow for a perfect circle but we COULD read them from a file.
+	a3vec3 *waypoints; //array of waypoints calculated in the load function. Based on a circle of radius 6
 	//end of animation variables
 };
 

@@ -153,7 +153,7 @@ void a3demo_input_keyCharPress(a3_DemoState* demoState, a3i32 const asciiKey)
 		//rotate through controllers (one way)
 		a3demoCtrlCaseIncLoop(demoState->controllerIndex, demoState->controllerCount, 'r');
 
-		//rotate through clips
+		//rotate through clips. Can't use a general CtrlLoop because we need to call a function
 	case '1':
 		a3clipControllerSetClip(
 			demoState->controllers + demoState->controllerIndex,

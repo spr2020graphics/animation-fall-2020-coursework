@@ -180,7 +180,7 @@ void a3demo_loadGeometry(a3_DemoState* demoState)
 	//	a3ui32 j;
 
 
-		// file streaming (if requested)
+	// file streaming (if requested)
 	a3_FileStream fileStream[1] = { 0 };
 	const a3byte* const geometryStream = "./data/geom_data_gpro_coursebase.dat";
 
@@ -439,27 +439,27 @@ void a3demo_loadShaders(a3_DemoState* demoState)
 			// 00-common
 			{ { { 0 },	"shdr-vs:pass-tex-trans",			a3shader_vertex  ,	1,{ A3_DEMO_VS"00-common/e/passTexcoord_transform_vs4x.glsl" } } },
 			{ { { 0 },	"shdr-vs:pass-tb-trans",			a3shader_vertex  ,	1,{ A3_DEMO_VS"00-common/e/passTangentBasis_transform_vs4x.glsl" } } },
-			//	{ { { 0 },	"shdr-vs:pass-tb-morph5-t",			a3shader_vertex  ,	1,{ A3_DEMO_VS"00-common/e/passTangentBasis_morph5_transform_vs4x.glsl" } } },
-			//	{ { { 0 },	"shdr-vs:pass-tb-skin-t",			a3shader_vertex  ,	1,{ A3_DEMO_VS"00-common/e/passTangentBasis_skin_transform_vs4x.glsl" } } },
-				{ { { 0 },	"shdr-vs:pass-tex-trans-inst",		a3shader_vertex  ,	1,{ A3_DEMO_VS"00-common/e/passTexcoord_transform_instanced_vs4x.glsl" } } },
-				{ { { 0 },	"shdr-vs:pass-tbn-trans-inst",		a3shader_vertex  ,	1,{ A3_DEMO_VS"00-common/e/passTangentBasis_transform_instanced_vs4x.glsl" } } },
-				//	{ { { 0 },	"shdr-vs:pass-tb-morph5-t-inst",	a3shader_vertex  ,	1,{ A3_DEMO_VS"00-common/e/passTangentBasis_morph5_transform_instanced_vs4x.glsl" } } },
-				//	{ { { 0 },	"shdr-vs:pass-tb-skin-t-inst",		a3shader_vertex  ,	1,{ A3_DEMO_VS"00-common/e/passTangentBasis_skin_transform_instanced_vs4x.glsl" } } },
+		//	{ { { 0 },	"shdr-vs:pass-tb-morph5-t",			a3shader_vertex  ,	1,{ A3_DEMO_VS"00-common/e/passTangentBasis_morph5_transform_vs4x.glsl" } } },
+		//	{ { { 0 },	"shdr-vs:pass-tb-skin-t",			a3shader_vertex  ,	1,{ A3_DEMO_VS"00-common/e/passTangentBasis_skin_transform_vs4x.glsl" } } },
+			{ { { 0 },	"shdr-vs:pass-tex-trans-inst",		a3shader_vertex  ,	1,{ A3_DEMO_VS"00-common/e/passTexcoord_transform_instanced_vs4x.glsl" } } },
+			{ { { 0 },	"shdr-vs:pass-tbn-trans-inst",		a3shader_vertex  ,	1,{ A3_DEMO_VS"00-common/e/passTangentBasis_transform_instanced_vs4x.glsl" } } },
+		//	{ { { 0 },	"shdr-vs:pass-tb-morph5-t-inst",	a3shader_vertex  ,	1,{ A3_DEMO_VS"00-common/e/passTangentBasis_morph5_transform_instanced_vs4x.glsl" } } },
+		//	{ { { 0 },	"shdr-vs:pass-tb-skin-t-inst",		a3shader_vertex  ,	1,{ A3_DEMO_VS"00-common/e/passTangentBasis_skin_transform_instanced_vs4x.glsl" } } },
 
-					// gs
-					// 00-common
-					{ { { 0 },	"shdr-gs:draw-tb",					a3shader_geometry,	2,{ A3_DEMO_GS"00-common/e/drawTangentBasis_gs4x.glsl",
-																							A3_DEMO_GS"00-common/e/utilCommon_gs4x.glsl",} } },
+			// gs
+			// 00-common
+			{ { { 0 },	"shdr-gs:draw-tb",					a3shader_geometry,	2,{ A3_DEMO_GS"00-common/e/drawTangentBasis_gs4x.glsl",
+																					A3_DEMO_GS"00-common/e/utilCommon_gs4x.glsl",} } },
 
-																							// fs
-																							// base
-																							{ { { 0 },	"shdr-fs:draw-col-unif",			a3shader_fragment,	1,{ A3_DEMO_FS"e/drawColorUnif_fs4x.glsl" } } },
-																							{ { { 0 },	"shdr-fs:draw-col-attr",			a3shader_fragment,	1,{ A3_DEMO_FS"e/drawColorAttrib_fs4x.glsl" } } },
-																							// 00-common
-																							{ { { 0 },	"shdr-fs:draw-tex",					a3shader_fragment,	1,{ A3_DEMO_FS"00-common/e/drawTexture_fs4x.glsl" } } },
-																							//	{ { { 0 },	"shdr-fs:draw-Lambert",				a3shader_fragment,	1,{ A3_DEMO_FS"00-common/e/drawLambert_fs4x.glsl" } } },
-																							//	{ { { 0 },	"shdr-fs:draw-Phong",				a3shader_fragment,	1,{ A3_DEMO_FS"00-common/e/drawPhong_fs4x.glsl" } } },
-																							}
+			// fs
+			// base
+			{ { { 0 },	"shdr-fs:draw-col-unif",			a3shader_fragment,	1,{ A3_DEMO_FS"e/drawColorUnif_fs4x.glsl" } } },
+			{ { { 0 },	"shdr-fs:draw-col-attr",			a3shader_fragment,	1,{ A3_DEMO_FS"e/drawColorAttrib_fs4x.glsl" } } },
+			// 00-common
+			{ { { 0 },	"shdr-fs:draw-tex",					a3shader_fragment,	1,{ A3_DEMO_FS"00-common/e/drawTexture_fs4x.glsl" } } },
+			//	{ { { 0 },	"shdr-fs:draw-Lambert",				a3shader_fragment,	1,{ A3_DEMO_FS"00-common/e/drawLambert_fs4x.glsl" } } },
+			//	{ { { 0 },	"shdr-fs:draw-Phong",				a3shader_fragment,	1,{ A3_DEMO_FS"00-common/e/drawPhong_fs4x.glsl" } } },
+			}
 	};
 	a3_DemoStateShader* const shaderListPtr = (a3_DemoStateShader*)(&shaderList), * shaderPtr;
 	const a3ui32 numUniqueShaders = sizeof(shaderList) / sizeof(a3_DemoStateShader);
@@ -774,7 +774,7 @@ void a3demo_loadClipData(a3_DemoState* demoState)
 {
 	//the following code is derived from our material parser from Graphics 2 because it's a good skeleton for file loading
 	a3_Stream fs[1] = { 0 };
-	a3ui32 fileLength = a3streamLoadContents(&fs[0], "../../../../resource/animdata/test_clips.txt"); //change to file name
+	a3ui32 fileLength = a3streamLoadContents(&fs[0], "../../../../resource/animdata/test_clips.txt");
 	printf("%d", fileLength);
 	a3byte fromFile = fileLength > 0;
 	//lab 1
@@ -881,23 +881,30 @@ void a3demo_loadClipData(a3_DemoState* demoState)
 	}
 	else
 	{
+		//project 1 code. a3streamObjectRead() call is used because we used it in Graphics 2
 		//parser
 		a3streamObjectRead(&fs[0], demoState, (a3_StreamReadFunc)a3animationParseFile);
+		//angles from PI/4 to 2PI
 		a3f64 radAngles[] = { M_PI_4, M_PI_2, 3 * M_PI_4, M_PI, 5 * M_PI_4, 6 * M_PI_4, 7 * M_PI_4, 2 * M_PI };
 
+		//some basic variable initialization
 		demoState->waypointCount = 8;
 		demoState->controllerCount = 6;
 		demoState->globalPlaybackDir = 0;
 		demoState->globalSpeedMod = 1.0f;
 		demoState->waypoints = calloc(8, sizeof(a3vec3));
+
+		float rad = 6.0f;
+		//creates waypoints based on a unit circle. Radius is 6
 		for (int i = 0; i < demoState->waypointCount; i++)
 		{
-			(demoState->waypoints + i)->x = 6 * (a3f32)cos(radAngles[i]);
-			(demoState->waypoints + i)->y = 6 * (a3f32)sin(radAngles[i]);
-			float heightInput = 6 * (a3f32)(i * M_PI / 8.0f);
-			(demoState->waypoints + i)->z = (3 * (a3f32)cos(heightInput)) + 3;
+			(demoState->waypoints + i)->x = rad * (a3f32)cos(radAngles[i]);
+			(demoState->waypoints + i)->y = rad * (a3f32)sin(radAngles[i]);
+			float heightInput = rad * (a3f32)(i * M_PI / 8.0f);
+			(demoState->waypoints + i)->z = ((rad/2.0f) * (a3f32)cos(heightInput)) + (rad / 2.0f);
 		}
 
+		//initializes controllers with names matching their controlled object.
 		a3byte* ctrlNames[] = { "Box", "Sphere", "Cylinder", "Capsule", "Torus", "Teapot" };
 		for (a3ui8 controller = 0; controller < demoState->controllerCount; controller++)
 		{
