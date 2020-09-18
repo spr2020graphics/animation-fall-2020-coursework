@@ -895,7 +895,7 @@ void a3demo_loadClipData(a3_DemoState* demoState)
 			(demoState->waypoints + i)->x = 6 * (a3f32)cos(radAngles[i]);
 			(demoState->waypoints + i)->y = 6 * (a3f32)sin(radAngles[i]);
 			float heightInput = 6 * (a3f32)(i * M_PI / 8.0f);
-			(demoState->waypoints + i)->z = 6 * (a3f32)cos(heightInput);
+			(demoState->waypoints + i)->z = (3 * (a3f32)cos(heightInput)) + 3;
 		}
 
 		a3byte* ctrlNames[] = { "Box", "Sphere", "Cylinder", "Capsule", "Torus", "Teapot" };

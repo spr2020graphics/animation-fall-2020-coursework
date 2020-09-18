@@ -149,6 +149,8 @@ a3i32 a3clipParse(a3_DemoState* state, a3byte const* data, const a3ui32 clipInde
 	}
 
 	a3clipInit(state->clipPool->clipArray + clipIndex, clipName, state->keyPool, firstFrame, lastFrame);	//Need to override this with transition setup
+	forwardTrans.targetClipPool = state->clipPool; //these can be changed to a specific pool but we only have one right now.
+	reverseTrans.targetClipPool = state->clipPool;
 	(state->clipPool->clipArray + clipIndex)->forwardTransition = forwardTrans;
 	(state->clipPool->clipArray + clipIndex)->reverseTransition = reverseTrans;
 
