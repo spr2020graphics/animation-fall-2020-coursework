@@ -78,6 +78,7 @@ union a3_Sample
 
 	struct  
 	{
+		//only value is ever used. Time wasn't necessary in our implementation
 		a3real time, value;
 	};
 };
