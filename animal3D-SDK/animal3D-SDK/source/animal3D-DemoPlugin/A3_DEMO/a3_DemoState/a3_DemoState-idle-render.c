@@ -243,7 +243,7 @@ void a3demo_render_clipController(a3_DemoState const* demoState,
 
 	//TL line 5: current frame and value
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"CURRENT FRAME: %d | VALUE: %d",
+		"CURRENT FRAME: %d | VALUE: %.3f",
 		ctrl->keyframeIndex, clip->keyframes->keyframeArray[ctrl->keyframeIndex].sample.value);
 
 	//TL line 6: paused, direction, and speed

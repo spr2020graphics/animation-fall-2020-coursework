@@ -25,6 +25,8 @@ a3i32 a3clipParse(a3_DemoState* state, a3byte const* data, const a3ui32 clipInde
 	a3ui16 firstFrame = 0;
 	a3ui16 lastFrame = 0;
 	a3_ClipTransition forwardTrans, reverseTrans;
+	forwardTrans.targetClipName = calloc(a3keyframeAnimation_nameLenMax, sizeof(char));
+	reverseTrans.targetClipName = calloc(a3keyframeAnimation_nameLenMax, sizeof(char));
 	a3real clipDuration = 0.0f;
 
 	// 'lineIndex' is what variable we're looking at in the file
@@ -158,15 +160,19 @@ a3i32 a3clipParse(a3_DemoState* state, a3byte const* data, const a3ui32 clipInde
 
 	// Initialize the clip and its transitions
 	a3clipInit(state->clipPool->clipArray + clipIndex, clipName, state->keyPool, firstFrame, lastFrame);	//Need to override this with transition setup
+	forwardTrans.targetClipPool = state->clipPool; //these can be changed to a specific pool but we only have one right now.
+	reverseTrans.targetClipPool = state->clipPool;
+	(state->clipPool->clipArray + clipIndex)->forwardTransition = forwardTrans;
+	(state->clipPool->clipArray + clipIndex)->reverseTransition = reverseTrans;
 
 	// Calculate the duration based on if the user specifies to use the clip duration or total keyframe durations
 	if (useClipDuration)
 	{
-		a3clipCalculateDuration(state->clipPool->clipArray + clipIndex);
+		a3clipDistributeDuration(state->clipPool->clipArray + clipIndex, clipDuration);
 	}
 	else
 	{
-		a3clipDistributeDuration(state->clipPool->clipArray + clipIndex, clipDuration);
+		a3clipCalculateDuration(state->clipPool->clipArray + clipIndex);
 	}
 
 	return 0;

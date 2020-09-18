@@ -316,13 +316,15 @@ struct a3_DemoState
 
 	//beginning of animation variables
 	union {
-		a3_ClipController controllers[4];
+		a3_ClipController controllers[6];
 		struct {
 			a3_ClipController
-				controller_top_left[1],
-				controller_top_right[1],
-				controller_bot_left[1],
-				controller_bot_right[1];
+				controller_box[1],
+				controller_sphere[1],
+				controller_cylinder[1],
+				controller_capsule[1],
+				controller_torus[1],
+				controller_teapot[1];
 		};
 	};
 	a3ui8 controllerIndex;
@@ -334,6 +336,8 @@ struct a3_DemoState
 	a3ui8 controllerCount;
 	a3f32 globalSpeedMod;
 	a3i32 globalPlaybackDir; //serves as a secondary modifier/lock on top of the clip controller play directions.
+	a3ui8 waypointCount;
+	a3vec3 *waypoints;
 	//end of animation variables
 };
 

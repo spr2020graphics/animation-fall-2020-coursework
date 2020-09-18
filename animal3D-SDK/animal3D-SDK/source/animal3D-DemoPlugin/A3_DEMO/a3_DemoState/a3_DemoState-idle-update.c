@@ -144,8 +144,15 @@ void a3demo_update(a3_DemoState *demoState, a3f64 const dt)
 	// Update all clip controllers
 	for (int i = 0; i < demoState->controllerCount; i++)
 	{
-		a3clipControllerUpdate(&demoState->controllers[i], (a3real)dt * demoState->globalPlaybackDir * demoState->globalSpeedMod);
+		a3_ClipController* ctrl = &demoState->controllers[i];
+		a3clipControllerUpdate(ctrl, (a3real)dt * demoState->globalPlaybackDir * demoState->globalSpeedMod);
+
+		a3_Clip* clip = ctrl->clipPool->clipArray + ctrl->clipIndex;
+		a3real val1 = (clip->keyframes->keyframeArray + ctrl->keyframeIndex)->sample.value;
+		a3real val2 = (clip->keyframes->keyframeArray + ctrl->keyframeIndex + 1)->sample.value;
+		demoState->demoMode0_starter->object_scene[i + 2].position = a3vecLerp(demoState->waypoints[(int)val1], demoState->waypoints[(int)val2], ctrl->keyframeParameter);
 	}
+	//demoState->demoMode0_starter->object_scene[2].position = demoState->waypoints[(int)val1];
 }
 
 

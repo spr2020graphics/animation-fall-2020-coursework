@@ -59,6 +59,7 @@ a3i32 a3clipControllerInit(a3_ClipController* clipCtrl_out, const a3byte ctrlNam
 
 		clipCtrl_out->playbackDir = 0;
 		clipCtrl_out->speedMod = 1;
+		clipCtrl_out->delayedPause = 0;
 		return 1;
 	}
 	return -1; //if it failed to malloc, return -1.

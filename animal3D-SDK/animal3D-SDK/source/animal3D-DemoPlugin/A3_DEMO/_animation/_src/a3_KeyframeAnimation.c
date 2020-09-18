@@ -155,4 +155,15 @@ a3i32 a3clipGetIndexInPool(const a3_ClipPool* clipPool, const a3byte clipName[a3
 	return -1;
 }
 
+a3vec3 a3vecLerp(a3vec3 v1, a3vec3 v2, a3real u)
+{
+	a3vec3 result;
+
+	result.x = v1.x + (v2.x - v1.x) * u;
+	result.y = v1.y + (v2.y - v1.y) * u;
+	result.z = v1.z + (v2.z - v1.z) * u;
+
+	return result;
+}
+
 //-----------------------------------------------------------------------------
