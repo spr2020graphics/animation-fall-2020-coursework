@@ -9,6 +9,8 @@
 
 #include "A3_DEMO/a3_DemoState.h"
 #pragma once
+
+// Parse the given data to create keyframes and clips
 a3i32 a3animationParseFile(a3_DemoState* demoState, a3byte const* data);
 
 #endif

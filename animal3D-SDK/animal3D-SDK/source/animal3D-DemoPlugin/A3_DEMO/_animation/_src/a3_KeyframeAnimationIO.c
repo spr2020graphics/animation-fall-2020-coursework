@@ -1,14 +1,22 @@
+/*
+	Animation Framework Addons by Cameron Schneider and Scott Dagen
+	a3_KeyframeAnimationIO.h: loads animation data from a file, parsing clips and keyframes based on a decided format.
+*/
+
+
 #include "A3_DEMO/_animation/a3_KeyframeAnimationIO.h"
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 
+// Parse a clip line, denoted by the '@' symbol in the file. clipIndex must be passed in, since it can't be included in the file
 a3i32 a3clipParse(a3_DemoState* state, a3byte const* data, const a3ui32 clipIndex)
 {
 	//create a copy of the passed-in data to avoid modifying it (strtok has side effects)
 	char* parseDataCopy = malloc(strlen((char*)data) * sizeof(char));
 	memcpy(parseDataCopy, (char*)data, strlen((char*)data));
+
 
 	//variables for clip
 	//@ clip_name use_clip_duration first_frame last_frame forward_trans forward_trans_dest reverse_trans reverse_trans_dest clip_duration
@@ -21,9 +29,11 @@ a3i32 a3clipParse(a3_DemoState* state, a3byte const* data, const a3ui32 clipInde
 	reverseTrans.targetClipName = calloc(a3keyframeAnimation_nameLenMax, sizeof(char));
 	a3real clipDuration = 0.0f;
 
+	// 'lineIndex' is what variable we're looking at in the file
 	int lineIndex = 0;
 	char* token = strtok((char*)parseDataCopy, " ");
 
+	// There are only 9 variables to account for in the file
 	while (token != NULL && lineIndex <= 9)
 	{
 		//this chops off the \r that appears after the last data entry in a line. It's unclear why it exists but this gets rid of it.
@@ -144,16 +154,18 @@ a3i32 a3clipParse(a3_DemoState* state, a3byte const* data, const a3ui32 clipInde
 			break;
 		}
 
-		token = strtok(token + strlen(token) + 1, " ");
+		token = strtok(token + strlen(token) + 1, " ");	// token + strlen(token) + 1 moves us to the next line in the file without breaking data
 		lineIndex++;
 	}
 
+	// Initialize the clip and its transitions
 	a3clipInit(state->clipPool->clipArray + clipIndex, clipName, state->keyPool, firstFrame, lastFrame);	//Need to override this with transition setup
 	forwardTrans.targetClipPool = state->clipPool; //these can be changed to a specific pool but we only have one right now.
 	reverseTrans.targetClipPool = state->clipPool;
 	(state->clipPool->clipArray + clipIndex)->forwardTransition = forwardTrans;
 	(state->clipPool->clipArray + clipIndex)->reverseTransition = reverseTrans;
 
+	// Calculate the duration based on if the user specifies to use the clip duration or total keyframe durations
 	if (useClipDuration)
 	{
 		a3clipDistributeDuration(state->clipPool->clipArray + clipIndex, clipDuration);
@@ -171,9 +183,13 @@ a3i32 a3keyframeParse(a3_DemoState* state, a3byte const* data)
 	//create a copy of the passed-in data to avoid modifying it (strtok has side effects)
 	char* parseDataCopy = calloc(strlen((char*)data), sizeof(char));
 	memcpy(parseDataCopy, (char*)data, strlen((char*)data));
+
+	// Variables to extract
 	a3ui32 index;
 	a3f32 duration;
 	a3_Sample sample;
+
+	// lineIndex is not actually a line, but the variable index
 	int lineIndex = 0;
 	char* token = strtok((char*)parseDataCopy, " ");
 
@@ -187,23 +203,24 @@ a3i32 a3keyframeParse(a3_DemoState* state, a3byte const* data)
 		}
 		switch (lineIndex)
 		{
-		case 1:
-			// Assign keyframe duration
+		case 1:	// Assign keyframe duration
 			duration = (float)atof(token);
 			break;
-		case 2:
+		case 2:	// Assign keyframe index
 			index = atoi(token);
 			break;
-		case 3:
+		case 3:	// Assign the sample value
 			sample.value = (float)atof(token);
 			break;
 		default:
 			break;
 		}
+
 		token = strtok(token + strlen(token) + 1, " ");
 		lineIndex++;
 	}
 
+	// Initialize the keyframe
 	a3keyframeInit(state->keyPool->keyframeArray + index, duration, &sample);
 
 	return 0;
@@ -225,7 +242,7 @@ a3i32 a3animationParseFile(a3_DemoState* state, a3byte const* data)
 	// Just a delimiter function, using it to pull out whole lines, since the material file is formatted in a certain way
 	token = strtok((char*)data, "\n");
 
-	// Counts the number of clips and keyframes so we can initialize pools
+	// Counts the number of clips and keyframes so we can initialize pools before creating clips/keyframes
 	while (token != NULL)
 	{
 		switch (token[0])
@@ -245,6 +262,7 @@ a3i32 a3animationParseFile(a3_DemoState* state, a3byte const* data)
 		token = strtok(NULL, "\n");
 	}
 
+	// Create both kinds of pools
 	state->clipCount = clipPoolSize;
 	state->keyframeCount = keyframePoolSize;
 	a3clipPoolCreate(state->clipPool, state->clipCount);

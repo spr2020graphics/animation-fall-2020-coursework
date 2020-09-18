@@ -142,7 +142,7 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 			a3_ClipTransition* revTransition = &clipCtrl->clipPool->clipArray[clipCtrl->clipIndex].reverseTransition;
 			switch (revTransition->transition)
 			{
-			case a3clipTransitionPause:
+			case a3clipTransitionPause:	// Pause at the beginning
 			{
 				a3_Keyframe frame;	// This is a temporary variable, doesn't need to be a pointer
 				a3clipControllerGetKeyframeFromIndex(clipCtrl, clipCtrl->keyframeIndex, &frame);
@@ -153,9 +153,9 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 				clipCtrl->playbackDir = 0;
 				break;
 			}
-			case a3clipTransitionReverseFrame:
+			case a3clipTransitionReverseFrame:	// Reverse pause at end of penultimate frame, plays only last frame
 				clipCtrl->delayedPause = true;
-			case a3clipTransitionReverse:
+			case a3clipTransitionReverse:	// Keep playing from end, add overstep
 			{
 				clipCtrl->clipPool = revTransition->targetClipPool;
 				clipCtrl->clipIndex = a3clipGetIndexInPool(revTransition->targetClipPool, revTransition->targetClipName);
@@ -167,7 +167,7 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 				clipCtrl->playbackDir = -1;
 				break;
 			}
-			case a3clipTransitionReversePause:
+			case a3clipTransitionReversePause:	// Pause at end of last frame
 			{
 				clipCtrl->clipPool = revTransition->targetClipPool;
 				clipCtrl->clipIndex = a3clipGetIndexInPool(revTransition->targetClipPool, revTransition->targetClipName);
@@ -179,7 +179,7 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 				clipCtrl->playbackDir = 0;
 				break;
 			}
-			case a3clipTransitionReverseSkip:
+			case a3clipTransitionReverseSkip:	// Play from start of penultimate frame
 			{
 				clipCtrl->clipPool = revTransition->targetClipPool;
 				clipCtrl->clipIndex = a3clipGetIndexInPool(revTransition->targetClipPool, revTransition->targetClipName);
@@ -198,6 +198,13 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 		else if (clipCtrl->keyframeTime < 0.0f)	// REVERSE: Playhead enters previous keyframe
 		{
 			// decrement keyframeIndex, reset clipCtrl->keyframeTime to the new keyframe's duration
+
+			// Handling transition case for playing through last frame, stopping on second to last
+			if (clipCtrl->delayedPause)
+			{
+				clipCtrl->playbackDir = 0;
+				clipCtrl->delayedPause = false;
+		 	}
 
 			clipCtrl->keyframeIndex--;
 			clipCtrl->keyframeTime = clipCtrl->clipPool->clipArray[clipCtrl->clipIndex].keyframes->keyframeArray[clipCtrl->keyframeIndex].duration;
@@ -250,7 +257,7 @@ inline a3i32 a3clipControllerGetKeyframeFromIndex(a3_ClipController* clipCtrl, c
 	}
 	else
 	{
-		// specified index not in current clip's range
+		// invalid index
 		return -1;
 	}
 }

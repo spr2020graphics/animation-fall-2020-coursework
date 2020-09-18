@@ -81,6 +81,7 @@ struct a3_ClipController
 	// Local modifier for playback speed, used per-controller
 	a3f32 speedMod;
 
+	// Used as part of a transition, delays a pause for one full keyframe.
 	a3boolean delayedPause;
 };
 
