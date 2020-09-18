@@ -149,7 +149,37 @@ void a3demo_update(a3_DemoState *demoState, a3f64 const dt)
 
 		a3_Clip* clip = ctrl->clipPool->clipArray + ctrl->clipIndex;
 		a3real val1 = (clip->keyframes->keyframeArray + ctrl->keyframeIndex)->sample.value;
-		a3real val2 = (clip->keyframes->keyframeArray + ctrl->keyframeIndex + 1)->sample.value;
+		a3real val2;
+
+		if (ctrl->playbackDir == 1)
+		{
+			if (ctrl->keyframeIndex + 1 <= clip->lastKeyframeIndex)
+			{
+				val2 = (clip->keyframes->keyframeArray + ctrl->keyframeIndex + 1)->sample.value;
+			}
+			else if(clip->forwardTransition.transition == a3clipTransitionForward)
+			{
+				a3_Clip* tempClip = &clip->forwardTransition.targetClipPool->clipArray[a3clipGetIndexInPool(clip->forwardTransition.targetClipPool, clip->forwardTransition.targetClipName)];
+				val2 = (tempClip->keyframes->keyframeArray[tempClip->firstKeyframeIndex]).sample.value;
+			}
+			else if (clip->forwardTransition.transition == a3clipTransitionForwardSkip)
+			{
+				a3_Clip* tempClip = &clip->forwardTransition.targetClipPool->clipArray[a3clipGetIndexInPool(clip->forwardTransition.targetClipPool, clip->forwardTransition.targetClipName)];
+				val2 = (tempClip->keyframes->keyframeArray[tempClip->firstKeyframeIndex + 1]).sample.value;
+			}
+		}
+		else if (ctrl->playbackDir == -1)
+		{
+			if (ctrl->keyframeIndex - 1 >= clip->firstKeyframeIndex)
+			{
+				val2 = (clip->keyframes->keyframeArray + ctrl->keyframeIndex - 1)->sample.value;
+			}
+			else
+			{
+				val2 = (clip->keyframes->keyframeArray[clip->lastKeyframeIndex]).sample.value;
+			}
+		}
+
 		demoState->demoMode0_starter->object_scene[i + 2].position = a3vecLerp(demoState->waypoints[(int)val1], demoState->waypoints[(int)val2], ctrl->keyframeParameter);
 	}
 	//demoState->demoMode0_starter->object_scene[2].position = demoState->waypoints[(int)val1];
