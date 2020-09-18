@@ -190,6 +190,8 @@ a3i32 a3clipCalculateDuration(a3_Clip* clip);
 // calculate keyframes' durations by distributing clip's duration (Scott Dagen)
 a3i32 a3clipDistributeDuration(a3_Clip* clip, const a3real newClipDuration);
 
+a3vec3 a3vecLerp(a3vec3 v1, a3vec3 v2, a3real u);
+
 //-----------------------------------------------------------------------------
 
 
