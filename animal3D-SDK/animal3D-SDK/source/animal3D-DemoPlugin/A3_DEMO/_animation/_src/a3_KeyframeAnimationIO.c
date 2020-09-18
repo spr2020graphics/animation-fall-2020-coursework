@@ -17,6 +17,8 @@ a3i32 a3clipParse(a3_DemoState* state, a3byte const* data, const a3ui32 clipInde
 	a3ui16 firstFrame = 0;
 	a3ui16 lastFrame = 0;
 	a3_ClipTransition forwardTrans, reverseTrans;
+	forwardTrans.targetClipName = calloc(a3keyframeAnimation_nameLenMax, sizeof(char));
+	reverseTrans.targetClipName = calloc(a3keyframeAnimation_nameLenMax, sizeof(char));
 	a3real clipDuration = 0.0f;
 
 	int lineIndex = 0;
@@ -147,6 +149,8 @@ a3i32 a3clipParse(a3_DemoState* state, a3byte const* data, const a3ui32 clipInde
 	}
 
 	a3clipInit(state->clipPool->clipArray + clipIndex, clipName, state->keyPool, firstFrame, lastFrame);	//Need to override this with transition setup
+	(state->clipPool->clipArray + clipIndex)->forwardTransition = forwardTrans;
+	(state->clipPool->clipArray + clipIndex)->reverseTransition = reverseTrans;
 
 	if (useClipDuration)
 	{
