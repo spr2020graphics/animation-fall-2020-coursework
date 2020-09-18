@@ -200,6 +200,7 @@ void a3demo_update(a3_DemoState* demoState, a3f64 const dt)
 				//transitioning, checking next clip forwards
 				val2 = a3_peek_keyframe_transition_value(clip, true);
 			}
+			demoState->demoMode0_starter->object_scene[i + 2].position = a3vecLerp(demoState->waypoints[(int)val1], demoState->waypoints[(int)val2], ctrl->keyframeParameter);
 		}
 		else if (ctrl->playbackDir == -1)
 		{
@@ -213,9 +214,14 @@ void a3demo_update(a3_DemoState* demoState, a3f64 const dt)
 				//transitioning, checking next clip in reverse
 				val2 = a3_peek_keyframe_transition_value(clip, false);
 			}
+			demoState->demoMode0_starter->object_scene[i + 2].position = a3vecLerp(demoState->waypoints[(int)val1], demoState->waypoints[(int)val2], 1.0f - ctrl->keyframeParameter);
+		}
+		else
+		{
+			demoState->demoMode0_starter->object_scene[i + 2].position = demoState->waypoints[(int)val1];
 		}
 
-		demoState->demoMode0_starter->object_scene[i + 2].position = a3vecLerp(demoState->waypoints[(int)val1], demoState->waypoints[(int)val2], ctrl->keyframeParameter);
+		
 	}
 }
 
