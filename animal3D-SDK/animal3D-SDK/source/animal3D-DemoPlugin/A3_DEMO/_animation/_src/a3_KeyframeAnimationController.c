@@ -66,7 +66,7 @@ a3i32 a3clipControllerInit(a3_ClipController* clipCtrl_out, const a3byte ctrlNam
 }
 
 
-// Evaluate controller
+// Evaluate controller. Not used yet, only here due to in-class work
 a3i32 a3clipControllerEvaluate(a3_ClipController const* clipCtrl, a3_Sample* sample_out)
 {
 	if (clipCtrl && clipCtrl->clipPool && sample_out)

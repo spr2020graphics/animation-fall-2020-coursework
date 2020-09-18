@@ -188,7 +188,7 @@ void a3demo_update(a3_DemoState* demoState, a3f64 const dt)
 		a3real val1 = (clip->keyframes->keyframeArray + ctrl->keyframeIndex)->sample.value;
 		a3real val2 = val1; //default case for pausing. Lerping ceases to work when paused because it doesn't know the direction it _was_ going.
 
-		if (ctrl->playbackDir == 1)
+		if (ctrl->playbackDir == 1) //forward
 		{
 			//still within clip
 			if (ctrl->keyframeIndex + 1 <= clip->lastKeyframeIndex)
@@ -202,7 +202,7 @@ void a3demo_update(a3_DemoState* demoState, a3f64 const dt)
 			}
 			demoState->demoMode0_starter->object_scene[i + 2].position = a3vecLerp(demoState->waypoints[(int)val1], demoState->waypoints[(int)val2], ctrl->keyframeParameter);
 		}
-		else if (ctrl->playbackDir == -1)
+		else if (ctrl->playbackDir == -1) //reverse
 		{
 			//still within clip
 			if (ctrl->keyframeIndex - 1 >= clip->firstKeyframeIndex)

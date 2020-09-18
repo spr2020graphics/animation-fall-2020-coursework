@@ -155,6 +155,13 @@ a3i32 a3clipGetIndexInPool(const a3_ClipPool* clipPool, const a3byte clipName[a3
 	return -1;
 }
 
+/// <summary>
+/// Basic lerp for vectors
+/// </summary>
+/// <param name="v1">first input</param>
+/// <param name="v2">second input</param>
+/// <param name="u">interpolation param</param>
+/// <returns>the interpolated vec3</returns>
 a3vec3 a3vecLerp(a3vec3 v1, a3vec3 v2, a3real u)
 {
 	a3vec3 result;

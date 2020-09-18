@@ -56,11 +56,9 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 		{
 			resolved = true;
 		}
-		else if (pastEnd || beforeStart)	// FORWARD: Playhead at or past clip end (if current clip time >= clip duration)
+		else if (pastEnd || beforeStart)	// Playhead at or past clip end (if current clip time >= clip duration) or before clip beginning if in reverse
 		{
-			// NEEDS TRANSITION BEHAVIOR
-			// Reset keyframeIndex to firstKeyframeIndex, use overstep to 'loop' to beginning, reset keyframeTime and clipTime accordingly
-
+			//find the correct overstep and transition
 			a3real overstep = 0;
 			if (pastEnd)
 			{
