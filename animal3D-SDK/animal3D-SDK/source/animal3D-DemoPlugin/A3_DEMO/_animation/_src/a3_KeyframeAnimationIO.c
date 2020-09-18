@@ -1,6 +1,6 @@
 /*
 	Animation Framework Addons by Cameron Schneider and Scott Dagen
-	a3_KeyframeAnimationIO.h: loads animation data from a file, parsing clips and keyframes based on a decided format.
+	a3_KeyframeAnimationIO.c: loads animation data from a file, parsing clips and keyframes based on a decided format.
 */
 
 
