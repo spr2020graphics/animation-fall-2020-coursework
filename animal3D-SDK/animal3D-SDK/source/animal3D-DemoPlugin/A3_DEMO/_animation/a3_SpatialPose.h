@@ -17,7 +17,7 @@ limitations under the License.
 /*
 animal3D SDK: Minimal 3D Animation Framework
 By Daniel S. Buckstein
-	
+
 a3_SpatialPose.h
 Description of a spatial pose with rotation, translation and scale.
 */
@@ -93,13 +93,35 @@ enum a3_SpatialPoseChannel
 	a3poseChannel_translate_xyz = a3poseChannel_translate_xy | a3poseChannel_translate_z,
 };
 
-	
+
 //-----------------------------------------------------------------------------
 
 // single pose for a single node
 struct a3_SpatialPose
 {
 	a3mat4 transform;
+	union
+	{
+		a3vec3 rotation;
+		struct {
+			a3real xRot, yRot, zRot;
+		};
+	};
+	union
+	{
+		a3vec3 scale;
+		struct {
+			a3real xScale, yScale, zScale;
+		};
+	};
+	union
+	{
+		a3vec3 position;
+		struct
+		{
+			a3real xPos, yPos, zPos;
+		};
+	};
 };
 
 
