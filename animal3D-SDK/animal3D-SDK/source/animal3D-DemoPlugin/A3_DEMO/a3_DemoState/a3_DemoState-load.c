@@ -17,7 +17,7 @@
 /*
 	animal3D SDK: Minimal 3D Animation Framework
 	By Daniel S. Buckstein
-	
+
 	a3_DemoState_loading.c/.cpp
 	Demo state function implementations.
 
@@ -26,6 +26,10 @@
 	*** Implement your demo logic pertaining to      ***
 	***     LOADING in this file.                    ***
 	****************************************************
+*/
+
+/*
+	Animation Framework Addons by Scott Dagen
 */
 
 //-----------------------------------------------------------------------------
@@ -75,9 +79,13 @@
 //-----------------------------------------------------------------------------
 
 #include "../a3_DemoState.h"
+#include "A3_DEMO/_animation/a3_KeyframeAnimationIO.h"
 
 #include <stdio.h>
-
+#include <stdlib.h>
+#include <string.h>
+#include <math.h>
+#include <corecrt_math_defines.h>
 
 //-----------------------------------------------------------------------------
 // GENERAL UTILITIES
@@ -98,7 +106,7 @@ a3real4x4r a3demo_setAtlasTransform_internal(a3real4x4p m_out,
 
 
 // initialize dummy drawable
-inline void a3demo_initDummyDrawable_internal(a3_DemoState *demoState)
+inline void a3demo_initDummyDrawable_internal(a3_DemoState* demoState)
 {
 	// dummy drawable for point drawing: copy any of the existing ones, 
 	//	set vertex count to 1 and primitive to points (0x0000)
@@ -145,12 +153,12 @@ inline void a3demo_initDummyDrawable_internal(a3_DemoState *demoState)
 // LOADING
 
 // utility to load geometry
-void a3demo_loadGeometry(a3_DemoState *demoState)
+void a3demo_loadGeometry(a3_DemoState* demoState)
 {
 	// tmp descriptor for loaded model
 	typedef struct a3_TAG_DEMOSTATELOADEDMODEL {
-		const a3byte *filePath;
-		const a3real *transform;
+		const a3byte* filePath;
+		const a3real* transform;
 		a3_ModelLoaderFlag flag;
 	} a3_DemoStateLoadedModel;
 
@@ -163,9 +171,9 @@ void a3demo_loadGeometry(a3_DemoState *demoState)
 	};
 
 	// pointer to shared vbo/ibo
-	a3_VertexBuffer *vbo_ibo;
-	a3_VertexArrayDescriptor *vao;
-	a3_VertexDrawable *currentDrawable;
+	a3_VertexBuffer* vbo_ibo;
+	a3_VertexArrayDescriptor* vao;
+	a3_VertexDrawable* currentDrawable;
 	a3ui32 sharedVertexStorage = 0, sharedIndexStorage = 0;
 	a3ui32 numVerts = 0;
 	a3ui32 i, j;
@@ -173,7 +181,7 @@ void a3demo_loadGeometry(a3_DemoState *demoState)
 
 	// file streaming (if requested)
 	a3_FileStream fileStream[1] = { 0 };
-	const a3byte *const geometryStream = "./data/geom_data_gpro_coursebase.dat";
+	const a3byte* const geometryStream = "./data/geom_data_gpro_coursebase.dat";
 
 	// geometry data
 	a3_GeometryData displayShapesData[4] = { 0 };
@@ -193,7 +201,7 @@ void a3demo_loadGeometry(a3_DemoState *demoState)
 
 	// common index format
 	a3_IndexFormatDescriptor sceneCommonIndexFormat[1] = { 0 };
-	a3ui32 bufferOffset, *const bufferOffsetPtr = &bufferOffset;
+	a3ui32 bufferOffset, * const bufferOffsetPtr = &bufferOffset;
 
 
 	// procedural scene objects
@@ -386,7 +394,7 @@ void a3demo_loadGeometry(a3_DemoState *demoState)
 	sharedVertexStorage += a3geometryGenerateDrawable(currentDrawable, proceduralShapesData + 4, vao, vbo_ibo, sceneCommonIndexFormat, 0, 0);
 	currentDrawable = demoState->draw_unit_torus;
 	sharedVertexStorage += a3geometryGenerateDrawable(currentDrawable, proceduralShapesData + 5, vao, vbo_ibo, sceneCommonIndexFormat, 0, 0);
-	
+
 	currentDrawable = demoState->draw_teapot;
 	sharedVertexStorage += a3geometryGenerateDrawable(currentDrawable, loadedModelsData + 0, vao, vbo_ibo, sceneCommonIndexFormat, 0, 0);
 
@@ -429,7 +437,7 @@ void a3demo_loadGeometry(a3_DemoState *demoState)
 
 
 // utility to load shaders
-void a3demo_loadShaders(a3_DemoState *demoState)
+void a3demo_loadShaders(a3_DemoState* demoState)
 {
 	// structure to help with shader management
 	typedef struct a3_TAG_DEMOSTATESHADER {
@@ -442,7 +450,7 @@ void a3demo_loadShaders(a3_DemoState *demoState)
 	} a3_DemoStateShader;
 
 	// direct to demo programs
-	a3_DemoStateShaderProgram *currentDemoProg;
+	a3_DemoStateShaderProgram* currentDemoProg;
 	a3i32 flag;
 	a3ui32 i;
 
@@ -543,7 +551,7 @@ void a3demo_loadShaders(a3_DemoState *demoState)
 																					A3_DEMO_FS"00-common/e/utilCommon_fs4x.glsl",} } },
 		}
 	};
-	a3_DemoStateShader *const shaderListPtr = (a3_DemoStateShader *)(&shaderList), *shaderPtr;
+	a3_DemoStateShader* const shaderListPtr = (a3_DemoStateShader*)(&shaderList), * shaderPtr;
 	const a3ui32 numUniqueShaders = sizeof(shaderList) / sizeof(a3_DemoStateShader);
 
 
@@ -759,7 +767,7 @@ void a3demo_loadShaders(a3_DemoState *demoState)
 
 // utility to load textures
 void a3demo_loadTextures(a3_DemoState* demoState)
-{	
+{
 	// indexing
 	a3_Texture* tex;
 	a3ui32 i;
@@ -888,11 +896,157 @@ void a3demo_loadFramebuffers(a3_DemoState* demoState)
 //-----------------------------------------------------------------------------
 
 // internal utility for refreshing drawable
-inline void a3_refreshDrawable_internal(a3_VertexDrawable *drawable, a3_VertexArrayDescriptor *vertexArray, a3_IndexBuffer *indexBuffer)
+inline void a3_refreshDrawable_internal(a3_VertexDrawable* drawable, a3_VertexArrayDescriptor* vertexArray, a3_IndexBuffer* indexBuffer)
 {
 	drawable->vertexArray = vertexArray;
 	if (drawable->indexType)
 		drawable->indexBuffer = indexBuffer;
+}
+
+void a3demo_loadClipData(a3_DemoState* demoState)
+{
+	//the following code is derived from our material parser from Graphics 2 because it's a good skeleton for file loading
+	a3_Stream fs[1] = { 0 };
+	a3ui32 fileLength = a3streamLoadContents(&fs[0], "../../../../resource/animdata/test_clips.txt");
+	printf("%d", fileLength);
+	a3byte fromFile = fileLength > 0;
+	//lab 1
+	if (!fromFile)
+	{
+		//initialize basic data
+		demoState->controllerIndex = 0;
+		demoState->keyframeCount = 32;
+		demoState->clipCount = 8;
+		demoState->controllerCount = 4;
+		demoState->globalPlaybackDir = 0;
+		demoState->globalSpeedMod = 1.0f;
+
+		//create keyframe pool and keyframes. The complex for loop is to have a more varied pattern of keyframe values
+		a3keyframePoolCreate(demoState->keyPool, demoState->keyframeCount);
+		for (a3ui8 i = 0; i < demoState->keyframeCount; i++)
+		{
+			a3_Sample* samp = malloc(sizeof(a3_Sample));
+			a3real val = 0; //creates keyframes in a 0,2,1,3,2,4,3,5,4,6,5,7 pattern (+2, -1)
+			if (i != 0)
+			{
+				if (i % 2 == 1)
+				{
+					val = demoState->keyPool->keyframeArray[i - 1].sample.value + 2;
+				}
+				else
+				{
+					val = demoState->keyPool->keyframeArray[i - 1].sample.value - 1;
+				}
+
+			}
+			samp->sample.x = 0;	// Need to assign this correctly
+			samp->sample.y = val;
+
+			a3keyframeInit(&demoState->keyPool->keyframeArray[i], (float)((rand() % 4) + 1), samp);
+		}
+
+		a3clipPoolCreate(demoState->clipPool, demoState->clipCount);
+
+		/**
+		creating names dynamically was posing a problem and this system seems to work.
+		any time we tried to use the string "Clip" and appending a number would result in the string
+		not being cleared after the next iteration (probably a wayward compiler optimization). This led to names like
+		"Clip0", "Clip01", "Clip012", "Clip0123". It became less of a headache to assemble the names character by character.
+		*/
+		a3byte** clipNames = malloc(demoState->clipCount * sizeof(a3byte*));
+		a3byte** ctrlNames = malloc(demoState->controllerCount * sizeof(a3byte*));
+		for (a3ui8 i = 0; i < demoState->clipCount; i++)
+		{
+			/**
+			 4 characters for "Clip" (using a string caused issues, so I'm doing it character-by character)
+			 and then enough characters to fit the string representation of demoState->clipCount. A number's digit count can be expressed as floor(log10(x)) + 1.
+			*/
+			int charlen = 4 + (int)floor(log10((int)demoState->clipCount)) + 1;
+			if (clipNames != NULL) //intellisense wanted this. in case there is insufficient memory
+			{
+				clipNames[i] = malloc(charlen * sizeof(a3byte));
+				if (clipNames[i] != NULL)
+				{
+					clipNames[i][0] = 'C';
+					clipNames[i][1] = 'l'; //there's an intellisense warning on this line. There is no reason for it.
+					clipNames[i][2] = 'i';
+					clipNames[i][3] = 'p';
+					_itoa(i, clipNames[i] + 4, 10);
+				}
+			}
+		}
+
+		//the same comment from above applies here too
+		for (a3ui8 i = 0; i < demoState->controllerCount; i++)
+		{
+			int charlen = 4 + (int)floor(log10((int)demoState->controllerCount)) + 1;
+			if (ctrlNames != NULL) //intellisense wanted this in case there is insufficient memory
+			{
+				ctrlNames[i] = malloc(charlen * sizeof(a3byte));
+				if (ctrlNames[i] != NULL)
+				{
+					ctrlNames[i][0] = 'C';
+					ctrlNames[i][1] = 't'; //there's an intellisense warning on this line. There is no reason for it.
+					ctrlNames[i][2] = 'r';
+					ctrlNames[i][3] = 'l';
+					_itoa(i, ctrlNames[i] + 4, 10);
+				}
+			}
+		}
+
+		//initialize clips
+		for (a3ui8 clip = 0; clip < demoState->clipCount; clip++)
+		{
+			if (clipNames != NULL && clipNames[clip] != NULL)
+			{
+				a3clipInit(demoState->clipPool->clipArray + clip, clipNames[clip], demoState->keyPool, clip * demoState->keyframeCount / demoState->clipCount, (clip + 1) * demoState->keyframeCount / demoState->clipCount - 1);
+				a3clipCalculateDuration(demoState->clipPool->clipArray + clip);
+			}
+		}
+		//initialize controllers
+		for (a3ui8 controller = 0; controller < demoState->controllerCount; controller++)
+		{
+			if (ctrlNames != NULL && ctrlNames[controller] != NULL)
+			{
+				a3clipControllerInit(demoState->controllers + controller, ctrlNames[controller], demoState->clipPool, controller);
+			}
+		}
+	}
+	else
+	{
+		//project 1 code. a3streamObjectRead() call is used because we used it in Graphics 2
+		//parser
+		a3streamObjectRead(&fs[0], demoState, (a3_StreamReadFunc)a3animationParseFile);
+		//angles from PI/4 to 2PI
+		a3f64 radAngles[] = { M_PI_4, M_PI_2, 3 * M_PI_4, M_PI, 5 * M_PI_4, 6 * M_PI_4, 7 * M_PI_4, 2 * M_PI };
+
+		//some basic variable initialization
+		demoState->waypointCount = 8;
+		demoState->controllerCount = 6;
+		demoState->globalPlaybackDir = 0;
+		demoState->globalSpeedMod = 1.0f;
+		demoState->waypoints = calloc(8, sizeof(a3vec3));
+
+		float rad = 6.0f;
+		//creates waypoints based on a unit circle. Radius is 6
+		for (int i = 0; i < demoState->waypointCount; i++)
+		{
+			(demoState->waypoints + i)->x = rad * (a3f32)cos(radAngles[i]);
+			(demoState->waypoints + i)->y = rad * (a3f32)sin(radAngles[i]);
+			float heightInput = rad * (a3f32)(i * M_PI / 8.0f);
+			(demoState->waypoints + i)->z = ((rad/2.0f) * (a3f32)cos(heightInput)) + (rad / 2.0f);
+		}
+
+		//initializes controllers with names matching their controlled object.
+		a3byte* ctrlNames[] = { "Box", "Sphere", "Cylinder", "Capsule", "Torus", "Teapot" };
+		for (a3ui8 controller = 0; controller < demoState->controllerCount; controller++)
+		{
+			if (ctrlNames != NULL && ctrlNames[controller] != NULL)
+			{
+				a3clipControllerInit(demoState->controllers + controller, ctrlNames[controller], demoState->clipPool, controller % demoState->clipCount);
+			}
+		}
+	}
 }
 
 

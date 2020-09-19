@@ -26,6 +26,11 @@
 	********************************************
 */
 
+
+/*
+	Animation Framework Addons by Scott Dagen
+*/
+
 #ifndef __ANIMAL3D_DEMOSTATE_H
 #define __ANIMAL3D_DEMOSTATE_H
 
@@ -44,6 +49,7 @@
 #include "_a3_demo_utilities/a3_DemoShaderProgram.h"
 
 #include "a3_DemoMode0_Starter.h"
+#include "_animation/a3_KeyframeAnimationController.h"
 #include "a3_DemoMode1_Animation.h"
 
 
@@ -79,7 +85,7 @@ enum a3_DemoState_TextDisplayName
 	demoState_textControls,			// display controls
 	demoState_textControls_gen,		// display general controls
 	demoState_textData,				// display data
-
+	demoState_textClipController,	// display debug info for clips
 	demoState_text_max
 };
 
@@ -312,10 +318,35 @@ struct a3_DemoState
 
 	// managed objects, no touchie
 	a3_VertexDrawable dummyDrawable[1];
-
-
 	//-------------------------------------------------------------------------
 	// the end
+
+	//beginning of animation variables
+	//union of controllers, one per scene object
+	union {
+		a3_ClipController controllers[6];
+		struct {
+			a3_ClipController
+				controller_box[1],
+				controller_sphere[1],
+				controller_cylinder[1],
+				controller_capsule[1],
+				controller_torus[1],
+				controller_teapot[1];
+		};
+	};
+	a3ui8 controllerIndex;
+	a3_KeyframePool keyPool[1];
+	a3_ClipPool clipPool[1];
+
+	a3ui8 keyframeCount;
+	a3ui8 clipCount;
+	a3ui8 controllerCount;
+	a3f32 globalSpeedMod;
+	a3i32 globalPlaybackDir; //serves as a secondary modifier/lock on top of the clip controller play directions.
+	a3ui8 waypointCount; //these are hardcoded currently to allow for a perfect circle but we COULD read them from a file.
+	a3vec3 *waypoints; //array of waypoints calculated in the load function. Based on a circle of radius 6
+	//end of animation variables
 };
 
 

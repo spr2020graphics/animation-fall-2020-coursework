@@ -23,6 +23,10 @@
 	limited in what one can do with this; could potentially be so much more.
 */
 
+/*
+	Animation Framework Addons by Cameron Schneider and Scott Dagen
+*/
+
 #ifndef __ANIMAL3D_KEYFRAMEANIMATIONCONTROLLER_H
 #define __ANIMAL3D_KEYFRAMEANIMATIONCONTROLLER_H
 
@@ -42,24 +46,65 @@ typedef struct a3_ClipController			a3_ClipController;
 
 //-----------------------------------------------------------------------------
 
-// clip controller
+// clip controller (Cameron Schneider & Scott Dagen)
 // metaphor: playhead
 struct a3_ClipController
 {
 	a3byte name[a3keyframeAnimation_nameLenMax];
+
+	// Index of clip to control in the referenced clip pool, aka which clip is currently playing
+	a3ui32 clipIndex;
+
+	// Current time relative to start of clip [0, currentClipDuration)
+	a3f32 clipTime;
+
+	// Normalized clip time, between 0 and 1
+	a3f32 clipParameter;
+
+	// Index of the current keyframe in the current clip's keyframe pool (essentially the progress in the clip)
+	a3ui32 keyframeIndex; //keyframeIndex1 (also need more for Catmull, but we should just use math on the indices, and use a function to retrieve a pointer to the right keyframe to avoid those long statements)
+
+	// TODO: MAKE KEYFRAME0PTR and KEYFRAME1PTR
+
+	// Current time relative to current keyframe (between 0 and current keyframe's duration)
+	a3f32 keyframeTime;
+
+	// Normalized keyframe time, between 0 and 1
+	a3f32 keyframeParameter;
+
+	// Corresponds to the above enum
+	a3i32 playbackDir;
+
+	// Referenced pool of clips this controller has control over (we have the clip index above)
+	const a3_ClipPool* clipPool;
+
+	// Local modifier for playback speed, used per-controller
+	a3f32 speedMod;
+
+	// Used as part of a transition, delays a pause for one full keyframe.
+	a3boolean delayedPause;
 };
 
 
 //-----------------------------------------------------------------------------
 
-// initialize clip controller
+// initialize clip controller (Cameron Schneider)
 a3i32 a3clipControllerInit(a3_ClipController* clipCtrl_out, const a3byte ctrlName[a3keyframeAnimation_nameLenMax], const a3_ClipPool* clipPool, const a3ui32 clipIndex_pool);
 
-// update clip controller
+// update clip controller (Cameron Schneider)
 a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt);
 
-// set clip to play
+// set clip to play (Scott Dagen)
 a3i32 a3clipControllerSetClip(a3_ClipController* clipCtrl, const a3_ClipPool* clipPool, const a3ui32 clipIndex_pool);
+
+// get a specified keyframe from the current clip
+a3i32 a3clipControllerGetKeyframeFromIndex(a3_ClipController* clipCtrl, const a3ui32 index, a3_Keyframe* keyframe_out);
+
+// get a specified clip from the current clip pool
+a3i32 a3clipControllerGetClipFromIndex(a3_ClipController* clipCtrl, const a3ui32 index, a3_Clip* clip_out);
+
+// evaluate the current value at time
+a3i32 a3clipControllerEvaluate(a3_ClipController const* clipCtrl, a3_Sample* sample_out);
 
 
 //-----------------------------------------------------------------------------

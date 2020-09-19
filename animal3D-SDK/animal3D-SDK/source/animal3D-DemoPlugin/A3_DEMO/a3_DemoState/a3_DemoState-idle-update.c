@@ -17,7 +17,7 @@
 /*
 	animal3D SDK: Minimal 3D Animation Framework
 	By Daniel S. Buckstein
-	
+
 	a3_DemoState_idle-update.c/.cpp
 	Demo state function implementations.
 
@@ -28,6 +28,10 @@
 	****************************************************
 */
 
+/*
+	Animation Framework Addons by Cameron Schneider
+*/
+
 //-----------------------------------------------------------------------------
 
 #include "../a3_DemoState.h"
@@ -36,7 +40,7 @@
 //-----------------------------------------------------------------------------
 // GENERAL UTILITIES
 
-void a3demo_applyScale_internal(a3_DemoSceneObject *sceneObject, a3real4x4p s)
+void a3demo_applyScale_internal(a3_DemoSceneObject* sceneObject, a3real4x4p s)
 {
 	if (sceneObject->scaleMode)
 	{
@@ -131,10 +135,94 @@ void a3demo_update_pointLight(a3_DemoSceneObject* obj_camera, a3_DemoPointLight*
 //-----------------------------------------------------------------------------
 // UPDATE
 
-void a3demo_update(a3_DemoState *demoState, a3f64 const dt)
+/// <summary>
+/// Extracts some shared functionality in a3demo_update when handling transitions between clips. Retrieves the sample value of the next clip
+/// </summary>
+/// <param name="currentClip">The clip we're examining</param>
+/// <param name="forward">The play direction</param>
+/// <returns></returns>
+a3real a3_peek_keyframe_transition_value(a3_Clip* currentClip, a3boolean forward)
+{
+	a3_ClipTransition* clipTransition = forward ? &currentClip->forwardTransition : &currentClip->reverseTransition;
+	a3_Clip* tempClip = &clipTransition->targetClipPool->clipArray[a3clipGetIndexInPool(clipTransition->targetClipPool, clipTransition->targetClipName)];
+	a3real retVal = 0;
+	a3ui32 pauseIndex = 0;
+	switch (clipTransition->transition)
+	{
+	case a3clipTransitionPause:
+		pauseIndex = forward ? currentClip->lastKeyframeIndex : currentClip->firstKeyframeIndex;
+		retVal = currentClip->keyframes->keyframeArray[pauseIndex].sample.value;
+		break;
+	case a3clipTransitionForward:
+	case a3clipTransitionForwardPause:
+	case a3clipTransitionForwardFrame:
+		retVal = (tempClip->keyframes->keyframeArray[tempClip->firstKeyframeIndex]).sample.value;
+		break;
+	case a3clipTransitionForwardSkip:
+		retVal = (tempClip->keyframes->keyframeArray[tempClip->firstKeyframeIndex + 1]).sample.value;
+		break;
+	case a3clipTransitionReverse:
+	case a3clipTransitionReversePause:
+	case a3clipTransitionReverseFrame:
+		retVal = (tempClip->keyframes->keyframeArray[tempClip->lastKeyframeIndex]).sample.value;
+		break;
+	case a3clipTransitionReverseSkip:
+		retVal = (tempClip->keyframes->keyframeArray[tempClip->lastKeyframeIndex - 1]).sample.value;
+	}
+	return retVal;
+}
+/// <param name="dt">delta time, in SECONDS</param>
+void a3demo_update(a3_DemoState* demoState, a3f64 const dt)
 {
 	demoState->demoModeCallbacksPtr->handleUpdate(demoState,
 		demoState->demoModeCallbacksPtr->demoMode, dt);
+
+	// Update all clip controllers
+	for (int i = 0; i < demoState->controllerCount; i++)
+	{
+		a3_ClipController* ctrl = &demoState->controllers[i];
+		a3clipControllerUpdate(ctrl, (a3real)dt * demoState->globalPlaybackDir * demoState->globalSpeedMod);
+
+		//assign position based on the waypoint
+		a3_Clip* clip = ctrl->clipPool->clipArray + ctrl->clipIndex;
+		a3real val1 = (clip->keyframes->keyframeArray + ctrl->keyframeIndex)->sample.value;
+		a3real val2 = val1; //default case for pausing. Lerping ceases to work when paused because it doesn't know the direction it _was_ going.
+
+		if (ctrl->playbackDir == 1) //forward
+		{
+			//still within clip
+			if (ctrl->keyframeIndex + 1 <= clip->lastKeyframeIndex)
+			{
+				val2 = (clip->keyframes->keyframeArray + ctrl->keyframeIndex + 1)->sample.value;
+			}
+			else
+			{
+				//transitioning, checking next clip forwards
+				val2 = a3_peek_keyframe_transition_value(clip, true);
+			}
+			demoState->demoMode0_starter->object_scene[i + 2].position = a3vecLerp(demoState->waypoints[(int)val1], demoState->waypoints[(int)val2], ctrl->keyframeParameter);
+		}
+		else if (ctrl->playbackDir == -1) //reverse
+		{
+			//still within clip
+			if (ctrl->keyframeIndex - 1 >= clip->firstKeyframeIndex)
+			{
+				val2 = (clip->keyframes->keyframeArray + ctrl->keyframeIndex - 1)->sample.value;
+			}
+			else
+			{
+				//transitioning, checking next clip in reverse
+				val2 = a3_peek_keyframe_transition_value(clip, false);
+			}
+			demoState->demoMode0_starter->object_scene[i + 2].position = a3vecLerp(demoState->waypoints[(int)val1], demoState->waypoints[(int)val2], 1.0f - ctrl->keyframeParameter);
+		}
+		else
+		{
+			demoState->demoMode0_starter->object_scene[i + 2].position = demoState->waypoints[(int)val1];
+		}
+
+		
+	}
 }
 
 

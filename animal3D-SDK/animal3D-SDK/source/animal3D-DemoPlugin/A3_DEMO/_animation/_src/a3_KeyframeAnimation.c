@@ -22,10 +22,15 @@
 	Implementation of keyframe animation interfaces.
 */
 
+/*
+	Animation Framework Addons by Scott Dagen and Cameron Schneider
+*/
+
 #include "../a3_KeyframeAnimation.h"
 
 #include <stdlib.h>
 #include <string.h>
+#include <A3_DEMO\a3_DemoState.h>
 
 
 // macros to help with names
@@ -38,45 +43,134 @@
 // allocate keyframe pool
 a3i32 a3keyframePoolCreate(a3_KeyframePool* keyframePool_out, const a3ui32 count)
 {
-	return -1;
+	if (count < 0)
+	{
+		// Don't init with negative numbers please.
+		return -1;
+	}
+
+	keyframePool_out->count = count;
+	keyframePool_out->keyframeArray = malloc(sizeof(a3_Keyframe) * count);
+
+	//loop through all frames to create, then init them with 0. Each frame needs a re-init later (probably, unless you want a lot of 0 keyframes)
+	for (a3ui32 i = 0; i < count; i++)
+	{
+		a3_Sample* samp = malloc(sizeof(a3_Sample));
+		samp->sample.x = 0;
+		samp->sample.y = 0;
+
+		if (keyframePool_out->keyframeArray != NULL)
+		{
+			keyframePool_out->keyframeArray[i].index = i; //intellisense error for buffer overrun
+			a3keyframeInit(&keyframePool_out->keyframeArray[i], 1, samp);
+		}
+	}
+	return 1;
 }
 
 // release keyframe pool
 a3i32 a3keyframePoolRelease(a3_KeyframePool* keyframePool)
 {
-	return -1;
+	free(keyframePool->keyframeArray);
+	free(keyframePool);
+
+	return 1;
 }
 
-// initialize keyframe
-a3i32 a3keyframeInit(a3_Keyframe* keyframe_out, const a3real duration, const a3ui32 value_x)
+// initialize keyframe with default values. Passing in a null keyframe returns -1.
+a3i32 a3keyframeInit(a3_Keyframe* keyframe_out, const a3real duration, const a3_Sample* samp)
 {
-	return -1;
+	if (keyframe_out == NULL)
+	{
+		return -1;
+	}
+	keyframe_out->duration = duration;
+	keyframe_out->durInv = 1.0f / duration;
+	keyframe_out->sample = *samp;
+	return 1;
 }
 
 
 // allocate clip pool
 a3i32 a3clipPoolCreate(a3_ClipPool* clipPool_out, const a3ui32 count)
 {
-	return -1;
+	if (count < 0)
+	{
+		return -1;
+	}
+
+	clipPool_out->count = count;
+	clipPool_out->clipArray = malloc(sizeof(a3_Clip) * count);
+
+	//loop through all clips to create and init with default values. Needs another init call later for anything to work.
+	for (a3ui32 i = 0; i < count; i++)
+	{
+		if (clipPool_out->clipArray != NULL)
+		{
+			clipPool_out->clipArray[i].index = i; //intellisense error for buffer overrun
+			a3clipInit(&clipPool_out->clipArray[i], A3_CLIP_DEFAULTNAME, NULL, 0, 0);
+		}
+	}
+
+	return 1;
 }
 
 // release clip pool
 a3i32 a3clipPoolRelease(a3_ClipPool* clipPool)
 {
-	return -1;
+	free(clipPool->clipArray);
+	free(clipPool);
+
+	return 1;
 }
 
 // initialize clip with first and last indices
 a3i32 a3clipInit(a3_Clip* clip_out, const a3byte clipName[a3keyframeAnimation_nameLenMax], const a3_KeyframePool* keyframePool, const a3ui32 firstKeyframeIndex, const a3ui32 finalKeyframeIndex)
 {
-	return -1;
+	if (clip_out == NULL)
+	{
+		return -1;
+	}
+	memcpy(clip_out->name, clipName, a3keyframeAnimation_nameLenMax); //copies the clipName into clip_out->name. The first way we tried this yielded an error.
+	clip_out->keyframes = keyframePool;
+	clip_out->firstKeyframeIndex = firstKeyframeIndex;
+	clip_out->lastKeyframeIndex = finalKeyframeIndex;
+	clip_out->keyframeCount = finalKeyframeIndex - firstKeyframeIndex + 1; //need to include both!
+	return 1;
 }
 
 // get clip index from pool
 a3i32 a3clipGetIndexInPool(const a3_ClipPool* clipPool, const a3byte clipName[a3keyframeAnimation_nameLenMax])
 {
+	a3ui32 poolCount = clipPool->count;
+
+	for (a3ui32 i = 0; i < poolCount; i++)
+	{
+		if (strcmp(clipPool->clipArray[i].name, clipName) == 0)
+		{
+			return clipPool->clipArray[i].index;
+		}
+	}
+
 	return -1;
 }
 
+/// <summary>
+/// Basic lerp for vectors
+/// </summary>
+/// <param name="v1">first input</param>
+/// <param name="v2">second input</param>
+/// <param name="u">interpolation param</param>
+/// <returns>the interpolated vec3</returns>
+a3vec3 a3vecLerp(a3vec3 v1, a3vec3 v2, a3real u)
+{
+	a3vec3 result;
+
+	result.x = v1.x + (v2.x - v1.x) * u;
+	result.y = v1.y + (v2.y - v1.y) * u;
+	result.z = v1.z + (v2.z - v1.z) * u;
+
+	return result;
+}
 
 //-----------------------------------------------------------------------------

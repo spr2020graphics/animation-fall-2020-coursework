@@ -17,7 +17,7 @@
 /*
 	animal3D SDK: Minimal 3D Animation Framework
 	By Daniel S. Buckstein
-	
+
 	a3_DemoState_idle-render.c/.cpp
 	Demo state function implementations.
 
@@ -26,6 +26,10 @@
 	*** Implement your demo logic pertaining to      ***
 	***     RENDERING THE STATS in this file.        ***
 	****************************************************
+*/
+
+/*
+	Animation Framework Addons by Scott Dagen
 */
 
 //-----------------------------------------------------------------------------
@@ -170,6 +174,116 @@ void a3demo_render_data(const a3_DemoState* demoState,
 		"Reload all shader programs: 'P' ****CHECK CONSOLE FOR ERRORS!**** ");
 }
 
+// render hud for test interface
+void a3demo_render_clipController(a3_DemoState const* demoState,
+	a3_TextRenderer const* text, a3vec4 const col,
+	a3f32 const textAlign, a3f32 const textDepth, a3f32 const textOffsetDelta, a3f32 textOffset)
+{
+	// boolean text
+	a3byte const boolText[2][4] = {
+		"OFF",
+		"ON ",
+	};
+
+	// toggle controller
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"SELECTED CONTROLLER (rotate 'r') %d | CLIP COUNT: %d | KEYFRAME COUNT: %d",
+		demoState->controllerIndex,
+		demoState->clipCount,
+		demoState->keyframeCount);
+
+	// select clip
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"SWITCH CLIP INDEX (%u) ('1' prev | next '2')", demoState->controllers[demoState->controllerIndex].clipIndex);
+
+	// switch start frame
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"SWITCH START KEYFRAME (%u) ('3' prev | next '4')",
+		demoState->controllers[demoState->controllerIndex].clipPool->clipArray[demoState->controllers[demoState->controllerIndex].clipIndex].firstKeyframeIndex);
+
+	// switch end frame
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"SWITCH LAST KEYFRAME (%u) ('5' prev | next '6')",
+		demoState->controllers[demoState->controllerIndex].clipPool->clipArray[demoState->controllers[demoState->controllerIndex].clipIndex].lastKeyframeIndex);
+
+	//global pause
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"PAUSE ('o' local, 'O' global (%s))",
+		demoState->globalPlaybackDir == 0 ? "TRUE" : "FALSE");
+
+	//global speed
+	a3textDraw(text, textAlign + 1.0f, textOffset, textDepth, col.r, col.g, col.b, col.a,
+		"SPEED ('7'/'8' local, '&'/'*' GLOBAL (%.1f))",
+		demoState->globalSpeedMod);
+
+	//global reverse
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"SWITCH PLAYBACK DIR ('v' local, 'V' global (%d))",
+		demoState->globalPlaybackDir);
+
+	const a3_ClipController* ctrl = &demoState->controllers[demoState->controllerIndex];
+	const a3_Clip* clip = &ctrl->clipPool->clipArray[ctrl->clipIndex];
+
+	textOffset += textOffsetDelta;
+
+	//TL line 1: Controller + Clip name
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"CLIP CONTROLLER: %s | CLIP: %s (%d)",
+		ctrl->name,
+		clip->name,
+		a3clipGetIndexInPool(ctrl->clipPool, clip->name));  //this is here so it gets used at all. We don't need it
+
+	//TL line 2: Clip Time/Parameter
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"CLIP TIME: %.3f | PARAMETER: %.3f",
+		ctrl->clipTime, ctrl->clipParameter);
+
+	//TL line 3: Keyframe Time/Parameter
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"KEYFRAME TIME: %.3f | PARAMETER: %.3f",
+		ctrl->keyframeTime, ctrl->keyframeParameter);
+
+	//TL line 4: start/end frames
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"START FRAME: %d | LAST FRAME: %d",
+		clip->firstKeyframeIndex, clip->lastKeyframeIndex);
+
+	//TL line 5: current frame and value
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"CURRENT FRAME: %d | VALUE: %.3f",
+		ctrl->keyframeIndex, clip->keyframes->keyframeArray[ctrl->keyframeIndex].sample.value);
+
+	//TL line 6: paused, direction, and speed
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"PAUSED: %s | PLAYDIR: %d | SPEEDMOD: %.1f",
+		ctrl->playbackDir == 0 ? "TRUE " : "FALSE",
+		ctrl->playbackDir,
+		ctrl->speedMod);
+
+	// global controls
+	textOffset = -0.8f;
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"Toggle text display:        't' (toggle) | 'T' (alloc/dealloc) ");
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"Reload all shader programs: 'P' ****CHECK CONSOLE FOR ERRORS!**** ");
+
+	// input-dependent controls
+	textOffset = -0.6f;
+	if (a3XboxControlIsConnected(demoState->xcontrol))
+	{
+		a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+			"Xbox controller camera control: ");
+		a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+			"    Left joystick = rotate | Right joystick, triggers = move");
+	}
+	else
+	{
+		a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+			"Keyboard/mouse camera control: ");
+		a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+			"    Left click & drag = rotate | WASDEQ = move | wheel = zoom");
+	}
+}
 /*
 // bloom iteration
 void a3demo_render_bloomIteration(a3_DemoState const* demoState, a3real2 pixelSize, a3_Framebuffer const* fbo_prev,
@@ -247,6 +361,9 @@ void a3demo_render(a3_DemoState const* demoState, a3f64 const dt)
 				// general data
 			case demoState_textData:
 				a3demo_render_data(demoState, text, col, textAlign + x, textDepth, textOffsetDelta, textOffset + y);
+				break;
+			case demoState_textClipController: //render animation debug
+				a3demo_render_clipController(demoState, text, col, textAlign + x, textDepth, textOffsetDelta, textOffset + y);
 				break;
 			}
 		}

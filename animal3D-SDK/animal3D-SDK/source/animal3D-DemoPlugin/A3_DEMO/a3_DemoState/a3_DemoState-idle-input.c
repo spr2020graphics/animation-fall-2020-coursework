@@ -28,11 +28,17 @@
 	****************************************************
 */
 
+
+/*
+	Animation Framework Addons by Scott Dagen
+*/
+
 //-----------------------------------------------------------------------------
 
 #include "../a3_DemoState.h"
 
 #include "../_a3_demo_utilities/a3_DemoMacros.h"
+#include <stdlib.h>
 
 
 //-----------------------------------------------------------------------------
@@ -144,6 +150,70 @@ void a3demo_input_keyCharPress(a3_DemoState* demoState, a3i32 const asciiKey)
 		a3demoCtrlCasesLoop(demoState->demoMode, demoState_mode_max, '>', '<');
 		a3demoCtrlCasesLoop(demoState->demoMode, demoState_mode_max, '.', ',');
 
+		//rotate through controllers (one way)
+		a3demoCtrlCaseIncLoop(demoState->controllerIndex, demoState->controllerCount, 'r');
+
+		//rotate through clips. Can't use a general CtrlLoop because we need to call a function
+	case '1':
+		a3clipControllerSetClip(
+			demoState->controllers + demoState->controllerIndex,
+			demoState->clipPool,
+			a3demoCtrlDecLoop(demoState->controllers[demoState->controllerIndex].clipIndex, demoState->clipCount));
+		break;
+	case '2':
+		a3clipControllerSetClip(
+			demoState->controllers + demoState->controllerIndex,
+			demoState->clipPool,
+			a3demoCtrlIncLoop(demoState->controllers[demoState->controllerIndex].clipIndex, demoState->clipCount));
+		break;
+
+		//control the first frame of the selected clip
+		a3demoCtrlCasesCap(
+			demoState->controllers[demoState->controllerIndex].clipPool
+			->clipArray[demoState->controllers[demoState->controllerIndex].clipIndex]
+			.firstKeyframeIndex,
+			demoState->controllers[demoState->controllerIndex].clipPool
+			->clipArray[demoState->controllers[demoState->controllerIndex].clipIndex]
+			.lastKeyframeIndex - 1, //highest is the last frame - 1
+			(a3ui32)0, //lowest is zero
+			'4', '3');
+
+		//control the last frame of the selected clip
+		a3demoCtrlCasesCap(
+			demoState->controllers[demoState->controllerIndex].clipPool
+			->clipArray[demoState->controllers[demoState->controllerIndex].clipIndex]
+			.lastKeyframeIndex, demoState->keyframeCount - (a3ui32)1, //highest is the keycount - 1
+			demoState->controllers[demoState->controllerIndex].clipPool
+			->clipArray[demoState->controllers[demoState->controllerIndex].clipIndex]
+			.firstKeyframeIndex + 1, //lowest is the first frame + 1
+			'6', '5');
+
+		//local and global pauses
+		a3demoCtrlCaseToggle(demoState->controllers[demoState->controllerIndex].playbackDir, 'o');
+		a3demoCtrlCaseToggle(demoState->globalPlaybackDir, 'O');
+
+		//reverse playback (local and global)
+	case 'v':
+		demoState->controllers[demoState->controllerIndex].playbackDir *= -1;
+		break;
+	case 'V':
+		demoState->globalPlaybackDir *= -1;
+		break;
+
+		//alter speed modifier (local/global)
+	case '7':
+		demoState->controllers[demoState->controllerIndex].speedMod = max(0.1f, demoState->controllers[demoState->controllerIndex].speedMod - 0.1f);
+		break;
+	case '8':
+		demoState->controllers[demoState->controllerIndex].speedMod += 0.1f;
+		break;
+	case '&':
+		demoState->globalSpeedMod = max(0.1f, demoState->globalSpeedMod - 0.1f);
+		break;
+	case '*':
+		demoState->globalSpeedMod += 0.1f;
+		break;
+
 		// toggle grid
 		a3demoCtrlCaseToggle(demoState->displayGrid, 'g');
 
@@ -173,6 +243,18 @@ void a3demo_input_keyCharPress(a3_DemoState* demoState, a3i32 const asciiKey)
 
 		// toggle stencil test
 		a3demoCtrlCaseToggle(demoState->skipIntermediatePasses, 'I');
+	}
+
+	//if the clip start or end frame was changed, recalculate duration
+	switch (asciiKey)
+	{
+	case '3':
+	case '4':
+	case '5':
+	case '6':
+		a3clipCalculateDuration(&demoState->controllers[demoState->controllerIndex].clipPool
+			->clipArray[demoState->controllers[demoState->controllerIndex].clipIndex]);
+		break;
 	}
 
 

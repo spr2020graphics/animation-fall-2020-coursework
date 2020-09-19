@@ -22,6 +22,10 @@
 	Inline definitions for keyframe animation.
 */
 
+/*
+	Animation Framework Addons by Scott Dagen
+*/
+
 #ifdef __ANIMAL3D_KEYFRAMEANIMATION_H
 #ifndef __ANIMAL3D_KEYFRAMEANIMATION_INL
 #define __ANIMAL3D_KEYFRAMEANIMATION_INL
@@ -32,13 +36,46 @@
 // calculate clip duration as sum of keyframes' durations
 inline a3i32 a3clipCalculateDuration(a3_Clip* clip)
 {
-	return -1;
+	clip->duration = 0.0f;
+	//loop through frames and add duration.
+	for (a3ui32 frame = clip->firstKeyframeIndex; frame <= clip->lastKeyframeIndex; frame++)
+	{
+		clip->duration += clip->keyframes->keyframeArray[frame].duration;
+	}
+	//error case if there are no frames
+	if (clip->duration == 0)
+	{
+		clip->duration = 1;
+		clip->durInv = 1;
+		return -1;
+	}
+	else
+	{
+		clip->durInv = 1.0f / clip->duration;
+	}
+	return 1;
 }
 
 // calculate keyframes' durations by distributing clip's duration
 inline a3i32 a3clipDistributeDuration(a3_Clip* clip, const a3real newClipDuration)
 {
-	return -1;
+	if (newClipDuration == 0)
+	{
+		return -1;
+	}
+	//if clip didn't have a duration, it should be calculated first. Worst case, there's a useless O(n) call.
+	a3clipCalculateDuration(clip);
+	//ratio between old duration and new. Keyframe.duration * durInv normalizes it, newClipDuration rescales it
+	a3f32 durationRatio = newClipDuration * clip->durInv;
+	//iterate through frames and dynamically set their new duration.
+	for (a3ui32 frame = clip->firstKeyframeIndex; frame <= clip->lastKeyframeIndex; frame++)
+	{
+		a3f32 cachedDur = clip->keyframes->keyframeArray[frame].duration;
+		a3f32 newDur = cachedDur * durationRatio;
+		clip->keyframes->keyframeArray[frame].duration = newDur;
+		clip->keyframes->keyframeArray[frame].durInv = 1.0f / newDur;
+	}
+	return 1;
 }
 
 

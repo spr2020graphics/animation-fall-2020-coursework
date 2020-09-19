@@ -27,6 +27,10 @@
 	********************************************
 */
 
+/*
+	Animation Framework Addons by Scott Dagen
+*/
+
 
 #include "_a3_dylib_config_export.h"
 
@@ -91,6 +95,7 @@ void a3demo_input_keyCharHold(a3_DemoState* demoState, a3i32 const asciiKey);
 // idle loop
 void a3demo_input(a3_DemoState* demoState, a3f64 const dt);
 void a3demo_update(a3_DemoState* demoState, a3f64 const dt);
+void a3demo_render_clipController(a3_DemoState const* demoState, a3_TextRenderer const* text, a3vec4 const col, a3f32 const textAlign, a3f32 const textDepth, a3f32 const textOffsetDelta, a3f32 textOffset);
 void a3demo_render(a3_DemoState const* demoState, a3f64 const dt);
 
 
@@ -102,6 +107,7 @@ void a3demo_loadShaders(a3_DemoState* demoState);
 void a3demo_loadTextures(a3_DemoState* demoState);
 void a3demo_loadFramebuffers(a3_DemoState* demoState);
 void a3demo_loadValidate(a3_DemoState* demoState);
+void a3demo_loadClipData(a3_DemoState* demoState);
 
 // unloading
 void a3demo_unloadGeometry(a3_DemoState* demoState);
@@ -135,6 +141,9 @@ void a3demo_load(a3_DemoState* demoState)
 
 	// textures
 	a3demo_loadTextures(demoState);
+
+	// clip info
+	a3demo_loadClipData(demoState);
 
 
 	// set flags
