@@ -148,6 +148,15 @@ a3i32 a3spatialPoseConvert(a3mat4* mat_out, const a3_SpatialPose* spatialPose_in
 // copy operation for single node pose
 a3i32 a3spatialPoseCopy(a3_SpatialPose* spatialPose_out, const a3_SpatialPose* spatialPose_in);
 
+// init a spatial pose with default values
+a3i32 a3spatialPoseInitDefault(a3_SpatialPose* pose);
+
+// init a spatial pose with user-specified values
+a3i32 a3spatialPoseInit(a3_SpatialPose* pose,
+	a3real xPos, a3real yPos, a3real zPos,
+	a3real xRot, a3real yRot, a3real zRot,
+	a3real xScale, a3real yScale, a3real zScale);
+
 
 //-----------------------------------------------------------------------------
 
