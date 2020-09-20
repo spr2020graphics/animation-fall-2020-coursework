@@ -36,17 +36,7 @@ a3i32 a3spatialPoseInitDefault(a3_SpatialPose* pose)
 	}
 	if (pose)
 	{
-		pose->xPos = 0.0f;
-		pose->yPos = 0.0f;
-		pose->zPos = 0.0f;
-
-		pose->xRot = 0.0f;
-		pose->yRot = 0.0f;
-		pose->zRot = 0.0f;
-
-		pose->xScale = 0.0f;
-		pose->yScale = 0.0f;
-		pose->zScale = 0.0f;
+		a3spatialPoseReset(pose);
 	}
 	else
 	{

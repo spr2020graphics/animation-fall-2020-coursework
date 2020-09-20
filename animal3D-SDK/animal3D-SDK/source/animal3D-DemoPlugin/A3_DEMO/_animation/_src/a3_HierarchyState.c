@@ -138,5 +138,23 @@ a3i32 a3hierarchyPoseGroupLoadBVH(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 	return -1;
 }
 
+a3i32 a3hierarchyPoseInit(a3_HierarchyPose* pose, a3ui32 numPoses)
+{
+	if (!pose)
+	{
+		pose = calloc(1, sizeof(a3_HierarchyPose));
+	}
+	if (pose)
+	{
+		pose->spatialPose = calloc(numPoses, sizeof(a3_SpatialPose));
+		a3hierarchyPoseReset(pose, numPoses);
+	}
+	if (!pose)
+	{
+		return -1;
+	}
+	return 1;
+}
+
 
 //-----------------------------------------------------------------------------

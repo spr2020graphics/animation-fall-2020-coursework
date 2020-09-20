@@ -100,7 +100,8 @@ a3i32 a3hierarchyPoseConvert(const a3_HierarchyPose* pose_inout, const a3ui32 no
 // copy full hierarchy pose
 a3i32 a3hierarchyPoseCopy(const a3_HierarchyPose* pose_out, const a3_HierarchyPose* pose_in, const a3ui32 nodeCount);
 
-
+// initializes a hierarchy pose
+a3i32 a3hierarchyPoseInit(a3_HierarchyPose* pose, a3ui32 numPoses);
 //-----------------------------------------------------------------------------
 
 // initialize hierarchy state given an initialized hierarchy

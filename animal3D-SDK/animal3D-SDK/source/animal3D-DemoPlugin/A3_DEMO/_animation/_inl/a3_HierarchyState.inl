@@ -57,6 +57,10 @@ inline a3i32 a3hierarchyPoseReset(const a3_HierarchyPose* pose_inout, const a3ui
 {
 	if (pose_inout && nodeCount)
 	{
+		for (a3ui32 i = 0; i < nodeCount; i++)
+		{
+			a3spatialPoseReset(pose_inout->spatialPose + i);
+		}
 
 	}
 	return -1;
