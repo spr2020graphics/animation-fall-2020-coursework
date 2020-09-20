@@ -61,6 +61,21 @@ struct a3_HierarchyPoseGroup
 	// pointer to hierarchy
 	const a3_Hierarchy* hierarchy;
 
+	// Similar to keyframePool, this is jsut an array of spatial poses associated with the hierarchy and its poses
+	const a3_SpatialPose* spatialPosePool;
+
+	// Array of hierarchy poses to organize above spatial poses
+	const a3_HierarchyPose* hierarchyPosePool;
+
+	// Describes transform channels used by each node in the hierarchy
+	const a3_SpatialPoseChannel* channels;
+
+	// Euler order flag for concatenation order or orientation channels
+	a3_SpatialPoseEulerOrder eulerOrder;
+
+	// number of spatial poses
+	a3ui32 spatialPoseCount;
+
 	// number of hierarchical poses
 	a3ui32 poseCount;
 };
