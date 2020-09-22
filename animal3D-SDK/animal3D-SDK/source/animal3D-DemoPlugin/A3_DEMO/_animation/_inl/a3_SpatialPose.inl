@@ -83,6 +83,7 @@ inline a3i32 a3spatialPoseReset(a3_SpatialPose* spatialPose)
 		a3spatialPoseSetRotation(spatialPose, 0.0f, 0.0f, 0.0f);
 		a3spatialPoseSetScale(spatialPose, 1.0f, 1.0f, 1.0f);
 		a3spatialPoseSetTranslation(spatialPose, 0.0f, 0.0f, 0.0f);
+		spatialPose->transform = a3mat4_identity;
 
 		return 1;
 	}
@@ -94,7 +95,7 @@ inline a3i32 a3spatialPoseConvert(a3mat4* mat_out, const a3_SpatialPose* spatial
 {
 	if (mat_out && spatialPose_in)
 	{
-
+		// Algorithm in slides
 	}
 	return -1;
 }
@@ -104,13 +105,44 @@ inline a3i32 a3spatialPoseCopy(a3_SpatialPose* spatialPose_out, const a3_Spatial
 {
 	if (spatialPose_out && spatialPose_in)
 	{
+		// essentially step function if we were to use this to animate
 		spatialPose_out->position = spatialPose_in->position;
 		spatialPose_out->rotation = spatialPose_in->rotation;
 		spatialPose_out->scale = spatialPose_in->scale;
-		spatialPose_out->transform = spatialPose_in->transform;
+
 
 		return 1;
 	}
+	return -1;
+}
+
+inline a3i32 a3spatialPoseConcat(a3_SpatialPose* spatialPose_out, const a3_SpatialPose* spatialPose_lhs, const a3_SpatialPose* spatialPose_rhs)
+{
+	if (spatialPose_out && spatialPose_lhs && spatialPose_rhs)
+	{
+		// orientation -> o_lhs + o_rhs
+		// scale -> s_lhs * s_rhs (component-wise)
+		// translation -> t_lhs + t_rhs
+
+		return 1;
+	}
+
+	return -1;
+}
+
+
+inline a3i32 a3spatialPoseLerp(a3_SpatialPose* spatialPose_out, const a3_SpatialPose* spatialPose_0, const a3_SpatialPose* spatialPose_1, const a3real u)
+{
+	if (spatialPose_out && spatialPose_0 && spatialPose_0)
+	{
+		// transform - > no
+		// orientation -> lerp(o0, o1, u)
+		// scale -> lerp(s0, s1, u)
+		// translation -> lerp(t0, t1, u)
+
+		return 1;
+	}
+
 	return -1;
 }
 

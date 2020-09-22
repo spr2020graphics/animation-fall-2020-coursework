@@ -61,7 +61,7 @@ struct a3_HierarchyPoseGroup
 	// pointer to hierarchy
 	const a3_Hierarchy* hierarchy;
 
-	// Similar to keyframePool, this is jsut an array of spatial poses associated with the hierarchy and its poses
+	// Similar to keyframePool, this is just an array of spatial poses associated with the hierarchy and its poses
 	const a3_SpatialPose* spatialPosePool;
 
 	// Array of hierarchy poses to organize above spatial poses
@@ -84,7 +84,7 @@ struct a3_HierarchyPoseGroup
 // hierarchy state structure
 struct a3_HierarchyState
 {
-	// pointer to hierarcy
+	// pointer to hierarchy
 	const a3_Hierarchy* hierarchy;
 };
 	

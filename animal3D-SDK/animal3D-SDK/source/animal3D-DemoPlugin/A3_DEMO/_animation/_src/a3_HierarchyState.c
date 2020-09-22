@@ -48,6 +48,7 @@ a3i32 a3hierarchyPoseGroupCreate(a3_HierarchyPoseGroup *poseGroup_out, const a3_
 
 		// reset all data
 		poseGroup_out->poseCount = poseCount;
+
 		// done
 		return 1;
 	}
