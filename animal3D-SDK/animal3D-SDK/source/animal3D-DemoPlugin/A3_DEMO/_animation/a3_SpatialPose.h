@@ -100,28 +100,7 @@ enum a3_SpatialPoseChannel
 struct a3_SpatialPose
 {
 	a3mat4 transform;
-	union
-	{
-		a3vec3 rotation;
-		struct {
-			a3real xRot, yRot, zRot;
-		};
-	};
-	union
-	{
-		a3vec3 scale;
-		struct {
-			a3real xScale, yScale, zScale;
-		};
-	};
-	union
-	{
-		a3vec3 position;
-		struct
-		{
-			a3real xPos, yPos, zPos;
-		};
-	};
+	a3vec3 orientation, scale, position;
 };
 
 
@@ -151,9 +130,6 @@ a3i32 a3spatialPoseCopy(a3_SpatialPose* spatialPose_out, const a3_SpatialPose* s
 a3i32 a3spatialPoseConcat(a3_SpatialPose* spatialPose_out, const a3_SpatialPose* spatialPose_lhs, const a3_SpatialPose* spatialPose_rhs);
 
 a3i32 a3spatialPoseLerp(a3_SpatialPose* spatialPose_out, const a3_SpatialPose* spatialPose_0, const a3_SpatialPose* spatialPose_1, const a3real u);
-
-// init a spatial pose with default values
-a3i32 a3spatialPoseInitDefault(a3_SpatialPose* pose);
 
 // init a spatial pose with user-specified values
 a3i32 a3spatialPoseInit(a3_SpatialPose* pose,

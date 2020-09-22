@@ -17,7 +17,7 @@
 /*
 	animal3D SDK: Minimal 3D Animation Framework
 	By Daniel S. Buckstein
-	
+
 	a3_SpatialPose.c
 	Implementation of spatial pose.
 */
@@ -28,53 +28,19 @@
 
 //-----------------------------------------------------------------------------
 
-a3i32 a3spatialPoseInitDefault(a3_SpatialPose* pose)
-{
-	if (!pose)
-	{
-		pose = calloc(1, sizeof(pose));
-	}
-	if (pose)
-	{
-		a3spatialPoseReset(pose);
-	}
-	else
-	{
-		return -1;
-	}
-
-	return 1;
-}
-
 a3i32 a3spatialPoseInit(a3_SpatialPose* pose,
 	a3real xPos, a3real yPos, a3real zPos,
 	a3real xRot, a3real yRot, a3real zRot,
 	a3real xScale, a3real yScale, a3real zScale)
 {
-	if (!pose)
-	{
-		pose = calloc(1, sizeof(pose));
-	}
 	if (pose)
 	{
-		pose->xPos = xPos;
-		pose->yPos = yPos;
-		pose->zPos = zPos;
-
-		pose->xRot = xRot;
-		pose->yRot = yRot;
-		pose->zRot = zRot;
-
-		pose->xScale = xScale;
-		pose->yScale = yScale;
-		pose->zScale = zScale;
+		a3spatialPoseSetRotation(pose, xRot, yRot, zRot);
+		a3spatialPoseSetScale(pose, xScale, yScale, zScale);
+		a3spatialPoseSetTranslation(pose, xPos, yPos, zPos);
+		return 1;
 	}
-	else
-	{
-		return -1;
-	}
-
-	return 1;
+	return -1;
 }
 
 //-----------------------------------------------------------------------------

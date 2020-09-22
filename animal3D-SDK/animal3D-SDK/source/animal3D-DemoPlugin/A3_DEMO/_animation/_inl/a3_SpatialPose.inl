@@ -35,9 +35,9 @@ inline a3i32 a3spatialPoseSetRotation(a3_SpatialPose* spatialPose, const a3f32 r
 {
 	if (spatialPose)
 	{
-		spatialPose->xRot = rx_degrees;
-		spatialPose->yRot = ry_degrees;
-		spatialPose->zRot = rz_degrees;
+		spatialPose->orientation.x = rx_degrees;
+		spatialPose->orientation.y = ry_degrees;
+		spatialPose->orientation.z = rz_degrees;
 
 		return 1;
 	}
@@ -49,9 +49,9 @@ inline a3i32 a3spatialPoseSetScale(a3_SpatialPose* spatialPose, const a3f32 sx, 
 {
 	if (spatialPose)
 	{
-		spatialPose->xScale = sx;
-		spatialPose->yScale = sy;
-		spatialPose->zScale = sz;
+		spatialPose->scale.x = sx;
+		spatialPose->scale.y = sy;
+		spatialPose->scale.z = sz;
 
 		return 1;
 	}
@@ -63,9 +63,9 @@ inline a3i32 a3spatialPoseSetTranslation(a3_SpatialPose* spatialPose, const a3f3
 {
 	if (spatialPose)
 	{
-		spatialPose->xPos = tx;
-		spatialPose->yPos = ty;
-		spatialPose->zPos = tz;
+		spatialPose->position.x = tx;
+		spatialPose->position.y = ty;
+		spatialPose->position.z = tz;
 
 		return 1;
 	}
@@ -107,7 +107,7 @@ inline a3i32 a3spatialPoseCopy(a3_SpatialPose* spatialPose_out, const a3_Spatial
 	{
 		// essentially step function if we were to use this to animate
 		spatialPose_out->position = spatialPose_in->position;
-		spatialPose_out->rotation = spatialPose_in->rotation;
+		spatialPose_out->orientation = spatialPose_in->orientation;
 		spatialPose_out->scale = spatialPose_in->scale;
 
 
