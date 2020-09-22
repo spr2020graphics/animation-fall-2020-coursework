@@ -20,6 +20,8 @@
 	
 	a3_HierarchyState.c
 	Implementation of transform hierarchy state.
+
+	Animation Framework Addons by Scott Dagen and Cameron Schneider
 */
 
 #include "../a3_HierarchyState.h"
@@ -140,6 +142,8 @@ a3i32 a3hierarchyPoseGroupLoadBVH(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 	return -1;
 }
 
+//@author: Scott Dagen
+//takes in a pose and a number of poses. If pose doesn't exist, calloc it. If it now exists, calloc the spatial pose and init/reset it.
 a3i32 a3hierarchyPoseInit(a3_HierarchyPose* pose, a3ui32 numPoses)
 {
 	if (!pose)

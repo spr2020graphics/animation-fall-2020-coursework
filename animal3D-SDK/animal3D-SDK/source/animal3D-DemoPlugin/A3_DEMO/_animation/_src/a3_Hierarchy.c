@@ -53,13 +53,14 @@ inline void a3hierarchyInternalSetNode(a3_HierarchyNode *node, const a3ui32 inde
 
 
 //-----------------------------------------------------------------------------
-
+//Implemented by Dan Buckstein, comments added by Scott Dagen
 a3ret a3hierarchyCreate(a3_Hierarchy *hierarchy_out, const a3ui32 numNodes, const a3byte **names_opt)
 {
 	if (hierarchy_out && numNodes)
 	{
 		if (!hierarchy_out->nodes)
 		{
+			//hierarchy exists but is not initialized. Init nodes
 			const a3ui32 dataSize = sizeof(a3_HierarchyNode) * numNodes;
 			a3ui32 i;
 			const a3byte *tmpName;
@@ -67,13 +68,13 @@ a3ret a3hierarchyCreate(a3_Hierarchy *hierarchy_out, const a3ui32 numNodes, cons
 			memset(hierarchy_out->nodes, 0, dataSize);
 			hierarchy_out->numNodes = numNodes;
 			if (names_opt)
-			{
+			{	//name array has been passed in
 				for (i = 0; i < numNodes; ++i)
-					if (tmpName = *(names_opt + i))
+					if (tmpName = *(names_opt + i)) //if name != null
 					{
-						if (a3hierarchyInternalGetIndex(hierarchy_out, tmpName) < 0)
+						if (a3hierarchyInternalGetIndex(hierarchy_out, tmpName) < 0) //if node != null, copy name into node
 						{
-							strncpy(hierarchy_out->nodes[i].name, tmpName, a3node_nameSize);
+							strncpy(hierarchy_out->nodes[i].name, tmpName, a3node_nameSize); //strncpy runs better than strcpy
 							hierarchy_out->nodes[i].name[a3node_nameSize - 1] = 0;
 						}
 						else
