@@ -105,9 +105,9 @@ a3i32 a3hierarchyStateCreate(a3_HierarchyState *state_out, const a3_Hierarchy *h
 		state_out->hierarchy = hierarchy;
 
 		// reset all data
-		a3hierarchyPoseReset(state_out->localPose, state_out->hierarchy->numNodes);
-		a3hierarchyPoseReset(state_out->objectPose, state_out->hierarchy->numNodes);
-		a3hierarchyPoseReset(state_out->samplePose, state_out->hierarchy->numNodes);
+		a3hierarchyPoseReset(state_out->localHPose, state_out->hierarchy->numNodes);
+		a3hierarchyPoseReset(state_out->objectHPose, state_out->hierarchy->numNodes);
+		a3hierarchyPoseReset(state_out->sampleHPose, state_out->hierarchy->numNodes);
 		// done
 		return 1;
 	}
@@ -125,9 +125,9 @@ a3i32 a3hierarchyStateRelease(a3_HierarchyState *state)
 
 		// reset pointers
 		state->hierarchy = 0;
-		state->samplePose = 0;
-		state->localPose = 0;
-		state->objectPose = 0;
+		state->sampleHPose = 0;
+		state->localHPose = 0;
+		state->objectHPose = 0;
 
 		// done
 		return 1;
