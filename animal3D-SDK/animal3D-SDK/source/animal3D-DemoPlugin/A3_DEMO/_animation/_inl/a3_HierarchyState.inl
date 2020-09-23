@@ -67,11 +67,16 @@ inline a3i32 a3hierarchyPoseReset(const a3_HierarchyPose* pose_inout, const a3ui
 }
 
 // convert full hierarchy pose to hierarchy transforms
-inline a3i32 a3hierarchyPoseConvert(const a3_HierarchyPose* pose_inout, const a3ui32 nodeCount, const a3_SpatialPoseChannel channel, const a3_SpatialPoseEulerOrder order)
+inline a3i32 a3hierarchyPoseConvert(const a3_HierarchyPose* pose_inout, const a3ui32 nodeCount, const a3_SpatialPoseChannel* channel, const a3_SpatialPoseEulerOrder order)
 {
 	if (pose_inout && nodeCount)
 	{
+		for (a3ui32 i = 0; i < nodeCount; i++)
+		{
+			a3spatialPoseConvert(&pose_inout->spatialPose[i].transform, &pose_inout->spatialPose[i], channel[i], order);
+		}
 
+		return 1;
 	}
 	return -1;
 }
@@ -81,11 +86,45 @@ inline a3i32 a3hierarchyPoseCopy(const a3_HierarchyPose* pose_out, const a3_Hier
 {
 	if (pose_out && pose_in && nodeCount)
 	{
+		for (a3ui32 i = 0; i < nodeCount; i++)
+		{
+			a3spatialPoseCopy(&pose_out->spatialPose[i], &pose_in->spatialPose[i]);
+		}
 
+		return 1;
 	}
 	return -1;
 }
 
+inline a3i32 a3hierarchyPoseConcat(const a3_HierarchyPose* pose_out, const a3_HierarchyPose* pose_lhs, const a3_HierarchyPose* pose_rhs, const a3ui32 nodeCount)
+{
+	if (pose_out && pose_lhs && pose_rhs)
+	{
+		for (a3ui32 i = 0; i < nodeCount; i++)
+		{
+			a3spatialPoseConcat(&pose_out->spatialPose[i], &pose_lhs->spatialPose[i], &pose_rhs->spatialPose[i]);
+		}
+
+		return 1;
+	}
+
+	return -1;
+}
+
+inline a3i32 a3hierarchyPoseLerp(const a3_HierarchyPose* pose_out, const a3_HierarchyPose* pose_0, const a3_HierarchyPose* pose_1, const a3ui32 nodeCount, const a3real u)
+{
+	if (pose_out && pose_0 && pose_1)
+	{
+		for (a3ui32 i = 0; i < nodeCount; i++)
+		{
+			a3spatialPoseLerp(&pose_out->spatialPose[i], &pose_0->spatialPose[i], &pose_1->spatialPose[i], u);
+		}
+
+		return 1;
+	}
+
+	return -1;
+}
 
 //-----------------------------------------------------------------------------
 
