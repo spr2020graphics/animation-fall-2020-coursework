@@ -62,10 +62,10 @@ struct a3_HierarchyPoseGroup
 	const a3_Hierarchy* hierarchy;
 
 	// Similar to keyframePool, this is just an array of spatial poses associated with the hierarchy and its poses
-	const a3_SpatialPose* spatialPosePool;
+	a3_SpatialPose* spatialPosePool; //contains all the SPs from the below data structure
 
 	// Array of hierarchy poses to organize above spatial poses
-	const a3_HierarchyPose* hierarchyPosePool;
+	a3_HierarchyPose* hierarchyPosePool; //array of HP {array of SP}
 
 	// Describes transform channels used by each node in the hierarchy
 	const a3_SpatialPoseChannel* channels;
