@@ -39,7 +39,7 @@ a3i32 a3kinematicsSolveForwardPartial(const a3_HierarchyState *hierarchyState, c
 		//			- object matrix = parent object matrix * local matrix
 		//		- else
 		//			- copy local matrix to object matrix
-		a3_Hierarchy* hierarchy = hierarchyState->hierarchy;
+		const a3_Hierarchy* hierarchy = hierarchyState->hierarchy;
 
 		for (a3ui32 i = 0; i < hierarchy->numNodes; i++)
 		{

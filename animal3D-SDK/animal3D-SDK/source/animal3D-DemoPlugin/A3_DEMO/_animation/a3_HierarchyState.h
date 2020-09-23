@@ -58,7 +58,7 @@ struct a3_HierarchyPose
 // pose group
 struct a3_HierarchyPoseGroup
 {
-	// pointer to hierarchy
+	// pointer to hierarchy. This has the nodes, which are labels and indices for the hierarchy poses
 	const a3_Hierarchy* hierarchy;
 
 	// Similar to keyframePool, this is just an array of spatial poses associated with the hierarchy and its poses
@@ -68,7 +68,7 @@ struct a3_HierarchyPoseGroup
 	a3_HierarchyPose* hierarchyPosePool; //array of HP {array of SP}
 
 	// Describes transform channels used by each node in the hierarchy
-	const a3_SpatialPoseChannel* channels;
+	a3_SpatialPoseChannel* channels;
 
 	// Euler order flag for concatenation order or orientation channels
 	a3_SpatialPoseEulerOrder eulerOrder;
