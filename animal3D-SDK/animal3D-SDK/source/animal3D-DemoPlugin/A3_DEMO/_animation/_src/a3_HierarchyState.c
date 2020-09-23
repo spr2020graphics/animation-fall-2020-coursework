@@ -37,17 +37,31 @@ a3i32 a3hierarchyPoseGroupCreate(a3_HierarchyPoseGroup *poseGroup_out, const a3_
 	//	(output is not yet initialized, hierarchy is initialized)
 	if (poseGroup_out && hierarchy && !poseGroup_out->hierarchy && hierarchy->nodes)
 	{
+		a3ui32 numSpatialPoses = poseCount * hierarchy->numNodes;
+
 		// determine memory requirements
-		size_t memRequirements = sizeof(a3_HierarchyPose) * poseCount;
+		size_t memRequirements = sizeof(a3_HierarchyPose) * poseCount + sizeof(a3_SpatialPose) * numSpatialPoses;
 
 		// allocate everything (one malloc)
 		poseGroup_out = malloc(memRequirements);
 
 		// set pointers
 		poseGroup_out->hierarchy = hierarchy;
+		poseGroup_out->spatialPosePool = hierarchy + 1;
+		poseGroup_out->hierarchyPosePool = poseGroup_out->spatialPosePool + numSpatialPoses;
 
 		// reset all data
 		poseGroup_out->poseCount = poseCount;
+		
+		for (a3ui32 i = 0; i < poseCount; i++)
+		{
+			a3hierarchyPoseReset(&poseGroup_out->hierarchyPosePool[i], poseCount);
+		}
+		
+		for (a3ui32 i = 0; i < numSpatialPoses; i++)
+		{
+			a3spatialPoseReset(&poseGroup_out->spatialPosePool[i]);
+		}
 
 		// done
 		return 1;
@@ -86,13 +100,15 @@ a3i32 a3hierarchyStateCreate(a3_HierarchyState *state_out, const a3_Hierarchy *h
 		// determine memory requirements
 
 		// allocate everything (one malloc)
-		//??? = (...)malloc(sz);
+		state_out = malloc(sizeof(a3_HierarchyPose) * 3);
 
 		// set pointers
 		state_out->hierarchy = hierarchy;
 
 		// reset all data
-
+		a3hierarchyPoseReset(state_out->localPose, state_out->hierarchy->numNodes);
+		a3hierarchyPoseReset(state_out->objectPose, state_out->hierarchy->numNodes);
+		a3hierarchyPoseReset(state_out->samplePose, state_out->hierarchy->numNodes);
 		// done
 		return 1;
 	}
@@ -106,10 +122,13 @@ a3i32 a3hierarchyStateRelease(a3_HierarchyState *state)
 	if (state && state->hierarchy)
 	{
 		// release everything (one free)
-		//free(???);
+		free(state);
 
 		// reset pointers
 		state->hierarchy = 0;
+		state->samplePose = 0;
+		state->localPose = 0;
+		state->objectPose = 0;
 
 		// done
 		return 1;
