@@ -103,18 +103,14 @@ a3i32 a3hierarchyStateCreate(a3_HierarchyState *state_out, const a3_Hierarchy *h
 	if (state_out && hierarchy && !state_out->hierarchy && hierarchy->nodes)
 	{
 		// determine memory requirements
-		size_t memReqs = sizeof(a3_HierarchyPose) * 3 + sizeof(a3_SpatialPose) * 3 * hierarchy->numNodes;
+		size_t memReqs = sizeof(a3_SpatialPose) * 3 * hierarchy->numNodes;
 		// allocate everything (one malloc)
-		//all three HierarchyPoses are next to each other
-		state_out->sampleHPose = malloc(memReqs);
-		state_out->localHPose = state_out->sampleHPose + 1;
-		state_out->objectHPose = state_out->localHPose + 1;
-		//the pointers in those HierarchyPoses point to the next memory here, all in a row.
-		//These are intellisense errors saying that the malloc could fail.
-		state_out->sampleHPose->spatialPose = (a3_SpatialPose*)(state_out->objectHPose + 1);
-		state_out->localHPose->spatialPose = state_out->sampleHPose->spatialPose + hierarchy->numNodes;
-		state_out->objectHPose->spatialPose = state_out->localHPose->spatialPose + hierarchy->numNodes;
-
+		state_out->sampleHPose->spatialPose = malloc(memReqs);
+		if (state_out->sampleHPose->spatialPose != NULL)
+		{
+			state_out->localHPose->spatialPose = state_out->sampleHPose->spatialPose + hierarchy->numNodes;
+			state_out->objectHPose->spatialPose = state_out->localHPose->spatialPose + hierarchy->numNodes;
+		}
 		// set pointers
 		state_out->hierarchy = hierarchy;
 
@@ -139,9 +135,9 @@ a3i32 a3hierarchyStateRelease(a3_HierarchyState *state)
 
 		// reset pointers
 		state->hierarchy = 0;
-		state->sampleHPose = 0;
-		state->localHPose = 0;
-		state->objectHPose = 0;
+		state->sampleHPose->spatialPose = 0;
+		state->localHPose->spatialPose = 0;
+		state->objectHPose->spatialPose = 0;
 
 		// done
 		return 1;

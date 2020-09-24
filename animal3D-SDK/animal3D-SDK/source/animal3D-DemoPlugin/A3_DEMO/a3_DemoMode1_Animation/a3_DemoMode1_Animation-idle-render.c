@@ -587,7 +587,7 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 				currentSceneObject <= endSceneObject;
 				++j, ++currentSceneObject)
 				a3demo_drawModelSimple(modelViewProjectionMat.m, viewProjectionMat.m, currentSceneObject->modelMat.m, currentDemoProgram);
-		}
+		} //modelMat.m == FK.m
 	}
 }
 

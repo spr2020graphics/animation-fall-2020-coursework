@@ -90,7 +90,8 @@ inline a3i32 a3spatialPoseReset(a3_SpatialPose* spatialPose)
 	return -1;
 }
 
-// convert single node pose to matrix
+// convert single node pose to matrix. This is used BEFORE the FK. FK is just the matrix multiplication
+// channels do not need to be used for this lab
 inline a3i32 a3spatialPoseConvert(a3mat4* mat_out, const a3_SpatialPose* spatialPose_in, const a3_SpatialPoseChannel channel, const a3_SpatialPoseEulerOrder order)
 {
 	if (mat_out && spatialPose_in)
