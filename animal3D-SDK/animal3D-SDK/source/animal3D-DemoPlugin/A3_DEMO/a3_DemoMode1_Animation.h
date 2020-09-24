@@ -132,7 +132,7 @@ typedef enum a3_DemoMode1_Animation_TargetName				a3_DemoMode1_Animation_TargetN
 
 		// skeletal animation
 		a3_Hierarchy hierarchy_skel[1];
-		a3_HierarchyState hierarchyState_skel_toggle[1];
+		a3_HierarchyState hierarchyState_skel_base[1];
 		a3_HierarchyState hierarchyState_skel_base[1];
 		a3_HierarchyState hierarchyState_skel_clip[1];
 		a3_HierarchyPoseGroup hierarchyPoseGroup_skel[1];
