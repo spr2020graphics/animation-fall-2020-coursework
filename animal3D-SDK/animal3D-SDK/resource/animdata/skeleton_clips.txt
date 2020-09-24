@@ -1,0 +1,37 @@
+# This denotes a comment, any line beginning with this is ignored by the parser
+# @ denotes a new clip declaration, like Dan's clip examples
+# $ denotes a new keyframe declaration
+
+# Clip duration should be able to be overridden by keyframe durations
+
+# Transition syntax: 
+#		Characters		Description
+#			|				Pause at current terminus of clip (start of first frame or end of last frame)
+#			>				Forward playback from start of clip (true clip start; includes playback of first frame)
+#			>|				Forward pause at start of first frame
+#			<				Reverse playback from end of clip (true clip end; includes playback of last frame)
+#			<|				Reverse pause at end of last frame
+#			>>				Forward playback from end of first frame (skip first; excludes playback of first frame)
+#			>>|				Forward pause at end of first frame
+#			<<				Reverse playback from start of last frame (skip last; excludes playback of last frame)
+#			<<|				Reverse pause at start of last frame
+
+
+#-------------------------------------------------------------------------------------------------------------------------------------------------#
+
+# $ keyframe_dur keyframe_index keyframe_value
+
+# First clip
+$ 1.5 0 0
+$ 1.5 1 1
+$ 1.5 2 2
+$ 1.5 3 3
+
+
+#-------------------------------------------------------------------------------------------------------------------------------------------------#
+
+# @ clip_name use_clip_duration first_frame last_frame forward_trans reverse_trans clip_duration
+
+@ skelly false 0 3 > skelly < skelly
+
+#-------------------------------------------------------------------------------------------------------------------------------------------------#

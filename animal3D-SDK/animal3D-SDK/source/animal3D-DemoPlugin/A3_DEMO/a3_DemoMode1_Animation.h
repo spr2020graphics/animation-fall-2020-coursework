@@ -138,6 +138,8 @@ typedef enum a3_DemoMode1_Animation_TargetName				a3_DemoMode1_Animation_TargetN
 		a3_HierarchyPoseGroup hierarchyPoseGroup_skel[1];
 
 		a3ui32 numHierarchyStates;
+		a3ui32 currentToggleIndex;
+		a3ui32 currentClipKeyVal;
 
 		// objects
 		union {

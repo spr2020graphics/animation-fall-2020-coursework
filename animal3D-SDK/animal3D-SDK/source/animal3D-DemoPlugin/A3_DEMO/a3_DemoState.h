@@ -324,7 +324,7 @@ struct a3_DemoState
 	//beginning of animation variables
 	//union of controllers, one per scene object
 	union {
-		a3_ClipController controllers[6];
+		a3_ClipController controllers[7];
 		struct {
 			a3_ClipController
 				controller_box[1],
@@ -332,6 +332,7 @@ struct a3_DemoState
 				controller_cylinder[1],
 				controller_capsule[1],
 				controller_torus[1],
+				controller_skeleton[1],
 				controller_teapot[1];
 		};
 	};

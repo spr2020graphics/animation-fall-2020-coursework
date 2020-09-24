@@ -907,7 +907,7 @@ void a3demo_loadClipData(a3_DemoState* demoState)
 {
 	//the following code is derived from our material parser from Graphics 2 because it's a good skeleton for file loading
 	a3_Stream fs[1] = { 0 };
-	a3ui32 fileLength = a3streamLoadContents(&fs[0], "../../../../resource/animdata/test_clips.txt");
+	a3ui32 fileLength = a3streamLoadContents(&fs[0], "../../../../resource/animdata/skeleton_clips.txt");
 	printf("%d", fileLength);
 	a3byte fromFile = fileLength > 0;
 	//lab 1
@@ -1022,7 +1022,7 @@ void a3demo_loadClipData(a3_DemoState* demoState)
 
 		//some basic variable initialization
 		demoState->waypointCount = 8;
-		demoState->controllerCount = 6;
+		demoState->controllerCount = 7;
 		demoState->globalPlaybackDir = 0;
 		demoState->globalSpeedMod = 1.0f;
 		demoState->waypoints = calloc(8, sizeof(a3vec3));
@@ -1038,7 +1038,7 @@ void a3demo_loadClipData(a3_DemoState* demoState)
 		}
 
 		//initializes controllers with names matching their controlled object.
-		a3byte* ctrlNames[] = { "Box", "Sphere", "Cylinder", "Capsule", "Torus", "Teapot" };
+		a3byte* ctrlNames[] = { "Box", "Sphere", "Cylinder", "Capsule", "Torus", "Skeleton", "Teapot" };
 		for (a3ui8 controller = 0; controller < demoState->controllerCount; controller++)
 		{
 			if (ctrlNames != NULL && ctrlNames[controller] != NULL)
