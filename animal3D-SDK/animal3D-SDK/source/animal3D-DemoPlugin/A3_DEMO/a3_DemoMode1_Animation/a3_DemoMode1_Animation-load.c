@@ -309,24 +309,24 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	// (note: the channels describe which pose components can change)
 	p = 1;
 	j = a3hierarchyGetNodeIndex(hierarchy, "skel:root");
-	//spatialPose = hierarchyPoseGroup->hpose[p].pose + j;
+	spatialPose = hierarchyPoseGroup->hierarchyPosePool[p].spatialPose + j;
 	a3spatialPoseSetRotation(spatialPose, 0.0f, 0.0f, +90.0f);	// rotate whole figure by 90 degrees on Z
 
 
 	p = 2;
 	j = a3hierarchyGetNodeIndex(hierarchy, "skel:root");
-	//spatialPose = hierarchyPoseGroup->hpose[p].pose + j;
+	spatialPose = hierarchyPoseGroup->hierarchyPosePool[p].spatialPose + j;
 	a3spatialPoseSetScale(spatialPose, 1.5f, 1.5f, 1.5f);	// uniformly scale whole figure up by 50%
 
 
 	p = 3;
 	j = a3hierarchyGetNodeIndex(hierarchy, "skel:root");
-	//spatialPose = hierarchyPoseGroup->hpose[p].pose + j;
+	spatialPose = hierarchyPoseGroup->hierarchyPosePool[p].spatialPose + j;
 	a3spatialPoseSetTranslation(spatialPose, +0.3f, +0.4f, -0.5f);	// shift whole figure by some vector
 
 
 	// finally set up hierarchy states
-	hierarchyState = demoMode->hierarchyState_skel;
+	hierarchyState = demoMode->hierarchyState_skel_toggle;
 	hierarchyState->hierarchy = 0;
 	a3hierarchyStateCreate(hierarchyState, hierarchy);
 }
@@ -359,7 +359,7 @@ void a3animation_loadValidate(a3_DemoState* demoState, a3_DemoMode1_Animation* d
 	// initialize cameras not dependent on viewport
 
 	// animation
-	demoMode->hierarchyState_skel->hierarchy = demoMode->hierarchy_skel;
+	demoMode->hierarchyState_skel_toggle->hierarchy = demoMode->hierarchy_skel;
 	demoMode->hierarchyPoseGroup_skel->hierarchy = demoMode->hierarchy_skel;
 }
 
