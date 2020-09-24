@@ -93,16 +93,24 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 
 	a3_HierarchyState* currentState = demoMode->hierarchyState_skel_base;
 
-	// step version (just copy)
+	// step version (just copy). This _is_ the base, so there's nothing to concat.
 	a3hierarchyPoseCopy(currentState->sampleHPose, &demoMode->hierarchyPoseGroup_skel->hierarchyPosePool[0], demoMode->hierarchy_skel->numNodes);
 	a3hierarchyPoseCopy(currentState->localHPose, currentState->sampleHPose, demoMode->hierarchy_skel->numNodes);
-	//a3hierarchyPoseConcat(currentState->localHPose, &demoMode->hierarchyPoseGroup_skel->hierarchyPosePool[0], currentState->sampleHPose, demoMode->hierarchy_skel->numNodes);
 	a3hierarchyPoseConvert(currentState->localHPose, demoMode->hierarchy_skel->numNodes, demoMode->hierarchyPoseGroup_skel->channels, demoMode->hierarchyPoseGroup_skel->eulerOrder);
 	a3kinematicsSolveForward(currentState);
 
 	currentState = demoMode->hierarchyState_skel_toggle;
+	demoMode->currentToggleIndex = 3;
 	a3hierarchyPoseCopy(currentState->sampleHPose, &demoMode->hierarchyPoseGroup_skel->hierarchyPosePool[demoMode->currentToggleIndex], demoMode->hierarchy_skel->numNodes);
-	a3hierarchyPoseConcat(currentState->localHPose, &demoMode->hierarchyPoseGroup_skel->hierarchyPosePool[0], currentState->sampleHPose, demoMode->hierarchy_skel->numNodes);
+	if (demoMode->currentToggleIndex != 0)
+	{
+		a3hierarchyPoseConcat(currentState->localHPose, &demoMode->hierarchyPoseGroup_skel->hierarchyPosePool[0], currentState->sampleHPose, demoMode->hierarchy_skel->numNodes);
+	}
+	else
+	{
+		//nothing to copy, current index is 0.
+		a3hierarchyPoseCopy(currentState->localHPose, currentState->sampleHPose, demoMode->hierarchy_skel->numNodes);
+	}
 	a3hierarchyPoseConvert(currentState->localHPose, demoMode->hierarchy_skel->numNodes, demoMode->hierarchyPoseGroup_skel->channels, demoMode->hierarchyPoseGroup_skel->eulerOrder);
 	a3kinematicsSolveForward(currentState);
 

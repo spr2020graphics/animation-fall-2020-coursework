@@ -154,6 +154,40 @@ inline a3i32 a3spatialPoseConcat(a3_SpatialPose* spatialPose_out, a3_SpatialPose
 
 //		a3real3SetReal3(spatialPose_out->orientation.v, a3real3Add(spatialPose_lhs->orientation.v, spatialPose_rhs->orientation.v));
 		a3real3Sum(spatialPose_out->orientation.v, spatialPose_lhs->orientation.v, spatialPose_rhs->orientation.v);
+		while (spatialPose_out->orientation.x < -360.0f || spatialPose_out->orientation.x > 360.0f)
+		{
+			if (spatialPose_out->orientation.x < -360.0f)
+			{
+				spatialPose_out->orientation.x += 720.0f;
+			}
+			if (spatialPose_out->orientation.x > 360.0f)
+			{
+				spatialPose_out->orientation.x -= 720.0f;
+			}
+		}
+		while (spatialPose_out->orientation.y < -360.0f || spatialPose_out->orientation.y > 360.0f)
+		{
+			if (spatialPose_out->orientation.y < -360.0f)
+			{
+				spatialPose_out->orientation.y += 720.0f;
+			}
+			if (spatialPose_out->orientation.y > 360.0f)
+			{
+				spatialPose_out->orientation.y -= 720.0f;
+			}
+		}
+		while (spatialPose_out->orientation.z < -360.0f || spatialPose_out->orientation.z > 360.0f)
+		{
+			if (spatialPose_out->orientation.z < -360.0f)
+			{
+				spatialPose_out->orientation.z += 720.0f;
+			}
+			if (spatialPose_out->orientation.z > 360.0f)
+			{
+				spatialPose_out->orientation.z -= 720.0f;
+			}
+		}
+
 		//make sure this stays within range
 //		a3real3SetReal3(spatialPose_out->position.v, a3real3Add(spatialPose_lhs->position.v, spatialPose_rhs->position.v));
 		a3real3Sum(spatialPose_out->position.v, spatialPose_lhs->position.v, spatialPose_rhs->position.v);

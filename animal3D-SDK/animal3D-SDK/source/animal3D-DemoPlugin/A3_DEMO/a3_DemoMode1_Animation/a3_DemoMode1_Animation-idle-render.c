@@ -612,8 +612,8 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 			posMat = &demoMode->hierarchyState_skel_toggle->objectHPose->spatialPose[k].transform;
 			a3demo_drawModelSimple(modelViewProjectionMat.m, viewProjectionMat.m, posMat->m, currentDemoProgram);
 
-			posMat = &demoMode->hierarchyState_skel_clip->objectHPose->spatialPose[k].transform;
-			a3demo_drawModelSimple(modelViewProjectionMat.m, viewProjectionMat.m, posMat->m, currentDemoProgram);
+			//posMat = &demoMode->hierarchyState_skel_clip->objectHPose->spatialPose[k].transform;
+			//a3demo_drawModelSimple(modelViewProjectionMat.m, viewProjectionMat.m, posMat->m, currentDemoProgram);
 		}
 	}
 }
