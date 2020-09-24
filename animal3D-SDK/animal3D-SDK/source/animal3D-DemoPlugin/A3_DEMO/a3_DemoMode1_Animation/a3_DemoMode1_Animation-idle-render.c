@@ -511,31 +511,12 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 				a3shaderUniformSendInt(a3unif_single, currentDemoProgram->uFlag, 1, flag);
 
 				// draw skeleton joint bases
-												// draw skeleton joint bases
-				for (currentSceneObject = demoMode->obj_skeleton, endSceneObject = demoMode->obj_skeleton,
-					j = (a3ui32)(currentSceneObject - demoMode->object_scene);
-					currentSceneObject <= endSceneObject;
-					++j, ++currentSceneObject)
-				{
-					// calculate per-object uniforms
-					a3i32 i = (j * 2 + 23) % hueCount;
-					currentDrawable = drawable[1];
-					a3mat4 modelViewMat;
-					a3real4x4Product(modelViewMat.m, activeCameraObject->modelMatInv.m, currentSceneObject->modelMat.m);
-					a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uMV, 1, modelViewMat.mm);
-					a3demo_quickInvertTranspose_internal(modelViewMat.m);
-					modelViewMat.v3 = a3vec4_zero;
-					a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uMV_nrm, 1, modelViewMat.mm);
-					a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uAtlas, 1, a3mat4_identity.mm);
-					a3shaderUniformSendInt(a3unif_single, currentDemoProgram->uIndex, 1, &i);
-					a3vertexDrawableActivateAndRender(currentDrawable);
-				}
-				for (a3ui32 k = 0; k < demoMode->hierarchyPoseGroup_skel->hierarchy->numNodes; k++)
+				for (a3ui32 k = 0; k < demoMode->hierarchyState_skel_base->hierarchy->numNodes; k++)
 				{
 					a3i32 i = (k * 2 + 23) % hueCount;
 					currentDrawable = drawable[1];
 					a3mat4 modelViewMat;
-					a3mat4 posMat = demoMode->hierarchyPoseGroup_skel->hierarchyPosePool[0].spatialPose[k].transform;
+					a3mat4 posMat = demoMode->hierarchyState_skel_base->objectHPose->spatialPose[k].transform;
 					a3real4x4Product(modelViewMat.m, activeCameraObject->modelMatInv.m, posMat.m);
 					a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uMV, 1, modelViewMat.mm);
 					a3demo_quickInvertTranspose_internal(modelViewMat.m);
@@ -622,6 +603,18 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 				++j, ++currentSceneObject)
 				a3demo_drawModelSimple(modelViewProjectionMat.m, viewProjectionMat.m, currentSceneObject->modelMat.m, currentDemoProgram);
 		} //modelMat.m == FK.m
+
+		for (a3ui32 k = 0; k < 32; ++k)
+		{
+			a3mat4* posMat = &demoMode->hierarchyState_skel_base->objectHPose->spatialPose[k].transform;
+			a3demo_drawModelSimple(modelViewProjectionMat.m, viewProjectionMat.m, posMat->m, currentDemoProgram);
+
+			posMat = &demoMode->hierarchyState_skel_toggle->objectHPose->spatialPose[k].transform;
+			a3demo_drawModelSimple(modelViewProjectionMat.m, viewProjectionMat.m, posMat->m, currentDemoProgram);
+
+			posMat = &demoMode->hierarchyState_skel_clip->objectHPose->spatialPose[k].transform;
+			a3demo_drawModelSimple(modelViewProjectionMat.m, viewProjectionMat.m, posMat->m, currentDemoProgram);
+		}
 	}
 }
 
