@@ -104,15 +104,15 @@ inline a3i32 a3spatialPoseConvert(a3mat4* mat_out, const a3_SpatialPose* spatial
 
 		a3mat4 rotate = a3mat4_identity;
 
-		//switch (order)
-		//{
-		//case a3poseEulerOrder_xyz:
-		//	a3real4x4SetRotateXYZ(rotate.m, spatialPose_in->orientation.x, spatialPose_in->orientation.y, spatialPose_in->orientation.z);
-		//	break;
-		//case a3poseEulerOrder_zyx:
-		//	a3real4x4SetRotateZYX(rotate.m, spatialPose_in->orientation.x, spatialPose_in->orientation.y, spatialPose_in->orientation.z);
-		//	break;
-		//}
+		switch (order)
+		{
+		case a3poseEulerOrder_xyz:
+			a3real4x4SetRotateXYZ(rotate.m, spatialPose_in->orientation.x, spatialPose_in->orientation.y, spatialPose_in->orientation.z);
+			break;
+		case a3poseEulerOrder_zyx:
+			a3real4x4SetRotateZYX(rotate.m, spatialPose_in->orientation.x, spatialPose_in->orientation.y, spatialPose_in->orientation.z);
+			break;
+		}
 
 
 		a3mat4 scale = a3mat4_identity;
@@ -152,8 +152,10 @@ inline a3i32 a3spatialPoseConcat(a3_SpatialPose* spatialPose_out, a3_SpatialPose
 		// scale -> s_lhs * s_rhs (component-wise)
 		// translation -> t_lhs + t_rhs
 
-		a3real3SetReal3(spatialPose_out->orientation.v, a3real3Add(spatialPose_lhs->orientation.v, spatialPose_rhs->orientation.v));
-		a3real3SetReal3(spatialPose_out->position.v, a3real3Add(spatialPose_lhs->position.v, spatialPose_rhs->position.v));
+//		a3real3SetReal3(spatialPose_out->orientation.v, a3real3Add(spatialPose_lhs->orientation.v, spatialPose_rhs->orientation.v));
+		a3real3Sum(spatialPose_out->orientation.v, spatialPose_lhs->orientation.v, spatialPose_rhs->orientation.v);
+//		a3real3SetReal3(spatialPose_out->position.v, a3real3Add(spatialPose_lhs->position.v, spatialPose_rhs->position.v));
+		a3real3Sum(spatialPose_out->position.v, spatialPose_lhs->position.v, spatialPose_rhs->position.v);
 		a3real3ProductComp(spatialPose_out->scale.v, spatialPose_lhs->scale.v, spatialPose_rhs->scale.v);
 
 		return 1;

@@ -17,7 +17,7 @@
 /*
 	animal3D SDK: Minimal 3D Animation Framework
 	By Daniel S. Buckstein
-	
+
 	a3_HierarchyState.c
 	Implementation of transform hierarchy state.
 
@@ -33,7 +33,7 @@
 //-----------------------------------------------------------------------------
 
 // initialize pose set given an initialized hierarchy and key pose count
-a3i32 a3hierarchyPoseGroupCreate(a3_HierarchyPoseGroup *poseGroup_out, const a3_Hierarchy *hierarchy, const a3ui32 poseCount)
+a3i32 a3hierarchyPoseGroupCreate(a3_HierarchyPoseGroup* poseGroup_out, const a3_Hierarchy* hierarchy, const a3ui32 poseCount)
 {
 	// validate params and initialization states
 	//	(output is not yet initialized, hierarchy is initialized)
@@ -49,12 +49,12 @@ a3i32 a3hierarchyPoseGroupCreate(a3_HierarchyPoseGroup *poseGroup_out, const a3_
 
 		// set pointers
 		poseGroup_out->hierarchy = hierarchy;
-		poseGroup_out->hierarchyPosePool = (a3_HierarchyPose *) (poseGroup_out->spatialPosePool + numSpatialPoses); //shift over by the size of the spatial pool
+		poseGroup_out->hierarchyPosePool = (a3_HierarchyPose*)(poseGroup_out->spatialPosePool + numSpatialPoses); //shift over by the size of the spatial pool
 		poseGroup_out->channels = (a3_SpatialPoseChannel*)(poseGroup_out->hierarchyPosePool + poseCount);
 
 		// reset all data
 		poseGroup_out->poseCount = poseCount;
-		
+
 		for (a3ui32 i = 0; i < poseCount; i++)
 		{
 			poseGroup_out->hierarchyPosePool[i].spatialPose = poseGroup_out->spatialPosePool + hierarchy->numNodes * i; //offset by the number of spatial nodes allocated to the last hPose
@@ -72,7 +72,7 @@ a3i32 a3hierarchyPoseGroupCreate(a3_HierarchyPoseGroup *poseGroup_out, const a3_
 }
 
 // release pose set
-a3i32 a3hierarchyPoseGroupRelease(a3_HierarchyPoseGroup *poseGroup)
+a3i32 a3hierarchyPoseGroupRelease(a3_HierarchyPoseGroup* poseGroup)
 {
 	// validate param exists and is initialized
 	if (poseGroup && poseGroup->hierarchy)
@@ -96,7 +96,7 @@ a3i32 a3hierarchyPoseGroupRelease(a3_HierarchyPoseGroup *poseGroup)
 //-----------------------------------------------------------------------------
 
 // initialize hierarchy state given an initialized hierarchy
-a3i32 a3hierarchyStateCreate(a3_HierarchyState *state_out, const a3_Hierarchy *hierarchy)
+a3i32 a3hierarchyStateCreate(a3_HierarchyState* state_out, const a3_Hierarchy* hierarchy)
 {
 	// validate params and initialization states
 	//	(output is not yet initialized, hierarchy is initialized)
@@ -106,11 +106,9 @@ a3i32 a3hierarchyStateCreate(a3_HierarchyState *state_out, const a3_Hierarchy *h
 		size_t memReqs = sizeof(a3_SpatialPose) * 3 * hierarchy->numNodes;
 		// allocate everything (one malloc)
 		state_out->sampleHPose->spatialPose = malloc(memReqs);
-		if (state_out->sampleHPose->spatialPose != NULL)
-		{
-			state_out->localHPose->spatialPose = state_out->sampleHPose->spatialPose + hierarchy->numNodes;
-			state_out->objectHPose->spatialPose = state_out->localHPose->spatialPose + hierarchy->numNodes;
-		}
+
+		state_out->localHPose->spatialPose = state_out->sampleHPose->spatialPose + hierarchy->numNodes;
+		state_out->objectHPose->spatialPose = state_out->localHPose->spatialPose + hierarchy->numNodes;
 		// set pointers
 		state_out->hierarchy = hierarchy;
 
@@ -125,7 +123,7 @@ a3i32 a3hierarchyStateCreate(a3_HierarchyState *state_out, const a3_Hierarchy *h
 }
 
 // release hierarchy state
-a3i32 a3hierarchyStateRelease(a3_HierarchyState *state)
+a3i32 a3hierarchyStateRelease(a3_HierarchyState* state)
 {
 	// validate param exists and is initialized
 	if (state && state->hierarchy)
