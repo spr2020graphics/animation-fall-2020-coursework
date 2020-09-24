@@ -185,15 +185,15 @@ union a3mat3
 //	members x1, m10: second major, first minor element
 //	members y1, m11: second major, second minor element
 //	members z1, m12: second major, third minor element
-//	members q1, m13: second major, fourth minor element
+//	members w1, m13: second major, fourth minor element
 //	members x2, m20: third major, first minor element
 //	members y2, m21: third major, second minor element
 //	members z2, m22: third major, third minor element
-//	members z2, m23: third major, fourth minor element
+//	members w2, m23: third major, fourth minor element
 //	members x3, m30: fourth major, first minor element
 //	members y3, m31: fourth major, second minor element
 //	members z3, m32: fourth major, third minor element
-//	members z3, m33: fourth major, fourth minor element
+//	members w3, m33: fourth major, fourth minor element
 //	member v0: first major vector (column or row)
 //	member v1: second major vector
 //	member v2: third major vector

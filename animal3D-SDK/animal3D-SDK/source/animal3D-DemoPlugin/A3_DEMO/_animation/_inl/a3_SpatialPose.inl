@@ -95,7 +95,34 @@ inline a3i32 a3spatialPoseConvert(a3mat4* mat_out, const a3_SpatialPose* spatial
 {
 	if (mat_out && spatialPose_in)
 	{
+		a3mat4 translate = a3mat4_identity;
+		a3vec4 spatial_translate;
+		spatial_translate.xyz = spatialPose_in->position;
+		spatial_translate.w = 1;
+		translate.v3 = spatial_translate;
+
+		a3mat4 rotate;
+
+		switch (order)
+		{
+		case a3poseEulerOrder_xyz:
+			a3real4x4SetRotateXYZ(rotate.m, spatialPose_in->orientation.x, spatialPose_in->orientation.y, spatialPose_in->orientation.z);
+			break;
+		case a3poseEulerOrder_zyx:
+			a3real4x4SetRotateZYX(rotate.m, spatialPose_in->orientation.x, spatialPose_in->orientation.y, spatialPose_in->orientation.z);
+			break;
+		}
+
+
+		a3mat4 scale = a3mat4_identity;
+		scale.m00 = spatialPose_in->scale.x;
+		scale.m11 = spatialPose_in->scale.y;
+		scale.m22 = spatialPose_in->scale.z;
 		// Algorithm in slides
+		a3mat4 rs;
+		a3real4x4Product(rs.m, rotate.m, scale.m);
+		a3real4x4Product(mat_out->m, translate.m, rs.m);
+		return 1;
 	}
 	return -1;
 }

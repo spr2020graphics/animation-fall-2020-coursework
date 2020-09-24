@@ -110,6 +110,7 @@ a3i32 a3hierarchyStateCreate(a3_HierarchyState *state_out, const a3_Hierarchy *h
 		state_out->localHPose = state_out->sampleHPose + 1;
 		state_out->objectHPose = state_out->localHPose + 1;
 		//the pointers in those HierarchyPoses point to the next memory here, all in a row.
+		//These are intellisense errors saying that the malloc could fail.
 		state_out->sampleHPose->spatialPose = (a3_SpatialPose*)(state_out->objectHPose + 1);
 		state_out->localHPose->spatialPose = state_out->sampleHPose->spatialPose + hierarchy->numNodes;
 		state_out->objectHPose->spatialPose = state_out->localHPose->spatialPose + hierarchy->numNodes;
