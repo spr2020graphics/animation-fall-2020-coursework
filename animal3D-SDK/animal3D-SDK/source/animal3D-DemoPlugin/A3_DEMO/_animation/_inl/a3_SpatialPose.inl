@@ -102,17 +102,17 @@ inline a3i32 a3spatialPoseConvert(a3mat4* mat_out, const a3_SpatialPose* spatial
 		spatial_translate.w = 1;
 		translate.v3 = spatial_translate;
 
-		a3mat4 rotate;
+		a3mat4 rotate = a3mat4_identity;
 
-		switch (order)
-		{
-		case a3poseEulerOrder_xyz:
-			a3real4x4SetRotateXYZ(rotate.m, spatialPose_in->orientation.x, spatialPose_in->orientation.y, spatialPose_in->orientation.z);
-			break;
-		case a3poseEulerOrder_zyx:
-			a3real4x4SetRotateZYX(rotate.m, spatialPose_in->orientation.x, spatialPose_in->orientation.y, spatialPose_in->orientation.z);
-			break;
-		}
+		//switch (order)
+		//{
+		//case a3poseEulerOrder_xyz:
+		//	a3real4x4SetRotateXYZ(rotate.m, spatialPose_in->orientation.x, spatialPose_in->orientation.y, spatialPose_in->orientation.z);
+		//	break;
+		//case a3poseEulerOrder_zyx:
+		//	a3real4x4SetRotateZYX(rotate.m, spatialPose_in->orientation.x, spatialPose_in->orientation.y, spatialPose_in->orientation.z);
+		//	break;
+		//}
 
 
 		a3mat4 scale = a3mat4_identity;
