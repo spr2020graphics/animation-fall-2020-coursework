@@ -103,19 +103,24 @@ a3i32 a3hierarchyStateCreate(a3_HierarchyState *state_out, const a3_Hierarchy *h
 	if (state_out && hierarchy && !state_out->hierarchy && hierarchy->nodes)
 	{
 		// determine memory requirements
-		size_t memReqs = sizeof(a3_HierarchyPose) * 3;
+		size_t memReqs = sizeof(a3_HierarchyPose) * 3 + sizeof(a3_SpatialPose) * 3 * hierarchy->numNodes;
 		// allocate everything (one malloc)
+		//all three HierarchyPoses are next to each other
 		state_out->sampleHPose = malloc(memReqs);
 		state_out->localHPose = state_out->sampleHPose + 1;
 		state_out->objectHPose = state_out->localHPose + 1;
+		//the pointers in those HierarchyPoses point to the next memory here, all in a row.
+		state_out->sampleHPose->spatialPose = (a3_SpatialPose*)(state_out->objectHPose + 1);
+		state_out->localHPose->spatialPose = state_out->sampleHPose->spatialPose + hierarchy->numNodes;
+		state_out->objectHPose->spatialPose = state_out->localHPose->spatialPose + hierarchy->numNodes;
 
 		// set pointers
 		state_out->hierarchy = hierarchy;
 
 		// reset all data
-		a3hierarchyPoseReset(state_out->localHPose, state_out->hierarchy->numNodes);
-		a3hierarchyPoseReset(state_out->objectHPose, state_out->hierarchy->numNodes);
-		a3hierarchyPoseReset(state_out->sampleHPose, state_out->hierarchy->numNodes);
+		a3hierarchyPoseInit(state_out->localHPose, state_out->hierarchy->numNodes);
+		a3hierarchyPoseInit(state_out->objectHPose, state_out->hierarchy->numNodes);
+		a3hierarchyPoseInit(state_out->sampleHPose, state_out->hierarchy->numNodes);
 		// done
 		return 1;
 	}
@@ -168,7 +173,7 @@ a3i32 a3hierarchyPoseGroupLoadBVH(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 
 //@author: Scott Dagen
 //takes in a pose and a number of poses. If pose doesn't exist, calloc it. If it now exists, calloc the spatial pose and init/reset it.
-a3i32 a3hierarchyPoseInit(a3_HierarchyPose* pose, a3ui32 numPoses)
+a3i32 a3hierarchyPoseInit(a3_HierarchyPose* pose, a3ui32 nodeCount)
 {
 	if (!pose)
 	{
@@ -176,8 +181,8 @@ a3i32 a3hierarchyPoseInit(a3_HierarchyPose* pose, a3ui32 numPoses)
 	}
 	if (pose)
 	{
-		pose->spatialPose = calloc(numPoses, sizeof(a3_SpatialPose));
-		a3hierarchyPoseReset(pose, numPoses);
+		pose->spatialPose = calloc(nodeCount, sizeof(a3_SpatialPose));
+		a3hierarchyPoseReset(pose, nodeCount);
 	}
 	if (!pose)
 	{
