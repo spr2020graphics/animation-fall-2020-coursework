@@ -324,9 +324,16 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	spatialPose = hierarchyPoseGroup->hierarchyPosePool[0].spatialPose + j;
 	a3spatialPoseSetTranslation(spatialPose, +0.3f, +0.4f, -0.5f);	// shift whole figure by some vector
 
-
 	// finally set up hierarchy states
 	hierarchyState = demoMode->hierarchyState_skel;
+	hierarchyState->hierarchy = 0;
+	a3hierarchyStateCreate(hierarchyState, hierarchy);
+
+	hierarchyState = demoMode->hierarchyState_skel_toggle;
+	hierarchyState->hierarchy = 0;
+	a3hierarchyStateCreate(hierarchyState, hierarchy);
+
+	hierarchyState = demoMode->hierarchyState_skel_clip;
 	hierarchyState->hierarchy = 0;
 	a3hierarchyStateCreate(hierarchyState, hierarchy);
 }
@@ -432,6 +439,7 @@ void a3animation_load(a3_DemoState const* demoState, a3_DemoMode1_Animation* dem
 	demoMode->targetCount[animation_passScene] = animation_target_scene_max;
 	demoMode->targetCount[animation_passComposite] = 1;
 
+	demoMode->numHierarchyStates = 3;
 
 	// setup
 	a3animation_init_animation(demoState, demoMode);
