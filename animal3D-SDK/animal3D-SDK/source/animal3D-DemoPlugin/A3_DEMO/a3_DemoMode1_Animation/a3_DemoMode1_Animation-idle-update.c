@@ -87,7 +87,7 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 	// convert     -> base to local space
 	// FK          -> local to object space
 
-	a3_HierarchyState* currentState = demoMode->hierarchyState_skel;
+	a3_HierarchyState* currentState = demoMode->hierarchyState_skel_base;
 
 	// &demoMode->hierarchyPoseGroup_skel->hierarchyPosePool[0] is the base pose
 
