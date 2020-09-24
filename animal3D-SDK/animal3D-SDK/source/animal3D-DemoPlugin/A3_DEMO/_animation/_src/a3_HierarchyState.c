@@ -131,7 +131,7 @@ a3i32 a3hierarchyStateRelease(a3_HierarchyState *state)
 	if (state && state->hierarchy)
 	{
 		// release everything (one free)
-		free(state->sampleHPose);
+		free(state->sampleHPose->spatialPose);
 
 		// reset pointers
 		state->hierarchy = 0;
