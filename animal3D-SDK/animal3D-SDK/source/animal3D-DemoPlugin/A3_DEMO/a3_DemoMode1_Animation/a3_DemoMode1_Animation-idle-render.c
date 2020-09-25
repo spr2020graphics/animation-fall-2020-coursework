@@ -169,6 +169,18 @@ void a3animation_render_skeletal_controls(a3_DemoState const* demoState, a3_Demo
 	a3textDraw(text, textAlign + 1, textOffset, textDepth, col.r, col.g, col.b, col.a,
 		"Key Position: (%.3f, %.3f, %.3f)",
 		keyPose->transform.v3.x, keyPose->transform.v3.y, keyPose->transform.v3.z);
+
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"Base Orientation: Not Yet Decoded");
+
+	a3textDraw(text, textAlign + 1, textOffset, textDepth, col.r, col.g, col.b, col.a,
+		"Key Orientation: Not Yet Decoded");
+
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"Base Scale: Not Yet Decoded");
+
+	a3textDraw(text, textAlign + 1, textOffset, textDepth, col.r, col.g, col.b, col.a,
+		"Key Scale: Not Yet Decoded");
 }
 
 //-----------------------------------------------------------------------------
