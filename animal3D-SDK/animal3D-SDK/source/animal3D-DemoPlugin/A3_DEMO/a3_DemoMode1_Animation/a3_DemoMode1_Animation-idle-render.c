@@ -149,10 +149,15 @@ void a3animation_render_skeletal_controls(a3_DemoState const* demoState, a3_Demo
 		playing[1 - isPlaying]);
 
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"Switch HierarchyState to Examine: 'h' (%s selected)", hSNames[demoMode->currentExamineHierarchy]);
+		"Switch HierarchyState to Examine: 'h' (%s selected)", hSNames[demoMode->currentExamineHierarchyState]);
 
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
 		"Switch Pose in Toggle State: '~' (%u selected)", demoMode->currentToggleIndex);
+
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"Switch Node to Examine: '<- G / H ->' (%u/%s selected)",
+		demoMode->currentExamineNode,
+		demoMode->hierarchyStates[demoMode->currentExamineHierarchyState].hierarchy->nodes[demoMode->currentExamineNode].name);
 }
 
 //-----------------------------------------------------------------------------

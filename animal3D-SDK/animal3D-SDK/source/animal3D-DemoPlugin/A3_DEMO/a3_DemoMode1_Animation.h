@@ -145,7 +145,8 @@ typedef enum a3_DemoMode1_Animation_TargetName				a3_DemoMode1_Animation_TargetN
 		a3ui32 numHierarchyStates;
 		a3ui32 currentToggleIndex;
 		a3ui32 currentClipKeyVal;
-		a3ui32 currentExamineHierarchy;
+		a3ui32 currentExamineHierarchyState;
+		a3ui32 currentExamineNode;
 
 		// objects
 		union {
