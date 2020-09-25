@@ -150,6 +150,9 @@ void a3animation_render_skeletal_controls(a3_DemoState const* demoState, a3_Demo
 
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
 		"Switch HierarchyState to Examine: 'h' (%s selected)", hSNames[demoMode->currentExamineHierarchy]);
+
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"Switch Pose in Toggle State: '~' (%u selected)", demoMode->currentToggleIndex);
 }
 
 //-----------------------------------------------------------------------------
