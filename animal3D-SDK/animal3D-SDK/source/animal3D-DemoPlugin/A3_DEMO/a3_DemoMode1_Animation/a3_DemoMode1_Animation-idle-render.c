@@ -160,10 +160,10 @@ void a3animation_render_skeletal_controls(a3_DemoState const* demoState, a3_Demo
 		demoMode->hierarchyStates[demoMode->currentExamineHierarchyState].hierarchy->nodes[demoMode->currentExamineNode].name);
 
 	textOffset += textOffsetDelta;
-	a3_SpatialPose* basePose = demoMode->hierarchyState_skel_base->sampleHPose->spatialPose + demoMode->currentExamineNode;
+	a3_SpatialPose* basePose = demoMode->hierarchyState_skel_base->objectHPose->spatialPose + demoMode->currentExamineNode;
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
 		"Base Position: (%.3f, %.3f, %.3f)",
-		basePose->position.x, basePose->position.y, basePose->position.z);
+		basePose->transform.v3.x, basePose->transform.v3.y, basePose->transform.v3.z);
 }
 
 //-----------------------------------------------------------------------------
