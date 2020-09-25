@@ -161,9 +161,14 @@ void a3animation_render_skeletal_controls(a3_DemoState const* demoState, a3_Demo
 
 	textOffset += textOffsetDelta;
 	a3_SpatialPose* basePose = demoMode->hierarchyState_skel_base->objectHPose->spatialPose + demoMode->currentExamineNode;
+	a3_SpatialPose* keyPose = demoMode->hierarchyStates[demoMode->currentExamineHierarchyState].objectHPose->spatialPose + demoMode->currentExamineNode;
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
 		"Base Position: (%.3f, %.3f, %.3f)",
 		basePose->transform.v3.x, basePose->transform.v3.y, basePose->transform.v3.z);
+
+	a3textDraw(text, textAlign + 1, textOffset, textDepth, col.r, col.g, col.b, col.a,
+		"Key Position: (%.3f, %.3f, %.3f)",
+		keyPose->transform.v3.x, keyPose->transform.v3.y, keyPose->transform.v3.z);
 }
 
 //-----------------------------------------------------------------------------
@@ -650,7 +655,8 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 
 		currentDrawable = demoState->draw_unit_sphere;
 		a3mat4* posMat;
-
+		a3mat4 scale = a3mat4_identity;
+		a3real4x4SetScale(scale.m, 0.25f);
 		for (a3ui32 k = 0; k < 32; ++k)
 		{
 			switch (demoMode->currentExamineHierarchyState)
@@ -665,15 +671,17 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 				posMat = &demoMode->hierarchyState_skel_clip->objectHPose->spatialPose[k].transform;
 				break;
 			}
-			
+
+			a3mat4 newPosMat = a3mat4_identity;
+			a3real4x4Product(newPosMat.m, posMat->m, scale.m);
 			if (demoMode->currentExamineNode == k)
 			{
-				a3demo_drawModelSolidColor(modelViewProjectionMat.m, viewProjectionMat.m, posMat->m, currentDemoProgram, currentDrawable, green);
+				a3demo_drawModelSolidColor(modelViewProjectionMat.m, viewProjectionMat.m, newPosMat.m, currentDemoProgram, currentDrawable, green);
 				a3vertexDrawableActivateAndRender(currentDrawable);
 			}
 			else
 			{
-				a3demo_drawModelSolidColor(modelViewProjectionMat.m, viewProjectionMat.m, posMat->m, currentDemoProgram, currentDrawable, white);
+				a3demo_drawModelSolidColor(modelViewProjectionMat.m, viewProjectionMat.m, newPosMat.m, currentDemoProgram, currentDrawable, white);
 				a3vertexDrawableActivateAndRender(currentDrawable);
 			}
 		}
@@ -695,7 +703,10 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 				break;
 			}
 
-			a3demo_drawModelSimple(modelViewProjectionMat.m, viewProjectionMat.m, posMat->m, currentDemoProgram);
+			a3mat4 newPosMat = a3mat4_identity;
+			a3real4x4Product(newPosMat.m, posMat->m, scale.m);
+
+			a3demo_drawModelSolidColor(modelViewProjectionMat.m, viewProjectionMat.m, newPosMat.m, currentDemoProgram, currentDrawable, white);
 		}
 	}
 }
