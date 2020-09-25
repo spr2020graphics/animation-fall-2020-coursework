@@ -93,14 +93,16 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 
 	a3_HierarchyState* currentState = demoMode->hierarchyState_skel_base;
 
-	// step version (just copy). This _is_ the base, so there's nothing to concat.
+	//In order to use concat, we need _a_ spatial pose with no deltas. The object pose is always generated from the local pose, so it's safe to reset it at any point
+	//to get a zero-delta pose. This is then concatenated with the base skeleton and loaded into the local pose, after which object pose is regenerated.
+	//the object pose is presumably invalid before this _anyway_ because we will eventually be animating, so no important data is lost.
+	a3spatialPoseReset(currentState->objectHPose->spatialPose);
 	a3hierarchyPoseCopy(currentState->sampleHPose, &demoMode->hierarchyPoseGroup_skel->hierarchyPosePool[0], demoMode->hierarchy_skel->numNodes);
-	a3hierarchyPoseCopy(currentState->localHPose, currentState->sampleHPose, demoMode->hierarchy_skel->numNodes);
+	a3hierarchyPoseConcat(currentState->localHPose, currentState->objectHPose, &demoMode->hierarchyPoseGroup_skel->hierarchyPosePool[0], demoMode->hierarchy_skel->numNodes);
 	a3hierarchyPoseConvert(currentState->localHPose, demoMode->hierarchy_skel->numNodes, demoMode->hierarchyPoseGroup_skel->channels, demoMode->hierarchyPoseGroup_skel->eulerOrder);
 	a3kinematicsSolveForward(currentState);
 
 	currentState = demoMode->hierarchyState_skel_toggle;
-	demoMode->currentToggleIndex = 3;
 	a3hierarchyPoseCopy(currentState->sampleHPose, &demoMode->hierarchyPoseGroup_skel->hierarchyPosePool[demoMode->currentToggleIndex], demoMode->hierarchy_skel->numNodes);
 	if (demoMode->currentToggleIndex != 0)
 	{

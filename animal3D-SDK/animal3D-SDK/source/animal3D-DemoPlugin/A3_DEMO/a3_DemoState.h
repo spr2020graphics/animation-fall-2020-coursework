@@ -86,6 +86,7 @@ enum a3_DemoState_TextDisplayName
 	demoState_textControls_gen,		// display general controls
 	demoState_textData,				// display data
 	demoState_textClipController,	// display debug info for clips
+	demoState_skeletalController,	// display skeletal data
 	demoState_text_max
 };
 
