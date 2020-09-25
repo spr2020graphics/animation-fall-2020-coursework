@@ -206,6 +206,7 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 		{ 1.00f, 0.00f, 0.75f, 1.00f },
 		{ 1.00f, 0.00f, 0.50f, 1.00f },	// rose
 		{ 1.00f, 0.00f, 0.25f, 1.00f },
+		{ 1.00f, 1.00f, 1.00f, 1.00f },
 	};
 	const a3vec4 grey4[] = {
 		{ 0.5f, 0.5f, 0.5f, 1.0f },	// solid grey
@@ -215,7 +216,8 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 		* const red = rgba4[0].v, * const orange = rgba4[2].v, * const yellow = rgba4[4].v, * const lime = rgba4[6].v,
 		* const green = rgba4[8].v, * const aqua = rgba4[10].v, * const cyan = rgba4[12].v, * const sky = rgba4[14].v,
 		* const blue = rgba4[16].v, * const purple = rgba4[18].v, * const magenta = rgba4[20].v, * const rose = rgba4[22].v,
-		* const grey = grey4[0].v, * const grey_t = grey4[1].v;
+		* const grey = grey4[0].v, * const grey_t = grey4[1].v,
+		* const white = rgba4[24].v;
 	const a3ui32 hueCount = sizeof(rgba4) / sizeof(*rgba4);
 
 	// camera used for drawing
@@ -640,12 +642,12 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 				a3demo_drawModelSimple(modelViewProjectionMat.m, viewProjectionMat.m, currentSceneObject->modelMat.m, currentDemoProgram);
 		} //modelMat.m == FK.m
 
-		currentDrawable = demoState->draw_node;
+		currentDrawable = demoState->draw_unit_sphere;
 		a3mat4* posMat;
 
 		for (a3ui32 k = 0; k < 32; ++k)
 		{
-			switch (demoMode->currentExamineHierarchy)
+			switch (demoMode->currentExamineHierarchyState)
 			{
 			case 0:
 				posMat = &demoMode->hierarchyState_skel_base->objectHPose->spatialPose[k].transform;
@@ -658,15 +660,23 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 				break;
 			}
 			
-			a3demo_drawModelSimple(modelViewProjectionMat.m, viewProjectionMat.m, posMat->m, currentDemoProgram);
-			a3vertexDrawableActivateAndRender(currentDrawable);
+			if (demoMode->currentExamineNode == k)
+			{
+				a3demo_drawModelSolidColor(modelViewProjectionMat.m, viewProjectionMat.m, posMat->m, currentDemoProgram, currentDrawable, green);
+				a3vertexDrawableActivateAndRender(currentDrawable);
+			}
+			else
+			{
+				a3demo_drawModelSolidColor(modelViewProjectionMat.m, viewProjectionMat.m, posMat->m, currentDemoProgram, currentDrawable, white);
+				a3vertexDrawableActivateAndRender(currentDrawable);
+			}
 		}
 
 		currentDrawable = demoState->draw_axes;
 		a3vertexDrawableActivate(currentDrawable);
 		for (a3ui32 k = 0; k < 32; ++k)
 		{
-			switch (demoMode->currentExamineHierarchy)
+			switch (demoMode->currentExamineHierarchyState)
 			{
 			case 0:
 				posMat = &demoMode->hierarchyState_skel_base->objectHPose->spatialPose[k].transform;
