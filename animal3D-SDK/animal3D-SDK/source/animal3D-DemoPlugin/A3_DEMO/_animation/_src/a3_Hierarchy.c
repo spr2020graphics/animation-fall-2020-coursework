@@ -24,6 +24,10 @@
 	**DO NOT MODIFY THIS FILE**
 */
 
+/*
+	Extra Comments by Scott Dagen. As per the above instructions, no code has been changed. Comments were added for our understanding
+*/
+
 #include "../a3_Hierarchy.h"
 
 

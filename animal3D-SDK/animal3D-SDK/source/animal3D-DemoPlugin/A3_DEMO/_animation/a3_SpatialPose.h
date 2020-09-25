@@ -48,7 +48,7 @@ typedef struct a3_SpatialPose			a3_SpatialPose;
 
 //-----------------------------------------------------------------------------
 
-// list of Euler angle product orders
+// list of Euler angle product orders. Only two are used
 enum a3_SpatialPoseEulerOrder
 {
 	a3poseEulerOrder_xyz,

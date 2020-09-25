@@ -22,6 +22,10 @@
 	Implementation of inline transform hierarchy state operations.
 */
 
+/*
+	Animation Framework Addons by Scott Dagen and Cameron Schneider
+*/
+
 
 #ifdef __ANIMAL3D_HIERARCHYSTATE_H
 #ifndef __ANIMAL3D_HIERARCHYSTATE_INL
@@ -96,6 +100,7 @@ inline a3i32 a3hierarchyPoseCopy(const a3_HierarchyPose* pose_out, const a3_Hier
 	return -1;
 }
 
+//concat each spatial pose within the hierarchy poses, output to pose_out
 inline a3i32 a3hierarchyPoseConcat(const a3_HierarchyPose* pose_out, const a3_HierarchyPose* pose_lhs, const a3_HierarchyPose* pose_rhs, const a3ui32 nodeCount)
 {
 	if (pose_out && pose_lhs && pose_rhs)
@@ -111,6 +116,7 @@ inline a3i32 a3hierarchyPoseConcat(const a3_HierarchyPose* pose_out, const a3_Hi
 	return -1;
 }
 
+//lerp each spatial pose within the hierarchy poses, output to pose_out
 inline a3i32 a3hierarchyPoseLerp(const a3_HierarchyPose* pose_out, const a3_HierarchyPose* pose_0, const a3_HierarchyPose* pose_1, const a3ui32 nodeCount, const a3real u)
 {
 	if (pose_out && pose_0 && pose_1)

@@ -20,7 +20,9 @@
 
 	a3_HierarchyState.c
 	Implementation of transform hierarchy state.
+*/
 
+/*
 	Animation Framework Addons by Scott Dagen and Cameron Schneider
 */
 

@@ -22,12 +22,17 @@
 	Implementation of spatial pose.
 */
 
+/*
+	Animation Framework Addons by Scott Dagen and Cameron Schneider
+*/
+
 #include "../a3_SpatialPose.h"
 #include <stdlib.h>
 
 
 //-----------------------------------------------------------------------------
 
+//Initialize spatial pose with custom inputs. Not currently used but might be useful eventually
 a3i32 a3spatialPoseInit(a3_SpatialPose* pose,
 	a3real xPos, a3real yPos, a3real zPos,
 	a3real xRot, a3real yRot, a3real zRot,

@@ -39,6 +39,7 @@ a3i32 a3kinematicsSolveForwardPartial(const a3_HierarchyState *hierarchyState, c
 	{
 		const a3_Hierarchy* hierarchy = hierarchyState->hierarchy;
 
+		//loop from part of the way through the hierarchy (or from the beginning), till the end.
 		for (a3ui32 i = firstIndex; i < hierarchy->numNodes; i++)
 		{
 			a3_HierarchyNode * currentNode = hierarchy->nodes + i;

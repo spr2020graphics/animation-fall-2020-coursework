@@ -22,6 +22,9 @@
 	Implementation of inline spatial pose operations.
 */
 
+/*
+	Animation Framework Addons by Scott Dagen and Cameron Schneider
+*/
 
 #ifdef __ANIMAL3D_SPATIALPOSE_H
 #ifndef __ANIMAL3D_SPATIALPOSE_INL
@@ -96,12 +99,14 @@ inline a3i32 a3spatialPoseConvert(a3mat4* mat_out, const a3_SpatialPose* spatial
 {
 	if (mat_out && spatialPose_in)
 	{
+		//create translate matrix. There's probably an a3 call for this, but it works.
 		a3mat4 translate = a3mat4_identity;
 		a3vec4 spatial_translate;
 		spatial_translate.xyz = spatialPose_in->position;
 		spatial_translate.w = 1;
 		translate.v3 = spatial_translate;
 
+		//create rotation matrix
 		a3mat4 rotate = a3mat4_identity;
 
 		switch (order)
@@ -114,12 +119,14 @@ inline a3i32 a3spatialPoseConvert(a3mat4* mat_out, const a3_SpatialPose* spatial
 			break;
 		}
 
-
+		//create scale matrix
 		a3mat4 scale = a3mat4_identity;
 		scale.m00 = spatialPose_in->scale.x;
 		scale.m11 = spatialPose_in->scale.y;
 		scale.m22 = spatialPose_in->scale.z;
 		// Algorithm in slides
+
+		//form TRS matrix
 		a3mat4 rs;
 		a3real4x4Product(rs.m, rotate.m, scale.m);
 		a3real4x4Product(mat_out->m, translate.m, rs.m);
@@ -201,7 +208,7 @@ inline a3i32 a3spatialPoseConcat(a3_SpatialPose* spatialPose_out, a3_SpatialPose
 	return -1;
 }
 
-
+//lerps each component. Doesn't work correctly yet
 inline a3i32 a3spatialPoseLerp(a3_SpatialPose* spatialPose_out, a3_SpatialPose* spatialPose_0, a3_SpatialPose* spatialPose_1, const a3real u)
 {
 	if (spatialPose_out && spatialPose_0 && spatialPose_1)

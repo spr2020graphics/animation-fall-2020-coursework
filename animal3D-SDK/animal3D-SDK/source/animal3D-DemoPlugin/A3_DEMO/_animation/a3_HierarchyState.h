@@ -22,6 +22,10 @@
 	Hierarchy transformation state.
 */
 
+/*
+	Animation Framework Addons by Scott Dagen and Cameron Schneider
+*/
+
 #ifndef __ANIMAL3D_HIERARCHYSTATE_H
 #define __ANIMAL3D_HIERARCHYSTATE_H
 
@@ -121,11 +125,13 @@ a3i32 a3hierarchyPoseReset(const a3_HierarchyPose* pose_inout, const a3ui32 node
 // convert full hierarchy pose to hierarchy transforms
 a3i32 a3hierarchyPoseConvert(const a3_HierarchyPose* pose_inout, const a3ui32 nodeCount, const a3_SpatialPoseChannel* channel, const a3_SpatialPoseEulerOrder order);
 
-// copy full hierarchy pose
+// copy full hierarchy pose. Also works as a step interpolation as it overrides the previous.
 a3i32 a3hierarchyPoseCopy(const a3_HierarchyPose* pose_out, const a3_HierarchyPose* pose_in, const a3ui32 nodeCount);
 
+// concat a pose with another
 a3i32 a3hierarchyPoseConcat(const a3_HierarchyPose* pose_out, const a3_HierarchyPose* pose_lhs, const a3_HierarchyPose* pose_rhs, const a3ui32 nodeCount);
 
+// lerp between poses
 a3i32 a3hierarchyPoseLerp(const a3_HierarchyPose* pose_out, const a3_HierarchyPose* pose_0, const a3_HierarchyPose* pose_1, const a3ui32 nodeCount, const a3real u);
 
 // initializes a hierarchy pose
