@@ -123,6 +123,21 @@ void a3animation_render_controls(a3_DemoState const* demoState, a3_DemoMode1_Ani
 		"    Active camera (%u / %u) ('c' prev | next 'v'): %s", activeCamera + 1, animation_camera_max, cameraText[activeCamera]);
 }
 
+void a3animation_render_skeletal_controls(a3_DemoState const* demoState, a3_DemoMode1_Animation const* demoMode,
+	a3_TextRenderer const* text, a3vec4 const col,
+	a3f32 const textAlign, a3f32 const textDepth, a3f32 const textOffsetDelta, a3f32 textOffset)
+{
+	a3byte const* hSNames[3] = {
+		"Base", "Toggle", "Clip"
+	};
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"See Previous Page for Clip Controls and Keyframe Data.");
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"ClipController % s Required.", demoState->controller_skeleton->name);
+
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"Switch HierarchyState to Examine: 'h' (%s selected)", hSNames[demoMode->currentExamineHierarchy]);
+}
 
 //-----------------------------------------------------------------------------
 

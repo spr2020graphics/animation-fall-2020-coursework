@@ -58,6 +58,9 @@ void a3starter_render_controls(a3_DemoState const* demoState, a3_DemoMode0_Start
 void a3animation_render_controls(a3_DemoState const* demoState, a3_DemoMode1_Animation const* demoMode,
 	a3_TextRenderer const* text, a3vec4 const col,
 	a3f32 const textAlign, a3f32 const textDepth, a3f32 const textOffsetDelta, a3f32 textOffset);
+void a3animation_render_skeletal_controls(a3_DemoState const* demoState, a3_DemoMode1_Animation const* demoMode,
+	a3_TextRenderer const* text, a3vec4 const col,
+	a3f32 const textAlign, a3f32 const textDepth, a3f32 const textOffsetDelta, a3f32 textOffset);
 
 
 // display current mode controls
@@ -357,13 +360,15 @@ void a3demo_render(a3_DemoState const* demoState, a3f64 const dt)
 			case demoState_textControls_gen:
 				a3demo_render_controls_gen(demoState, text, col, textAlign + x, textDepth, textOffsetDelta, textOffset + y);
 				break;
-
 				// general data
 			case demoState_textData:
 				a3demo_render_data(demoState, text, col, textAlign + x, textDepth, textOffsetDelta, textOffset + y);
 				break;
 			case demoState_textClipController: //render animation debug
 				a3demo_render_clipController(demoState, text, col, textAlign + x, textDepth, textOffsetDelta, textOffset + y);
+				break;
+			case demoState_skeletalController:
+				a3animation_render_skeletal_controls(demoState, demoState->demoMode1_animation, text, col, textAlign + x, textDepth, textOffsetDelta, textOffset + y);
 				break;
 			}
 		}

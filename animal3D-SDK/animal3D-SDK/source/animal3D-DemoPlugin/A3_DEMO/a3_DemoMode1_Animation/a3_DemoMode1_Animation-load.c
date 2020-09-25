@@ -440,6 +440,7 @@ void a3animation_load(a3_DemoState const* demoState, a3_DemoMode1_Animation* dem
 	demoMode->targetCount[animation_passComposite] = 1;
 
 	demoMode->numHierarchyStates = 3;
+	demoMode->currentExamineHierarchy = 0;
 
 	// setup
 	a3animation_init_animation(demoState, demoMode);
