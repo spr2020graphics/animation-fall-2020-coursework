@@ -130,13 +130,29 @@ void a3animation_render_skeletal_controls(a3_DemoState const* demoState, a3_Demo
 	a3byte const* hSNames[3] = {
 		"Base", "Toggle", "Clip"
 	};
+
+	a3byte const* correctClip[2] = {
+		"Selected", "Not Selected"
+	};
+	
+	a3byte const* playing[2] = {
+		"Playing", "Paused"
+	};
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
 		"See Previous Page for Clip Controls and Keyframe Data.");
+	a3boolean correctIndex = demoState->controllerIndex == demoState->controller_skeleton - demoState->controllers;
+	a3boolean isPlaying = demoState->controller_skeleton->playbackDir != 0 && demoState->globalPlaybackDir != 0;
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"ClipController % s Required.", demoState->controller_skeleton->name);
+		"ClipController % s Required. (%s, %s)",
+		demoState->controller_skeleton->name,
+		correctClip[1 - correctIndex],
+		playing[1 - isPlaying]);
 
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
 		"Switch HierarchyState to Examine: 'h' (%s selected)", hSNames[demoMode->currentExamineHierarchy]);
+
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"Switch Pose in Toggle State: '~' (%u selected)", demoMode->currentToggleIndex);
 }
 
 //-----------------------------------------------------------------------------
