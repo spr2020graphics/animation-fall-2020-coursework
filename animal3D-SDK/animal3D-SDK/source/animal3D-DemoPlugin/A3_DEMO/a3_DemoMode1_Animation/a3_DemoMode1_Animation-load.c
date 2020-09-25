@@ -311,18 +311,37 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	j = a3hierarchyGetNodeIndex(hierarchy, "skel:root");
 	spatialPose = hierarchyPoseGroup->hierarchyPosePool[p].spatialPose + j;
 	a3spatialPoseSetRotation(spatialPose, 0.0f, 0.0f, +90.0f);	// rotate whole figure by 90 degrees on Z
-	
+
+	j = a3hierarchyGetNodeIndex(hierarchy, "skel:elbow_l");
+	spatialPose = hierarchyPoseGroup->hierarchyPosePool[p].spatialPose + j;
+	a3spatialPoseSetRotation(spatialPose, 0.0f, 0.0f, -50.0f);
+
+	j = a3hierarchyGetNodeIndex(hierarchy, "skel:hip_r");
+	spatialPose = hierarchyPoseGroup->hierarchyPosePool[p].spatialPose + j;
+	a3spatialPoseSetRotation(spatialPose, 20.0f, 0.0f, 0.0f);
 	
 	p = 2;
 	j = a3hierarchyGetNodeIndex(hierarchy, "skel:root");
 	spatialPose = hierarchyPoseGroup->hierarchyPosePool[p].spatialPose + j;
 	a3spatialPoseSetScale(spatialPose, 1.5f, 1.5f, 1.5f);	// uniformly scale whole figure up by 50%
+
+	j = a3hierarchyGetNodeIndex(hierarchy, "skel:shoulder_l");
+	spatialPose = hierarchyPoseGroup->hierarchyPosePool[p].spatialPose + j;
+	a3spatialPoseSetRotation(spatialPose, 0.0f, 0.0f, -90.0f);
+
+	j = a3hierarchyGetNodeIndex(hierarchy, "skel:shoulder_r");
+	spatialPose = hierarchyPoseGroup->hierarchyPosePool[p].spatialPose + j;
+	a3spatialPoseSetRotation(spatialPose, 0.0f, 0.0f, 90.0f);
 	
 	
 	p = 3;
 	j = a3hierarchyGetNodeIndex(hierarchy, "skel:root");
 	spatialPose = hierarchyPoseGroup->hierarchyPosePool[p].spatialPose + j;
 	a3spatialPoseSetTranslation(spatialPose, +0.3f, +0.4f, -0.5f);	// shift whole figure by some vector
+
+	j = a3hierarchyGetNodeIndex(hierarchy, "skel:pelvis");
+	spatialPose = hierarchyPoseGroup->hierarchyPosePool[p].spatialPose + j;
+	a3spatialPoseSetRotation(spatialPose, 0.0f, 0.0f, 45.0f);
 
 	// finally set up hierarchy states
 	hierarchyState = demoMode->hierarchyState_skel_base;
