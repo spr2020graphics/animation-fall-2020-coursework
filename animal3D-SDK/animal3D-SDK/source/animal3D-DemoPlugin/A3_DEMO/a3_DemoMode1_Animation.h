@@ -147,6 +147,8 @@ typedef enum a3_DemoMode1_Animation_TargetName				a3_DemoMode1_Animation_TargetN
 			};
 		};
 
+		a3_HierarchyState hierarchyState_identity[1];
+
 		a3_HierarchyPoseGroup hierarchyPoseGroup_skel[1];
 
 		a3ui32 numHierarchyStates;			// how many states we're working with
