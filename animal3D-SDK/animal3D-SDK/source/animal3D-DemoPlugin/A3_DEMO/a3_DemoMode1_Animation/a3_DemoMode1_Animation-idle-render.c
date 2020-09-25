@@ -158,6 +158,12 @@ void a3animation_render_skeletal_controls(a3_DemoState const* demoState, a3_Demo
 		"Switch Node to Examine: '<- G / H ->' (%u/%s selected)",
 		demoMode->currentExamineNode,
 		demoMode->hierarchyStates[demoMode->currentExamineHierarchyState].hierarchy->nodes[demoMode->currentExamineNode].name);
+
+	textOffset += textOffsetDelta;
+	a3_SpatialPose* basePose = demoMode->hierarchyState_skel_base->sampleHPose->spatialPose + demoMode->currentExamineNode;
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"Base Position: (%.3f, %.3f, %.3f)",
+		basePose->position.x, basePose->position.y, basePose->position.z);
 }
 
 //-----------------------------------------------------------------------------
@@ -552,7 +558,7 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 				for (a3ui32 k = 0; k < demoMode->hierarchyState_skel_base->hierarchy->numNodes; k++)
 				{
 					a3i32 i = (k * 2 + 23) % hueCount;
-					currentDrawable = drawable[1];
+					currentDrawable = demoState->draw_node;
 					a3mat4 modelViewMat;
 					a3mat4 posMat = demoMode->hierarchyState_skel_base->objectHPose->spatialPose[k].transform;
 					a3real4x4Product(modelViewMat.m, activeCameraObject->modelMatInv.m, posMat.m);
