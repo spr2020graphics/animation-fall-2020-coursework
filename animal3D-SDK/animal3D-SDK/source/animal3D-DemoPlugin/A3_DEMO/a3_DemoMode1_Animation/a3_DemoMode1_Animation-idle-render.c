@@ -640,15 +640,45 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 				a3demo_drawModelSimple(modelViewProjectionMat.m, viewProjectionMat.m, currentSceneObject->modelMat.m, currentDemoProgram);
 		} //modelMat.m == FK.m
 
+		currentDrawable = demoState->draw_node;
+		a3mat4* posMat;
+
 		for (a3ui32 k = 0; k < 32; ++k)
 		{
-			a3mat4* posMat = &demoMode->hierarchyState_skel_base->objectHPose->spatialPose[k].transform;
+			switch (demoMode->currentExamineHierarchy)
+			{
+			case 0:
+				posMat = &demoMode->hierarchyState_skel_base->objectHPose->spatialPose[k].transform;
+				break;
+			case 1:
+				posMat = &demoMode->hierarchyState_skel_toggle->objectHPose->spatialPose[k].transform;
+				break;
+			case 2:
+				posMat = &demoMode->hierarchyState_skel_clip->objectHPose->spatialPose[k].transform;
+				break;
+			}
+			
 			a3demo_drawModelSimple(modelViewProjectionMat.m, viewProjectionMat.m, posMat->m, currentDemoProgram);
+			a3vertexDrawableActivateAndRender(currentDrawable);
+		}
 
-			posMat = &demoMode->hierarchyState_skel_toggle->objectHPose->spatialPose[k].transform;
-			a3demo_drawModelSimple(modelViewProjectionMat.m, viewProjectionMat.m, posMat->m, currentDemoProgram);
+		currentDrawable = demoState->draw_axes;
+		a3vertexDrawableActivate(currentDrawable);
+		for (a3ui32 k = 0; k < 32; ++k)
+		{
+			switch (demoMode->currentExamineHierarchy)
+			{
+			case 0:
+				posMat = &demoMode->hierarchyState_skel_base->objectHPose->spatialPose[k].transform;
+				break;
+			case 1:
+				posMat = &demoMode->hierarchyState_skel_toggle->objectHPose->spatialPose[k].transform;
+				break;
+			case 2:
+				posMat = &demoMode->hierarchyState_skel_clip->objectHPose->spatialPose[k].transform;
+				break;
+			}
 
-			posMat = &demoMode->hierarchyState_skel_clip->objectHPose->spatialPose[k].transform;
 			a3demo_drawModelSimple(modelViewProjectionMat.m, viewProjectionMat.m, posMat->m, currentDemoProgram);
 		}
 	}
