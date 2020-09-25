@@ -22,6 +22,10 @@
 	Implementation of kinematics solvers.
 */
 
+/*
+	Animation Framework Addons by Scott Dagen and Cameron Schneider
+*/
+
 #include "../a3_Kinematics.h"
 #include <stdlib.h>
 
@@ -33,12 +37,6 @@ a3i32 a3kinematicsSolveForwardPartial(const a3_HierarchyState *hierarchyState, c
 	if (hierarchyState && hierarchyState->hierarchy && 
 		firstIndex < hierarchyState->hierarchy->numNodes && nodeCount)
 	{
-		// ****TO-DO: implement forward kinematics algorithm
-		//	- for all nodes starting at first index
-		//		- if node is not root (has parent node)
-		//			- object matrix = parent object matrix * local matrix
-		//		- else
-		//			- copy local matrix to object matrix
 		const a3_Hierarchy* hierarchy = hierarchyState->hierarchy;
 
 		for (a3ui32 i = firstIndex; i < hierarchy->numNodes; i++)
@@ -47,10 +45,12 @@ a3i32 a3kinematicsSolveForwardPartial(const a3_HierarchyState *hierarchyState, c
 
 			if (currentNode->parentIndex != -1)
 			{
+				// if we aren't the root node, our object space transform = parent object space * our local space
 				a3real4x4Product(hierarchyState->objectHPose->spatialPose[currentNode->index].transform.m, hierarchyState->objectHPose->spatialPose[currentNode->parentIndex].transform.m, hierarchyState->localHPose->spatialPose[currentNode->index].transform.m);
 			}
 			else
 			{
+				// If we ARE the root, our object space transform is the same as our local space
 				a3real4x4SetReal4x4(hierarchyState->objectHPose->spatialPose[currentNode->index].transform.m, hierarchyState->localHPose->spatialPose[currentNode->index].transform.m);
 			}
 		}

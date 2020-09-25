@@ -32,7 +32,7 @@
 
 //-----------------------------------------------------------------------------
 
-// initialize pose set given an initialized hierarchy and key pose count
+// initialize pose set given an initialized hierarchy and key pose count (Scott Dagen)
 a3i32 a3hierarchyPoseGroupCreate(a3_HierarchyPoseGroup* poseGroup_out, const a3_Hierarchy* hierarchy, const a3ui32 poseCount)
 {
 	// validate params and initialization states
@@ -71,7 +71,7 @@ a3i32 a3hierarchyPoseGroupCreate(a3_HierarchyPoseGroup* poseGroup_out, const a3_
 	return -1;
 }
 
-// release pose set
+// release pose set (Scott Dagen)
 a3i32 a3hierarchyPoseGroupRelease(a3_HierarchyPoseGroup* poseGroup)
 {
 	// validate param exists and is initialized
@@ -95,7 +95,7 @@ a3i32 a3hierarchyPoseGroupRelease(a3_HierarchyPoseGroup* poseGroup)
 
 //-----------------------------------------------------------------------------
 
-// initialize hierarchy state given an initialized hierarchy
+// initialize hierarchy state given an initialized hierarchy (Scott Dagen)
 a3i32 a3hierarchyStateCreate(a3_HierarchyState* state_out, const a3_Hierarchy* hierarchy)
 {
 	// validate params and initialization states
@@ -122,7 +122,7 @@ a3i32 a3hierarchyStateCreate(a3_HierarchyState* state_out, const a3_Hierarchy* h
 	return -1;
 }
 
-// release hierarchy state
+// release hierarchy state (Scott Dagen)
 a3i32 a3hierarchyStateRelease(a3_HierarchyState* state)
 {
 	// validate param exists and is initialized

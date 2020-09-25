@@ -26,6 +26,10 @@
 	********************************************
 */
 
+/*
+	Animation Framework Addons by Scott Dagen and Cameron Schneider
+*/
+
 #ifndef __ANIMAL3D_DEMOMODE1_ANIMATION_H
 #define __ANIMAL3D_DEMOMODE1_ANIMATION_H
 
@@ -132,6 +136,8 @@ typedef enum a3_DemoMode1_Animation_TargetName				a3_DemoMode1_Animation_TargetN
 
 		// skeletal animation
 		a3_Hierarchy hierarchy_skel[1];
+
+		// 3 total states for 3 different behaviors
 		union {
 			a3_HierarchyState hierarchyStates[3];
 			struct {
@@ -140,13 +146,14 @@ typedef enum a3_DemoMode1_Animation_TargetName				a3_DemoMode1_Animation_TargetN
 				a3_HierarchyState hierarchyState_skel_clip[1];
 			};
 		};
+
 		a3_HierarchyPoseGroup hierarchyPoseGroup_skel[1];
 
-		a3ui32 numHierarchyStates;
-		a3ui32 currentToggleIndex;
-		a3ui32 currentClipKeyVal;
-		a3ui32 currentExamineHierarchyState;
-		a3ui32 currentExamineNode;
+		a3ui32 numHierarchyStates;			// how many states we're working with
+		a3ui32 currentToggleIndex;			// What pose are we currently looking at? (for switching poses via input)
+		a3ui32 currentClipKeyVal;			// What is the current keyframe value from the clip? (Used for animating skeleton via clip controller)
+		a3ui32 currentExamineHierarchyState;// Which hierarchy state are we currently editing?
+		a3ui32 currentExamineNode;			// Which node are we currently looking at?
 
 		// objects
 		union {
