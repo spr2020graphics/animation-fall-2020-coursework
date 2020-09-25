@@ -333,7 +333,7 @@ struct a3_DemoState
 				controller_cylinder[1],
 				controller_capsule[1],
 				controller_torus[1],
-				controller_skeleton[1],
+				controller_skeleton[1], //new controller for skeleton
 				controller_teapot[1];
 		};
 	};

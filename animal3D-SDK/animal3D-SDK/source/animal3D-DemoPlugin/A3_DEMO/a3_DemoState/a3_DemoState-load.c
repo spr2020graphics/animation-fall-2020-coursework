@@ -29,7 +29,7 @@
 */
 
 /*
-	Animation Framework Addons by Scott Dagen
+	Animation Framework Addons by Scott Dagen and Cameron Schneider
 */
 
 //-----------------------------------------------------------------------------

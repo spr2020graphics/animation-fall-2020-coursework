@@ -26,6 +26,10 @@
 	********************************************
 */
 
+/*
+	Animation Framework Addons by Scott Dagen and Cameron Schneider
+*/
+
 //-----------------------------------------------------------------------------
 
 #include "../a3_DemoMode1_Animation.h"
@@ -94,12 +98,13 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 	a3_HierarchyState* currentState = demoMode->hierarchyState_skel_base;
 
 	//In order to use concat, we need _a_ spatial pose with no deltas. The identity's three spatial poses are identical, so I picked local at random.
+	//for a step interpolation, copying the specified pose is equivalent to interpolating.
 	a3hierarchyPoseCopy(currentState->sampleHPose, &demoMode->hierarchyPoseGroup_skel->hierarchyPosePool[0], demoMode->hierarchy_skel->numNodes);
 	a3hierarchyPoseConcat(currentState->localHPose, demoMode->hierarchyState_identity->localHPose, &demoMode->hierarchyPoseGroup_skel->hierarchyPosePool[0], demoMode->hierarchy_skel->numNodes);
 	a3hierarchyPoseConvert(currentState->localHPose, demoMode->hierarchy_skel->numNodes, demoMode->hierarchyPoseGroup_skel->channels, demoMode->hierarchyPoseGroup_skel->eulerOrder);
 	a3kinematicsSolveForward(currentState);
 
-	// Update the toggle state
+	// Update the toggle state. Copy, concat base with either sample or identity, convert, FK.
 	currentState = demoMode->hierarchyState_skel_toggle;
 	a3hierarchyPoseCopy(currentState->sampleHPose, &demoMode->hierarchyPoseGroup_skel->hierarchyPosePool[demoMode->currentToggleIndex], demoMode->hierarchy_skel->numNodes);
 	if (demoMode->currentToggleIndex != 0)
@@ -108,14 +113,14 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 	}
 	else
 	{
-		//concat with a zero delta
+		//concat with a zero delta. Could eventually move the identity hState into the pose group, as this isn't the most memory efficient or performant. Some loops might need to be modified
 		a3hierarchyPoseConcat(currentState->localHPose, &demoMode->hierarchyPoseGroup_skel->hierarchyPosePool[0], demoMode->hierarchyState_identity->localHPose, demoMode->hierarchy_skel->numNodes);
 	}
 	a3hierarchyPoseConvert(currentState->localHPose, demoMode->hierarchy_skel->numNodes, demoMode->hierarchyPoseGroup_skel->channels, demoMode->hierarchyPoseGroup_skel->eulerOrder);
 	a3kinematicsSolveForward(currentState);
 
 
-	// Update the clip-controlled state
+	// Update the clip-controlled state. Copy, concat base with either sample or identity, convert, FK.
 	currentState = demoMode->hierarchyState_skel_clip;
 
 	demoMode->currentClipKeyVal = (a3ui32)(demoState->controller_skeleton->clipPool->clipArray[demoState->controller_skeleton->clipIndex].keyframes->keyframeArray[demoState->controller_skeleton->keyframeIndex].sample.value);
@@ -127,7 +132,7 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 	}
 	else
 	{
-		//concat with a zero delta
+		//concat with a zero delta. See above comment
 		a3hierarchyPoseConcat(currentState->localHPose, &demoMode->hierarchyPoseGroup_skel->hierarchyPosePool[0], demoMode->hierarchyState_identity->localHPose, demoMode->hierarchy_skel->numNodes);
 	}
 	a3hierarchyPoseConvert(currentState->localHPose, demoMode->hierarchy_skel->numNodes, demoMode->hierarchyPoseGroup_skel->channels, demoMode->hierarchyPoseGroup_skel->eulerOrder);

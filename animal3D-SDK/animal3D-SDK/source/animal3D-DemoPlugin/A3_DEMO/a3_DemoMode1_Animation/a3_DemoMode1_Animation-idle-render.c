@@ -26,6 +26,10 @@
 	********************************************
 */
 
+/*
+	Animation Framework Addons by Scott Dagen and Cameron Schneider
+*/
+
 //-----------------------------------------------------------------------------
 
 #include "../a3_DemoMode1_Animation.h"
@@ -123,42 +127,44 @@ void a3animation_render_controls(a3_DemoState const* demoState, a3_DemoMode1_Ani
 		"    Active camera (%u / %u) ('c' prev | next 'v'): %s", activeCamera + 1, animation_camera_max, cameraText[activeCamera]);
 }
 
+//draws additional skeleton controls
 void a3animation_render_skeletal_controls(a3_DemoState const* demoState, a3_DemoMode1_Animation const* demoMode,
 	a3_TextRenderer const* text, a3vec4 const col,
 	a3f32 const textAlign, a3f32 const textDepth, a3f32 const textOffsetDelta, a3f32 textOffset)
 {
-	a3byte const* hSNames[3] = {
+	a3byte const* hSNames[3] = { //which hState we're examining
 		"Base", "Toggle", "Clip"
 	};
 
-	a3byte const* correctClip[2] = {
+	a3byte const* correctClip[2] = { //debug information on clips
 		"Selected", "Not Selected"
 	};
 	
-	a3byte const* playing[2] = {
+	a3byte const* playing[2] = { //is the clip playing?
 		"Playing", "Paused"
 	};
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
 		"See Previous Page for Clip Controls and Keyframe Data.");
 	a3boolean correctIndex = demoState->controllerIndex == demoState->controller_skeleton - demoState->controllers;
 	a3boolean isPlaying = demoState->controller_skeleton->playbackDir != 0 && demoState->globalPlaybackDir != 0;
-	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a, //displays whether we have the correct clip selected.
 		"ClipController % s Required. (%s, %s)",
 		demoState->controller_skeleton->name,
 		correctClip[1 - correctIndex],
 		playing[1 - isPlaying]);
 
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"Switch HierarchyState to Examine: 'h' (%s selected)", hSNames[demoMode->currentExamineHierarchyState]);
+		"Switch HierarchyState to Examine: 'h' (%s selected)", hSNames[demoMode->currentExamineHierarchyState]); //show which hState is being examined
 
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"Switch Pose in Toggle State: '~' (%u selected)", demoMode->currentToggleIndex);
+		"Switch Pose in Toggle State: '~' (%u selected)", demoMode->currentToggleIndex);	//show which pose is being examined
 
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"Switch Node to Examine: '<- G / H ->' (%u/%s selected)",
+		"Switch Node to Examine: '<- G / H ->' (%u/%s selected)",	//switch examined node
 		demoMode->currentExamineNode,
 		demoMode->hierarchyStates[demoMode->currentExamineHierarchyState].hierarchy->nodes[demoMode->currentExamineNode].name);
 
+	//as much data as we can pull from the transform. Tried restoring the pose data, didn't quite work.
 	textOffset += textOffsetDelta;
 	a3_SpatialPose* basePose = demoMode->hierarchyState_skel_base->objectHPose->spatialPose + demoMode->currentExamineNode;
 	a3_SpatialPose* keyPose = demoMode->hierarchyStates[demoMode->currentExamineHierarchyState].objectHPose->spatialPose + demoMode->currentExamineNode;
@@ -229,7 +235,7 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 		{ 1.00f, 0.00f, 0.75f, 1.00f },
 		{ 1.00f, 0.00f, 0.50f, 1.00f },	// rose
 		{ 1.00f, 0.00f, 0.25f, 1.00f },
-		{ 1.00f, 1.00f, 1.00f, 1.00f },
+		{ 1.00f, 1.00f, 1.00f, 1.00f }, //white
 	};
 	const a3vec4 grey4[] = {
 		{ 0.5f, 0.5f, 0.5f, 1.0f },	// solid grey
@@ -253,7 +259,7 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 	// temp drawable pointers
 	const a3_VertexDrawable* drawable[] = {
 		demoState->draw_unit_box,		// skybox
-		demoState->draw_unit_sphere,
+		demoState->draw_unit_sphere,	// sphere
 		0,
 	};
 
@@ -571,7 +577,8 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 				// overlay flag
 				a3shaderUniformSendInt(a3unif_single, currentDemoProgram->uFlag, 1, flag);
 
-				// draw skeleton joint bases
+				// draw skeleton joint bases. Mostly derived from demoMode0, but for rendering the tangent bases for a node in the base state. Doesn't behave correctly
+				// with other states. Also uses draw_node instead of draw_unit_circle because we were using nodes for debug.
 				for (a3ui32 k = 0; k < demoMode->hierarchyState_skel_base->hierarchy->numNodes; k++)
 				{
 					a3i32 i = (k * 2 + 23) % hueCount;

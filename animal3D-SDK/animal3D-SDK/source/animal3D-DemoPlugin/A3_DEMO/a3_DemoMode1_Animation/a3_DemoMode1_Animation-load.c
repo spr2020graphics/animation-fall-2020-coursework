@@ -26,6 +26,10 @@
 	********************************************
 */
 
+/*
+	Animation Framework Addons by Scott Dagen and Cameron Schneider
+*/
+
 //-----------------------------------------------------------------------------
 
 #include "../a3_DemoMode1_Animation.h"
@@ -314,11 +318,11 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 
 	j = a3hierarchyGetNodeIndex(hierarchy, "skel:elbow_l");
 	spatialPose = hierarchyPoseGroup->hierarchyPosePool[p].spatialPose + j;
-	a3spatialPoseSetRotation(spatialPose, 0.0f, 0.0f, -50.0f);
+	a3spatialPoseSetRotation(spatialPose, 0.0f, 0.0f, -50.0f);	// bend left elbow
 
 	j = a3hierarchyGetNodeIndex(hierarchy, "skel:hip_r");
 	spatialPose = hierarchyPoseGroup->hierarchyPosePool[p].spatialPose + j;
-	a3spatialPoseSetRotation(spatialPose, 20.0f, 0.0f, 0.0f);
+	a3spatialPoseSetRotation(spatialPose, 20.0f, 0.0f, 0.0f);	//raise right leg
 	
 	p = 2;
 	j = a3hierarchyGetNodeIndex(hierarchy, "skel:root");
@@ -327,11 +331,11 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 
 	j = a3hierarchyGetNodeIndex(hierarchy, "skel:shoulder_l");
 	spatialPose = hierarchyPoseGroup->hierarchyPosePool[p].spatialPose + j;
-	a3spatialPoseSetRotation(spatialPose, 0.0f, 0.0f, -90.0f);
+	a3spatialPoseSetRotation(spatialPose, 0.0f, 0.0f, -90.0f);	//move arm forward
 
 	j = a3hierarchyGetNodeIndex(hierarchy, "skel:shoulder_r");
 	spatialPose = hierarchyPoseGroup->hierarchyPosePool[p].spatialPose + j;
-	a3spatialPoseSetRotation(spatialPose, 0.0f, 0.0f, 90.0f);
+	a3spatialPoseSetRotation(spatialPose, 0.0f, 0.0f, 90.0f);	//move arm forward
 	
 	
 	p = 3;
@@ -341,7 +345,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 
 	j = a3hierarchyGetNodeIndex(hierarchy, "skel:pelvis");
 	spatialPose = hierarchyPoseGroup->hierarchyPosePool[p].spatialPose + j;
-	a3spatialPoseSetRotation(spatialPose, 0.0f, 0.0f, 45.0f);
+	a3spatialPoseSetRotation(spatialPose, 0.0f, 0.0f, 45.0f);	//rotate lower body by 45 degrees.
 
 	// finally set up hierarchy states
 	hierarchyState = demoMode->hierarchyState_skel_base;
@@ -356,6 +360,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	hierarchyState->hierarchy = 0;
 	a3hierarchyStateCreate(hierarchyState, hierarchy);
 
+	//identity hState. Could probably be a pose group in the future.
 	hierarchyState = demoMode->hierarchyState_identity;
 	hierarchyState->hierarchy = 0;
 	a3hierarchyStateCreate(hierarchyState, hierarchy);

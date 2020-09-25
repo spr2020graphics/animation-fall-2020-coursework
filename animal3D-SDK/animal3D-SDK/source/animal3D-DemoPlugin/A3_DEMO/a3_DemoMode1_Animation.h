@@ -147,8 +147,10 @@ typedef enum a3_DemoMode1_Animation_TargetName				a3_DemoMode1_Animation_TargetN
 			};
 		};
 
+		//a blank hState for zero-delta concatenations.
 		a3_HierarchyState hierarchyState_identity[1];
 
+		//all delta poses (and base pose) for the skeleton
 		a3_HierarchyPoseGroup hierarchyPoseGroup_skel[1];
 
 		a3ui32 numHierarchyStates;			// how many states we're working with
