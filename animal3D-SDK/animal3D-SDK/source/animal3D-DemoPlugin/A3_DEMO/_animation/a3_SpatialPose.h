@@ -22,6 +22,10 @@ a3_SpatialPose.h
 Description of a spatial pose with rotation, translation and scale.
 */
 
+/*
+	Animation Framework Addons by Scott Dagen and Cameron Schneider
+*/
+
 #ifndef __ANIMAL3D_SPATIALPOSE_H
 #define __ANIMAL3D_SPATIALPOSE_H
 
@@ -127,8 +131,10 @@ a3i32 a3spatialPoseConvert(a3mat4* mat_out, const a3_SpatialPose* spatialPose_in
 // copy operation for single node pose
 a3i32 a3spatialPoseCopy(a3_SpatialPose* spatialPose_out, const a3_SpatialPose* spatialPose_in);
 
+// Concatenate two spatial poses into an output
 a3i32 a3spatialPoseConcat(a3_SpatialPose* spatialPose_out, a3_SpatialPose* spatialPose_lhs, a3_SpatialPose* spatialPose_rhs);
 
+// Lerp between two poses by a parameter
 a3i32 a3spatialPoseLerp(a3_SpatialPose* spatialPose_out, a3_SpatialPose* spatialPose_0, a3_SpatialPose* spatialPose_1, const a3real u);
 
 // init a spatial pose with user-specified values

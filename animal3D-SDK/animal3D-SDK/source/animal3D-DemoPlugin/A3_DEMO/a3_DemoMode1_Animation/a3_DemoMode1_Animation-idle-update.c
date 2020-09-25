@@ -102,6 +102,7 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 	a3hierarchyPoseConvert(currentState->localHPose, demoMode->hierarchy_skel->numNodes, demoMode->hierarchyPoseGroup_skel->channels, demoMode->hierarchyPoseGroup_skel->eulerOrder);
 	a3kinematicsSolveForward(currentState);
 
+	// Update the toggle state
 	currentState = demoMode->hierarchyState_skel_toggle;
 	a3spatialPoseReset(currentState->objectHPose->spatialPose);
 	a3hierarchyPoseCopy(currentState->sampleHPose, &demoMode->hierarchyPoseGroup_skel->hierarchyPosePool[demoMode->currentToggleIndex], demoMode->hierarchy_skel->numNodes);
@@ -117,6 +118,8 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 	a3hierarchyPoseConvert(currentState->localHPose, demoMode->hierarchy_skel->numNodes, demoMode->hierarchyPoseGroup_skel->channels, demoMode->hierarchyPoseGroup_skel->eulerOrder);
 	a3kinematicsSolveForward(currentState);
 
+
+	// Update the clip-controlled state
 	currentState = demoMode->hierarchyState_skel_clip;
 
 	demoMode->currentClipKeyVal = (a3ui32)(demoState->controller_skeleton->clipPool->clipArray[demoState->controller_skeleton->clipIndex].keyframes->keyframeArray[demoState->controller_skeleton->keyframeIndex].sample.value);

@@ -154,6 +154,8 @@ inline a3i32 a3spatialPoseConcat(a3_SpatialPose* spatialPose_out, a3_SpatialPose
 
 //		a3real3SetReal3(spatialPose_out->orientation.v, a3real3Add(spatialPose_lhs->orientation.v, spatialPose_rhs->orientation.v));
 		a3real3Sum(spatialPose_out->orientation.v, spatialPose_lhs->orientation.v, spatialPose_rhs->orientation.v);
+
+		// Keep our angles within range -360, 360 !
 		while (spatialPose_out->orientation.x < -360.0f || spatialPose_out->orientation.x > 360.0f)
 		{
 			if (spatialPose_out->orientation.x < -360.0f)

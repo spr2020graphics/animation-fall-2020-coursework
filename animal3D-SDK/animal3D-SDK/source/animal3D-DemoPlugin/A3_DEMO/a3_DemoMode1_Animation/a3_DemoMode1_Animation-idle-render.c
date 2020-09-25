@@ -653,12 +653,18 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 				a3demo_drawModelSimple(modelViewProjectionMat.m, viewProjectionMat.m, currentSceneObject->modelMat.m, currentDemoProgram);
 		} //modelMat.m == FK.m
 
+
+		// Draw spheres for joints, and draw axes over the top.
+
 		currentDrawable = demoState->draw_unit_sphere;
 		a3mat4* posMat;
 		a3mat4 scale = a3mat4_identity;
 		a3real4x4SetScale(scale.m, 0.25f);
 		for (a3ui32 k = 0; k < 32; ++k)
 		{
+			a3mat4* selectedBaseMat;
+
+			// Only draw the currently selected hierarchy state
 			switch (demoMode->currentExamineHierarchyState)
 			{
 			case 0:
@@ -672,24 +678,39 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 				break;
 			}
 
+			// Scale down the matrix so the spheres aren't huge
 			a3mat4 newPosMat = a3mat4_identity;
 			a3real4x4Product(newPosMat.m, posMat->m, scale.m);
+
+			// If this is the node that's currently selected, draw it green, and also draw the corresponding node in the base pose as magenta
 			if (demoMode->currentExamineNode == k)
 			{
+				// This is the currently selected node in the current hierarchy pose (key/delta)
 				a3demo_drawModelSolidColor(modelViewProjectionMat.m, viewProjectionMat.m, newPosMat.m, currentDemoProgram, currentDrawable, green);
+				a3vertexDrawableActivateAndRender(currentDrawable);
+				
+				// Scale down this matrix as well (this is the corresponding base pose node)
+				selectedBaseMat = &demoMode->hierarchyState_skel_base->objectHPose->spatialPose[k].transform;
+				a3real4x4Product(newPosMat.m, selectedBaseMat->m, scale.m);
+
+				a3demo_drawModelSolidColor(modelViewProjectionMat.m, viewProjectionMat.m, newPosMat.m, currentDemoProgram, currentDrawable, magenta);
 				a3vertexDrawableActivateAndRender(currentDrawable);
 			}
 			else
 			{
+				// Draw all other nodes in white
 				a3demo_drawModelSolidColor(modelViewProjectionMat.m, viewProjectionMat.m, newPosMat.m, currentDemoProgram, currentDrawable, white);
 				a3vertexDrawableActivateAndRender(currentDrawable);
 			}
 		}
 
+		// Render axes over top of the spheres
 		currentDrawable = demoState->draw_axes;
 		a3vertexDrawableActivate(currentDrawable);
 		for (a3ui32 k = 0; k < 32; ++k)
 		{
+
+			// Only draw axes for the currently selected hierarchy state
 			switch (demoMode->currentExamineHierarchyState)
 			{
 			case 0:
@@ -703,9 +724,11 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 				break;
 			}
 
+			// Scale down the matrix for smaller axes
 			a3mat4 newPosMat = a3mat4_identity;
 			a3real4x4Product(newPosMat.m, posMat->m, scale.m);
 
+			// Draw them in "white" aka normal. Fixes a bug when drawing the last selected node colored, where the axes would be drawn in that same color.
 			a3demo_drawModelSolidColor(modelViewProjectionMat.m, viewProjectionMat.m, newPosMat.m, currentDemoProgram, currentDrawable, white);
 		}
 	}
