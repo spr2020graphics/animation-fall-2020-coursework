@@ -67,7 +67,7 @@ void a3animation_input_keyCharPress(a3_DemoState const* demoState, a3_DemoMode1_
 		a3demoCtrlCasesLoop(demoMode->pass, animation_pass_max, ')', '(');
 
 		//new controls for animation: loop through poses, states, and nodes
-		a3demoCtrlCaseIncLoop(demoMode->currentToggleIndex, demoMode->hierarchyPoseGroup_skel->poseCount, '~');
+		a3demoCtrlCaseIncLoop(demoMode->currentToggleIndex, (demoMode->hierarchyPoseGroup_skel->poseCount - 1), '~');
 		a3demoCtrlCaseIncLoop(demoMode->currentExamineHierarchyState, demoMode->numHierarchyStates, 'h');
 		a3demoCtrlCasesLoop(demoMode->currentExamineNode, demoMode->hierarchy_skel->numNodes, 'H', 'G');
 	}

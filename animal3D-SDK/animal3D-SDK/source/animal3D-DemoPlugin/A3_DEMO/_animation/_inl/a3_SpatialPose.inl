@@ -151,7 +151,7 @@ inline a3i32 a3spatialPoseCopy(a3_SpatialPose* spatialPose_out, const a3_Spatial
 	return -1;
 }
 
-inline a3i32 a3spatialPoseConcat(a3_SpatialPose* spatialPose_out, a3_SpatialPose* spatialPose_lhs, a3_SpatialPose* spatialPose_rhs)
+inline a3i32 a3spatialPoseConcat(a3_SpatialPose* spatialPose_out, a3_SpatialPose* spatialPose_lhs, a3_SpatialPose* spatialPose_rhs, const a3boolean usingQuaternions)
 {
 	if (spatialPose_out && spatialPose_lhs && spatialPose_rhs)
 	{
@@ -160,42 +160,51 @@ inline a3i32 a3spatialPoseConcat(a3_SpatialPose* spatialPose_out, a3_SpatialPose
 		// translation -> t_lhs + t_rhs
 
 //		a3real3SetReal3(spatialPose_out->orientation.v, a3real3Add(spatialPose_lhs->orientation.v, spatialPose_rhs->orientation.v));
-		a3real3Sum(spatialPose_out->orientation.v, spatialPose_lhs->orientation.v, spatialPose_rhs->orientation.v);
 
-		// Keep our angles within range -360, 360 !
-		while (spatialPose_out->orientation.x < -360.0f || spatialPose_out->orientation.x > 360.0f)
+		if (usingQuaternions)
 		{
-			if (spatialPose_out->orientation.x < -360.0f)
+			//quaternion code
+		}
+		else
+		{
+			a3real3Sum(spatialPose_out->orientation.v, spatialPose_lhs->orientation.v, spatialPose_rhs->orientation.v);
+
+			// Keep our angles within range -360, 360 !
+			while (spatialPose_out->orientation.x < -360.0f || spatialPose_out->orientation.x > 360.0f)
 			{
-				spatialPose_out->orientation.x += 720.0f;
+				if (spatialPose_out->orientation.x < -360.0f)
+				{
+					spatialPose_out->orientation.x += 720.0f;
+				}
+				if (spatialPose_out->orientation.x > 360.0f)
+				{
+					spatialPose_out->orientation.x -= 720.0f;
+				}
 			}
-			if (spatialPose_out->orientation.x > 360.0f)
+			while (spatialPose_out->orientation.y < -360.0f || spatialPose_out->orientation.y > 360.0f)
 			{
-				spatialPose_out->orientation.x -= 720.0f;
+				if (spatialPose_out->orientation.y < -360.0f)
+				{
+					spatialPose_out->orientation.y += 720.0f;
+				}
+				if (spatialPose_out->orientation.y > 360.0f)
+				{
+					spatialPose_out->orientation.y -= 720.0f;
+				}
+			}
+			while (spatialPose_out->orientation.z < -360.0f || spatialPose_out->orientation.z > 360.0f)
+			{
+				if (spatialPose_out->orientation.z < -360.0f)
+				{
+					spatialPose_out->orientation.z += 720.0f;
+				}
+				if (spatialPose_out->orientation.z > 360.0f)
+				{
+					spatialPose_out->orientation.z -= 720.0f;
+				}
 			}
 		}
-		while (spatialPose_out->orientation.y < -360.0f || spatialPose_out->orientation.y > 360.0f)
-		{
-			if (spatialPose_out->orientation.y < -360.0f)
-			{
-				spatialPose_out->orientation.y += 720.0f;
-			}
-			if (spatialPose_out->orientation.y > 360.0f)
-			{
-				spatialPose_out->orientation.y -= 720.0f;
-			}
-		}
-		while (spatialPose_out->orientation.z < -360.0f || spatialPose_out->orientation.z > 360.0f)
-		{
-			if (spatialPose_out->orientation.z < -360.0f)
-			{
-				spatialPose_out->orientation.z += 720.0f;
-			}
-			if (spatialPose_out->orientation.z > 360.0f)
-			{
-				spatialPose_out->orientation.z -= 720.0f;
-			}
-		}
+		
 
 		//make sure this stays within range
 //		a3real3SetReal3(spatialPose_out->position.v, a3real3Add(spatialPose_lhs->position.v, spatialPose_rhs->position.v));
@@ -217,6 +226,12 @@ inline a3i32 a3spatialPoseLerp(a3_SpatialPose* spatialPose_out, a3_SpatialPose* 
 		// orientation -> lerp(o0, o1, u)
 		// scale -> lerp(s0, s1, u)
 		// translation -> lerp(t0, t1, u)
+
+		//quaternion
+		//orientation -> lerp(o1, o2, u) -> 4d vec lerp
+		//			ends up scaling though. |q| < 1 -> s = |q|^2
+		//use nlerp.
+
 
 		a3real3Lerp(spatialPose_out->orientation.v, spatialPose_0->orientation.v, spatialPose_1->orientation.v, u);
 		a3real3Lerp(spatialPose_out->scale.v, spatialPose_0->scale.v, spatialPose_1->scale.v, u);

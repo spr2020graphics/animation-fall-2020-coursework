@@ -131,7 +131,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	hierarchy = demoMode->hierarchy_skel;
 	hierarchyPoseGroup = demoMode->hierarchyPoseGroup_skel;
 	hierarchyPoseGroup->hierarchy = 0;
-	a3hierarchyPoseGroupCreate(hierarchyPoseGroup, hierarchy, 4);
+	a3hierarchyPoseGroupCreate(hierarchyPoseGroup, hierarchy, 5); //0 = base, 1 = zero delta, all after = delta poses
 
 	// define "bind pose" or "base pose" or the initial transformation 
 	//	description for each joint (not a literal transform)
@@ -311,7 +311,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	// each remaining pose represents a "delta" from the base
 	// initialize the changes where applicable
 	// (note: the channels describe which pose components can change)
-	p = 1;
+	p = 2;
 	j = a3hierarchyGetNodeIndex(hierarchy, "skel:root");
 	spatialPose = hierarchyPoseGroup->hierarchyPosePool[p].spatialPose + j;
 	a3spatialPoseSetRotation(spatialPose, 0.0f, 0.0f, +90.0f);	// rotate whole figure by 90 degrees on Z
@@ -324,7 +324,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	spatialPose = hierarchyPoseGroup->hierarchyPosePool[p].spatialPose + j;
 	a3spatialPoseSetRotation(spatialPose, 20.0f, 0.0f, 0.0f);	//raise right leg
 	
-	p = 2;
+	p = 3;
 	j = a3hierarchyGetNodeIndex(hierarchy, "skel:root");
 	spatialPose = hierarchyPoseGroup->hierarchyPosePool[p].spatialPose + j;
 	a3spatialPoseSetScale(spatialPose, 1.5f, 1.5f, 1.5f);	// uniformly scale whole figure up by 50%
@@ -338,7 +338,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	a3spatialPoseSetRotation(spatialPose, 0.0f, 0.0f, 90.0f);	//move arm forward
 	
 	
-	p = 3;
+	p = 4;
 	j = a3hierarchyGetNodeIndex(hierarchy, "skel:root");
 	spatialPose = hierarchyPoseGroup->hierarchyPosePool[p].spatialPose + j;
 	a3spatialPoseSetTranslation(spatialPose, +0.3f, +0.4f, -0.5f);	// shift whole figure by some vector
@@ -360,10 +360,6 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	hierarchyState->hierarchy = 0;
 	a3hierarchyStateCreate(hierarchyState, hierarchy);
 
-	//identity hState. Could probably be a pose group in the future.
-	hierarchyState = demoMode->hierarchyState_identity;
-	hierarchyState->hierarchy = 0;
-	a3hierarchyStateCreate(hierarchyState, hierarchy);
 }
 
 

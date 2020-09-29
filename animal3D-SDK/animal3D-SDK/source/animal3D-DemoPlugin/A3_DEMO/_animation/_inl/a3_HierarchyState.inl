@@ -107,7 +107,7 @@ inline a3i32 a3hierarchyPoseConcat(const a3_HierarchyPose* pose_out, const a3_Hi
 	{
 		for (a3ui32 i = 0; i < nodeCount; i++)
 		{
-			a3spatialPoseConcat(&pose_out->spatialPose[i], &pose_lhs->spatialPose[i], &pose_rhs->spatialPose[i]);
+			a3spatialPoseConcat(&pose_out->spatialPose[i], &pose_lhs->spatialPose[i], &pose_rhs->spatialPose[i], false);
 		}
 
 		return 1;

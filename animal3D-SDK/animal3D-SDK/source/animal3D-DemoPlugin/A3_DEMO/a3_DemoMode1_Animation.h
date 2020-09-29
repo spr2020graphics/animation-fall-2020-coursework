@@ -147,14 +147,11 @@ typedef enum a3_DemoMode1_Animation_TargetName				a3_DemoMode1_Animation_TargetN
 			};
 		};
 
-		//a blank hState for zero-delta concatenations.
-		a3_HierarchyState hierarchyState_identity[1];
-
-		//all delta poses (and base pose) for the skeleton
+		//all delta poses (and base pose) for the skeleton. Pose 1 = zero delta
 		a3_HierarchyPoseGroup hierarchyPoseGroup_skel[1];
 
 		a3ui32 numHierarchyStates;			// how many states we're working with
-		a3ui32 currentToggleIndex;			// What pose are we currently looking at? (for switching poses via input)
+		a3ui32 currentToggleIndex;			// What pose are we currently looking at? (for switching poses via input). 0 indexed, though the first delta pose is index 1 so we add 1 when using this
 		a3ui32 currentClipKeyVal;			// What is the current keyframe value from the clip? (Used for animating skeleton via clip controller)
 		a3ui32 currentExamineHierarchyState;// Which hierarchy state are we currently editing?
 		a3ui32 currentExamineNode;			// Which node are we currently looking at?

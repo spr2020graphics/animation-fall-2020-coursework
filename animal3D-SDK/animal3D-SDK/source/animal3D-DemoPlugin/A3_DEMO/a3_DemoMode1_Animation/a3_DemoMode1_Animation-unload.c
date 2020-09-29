@@ -47,7 +47,6 @@ void a3animation_unload(a3_DemoState const* demoState, a3_DemoMode1_Animation* d
 	a3hierarchyStateRelease(demoMode->hierarchyState_skel_base);
 	a3hierarchyStateRelease(demoMode->hierarchyState_skel_toggle);
 	a3hierarchyStateRelease(demoMode->hierarchyState_skel_clip);
-	a3hierarchyStateRelease(demoMode->hierarchyState_identity);
 	a3hierarchyPoseGroupRelease(demoMode->hierarchyPoseGroup_skel);
 }
 
