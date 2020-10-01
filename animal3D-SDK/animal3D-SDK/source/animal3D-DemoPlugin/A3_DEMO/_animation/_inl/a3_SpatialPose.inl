@@ -117,6 +117,11 @@ inline a3i32 a3spatialPoseConvert(a3mat4* mat_out, const a3_SpatialPose* spatial
 		case a3poseEulerOrder_zyx:
 			a3real4x4SetRotateZYX(rotate.m, spatialPose_in->orientation.x, spatialPose_in->orientation.y, spatialPose_in->orientation.z);
 			break;
+		case a3poseEulerOrder_zxy:
+			//create the y, x, and z matrices
+			//xytmp = mult(x,y)
+			//zxy = mult(z, xytmp)
+
 		}
 
 		//create scale matrix
