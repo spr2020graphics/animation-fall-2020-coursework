@@ -163,7 +163,37 @@ a3i32 a3hierarchyPoseGroupLoadBVH(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 {
 	if (poseGroup_out && !poseGroup_out->poseCount && hierarchy_out && !hierarchy_out->numNodes && resourceFilePath && *resourceFilePath)
 	{
+		//loop 1:
+		//count joints, create empty hierarchy. Also cache total number of channels.
+		//loop 1.5:
+		//create array specifying the number of channels per joint, used in loop 3
+		//loop 2:
+		//construct hierarchy, track the number of {} to determine hierarchical relationship. "End site" ends a recursive loop. Name end sites "parentNodeName"Off.
+		//open bracket => start new recursive loop, UNLESS line before is End Site, then you call a different function that's a singular loop. Continue until close bracket
+		//should function return the pointer to the close bracket. May need to add 1 or so but that's fine. Scott needs to research how to process both \r\n and \n
+		//offset is local translation, there is no built-in rotation.
+		//when last loop terminates, we still have the pointer to the last close bracket.
+		//loop 3: motion
+		//store frames and frame time (fps is line 268, a3_callbacks.c).
+		//find the number of lines to skip to match the fps
+		//allocate a LOT of poses in the HPoseGroup
+		//for (int i = 0; i < joints; i++)
+		//{
+		//	for (int j = 0; j < channels[i]; j++)
+		//	{
+		//		load data, checking the name of the data and going through a 6 part if or switch statement to get each data point loaded
+		//	}
+		//}
 
+
+		//full clip has 1280 frames at 120fps
+		//set fps to 30 we get 320 frames or 10.6 seconds
+		//macarena is 103bpm
+		//roughly 4.5 measures (each line is one measure, plus a shout between verses)
+		//macarena takes ~0.58 seconds per beat, or 2.33 seconds per measure (4 beats)
+		//multiply the seconds per measure by 4.5 measures and we get 10.485
+		//backsolving reveals that the actual measures per verse is ~4.577 (repeating 7) seconds, so the BVH data is at approximately real time, potentially with an extra pause at the end.
+		//note: this was calculated before we did any parsing.
 	}
 	return -1;
 }
