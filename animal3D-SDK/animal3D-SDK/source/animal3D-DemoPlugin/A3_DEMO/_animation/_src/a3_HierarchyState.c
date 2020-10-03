@@ -197,8 +197,51 @@ a3i32 a3hierarchyPoseGroupLoadBVH(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 		}
 		//loop 1.5:
 		//create array specifying the number of channels per joint, used in loop 3
+		a3ui32* channelsPerJoint = malloc(nodeCount * sizeof(a3ui32));	//parallel to joint indices
+
+		strncpy(contentsCopy, fs->contents, fs->length);
+		token = strtok((char*)contentsCopy, "\n");
+
+		a3ui32 jointIndex = 0;
+		a3boolean isEndSite = false;
+		while (token != NULL)
+		{
+			while (token[0] == ' ' || token[0] == '\t')
+			{
+				token++;
+			}
+			//https://stackoverflow.com/a/4771038
+			if (strncmp(token, "JOINT", 5) == 0 || strncmp(token, "ROOT", 4) == 0 || strncmp(token, "End", 3) == 0)
+			{
+				jointIndex++;
+				if (strncmp(token, "End", 3) == 0)
+				{
+					isEndSite = true;
+				}
+				else
+				{
+					isEndSite = false;
+				}
+			}
+
+			if (strncmp(token, "CHANNELS", 8) == 0)
+			{
+				if (!isEndSite)
+				{
+					channelsPerJoint[jointIndex] = (a3ui32)atoi(token + 9);
+				}
+			}
+			else if (isEndSite)
+			{
+				channelsPerJoint[jointIndex] = 0;
+			}
+
+			token = strtok(NULL, "\n");
+		}
+
 		//loop 2:
 		//construct hierarchy, track the number of {} to determine hierarchical relationship. "End site" ends a recursive loop. Name end sites "parentNodeName"Off.
+		a3hierarchyCreate(hierarchy_out, nodeCount, 0);
 		//open bracket => start new recursive loop, UNLESS line before is End Site, then you call a different function that's a singular loop. Continue until close bracket
 		//should function return the pointer to the close bracket. May need to add 1 or so but that's fine. Scott needs to research how to process both \r\n and \n
 		//offset is local translation, there is no built-in rotation.
