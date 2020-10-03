@@ -136,6 +136,7 @@ typedef enum a3_DemoMode1_Animation_TargetName				a3_DemoMode1_Animation_TargetN
 
 		// skeletal animation
 		a3_Hierarchy hierarchy_skel[1];
+		a3_Hierarchy hierarchy_bvh[1];
 
 		// 3 total states for 3 different behaviors
 		union {
@@ -149,6 +150,7 @@ typedef enum a3_DemoMode1_Animation_TargetName				a3_DemoMode1_Animation_TargetN
 
 		//all delta poses (and base pose) for the skeleton. Pose 1 = zero delta
 		a3_HierarchyPoseGroup hierarchyPoseGroup_skel[1];
+		a3_HierarchyPoseGroup hierarchyPoseGroup_bvh[1];
 
 		a3ui32 numHierarchyStates;			// how many states we're working with
 		a3ui32 currentToggleIndex;			// What pose are we currently looking at? (for switching poses via input). 0 indexed, though the first delta pose is index 1 so we add 1 when using this

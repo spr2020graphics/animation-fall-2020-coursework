@@ -57,6 +57,8 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	const a3byte* const animationfilePath = "../../../../resource/animdata/macarena.bvh";
 
 	// Assign hierarchyPoseGroup and hierarchy to new variables in demoState
+	hierarchy = demoMode->hierarchy_bvh;
+	hierarchyPoseGroup = demoMode->hierarchyPoseGroup_bvh;
 
 	a3hierarchyPoseGroupLoadBVH(hierarchyPoseGroup, hierarchy, animationfilePath);
 
