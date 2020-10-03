@@ -211,17 +211,19 @@ a3i32 a3hierarchyPoseGroupLoadBVH(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 				token++;
 			}
 			//https://stackoverflow.com/a/4771038
-			if (strncmp(token, "JOINT", 5) == 0 || strncmp(token, "ROOT", 4) == 0 || strncmp(token, "End", 3) == 0)
+			if (strncmp(token, "JOINT", 5) == 0 || strncmp(token, "ROOT", 4) == 0)
 			{
 				jointIndex++;
-				if (strncmp(token, "End", 3) == 0)
-				{
-					isEndSite = true;
-				}
-				else
-				{
-					isEndSite = false;
-				}
+			}
+
+			if (strncmp(token, "End", 3) == 0)
+			{
+				jointIndex++;
+				isEndSite = true;
+			}
+			else
+			{
+				isEndSite = false;
 			}
 
 			if (strncmp(token, "CHANNELS", 8) == 0)
