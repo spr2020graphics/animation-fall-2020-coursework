@@ -199,7 +199,7 @@ a3i32 a3hierarchyPoseGroupLoadBVH(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 		//create array specifying the number of channels per joint, used in loop 3
 		a3ui32* channelsPerJoint = malloc(nodeCount * sizeof(a3ui32));	//parallel to joint indices
 
-		strncpy(contentsCopy, fs->contents, fs->length);
+		strncpy(contentsCopy, fs->contents, fs->length); //reset contentsCopy array to master from fs
 		token = strtok((char*)contentsCopy, "\n");
 
 		a3ui32 jointIndex = 0;
