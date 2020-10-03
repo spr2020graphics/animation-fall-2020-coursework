@@ -173,6 +173,23 @@ a3i32 a3hierarchyPoseGroupLoadBVH(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 		strncpy(contentsCopy, fs->contents, fs->length);
 		//loop 1:
 		//count joints, create empty hierarchy. Also cache total number of channels.
+		char* token = strtok((char*)contentsCopy, "\n");
+
+		a3ui32 nodeCount = 0;
+		while (token != NULL)
+		{
+			while (token[0] == ' ' || token[0] == '\t')
+			{
+				token++;
+			}
+			//https://stackoverflow.com/a/4771038
+			if (strncmp(token, "JOINT", 5) == 0 || strncmp(token, "ROOT", 4) == 0 || strncmp(token, "End", 3) == 0)
+			{
+				nodeCount++;
+			}
+
+			token = strtok(NULL, "\n");
+		}
 		//loop 1.5:
 		//create array specifying the number of channels per joint, used in loop 3
 		//loop 2:
