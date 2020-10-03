@@ -163,6 +163,14 @@ a3i32 a3hierarchyPoseGroupLoadBVH(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 {
 	if (poseGroup_out && !poseGroup_out->poseCount && hierarchy_out && !hierarchy_out->numNodes && resourceFilePath && *resourceFilePath)
 	{
+		a3_Stream fs[1] = { 0 };
+		a3ui32 fileLength = a3streamLoadContents(&fs[0], resourceFilePath);
+		if (fileLength <= 0)
+		{
+			return -1;
+		}
+		a3byte* contentsCopy = malloc(fs->length * sizeof(a3byte));
+		strncpy(contentsCopy, fs->contents, fs->length);
 		//loop 1:
 		//count joints, create empty hierarchy. Also cache total number of channels.
 		//loop 1.5:
@@ -194,6 +202,7 @@ a3i32 a3hierarchyPoseGroupLoadBVH(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 		//multiply the seconds per measure by 4.5 measures and we get 10.485
 		//backsolving reveals that the actual measures per verse is ~4.577 (repeating 7) seconds, so the BVH data is at approximately real time, potentially with an extra pause at the end.
 		//note: this was calculated before we did any parsing.
+		return 1;
 	}
 	return -1;
 }

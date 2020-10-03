@@ -121,6 +121,7 @@ inline a3i32 a3spatialPoseConvert(a3mat4* mat_out, const a3_SpatialPose* spatial
 			//create the y, x, and z matrices
 			//xytmp = mult(x,y)
 			//zxy = mult(z, xytmp)
+			break;
 
 		}
 
