@@ -176,6 +176,7 @@ a3i32 a3hierarchyPoseGroupLoadBVH(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 		char* token = strtok((char*)contentsCopy, "\n");
 
 		a3ui32 nodeCount = 0;
+		a3ui32 channelCount = 0;
 		while (token != NULL)
 		{
 			while (token[0] == ' ' || token[0] == '\t')
@@ -186,6 +187,10 @@ a3i32 a3hierarchyPoseGroupLoadBVH(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 			if (strncmp(token, "JOINT", 5) == 0 || strncmp(token, "ROOT", 4) == 0 || strncmp(token, "End", 3) == 0)
 			{
 				nodeCount++;
+			}
+			if (strncmp(token, "CHANNELS", 8) == 0)
+			{
+				channelCount += atoi(token + 9);
 			}
 
 			token = strtok(NULL, "\n");
