@@ -158,6 +158,42 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 	return -1;
 }
 
+/// <summary>
+/// 
+/// </summary>
+/// <param name="currentTextPtr">Takes in a pointer _to_ the current text pointer, allowing it to be modified from within the function</param>
+/// <param name="source"></param>
+/// <param name="hierarchy_out"></param>
+/// <returns></returns>
+a3i32 a3BVHParseRoot(a3byte** currentTextPtr, const a3byte* source, a3_Hierarchy* hierarchy_out, a3_HierarchyPoseGroup* poseGroup_out)
+{
+	a3i32 jointIndex = 0;
+	if (*currentTextPtr[strlen(*currentTextPtr) - 1] == '\r')
+	{
+		*currentTextPtr[strlen(*currentTextPtr) - 1] = '\0';
+	}
+	a3i32 rootIndex = a3hierarchySetNode(hierarchy_out, jointIndex++, -1, (*currentTextPtr) + 5); //+5 to remove "ROOT "
+	*currentTextPtr = strtok(NULL, "\n"); //skip open bracket
+
+	a3_SpatialPose* spatialPose = poseGroup_out->hierarchyPosePool[0].spatialPose + 0; //root, so we know this value
+	while (*currentTextPtr != NULL)
+	{
+		while (*currentTextPtr[0] == ' ' || *currentTextPtr[0] == '\t')
+		{
+			*currentTextPtr += 1;
+		}
+		if (strncmp(*currentTextPtr, "OFFSET", 6) == 0)
+		{
+			a3ui32 i = 0;
+			i += 1;
+			//parse vec3, use 	a3spatialPoseSetTranslation(spatialPose, 0.0f, 0.0f, +3.6f);
+		}
+		*currentTextPtr = strtok(NULL, "\n");
+	}
+	//call a3BVHParseJoint
+	return 1;
+}
+
 // load BVH file, read and store complete pose group and hierarchy
 a3i32 a3hierarchyPoseGroupLoadBVH(a3_HierarchyPoseGroup* poseGroup_out, a3_Hierarchy* hierarchy_out, const a3byte* resourceFilePath)
 {
@@ -204,6 +240,8 @@ a3i32 a3hierarchyPoseGroupLoadBVH(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 
 		a3ui32 jointIndex = -1; //start at -1 so the first time it spots Root it increments to 0.
 		a3boolean isEndSite = false;
+
+		a3i32 frameCount = 0;
 		while (token != NULL)
 		{
 			while (token[0] == ' ' || token[0] == '\t')
@@ -223,6 +261,11 @@ a3i32 a3hierarchyPoseGroupLoadBVH(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 				isEndSite = true;
 			}
 
+			if (strncmp(token, "Frames", 6) == 0)
+			{
+				frameCount = atoi(token + 7);
+			}
+
 			//if we've found a channel and it's not an end site, store the number of channels
 			if (strncmp(token, "CHANNELS", 8) == 0)
 			{
@@ -237,16 +280,29 @@ a3i32 a3hierarchyPoseGroupLoadBVH(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 				channelsPerJoint[jointIndex] = 0;
 			}
 
+
 			token = strtok(NULL, "\n");
 		}
 
 		//loop 2:
 		//construct hierarchy, track the number of {} to determine hierarchical relationship. "End site" ends a recursive loop. Name end sites "parentNodeName"Off.
 		a3hierarchyCreate(hierarchy_out, nodeCount, 0);
+		a3hierarchyPoseGroupCreate(poseGroup_out, hierarchy_out, frameCount + 1); // 0 = base pose!
 		//open bracket => start new recursive loop, UNLESS line before is End Site, then you call a different function that's a singular loop. Continue until close bracket
 		//should function return the pointer to the close bracket. May need to add 1 or so but that's fine. Scott needs to research how to process both \r\n and \n
 		//offset is local translation, there is no built-in rotation.
 		//when last loop terminates, we still have the pointer to the last close bracket.
+		strncpy(contentsCopy, fs->contents, fs->length); //reset data again
+		token = strtok((char*)contentsCopy, "\n");
+		jointIndex = -1;
+		while (token != NULL)
+		{
+			if (strncmp(token, "ROOT", 4) == 0)
+			{
+				a3BVHParseRoot(&token, contentsCopy, hierarchy_out, poseGroup_out);
+			}
+			token = strtok(NULL, "\n");
+		}
 		//loop 3: motion
 		//store frames and frame time (fps is line 268, a3_callbacks.c).
 		//find the number of lines to skip to match the fps
