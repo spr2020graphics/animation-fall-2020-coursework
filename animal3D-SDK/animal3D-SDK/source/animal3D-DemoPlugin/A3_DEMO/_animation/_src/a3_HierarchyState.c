@@ -161,6 +161,59 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 /// <summary>
 /// 
 /// </summary>
+/// <param name="line">The line of text to parse into channels</param>
+/// <param name="index">The node's index</param>
+/// <param name="poseGroup">the poseGroup to store things in</param>
+/// <returns></returns>
+a3i32 a3BVHParseChannels(a3byte* line, a3i32 index, a3_HierarchyPoseGroup* poseGroup)
+{
+	if (!(poseGroup && line))
+	{
+		return -1;
+	}
+	a3byte* parsePos = line + 9;
+	a3i32 channelCount = atoi(parsePos);
+	size_t len = strlen(parsePos);
+	if (*(parsePos + (len - 1)) == '\r')
+	{
+		*(parsePos + (len - 1)) = '\0';
+	}
+	parsePos = strchr(parsePos, ' ') + 1; //advance past the number of channels
+	//need to advance past the channel count
+	for (int i = 0; i < channelCount; i++)
+	{
+		if (strncmp(parsePos, "Xpos", 4) == 0)
+		{
+			poseGroup->channels[index] |= a3poseChannel_translate_x;
+		}
+		else if (strncmp(parsePos, "Ypos", 4) == 0)
+		{
+			poseGroup->channels[index] |= a3poseChannel_translate_y;
+		}
+		else if (strncmp(parsePos, "Zpos", 4) == 0)
+		{
+			poseGroup->channels[index] |= a3poseChannel_translate_z;
+		}
+		else if (strncmp(parsePos, "Xrot", 4) == 0)
+		{
+			poseGroup->channels[index] |= a3poseChannel_orient_x;
+		}
+		else if (strncmp(parsePos, "Yrot", 4) == 0)
+		{
+			poseGroup->channels[index] |= a3poseChannel_orient_y;
+		}
+		else if (strncmp(parsePos, "Zrot", 4) == 0)
+		{
+			poseGroup->channels[index] |= a3poseChannel_orient_z;
+		}
+		parsePos = strchr(parsePos, ' ') + 1; //advance past the number of channels. parsePos will be 1 at the end of the loop, but that's fine
+	}
+	return 1;
+}
+
+/// <summary>
+/// 
+/// </summary>
 /// <param name="currentTextPtr">Takes in a pointer _to_ the current text pointer, allowing it to be modified from within the function</param>
 /// <param name="source"></param>
 /// <param name="hierarchy_out"></param>
@@ -168,25 +221,39 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 a3i32 a3BVHParseRoot(a3byte** currentTextPtr, const a3byte* source, a3_Hierarchy* hierarchy_out, a3_HierarchyPoseGroup* poseGroup_out)
 {
 	a3i32 jointIndex = 0;
-	if (*currentTextPtr[strlen(*currentTextPtr) - 1] == '\r')
+	size_t len = strlen(*currentTextPtr);
+	if (*((*currentTextPtr) + (len - 1)) == '\r')
 	{
-		*currentTextPtr[strlen(*currentTextPtr) - 1] = '\0';
+		*((*currentTextPtr) + (len - 1)) = '\0';
 	}
 	a3i32 rootIndex = a3hierarchySetNode(hierarchy_out, jointIndex++, -1, (*currentTextPtr) + 5); //+5 to remove "ROOT "
 	*currentTextPtr = strtok(NULL, "\n"); //skip open bracket
 
 	a3_SpatialPose* spatialPose = poseGroup_out->hierarchyPosePool[0].spatialPose + 0; //root, so we know this value
+
+	a3boolean offsetParsed = false, channelsParsed = false;
 	while (*currentTextPtr != NULL)
 	{
 		while (*currentTextPtr[0] == ' ' || *currentTextPtr[0] == '\t')
 		{
 			*currentTextPtr += 1;
 		}
-		if (strncmp(*currentTextPtr, "OFFSET", 6) == 0)
+		if (strncmp(*currentTextPtr, "OFFSET", 6) == 0 && !offsetParsed)
 		{
-			a3ui32 i = 0;
-			i += 1;
+			offsetParsed = true;
+			//http://www.cplusplus.com/reference/cstdlib/strtof/
+			a3vec3 offset;
+			a3byte* nextDigit;
+			offset.x = strtof(*currentTextPtr + 7, &nextDigit);
+			offset.y = strtof(nextDigit, &nextDigit);
+			offset.z = strtof(nextDigit, NULL);
+			a3spatialPoseSetTranslation(spatialPose, offset.x, offset.y, offset.z);
 			//parse vec3, use 	a3spatialPoseSetTranslation(spatialPose, 0.0f, 0.0f, +3.6f);
+		}
+		if (strncmp(*currentTextPtr, "CHANNELS", 8) == 0 && !channelsParsed)
+		{
+			channelsParsed = true;
+			a3BVHParseChannels(*currentTextPtr, 0, poseGroup_out);
 		}
 		*currentTextPtr = strtok(NULL, "\n");
 	}
