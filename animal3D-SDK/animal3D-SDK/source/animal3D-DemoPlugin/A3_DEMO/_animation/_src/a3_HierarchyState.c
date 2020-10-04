@@ -197,12 +197,12 @@ a3i32 a3hierarchyPoseGroupLoadBVH(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 		}
 		//loop 1.5:
 		//create array specifying the number of channels per joint, used in loop 3
-		a3ui32* channelsPerJoint = malloc(nodeCount * sizeof(a3ui32));	//parallel to joint indices
+		a3ui32* channelsPerJoint = calloc(nodeCount, sizeof(a3ui32));	//parallel to joint indices
 
 		strncpy(contentsCopy, fs->contents, fs->length); //reset contentsCopy array to master from fs
 		token = strtok((char*)contentsCopy, "\n");
 
-		a3ui32 jointIndex = 0;
+		a3ui32 jointIndex = -1; //start at -1 so the first time it spots Root it increments to 0.
 		a3boolean isEndSite = false;
 		while (token != NULL)
 		{
@@ -210,10 +210,11 @@ a3i32 a3hierarchyPoseGroupLoadBVH(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 			{
 				token++;
 			}
-			//https://stackoverflow.com/a/4771038
+			//If we find a joint or root, we know we're not at an end site
 			if (strncmp(token, "JOINT", 5) == 0 || strncmp(token, "ROOT", 4) == 0)
 			{
 				jointIndex++;
+				isEndSite = false;
 			}
 
 			if (strncmp(token, "End", 3) == 0)
@@ -221,11 +222,8 @@ a3i32 a3hierarchyPoseGroupLoadBVH(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 				jointIndex++;
 				isEndSite = true;
 			}
-			else
-			{
-				isEndSite = false;
-			}
 
+			//if we've found a channel and it's not an end site, store the number of channels
 			if (strncmp(token, "CHANNELS", 8) == 0)
 			{
 				if (!isEndSite)
@@ -233,6 +231,7 @@ a3i32 a3hierarchyPoseGroupLoadBVH(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 					channelsPerJoint[jointIndex] = (a3ui32)atoi(token + 9);
 				}
 			}
+			//end site is only true if the last keyword we found was "End". This will run a few times before the joint increments, but it's the same 0-assignment each time.
 			else if (isEndSite)
 			{
 				channelsPerJoint[jointIndex] = 0;
