@@ -432,7 +432,7 @@ a3i32 a3hierarchyPoseGroupLoadBVH(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 		//loop 2:
 		//construct hierarchy, track the number of {} to determine hierarchical relationship. "End site" ends a recursive loop. Name end sites "parentNodeName"Off.
 		a3hierarchyCreate(hierarchy_out, nodeCount, 0);
-		a3hierarchyPoseGroupCreate(poseGroup_out, hierarchy_out, frameCount + 1); // 0 = base pose!
+		a3hierarchyPoseGroupCreate(poseGroup_out, hierarchy_out, frameCount + 2); // 0 = base pose, 1 = zero-delta (no information actually required), 2 = first motion pose
 		//open bracket => start new recursive loop, UNLESS line before is End Site, then you call a different function that's a singular loop. Continue until close bracket
 		//should function return the pointer to the close bracket. May need to add 1 or so but that's fine. Scott needs to research how to process both \r\n and \n
 		//offset is local translation, there is no built-in rotation.
