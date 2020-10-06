@@ -117,7 +117,7 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 	// Update the clip-controlled state. Copy, concat base with either sample or identity, convert, FK.
 	currentState = demoMode->hierarchyState_skel_clip;
 
-	demoMode->currentClipKeyVal = (a3ui32)(demoState->controller_skeleton->clipPool->clipArray[demoState->controller_skeleton->clipIndex].keyframes->keyframeArray[demoState->controller_skeleton->keyframeIndex].sample.value) + 1;
+	demoMode->currentClipKeyVal = ((a3ui32)(demoState->controller_skeleton->clipPool->clipArray[demoState->controller_skeleton->clipIndex].keyframes->keyframeArray[demoState->controller_skeleton->keyframeIndex].sample.value) + 1) % 4;
 	a3real lerpParam = demoState->controller_skeleton->keyframeParameter; //For later, if we decide to try a3hierarchyPoseLerp() instead of a3hierarchyPoseCopy(), it should "just work" hahahhaahahahaa
 	//clipKeyVal points to a deltapose, but there's an offset in the pool, so +1
 	//a3hierarchyPoseCopy(currentState->sampleHPose, &demoMode->hierarchyPoseGroup_skel->hierarchyPosePool[demoMode->currentClipKeyVal + 1], demoMode->hierarchy_skel->numNodes);
