@@ -214,6 +214,73 @@ a3i32 a3BVHParseChannels(a3byte* line, a3i32 index, a3_HierarchyPoseGroup* poseG
 /// <summary>
 /// 
 /// </summary>
+/// <param name="currentTextPtr"></param>
+/// <param name="source"></param>
+/// <param name="hierarchy_out"></param>
+/// <param name="poseGroup_out"></param>
+/// <param name="parentJoint"></param>
+/// <param name="jointIndexPtr"></param>
+/// <returns></returns>
+a3i32 a3BVHParseJoint(a3byte** currentTextPtr, const a3byte* source, a3_Hierarchy* hierarchy_out, a3_HierarchyPoseGroup* poseGroup_out, a3i32 parentJoint, a3i32* jointIndexPtr)
+{
+	if (!(currentTextPtr && hierarchy_out && poseGroup_out))
+	{
+		return -1;
+	}
+	a3byte* parsePos = *currentTextPtr + 6;
+	a3i32 channelCount = atoi(parsePos);
+	size_t len = strlen(parsePos);
+	if (*(parsePos + (len - 1)) == '\r')
+	{
+		*(parsePos + (len - 1)) = '\0';
+	}
+	a3i32 thisIndex = a3hierarchySetNode(hierarchy_out, *jointIndexPtr, parentJoint, parsePos);
+	a3_SpatialPose* spatialPose = poseGroup_out->hierarchyPosePool[0].spatialPose + thisIndex; //root, so we know this value
+	*jointIndexPtr += 1;
+	*currentTextPtr = strtok(NULL, "\n"); //skip open bracket
+	a3boolean offsetParsed = false, channelsParsed = false;
+	while (*currentTextPtr != NULL)
+	{
+		while (*currentTextPtr[0] == ' ' || *currentTextPtr[0] == '\t')
+		{
+			*currentTextPtr += 1;
+		}
+		if (strncmp(*currentTextPtr, "OFFSET", 6) == 0 && !offsetParsed)
+		{
+			offsetParsed = true;
+			//http://www.cplusplus.com/reference/cstdlib/strtof/
+			a3vec3 offset;
+			a3byte* nextDigit;
+			offset.x = strtof(*currentTextPtr + 7, &nextDigit);
+			offset.y = strtof(nextDigit, &nextDigit);
+			offset.z = strtof(nextDigit, NULL);
+			a3spatialPoseSetTranslation(spatialPose, offset.x, offset.y, offset.z);
+			//parse vec3, use 	a3spatialPoseSetTranslation(spatialPose, 0.0f, 0.0f, +3.6f);
+		}
+		if (strncmp(*currentTextPtr, "CHANNELS", 8) == 0 && !channelsParsed)
+		{
+			channelsParsed = true;
+			a3BVHParseChannels(*currentTextPtr, thisIndex, poseGroup_out);
+		}
+		if (strncmp(*currentTextPtr, "JOINT", 5) == 0 || strncmp(*currentTextPtr, "End Site", 8) == 0)
+		{
+			//passes in the index for the new joint
+			a3BVHParseJoint(currentTextPtr, source, hierarchy_out, poseGroup_out, thisIndex, jointIndexPtr);
+			continue; //don't want to risk the close bracket triggering early
+		}
+		if (strncmp(*currentTextPtr, "}", 1) == 0)
+		{
+			*currentTextPtr = strtok(NULL, "\n");
+			break;
+		}
+		*currentTextPtr = strtok(NULL, "\n");
+	}
+	return 1;
+}
+
+/// <summary>
+/// 
+/// </summary>
 /// <param name="currentTextPtr">Takes in a pointer _to_ the current text pointer, allowing it to be modified from within the function</param>
 /// <param name="source"></param>
 /// <param name="hierarchy_out"></param>
@@ -254,6 +321,17 @@ a3i32 a3BVHParseRoot(a3byte** currentTextPtr, const a3byte* source, a3_Hierarchy
 		{
 			channelsParsed = true;
 			a3BVHParseChannels(*currentTextPtr, 0, poseGroup_out);
+		}
+		if (strncmp(*currentTextPtr, "JOINT", 5) == 0)
+		{
+			//passes in the index for the new joint
+			a3BVHParseJoint(currentTextPtr, source, hierarchy_out, poseGroup_out, 0, &jointIndex);
+			continue; //don't want to risk the close bracket triggering early
+		}
+		if (strncmp(*currentTextPtr, "}", 1) == 0)
+		{
+			*currentTextPtr = strtok(NULL, "\n");
+			break;
 		}
 		*currentTextPtr = strtok(NULL, "\n");
 	}
