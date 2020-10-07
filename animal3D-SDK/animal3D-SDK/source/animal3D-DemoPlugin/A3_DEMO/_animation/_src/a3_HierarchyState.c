@@ -294,8 +294,12 @@ a3i32 a3BVHParseJoint(a3byte** currentTextPtr, const a3byte* source, a3_Hierarch
 /// <returns></returns>
 a3i32 a3BVHParseRoot(a3byte** currentTextPtr, const a3byte* source, a3_Hierarchy* hierarchy_out, a3_HierarchyPoseGroup* poseGroup_out)
 {
+	//passed throughout parser
 	a3i32 jointIndex = 0;
+	//get root name
 	size_t len = strlen(*currentTextPtr);
+
+	//delete carriage return
 	if (*((*currentTextPtr) + (len - 1)) == '\r')
 	{
 		*((*currentTextPtr) + (len - 1)) = '\0';
@@ -308,6 +312,7 @@ a3i32 a3BVHParseRoot(a3byte** currentTextPtr, const a3byte* source, a3_Hierarchy
 	a3boolean offsetParsed = false, channelsParsed = false;
 	while (*currentTextPtr != NULL)
 	{
+		//trim tabs and spaces
 		while (*currentTextPtr[0] == ' ' || *currentTextPtr[0] == '\t')
 		{
 			*currentTextPtr += 1;
@@ -452,6 +457,7 @@ a3i32 a3hierarchyPoseGroupLoadBVH(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 			if (strncmp(token, "ROOT", 4) == 0)
 			{
 				a3BVHParseRoot(&token, contentsCopy, hierarchy_out, poseGroup_out);
+				break;
 			}
 			token = strtok(NULL, "\n");
 		}
@@ -459,13 +465,63 @@ a3i32 a3hierarchyPoseGroupLoadBVH(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 		//store frames and frame time (fps is line 268, a3_callbacks.c).
 		//find the number of lines to skip to match the fps
 		//allocate a LOT of poses in the HPoseGroup
-		//for (int i = 0; i < joints; i++)
-		//{
-		//	for (int j = 0; j < channels[i]; j++)
-		//	{
-		//		load data, checking the name of the data and going through a 6 part if or switch statement to get each data point loaded
-		//	}
-		//}
+		//while file, track frame index.
+		a3i32 currentFrame = 0;
+		//skip to "MOTION" in case there's extra lines
+		while (strncmp(token, "MOTION", 6) != 0)
+		{
+			token = strtok(NULL, "\n");
+		}
+		//next line
+		token = strtok(NULL, "\n");
+		token = strtok(NULL, "\n");
+		token = strtok(NULL, "\n");
+		while (currentFrame < frameCount)
+		{
+			a3byte* tmpPtr = token;
+			for (a3ui32 i = 0; i < hierarchy_out->numNodes; i++)
+			{
+				a3_SpatialPose* poseToEdit = &poseGroup_out->hierarchyPosePool[currentFrame + 2].spatialPose[i];
+				a3vec3 pos, rot;
+				if (channelsPerJoint[i] == 6)
+				{
+					pos.x = strtof(tmpPtr, &tmpPtr);
+					tmpPtr = strchr(tmpPtr, ' ') + 1;
+					pos.y = strtof(tmpPtr, &tmpPtr);
+					tmpPtr = strchr(tmpPtr, ' ') + 1;
+					pos.z = strtof(tmpPtr, &tmpPtr);
+					tmpPtr = strchr(tmpPtr, ' ') + 1;
+					a3spatialPoseSetTranslation(poseToEdit, pos.x, pos.y, pos.z);
+					
+					//root has a different xyz order
+					rot.z = strtof(tmpPtr, &tmpPtr);
+					tmpPtr = strchr(tmpPtr, ' ') + 1;
+					rot.y = strtof(tmpPtr, &tmpPtr);
+					tmpPtr = strchr(tmpPtr, ' ') + 1;
+					rot.x = strtof(tmpPtr, &tmpPtr);
+					a3spatialPoseSetRotation(poseToEdit, rot.x, rot.y, rot.z);
+				}
+				else if (channelsPerJoint[i] != 0)
+				{
+					rot.z = strtof(tmpPtr, &tmpPtr);
+					tmpPtr = strchr(tmpPtr, ' ') + 1;
+					rot.x = strtof(tmpPtr, &tmpPtr);
+					tmpPtr = strchr(tmpPtr, ' ') + 1;
+					rot.y = strtof(tmpPtr, &tmpPtr);
+					a3spatialPoseSetRotation(poseToEdit, rot.x, rot.y, rot.z);
+				}
+					//load data, checking the name of the dataand going through a 6 part if or switch statement to get each data point loaded
+					
+					//according to the doc we were given, it's pretty much exclusively 0, 3, or 6, with set orders for data. We could cache the order earlier and allow for nonstandard configurations,
+					//but that doesn't seem necessary.
+					
+					//check for next space
+					
+			}
+			currentFrame++;
+			token = strtok(NULL, "\n");
+		}
+
 
 
 		//full clip has 1280 frames at 120fps
