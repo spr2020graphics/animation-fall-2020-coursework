@@ -221,20 +221,27 @@ a3i32 a3BVHParseChannels(a3byte* line, a3i32 index, a3_HierarchyPoseGroup* poseG
 /// <param name="parentJoint"></param>
 /// <param name="jointIndexPtr"></param>
 /// <returns></returns>
-a3i32 a3BVHParseJoint(a3byte** currentTextPtr, const a3byte* source, a3_Hierarchy* hierarchy_out, a3_HierarchyPoseGroup* poseGroup_out, a3i32 parentJoint, a3i32* jointIndexPtr)
+a3i32 a3BVHParseJoint(a3byte** currentTextPtr, const a3byte* source, a3_Hierarchy* hierarchy_out, a3_HierarchyPoseGroup* poseGroup_out, a3i32 parentJoint, a3i32* jointIndexPtr, a3boolean isEnd)
 {
 	if (!(currentTextPtr && hierarchy_out && poseGroup_out))
 	{
 		return -1;
 	}
 	a3byte* parsePos = *currentTextPtr + 6;
+	size_t parentLen = strlen(hierarchy_out->nodes[parentJoint].name);
+	a3byte* endName = calloc(parentLen + 4, sizeof(a3byte));
+	strcpy(endName, hierarchy_out->nodes[parentJoint].name);
+	endName[strlen(hierarchy_out->nodes[parentJoint].name)] = 'E';
+	endName[strlen(hierarchy_out->nodes[parentJoint].name) + 1] = 'n';
+	endName[strlen(hierarchy_out->nodes[parentJoint].name) + 2] = 'd';
+	endName[strlen(hierarchy_out->nodes[parentJoint].name) + 3] = '\0';
 	a3i32 channelCount = atoi(parsePos);
 	size_t len = strlen(parsePos);
 	if (*(parsePos + (len - 1)) == '\r')
 	{
 		*(parsePos + (len - 1)) = '\0';
 	}
-	a3i32 thisIndex = a3hierarchySetNode(hierarchy_out, *jointIndexPtr, parentJoint, parsePos);
+	a3i32 thisIndex = a3hierarchySetNode(hierarchy_out, *jointIndexPtr, parentJoint, isEnd ? endName : parsePos);
 	a3_SpatialPose* spatialPose = poseGroup_out->hierarchyPosePool[0].spatialPose + thisIndex; //root, so we know this value
 	*jointIndexPtr += 1;
 	*currentTextPtr = strtok(NULL, "\n"); //skip open bracket
@@ -265,7 +272,7 @@ a3i32 a3BVHParseJoint(a3byte** currentTextPtr, const a3byte* source, a3_Hierarch
 		if (strncmp(*currentTextPtr, "JOINT", 5) == 0 || strncmp(*currentTextPtr, "End Site", 8) == 0)
 		{
 			//passes in the index for the new joint
-			a3BVHParseJoint(currentTextPtr, source, hierarchy_out, poseGroup_out, thisIndex, jointIndexPtr);
+			a3BVHParseJoint(currentTextPtr, source, hierarchy_out, poseGroup_out, thisIndex, jointIndexPtr, strncmp(*currentTextPtr, "End Site", 8) == 0);
 			continue; //don't want to risk the close bracket triggering early
 		}
 		if (strncmp(*currentTextPtr, "}", 1) == 0)
@@ -325,7 +332,7 @@ a3i32 a3BVHParseRoot(a3byte** currentTextPtr, const a3byte* source, a3_Hierarchy
 		if (strncmp(*currentTextPtr, "JOINT", 5) == 0)
 		{
 			//passes in the index for the new joint
-			a3BVHParseJoint(currentTextPtr, source, hierarchy_out, poseGroup_out, 0, &jointIndex);
+			a3BVHParseJoint(currentTextPtr, source, hierarchy_out, poseGroup_out, 0, &jointIndex, false);
 			continue; //don't want to risk the close bracket triggering early
 		}
 		if (strncmp(*currentTextPtr, "}", 1) == 0)
