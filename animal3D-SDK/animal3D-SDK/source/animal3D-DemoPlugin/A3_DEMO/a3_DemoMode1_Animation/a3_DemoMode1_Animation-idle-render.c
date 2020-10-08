@@ -679,7 +679,7 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 		a3mat4* posMat;
 		a3mat4 scale = a3mat4_identity;
 		a3real4x4SetScale(scale.m, 0.25f);
-		for (a3ui32 k = 0; k < 32; ++k)
+		for (a3ui32 k = 0; k < demoMode->hierarchy_bvh->numNodes; ++k)
 		{
 			a3mat4* selectedBaseMat;
 
@@ -726,7 +726,7 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 		// Render axes over top of the spheres
 		currentDrawable = demoState->draw_axes;
 		a3vertexDrawableActivate(currentDrawable);
-		for (a3ui32 k = 0; k < 32; ++k)
+		for (a3ui32 k = 0; k < demoMode->hierarchy_bvh->numNodes; ++k)
 		{
 
 			// Only draw axes for the currently selected hierarchy state
