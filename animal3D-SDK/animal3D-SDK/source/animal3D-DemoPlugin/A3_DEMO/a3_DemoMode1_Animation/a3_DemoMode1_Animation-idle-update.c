@@ -99,18 +99,18 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 
 	//In order to use concat, we need _a_ spatial pose with no deltas. The identity's three spatial poses are identical, so I picked local at random.
 	//for a step interpolation, copying the specified pose is equivalent to interpolating.
-	a3hierarchyPoseCopy(currentState->sampleHPose, &demoMode->hierarchyPoseGroup_skel->hierarchyPosePool[0], demoMode->hierarchy_skel->numNodes);
-	a3hierarchyPoseConcat(currentState->localHPose, &demoMode->hierarchyPoseGroup_skel->hierarchyPosePool[1], &demoMode->hierarchyPoseGroup_skel->hierarchyPosePool[0], demoMode->hierarchy_skel->numNodes);
-	a3hierarchyPoseConvert(currentState->localHPose, demoMode->hierarchy_skel->numNodes, demoMode->hierarchyPoseGroup_skel->channels, demoMode->hierarchyPoseGroup_skel->eulerOrder);
+	a3hierarchyPoseCopy(currentState->sampleHPose, &demoMode->hierarchyPoseGroup_bvh->hierarchyPosePool[0], demoMode->hierarchy_bvh->numNodes);
+	a3hierarchyPoseConcat(currentState->localHPose, &demoMode->hierarchyPoseGroup_bvh->hierarchyPosePool[1], &demoMode->hierarchyPoseGroup_bvh->hierarchyPosePool[0], demoMode->hierarchy_bvh->numNodes);
+	a3hierarchyPoseConvert(currentState->localHPose, demoMode->hierarchy_bvh->numNodes, demoMode->hierarchyPoseGroup_bvh->channels, demoMode->hierarchyPoseGroup_bvh->eulerOrder);
 	a3kinematicsSolveForward(currentState);
 
 	// Update the toggle state. Copy delta pose, concat base with either sample or identity, convert, FK.
 	currentState = demoMode->hierarchyState_skel_toggle;
 	//sampleHPose stores the current delta pose.
-	a3hierarchyPoseCopy(currentState->sampleHPose, &demoMode->hierarchyPoseGroup_skel->hierarchyPosePool[demoMode->currentToggleIndex + 1], demoMode->hierarchy_skel->numNodes);
+	a3hierarchyPoseCopy(currentState->sampleHPose, &demoMode->hierarchyPoseGroup_bvh->hierarchyPosePool[demoMode->currentToggleIndex + 1], demoMode->hierarchy_bvh->numNodes);
 	//concat deltaPose with base pose.
-	a3hierarchyPoseConcat(currentState->localHPose, &demoMode->hierarchyPoseGroup_skel->hierarchyPosePool[0], currentState->sampleHPose, demoMode->hierarchy_skel->numNodes);
-	a3hierarchyPoseConvert(currentState->localHPose, demoMode->hierarchy_skel->numNodes, demoMode->hierarchyPoseGroup_skel->channels, demoMode->hierarchyPoseGroup_skel->eulerOrder);
+	a3hierarchyPoseConcat(currentState->localHPose, &demoMode->hierarchyPoseGroup_bvh->hierarchyPosePool[0], currentState->sampleHPose, demoMode->hierarchy_bvh->numNodes);
+	a3hierarchyPoseConvert(currentState->localHPose, demoMode->hierarchy_bvh->numNodes, demoMode->hierarchyPoseGroup_bvh->channels, demoMode->hierarchyPoseGroup_bvh->eulerOrder);
 	a3kinematicsSolveForward(currentState);
 
 
@@ -124,11 +124,11 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 	//a3hierarchyPoseCopy(currentState->sampleHPose, &demoMode->hierarchyPoseGroup_skel->hierarchyPosePool[demoMode->currentClipKeyVal + 1], demoMode->hierarchy_skel->numNodes);
 
 	// Currently lerp from zero delta to the new delta by lerpParam
-	a3hierarchyPoseLerp(currentState->sampleHPose, &demoMode->hierarchyPoseGroup_skel->hierarchyPosePool[demoMode->currentClipKeyVal + 1], &demoMode->hierarchyPoseGroup_skel->hierarchyPosePool[((demoMode->currentClipKeyVal + 1) % 4) + 1], demoMode->hierarchy_skel->numNodes, lerpParam);
+	a3hierarchyPoseLerp(currentState->sampleHPose, &demoMode->hierarchyPoseGroup_bvh->hierarchyPosePool[demoMode->currentClipKeyVal + 1], &demoMode->hierarchyPoseGroup_bvh->hierarchyPosePool[((demoMode->currentClipKeyVal + 1) % 4) + 1], demoMode->hierarchy_bvh->numNodes, lerpParam);
 
 	//concat deltaPose (in samplePose) with base pose
-	a3hierarchyPoseConcat(currentState->localHPose, &demoMode->hierarchyPoseGroup_skel->hierarchyPosePool[0], currentState->sampleHPose, demoMode->hierarchy_skel->numNodes);
-	a3hierarchyPoseConvert(currentState->localHPose, demoMode->hierarchy_skel->numNodes, demoMode->hierarchyPoseGroup_skel->channels, demoMode->hierarchyPoseGroup_skel->eulerOrder);
+	a3hierarchyPoseConcat(currentState->localHPose, &demoMode->hierarchyPoseGroup_bvh->hierarchyPosePool[0], currentState->sampleHPose, demoMode->hierarchy_bvh->numNodes);
+	a3hierarchyPoseConvert(currentState->localHPose, demoMode->hierarchy_bvh->numNodes, demoMode->hierarchyPoseGroup_bvh->channels, demoMode->hierarchyPoseGroup_bvh->eulerOrder);
 	a3kinematicsSolveForward(currentState);
 }
 

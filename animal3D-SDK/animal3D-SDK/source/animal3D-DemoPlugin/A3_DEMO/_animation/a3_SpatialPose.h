@@ -105,6 +105,7 @@ struct a3_SpatialPose
 {
 	a3mat4 transform;
 	a3vec3 orientation, scale, position;
+	a3_SpatialPoseEulerOrder eulerOrder;
 };
 
 
