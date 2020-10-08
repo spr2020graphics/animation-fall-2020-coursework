@@ -54,7 +54,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 
 	a3_FileStream fileStream[1] = { 0 };
 	const a3byte* const geometryStream = "./data/anim_data_gpro_base.dat";
-	const a3byte* const animationfilePath = "../../../../resource/animdata/macarena.bvh";
+	const a3byte* const animationfilePath = "../../../../resource/animdata/moonwalk.bvh";
 
 	// Assign hierarchyPoseGroup and hierarchy to new variables in demoState
 	hierarchy = demoMode->hierarchy_bvh;
