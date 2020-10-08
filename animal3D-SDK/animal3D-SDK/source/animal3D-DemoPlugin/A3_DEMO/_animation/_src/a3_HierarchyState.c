@@ -30,6 +30,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 
 //-----------------------------------------------------------------------------
@@ -409,6 +410,7 @@ a3i32 a3hierarchyPoseGroupLoadBVH(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 		a3boolean isEndSite = false;
 
 		a3i32 frameCount = 0;
+		a3real frameTime = 0;
 		while (token != NULL)
 		{
 			while (token[0] == ' ' || token[0] == '\t')
@@ -431,6 +433,12 @@ a3i32 a3hierarchyPoseGroupLoadBVH(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 			if (strncmp(token, "Frames", 6) == 0)
 			{
 				frameCount = atoi(token + 7);
+			}
+
+			if (strncmp(token, "Frame Time", 10) == 0)
+			{
+				a3byte* temp = token + 12;
+				frameTime = (a3real)strtof(temp, &temp);
 			}
 
 			//if we've found a channel and it's not an end site, store the number of channels
@@ -483,10 +491,22 @@ a3i32 a3hierarchyPoseGroupLoadBVH(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 		{
 			token = strtok(NULL, "\n");
 		}
-		//next line
+		//next line, skips the frame count and frame time since we have that already
 		token = strtok(NULL, "\n");
 		token = strtok(NULL, "\n");
 		token = strtok(NULL, "\n");
+
+		// Variables used to create a clip file corresponding to BVH data
+		a3real clipDuration = frameCount * frameTime;
+		const a3byte* clipPath = "../../../../resource/animdata/bvh_clip.txt";
+		a3byte* tmpIndex = malloc(sizeof(int));
+		a3byte* keyframePrefix = "$ 0.0 ";
+		a3byte* clipPrefix = "@ bvh-skel true 0 ";	// default name, we also want to use the clip duration and not individual keyframe durations
+		a3byte* clipTransitions = " | bvh-skel | bvh-skel";	 //just default for now
+		char* space = " ";
+
+		FILE* clipFile = fopen(clipPath, "w+");
+
 		while (currentFrame < frameCount)
 		{
 			a3byte* tmpPtr = token;
@@ -529,11 +549,41 @@ a3i32 a3hierarchyPoseGroupLoadBVH(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 					//check for next space
 					
 			}
+			//create new keyframe line
+			a3byte* result = calloc(12, sizeof(char));
+
+			strcat(result, keyframePrefix);
+			_itoa(currentFrame, tmpIndex, 10);
+			strcat(result, tmpIndex);
+			strcat(result, space);
+			strcat(result, tmpIndex);
+			strcat(result, "\r");
+
+			if (fputs(result, clipFile) == EOF)
+			{
+				fputs("Failed", clipFile);
+			}
+
 			currentFrame++;
 			token = strtok(NULL, "\n");
 		}
 
+		// create the clip definition line
+		a3byte* clipLine = calloc(25, sizeof(char));
+		a3byte* strFloat = malloc(sizeof(float));
+		fputs("#---------------------------------------------------------#\n\n", clipFile);
+		strcat(clipLine, clipPrefix);
+		_itoa(frameCount - 1, tmpIndex, 10);	//convert int to string, last param is numeric base
+		strcat(clipLine, tmpIndex);
+		strcat(clipLine, clipTransitions);
+		_gcvt(clipDuration, 5, strFloat);	//convert float to string, middle param is # of digits
+		strcat(clipLine, space);
+		strcat(clipLine, strFloat);
 
+		// write clip declaration to file
+		fputs(clipLine, clipFile);
+
+		fclose(clipFile);
 
 		//full clip has 1280 frames at 120fps
 		//set fps to 30 we get 320 frames or 10.6 seconds
