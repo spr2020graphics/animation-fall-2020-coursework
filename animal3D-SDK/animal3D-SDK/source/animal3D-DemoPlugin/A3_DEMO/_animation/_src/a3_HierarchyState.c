@@ -165,7 +165,7 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 /// <param name="index">The node's index</param>
 /// <param name="poseGroup">the poseGroup to store things in</param>
 /// <returns></returns>
-a3i32 a3BVHParseChannels(a3byte* line, a3i32 index, a3_HierarchyPoseGroup* poseGroup)
+a3i32 a3BVHParseChannels(a3byte* line, a3i32 index, a3_HierarchyPoseGroup* poseGroup, a3_SpatialPoseChannel** channelData)
 {
 	if (!(poseGroup && line))
 	{
@@ -173,6 +173,11 @@ a3i32 a3BVHParseChannels(a3byte* line, a3i32 index, a3_HierarchyPoseGroup* poseG
 	}
 	a3byte* parsePos = line + 9;
 	a3i32 channelCount = atoi(parsePos);
+	if (channelCount > 0)
+	{
+		channelData[index] = calloc(channelCount, sizeof(a3_SpatialPoseChannel));
+	}
+
 	size_t len = strlen(parsePos);
 	if (*(parsePos + (len - 1)) == '\r')
 	{
@@ -185,26 +190,32 @@ a3i32 a3BVHParseChannels(a3byte* line, a3i32 index, a3_HierarchyPoseGroup* poseG
 		if (strncmp(parsePos, "Xpos", 4) == 0)
 		{
 			poseGroup->channels[index] |= a3poseChannel_translate_x;
+			channelData[index][i] = a3poseChannel_translate_x;
 		}
 		else if (strncmp(parsePos, "Ypos", 4) == 0)
 		{
 			poseGroup->channels[index] |= a3poseChannel_translate_y;
+			channelData[index][i] = a3poseChannel_translate_y;
 		}
 		else if (strncmp(parsePos, "Zpos", 4) == 0)
 		{
 			poseGroup->channels[index] |= a3poseChannel_translate_z;
+			channelData[index][i] = a3poseChannel_translate_z;
 		}
 		else if (strncmp(parsePos, "Xrot", 4) == 0)
 		{
 			poseGroup->channels[index] |= a3poseChannel_orient_x;
+			channelData[index][i] = a3poseChannel_orient_x;
 		}
 		else if (strncmp(parsePos, "Yrot", 4) == 0)
 		{
 			poseGroup->channels[index] |= a3poseChannel_orient_y;
+			channelData[index][i] = a3poseChannel_orient_y;
 		}
 		else if (strncmp(parsePos, "Zrot", 4) == 0)
 		{
 			poseGroup->channels[index] |= a3poseChannel_orient_z;
+			channelData[index][i] = a3poseChannel_orient_z;
 		}
 		parsePos = strchr(parsePos, ' ') + 1; //advance past the number of channels. parsePos will be 1 at the end of the loop, but that's fine
 	}
@@ -221,7 +232,7 @@ a3i32 a3BVHParseChannels(a3byte* line, a3i32 index, a3_HierarchyPoseGroup* poseG
 /// <param name="parentJoint"></param>
 /// <param name="jointIndexPtr"></param>
 /// <returns></returns>
-a3i32 a3BVHParseJoint(a3byte** currentTextPtr, const a3byte* source, a3_Hierarchy* hierarchy_out, a3_HierarchyPoseGroup* poseGroup_out, a3i32 parentJoint, a3i32* jointIndexPtr, a3boolean isEnd)
+a3i32 a3BVHParseJoint(a3byte** currentTextPtr, const a3byte* source, a3_Hierarchy* hierarchy_out, a3_HierarchyPoseGroup* poseGroup_out, a3i32 parentJoint, a3i32* jointIndexPtr, a3boolean isEnd, a3_SpatialPoseChannel** channelData)
 {
 	if (!(currentTextPtr && hierarchy_out && poseGroup_out))
 	{
@@ -267,12 +278,12 @@ a3i32 a3BVHParseJoint(a3byte** currentTextPtr, const a3byte* source, a3_Hierarch
 		if (strncmp(*currentTextPtr, "CHANNELS", 8) == 0 && !channelsParsed)
 		{
 			channelsParsed = true;
-			a3BVHParseChannels(*currentTextPtr, thisIndex, poseGroup_out);
+			a3BVHParseChannels(*currentTextPtr, thisIndex, poseGroup_out, channelData);
 		}
 		if (strncmp(*currentTextPtr, "JOINT", 5) == 0 || strncmp(*currentTextPtr, "End Site", 8) == 0)
 		{
 			//passes in the index for the new joint
-			a3BVHParseJoint(currentTextPtr, source, hierarchy_out, poseGroup_out, thisIndex, jointIndexPtr, strncmp(*currentTextPtr, "End Site", 8) == 0);
+			a3BVHParseJoint(currentTextPtr, source, hierarchy_out, poseGroup_out, thisIndex, jointIndexPtr, strncmp(*currentTextPtr, "End Site", 8) == 0, channelData);
 			continue; //don't want to risk the close bracket triggering early
 		}
 		if (strncmp(*currentTextPtr, "}", 1) == 0)
@@ -292,7 +303,7 @@ a3i32 a3BVHParseJoint(a3byte** currentTextPtr, const a3byte* source, a3_Hierarch
 /// <param name="source"></param>
 /// <param name="hierarchy_out"></param>
 /// <returns></returns>
-a3i32 a3BVHParseRoot(a3byte** currentTextPtr, const a3byte* source, a3_Hierarchy* hierarchy_out, a3_HierarchyPoseGroup* poseGroup_out)
+a3i32 a3BVHParseRoot(a3byte** currentTextPtr, const a3byte* source, a3_Hierarchy* hierarchy_out, a3_HierarchyPoseGroup* poseGroup_out, a3_SpatialPoseChannel** channelData)
 {
 	//passed throughout parser
 	a3i32 jointIndex = 0;
@@ -332,12 +343,12 @@ a3i32 a3BVHParseRoot(a3byte** currentTextPtr, const a3byte* source, a3_Hierarchy
 		if (strncmp(*currentTextPtr, "CHANNELS", 8) == 0 && !channelsParsed)
 		{
 			channelsParsed = true;
-			a3BVHParseChannels(*currentTextPtr, 0, poseGroup_out);
+			a3BVHParseChannels(*currentTextPtr, 0, poseGroup_out, channelData);
 		}
 		if (strncmp(*currentTextPtr, "JOINT", 5) == 0)
 		{
 			//passes in the index for the new joint
-			a3BVHParseJoint(currentTextPtr, source, hierarchy_out, poseGroup_out, 0, &jointIndex, false);
+			a3BVHParseJoint(currentTextPtr, source, hierarchy_out, poseGroup_out, 0, &jointIndex, false, channelData);
 			continue; //don't want to risk the close bracket triggering early
 		}
 		if (strncmp(*currentTextPtr, "}", 1) == 0)
@@ -391,7 +402,6 @@ a3i32 a3hierarchyPoseGroupLoadBVH(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 		//loop 1.5:
 		//create array specifying the number of channels per joint, used in loop 3
 		a3ui32* channelsPerJoint = calloc(nodeCount, sizeof(a3ui32));	//parallel to joint indices
-
 		strncpy(contentsCopy, fs->contents, fs->length); //reset contentsCopy array to master from fs
 		token = strtok((char*)contentsCopy, "\n");
 
@@ -452,11 +462,12 @@ a3i32 a3hierarchyPoseGroupLoadBVH(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 		strncpy(contentsCopy, fs->contents, fs->length); //reset data again
 		token = strtok((char*)contentsCopy, "\n");
 		jointIndex = -1;
+		a3_SpatialPoseChannel** channelNames = calloc(nodeCount, sizeof(a3_SpatialPoseChannel*)); //points to first pointer in an array of pointers
 		while (token != NULL)
 		{
 			if (strncmp(token, "ROOT", 4) == 0)
 			{
-				a3BVHParseRoot(&token, contentsCopy, hierarchy_out, poseGroup_out);
+				a3BVHParseRoot(&token, contentsCopy, hierarchy_out, poseGroup_out, channelNames);
 				break;
 			}
 			token = strtok(NULL, "\n");
