@@ -52,10 +52,10 @@ typedef struct a3_SpatialPose			a3_SpatialPose;
 enum a3_SpatialPoseEulerOrder
 {
 	a3poseEulerOrder_xyz,
-	//a3poseEulerOrder_yzx,
+	a3poseEulerOrder_yzx,
 	a3poseEulerOrder_zxy,
-	//a3poseEulerOrder_yxz,
-	//a3poseEulerOrder_xzy,
+	a3poseEulerOrder_yxz,
+	a3poseEulerOrder_xzy,
 	a3poseEulerOrder_zyx,
 };
 
@@ -105,7 +105,6 @@ struct a3_SpatialPose
 {
 	a3mat4 transform;
 	a3vec3 orientation, scale, position;
-	a3_SpatialPoseEulerOrder eulerOrder;
 };
 
 

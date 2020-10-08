@@ -71,13 +71,13 @@ inline a3i32 a3hierarchyPoseReset(const a3_HierarchyPose* pose_inout, const a3ui
 }
 
 // convert full hierarchy pose to hierarchy transforms
-inline a3i32 a3hierarchyPoseConvert(const a3_HierarchyPose* pose_inout, const a3ui32 nodeCount, const a3_SpatialPoseChannel* channel, const a3_SpatialPoseEulerOrder order)
+inline a3i32 a3hierarchyPoseConvert(const a3_HierarchyPose* pose_inout, const a3ui32 nodeCount, const a3_SpatialPoseChannel* channel, const a3_SpatialPoseEulerOrder* orders)
 {
 	if (pose_inout && nodeCount)
 	{
 		for (a3ui32 i = 0; i < nodeCount; i++)
 		{
-			a3spatialPoseConvert(&pose_inout->spatialPose[i].transform, &pose_inout->spatialPose[i], channel[i], order);
+			a3spatialPoseConvert(&pose_inout->spatialPose[i].transform, &pose_inout->spatialPose[i], channel[i], orders[i]);
 		}
 
 		return 1;

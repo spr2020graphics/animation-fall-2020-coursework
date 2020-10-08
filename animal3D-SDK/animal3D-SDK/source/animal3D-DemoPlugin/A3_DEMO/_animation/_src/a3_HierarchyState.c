@@ -45,7 +45,7 @@ a3i32 a3hierarchyPoseGroupCreate(a3_HierarchyPoseGroup* poseGroup_out, const a3_
 		a3ui32 numSpatialPoses = poseCount * hierarchy->numNodes;
 
 		// determine memory requirements. Hierarchy Pose, Spatial Pose, and Channels
-		size_t memRequirements = sizeof(a3_SpatialPose) * numSpatialPoses + sizeof(a3_HierarchyPose) * poseCount + sizeof(a3_SpatialPoseChannel) * hierarchy->numNodes;
+		size_t memRequirements = sizeof(a3_SpatialPose) * numSpatialPoses + sizeof(a3_HierarchyPose) * poseCount + sizeof(a3_SpatialPoseChannel) * hierarchy->numNodes + sizeof(a3_SpatialPoseEulerOrder) * hierarchy->numNodes;
 
 		// allocate everything (one malloc)
 		poseGroup_out->spatialPosePool = malloc(memRequirements);
@@ -54,6 +54,7 @@ a3i32 a3hierarchyPoseGroupCreate(a3_HierarchyPoseGroup* poseGroup_out, const a3_
 		poseGroup_out->hierarchy = hierarchy;
 		poseGroup_out->hierarchyPosePool = (a3_HierarchyPose*)(poseGroup_out->spatialPosePool + numSpatialPoses); //shift over by the size of the spatial pool
 		poseGroup_out->channels = (a3_SpatialPoseChannel*)(poseGroup_out->hierarchyPosePool + poseCount);
+		poseGroup_out->eulerOrders = (a3_SpatialPoseEulerOrder*)(poseGroup_out->channels + hierarchy->numNodes);
 
 		// reset all data
 		poseGroup_out->poseCount = poseCount;
@@ -67,6 +68,7 @@ a3i32 a3hierarchyPoseGroupCreate(a3_HierarchyPoseGroup* poseGroup_out, const a3_
 		for (a3ui32 i = 0; i < hierarchy->numNodes; i++)
 		{
 			poseGroup_out->channels[i] = a3poseChannel_none;
+			poseGroup_out->eulerOrders[i] = a3poseEulerOrder_xyz;
 		}
 		// done
 		return 1;
@@ -88,6 +90,7 @@ a3i32 a3hierarchyPoseGroupRelease(a3_HierarchyPoseGroup* poseGroup)
 		poseGroup->spatialPosePool = 0;
 		poseGroup->hierarchyPosePool = 0;
 		poseGroup->channels = 0;
+		poseGroup->eulerOrders = 0;
 
 		// done
 		return 1;
@@ -185,6 +188,9 @@ a3i32 a3BVHParseChannels(a3byte* line, a3i32 index, a3_HierarchyPoseGroup* poseG
 		*(parsePos + (len - 1)) = '\0';
 	}
 	parsePos = strchr(parsePos, ' ') + 1; //advance past the number of channels
+	a3i32* eulerOrderArr = calloc(3, sizeof(a3_SpatialPoseChannel)); //they're stored in order of rotation, so they need to be flipped
+	eulerOrderArr[0] = eulerOrderArr[1] = eulerOrderArr[2] = -1;
+	a3i32 eulerIndex = 2;
 	//need to advance past the channel count
 	for (int i = 0; i < channelCount; i++)
 	{
@@ -207,19 +213,51 @@ a3i32 a3BVHParseChannels(a3byte* line, a3i32 index, a3_HierarchyPoseGroup* poseG
 		{
 			poseGroup->channels[index] |= a3poseChannel_orient_x;
 			channelData[index][i] = a3poseChannel_orient_x;
+			eulerOrderArr[eulerIndex] = a3poseChannel_orient_x;
+			eulerIndex--;
 		}
 		else if (strncmp(parsePos, "Yrot", 4) == 0)
 		{
 			poseGroup->channels[index] |= a3poseChannel_orient_y;
 			channelData[index][i] = a3poseChannel_orient_y;
+			eulerOrderArr[eulerIndex] = a3poseChannel_orient_y;
+			eulerIndex--;
 		}
 		else if (strncmp(parsePos, "Zrot", 4) == 0)
 		{
 			poseGroup->channels[index] |= a3poseChannel_orient_z;
 			channelData[index][i] = a3poseChannel_orient_z;
+			eulerOrderArr[eulerIndex] = a3poseChannel_orient_z;
+			eulerIndex--;
 		}
 		parsePos = strchr(parsePos, ' ') + 1; //advance past the number of channels. parsePos will be 1 at the end of the loop, but that's fine
 	}
+
+	if (eulerOrderArr[2] == a3poseChannel_orient_z && eulerOrderArr[1] == a3poseChannel_orient_x) //first rotation's z, second is x
+	{
+		poseGroup->eulerOrders[index] = a3poseEulerOrder_yxz;
+	}
+	else if (eulerOrderArr[2] == a3poseChannel_orient_z && eulerOrderArr[1] == a3poseChannel_orient_y) //first rotation's z, second is y
+	{
+		poseGroup->eulerOrders[index] = a3poseEulerOrder_xyz;
+	}
+	else if (eulerOrderArr[2] == a3poseChannel_orient_y && eulerOrderArr[1] == a3poseChannel_orient_x) //first rotation's y, second is x
+	{
+		poseGroup->eulerOrders[index] = a3poseEulerOrder_zxy;
+	}
+	else if (eulerOrderArr[2] == a3poseChannel_orient_y && eulerOrderArr[1] == a3poseChannel_orient_z) //first rotation's y, second is z
+	{
+		poseGroup->eulerOrders[index] = a3poseEulerOrder_xzy;
+	}
+	else if (eulerOrderArr[2] == a3poseChannel_orient_x && eulerOrderArr[1] == a3poseChannel_orient_y) //first rotation's x, second is y
+	{
+		poseGroup->eulerOrders[index] = a3poseEulerOrder_zyx;
+	}
+	else if (eulerOrderArr[2] == a3poseChannel_orient_x && eulerOrderArr[1] == a3poseChannel_orient_z) //first rotation's x, second is z
+	{
+		poseGroup->eulerOrders[index] = a3poseEulerOrder_yzx;
+	}
+	free(eulerOrderArr);
 	return 1;
 }
 

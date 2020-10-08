@@ -75,7 +75,7 @@ struct a3_HierarchyPoseGroup
 	a3_SpatialPoseChannel* channels;
 
 	// Euler order flag for concatenation order or orientation channels
-	a3_SpatialPoseEulerOrder eulerOrder;
+	a3_SpatialPoseEulerOrder* eulerOrders;
 
 	// number of spatial poses
 	a3ui32 spatialPoseCount;
@@ -123,7 +123,7 @@ a3i32 a3hierarchyPoseGroupGetNodePoseOffsetIndex(const a3_HierarchyPoseGroup *po
 a3i32 a3hierarchyPoseReset(const a3_HierarchyPose* pose_inout, const a3ui32 nodeCount);
 
 // convert full hierarchy pose to hierarchy transforms
-a3i32 a3hierarchyPoseConvert(const a3_HierarchyPose* pose_inout, const a3ui32 nodeCount, const a3_SpatialPoseChannel* channel, const a3_SpatialPoseEulerOrder order);
+a3i32 a3hierarchyPoseConvert(const a3_HierarchyPose* pose_inout, const a3ui32 nodeCount, const a3_SpatialPoseChannel* channel, const a3_SpatialPoseEulerOrder* orders);
 
 // copy full hierarchy pose. Also works as a step interpolation as it overrides the previous.
 a3i32 a3hierarchyPoseCopy(const a3_HierarchyPose* pose_out, const a3_HierarchyPose* pose_in, const a3ui32 nodeCount);
