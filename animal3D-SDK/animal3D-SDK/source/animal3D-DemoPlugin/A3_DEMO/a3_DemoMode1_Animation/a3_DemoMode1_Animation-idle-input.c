@@ -70,6 +70,7 @@ void a3animation_input_keyCharPress(a3_DemoState const* demoState, a3_DemoMode1_
 		a3demoCtrlCaseIncLoop(demoMode->currentToggleIndex, (demoMode->hierarchyPoseGroup_bvh->poseCount - 1), '~');
 		a3demoCtrlCaseIncLoop(demoMode->currentExamineHierarchyState, demoMode->numHierarchyStates, 'h');
 		a3demoCtrlCasesLoop(demoMode->currentExamineNode, demoMode->hierarchy_bvh->numNodes, 'H', 'G');
+		a3demoCtrlCaseIncLoop(demoMode->interpFunction, 4, '?');
 	}
 }
 

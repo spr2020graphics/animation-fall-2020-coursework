@@ -157,6 +157,7 @@ typedef enum a3_DemoMode1_Animation_TargetName				a3_DemoMode1_Animation_TargetN
 		a3ui32 currentClipKeyVal;			// What is the current keyframe value from the clip? (Used for animating skeleton via clip controller)
 		a3ui32 currentExamineHierarchyState;// Which hierarchy state are we currently editing?
 		a3ui32 currentExamineNode;			// Which node are we currently looking at?
+		a3ui32 interpFunction;				// copy, lerp, nearest, or catmull
 
 		// objects
 		union {

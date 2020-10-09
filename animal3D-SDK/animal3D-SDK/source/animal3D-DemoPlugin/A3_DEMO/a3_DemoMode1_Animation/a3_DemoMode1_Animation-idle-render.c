@@ -164,6 +164,10 @@ void a3animation_render_skeletal_controls(a3_DemoState const* demoState, a3_Demo
 		demoMode->currentExamineNode,
 		demoMode->hierarchyStates[demoMode->currentExamineHierarchyState].hierarchy->nodes[demoMode->currentExamineNode].name);
 
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"Set Interp Function: '?' (%d selected)",	//switch examined node
+		demoMode->interpFunction);
+
 	//as much data as we can pull from the transform. Tried restoring the pose data, didn't quite work.
 	textOffset += textOffsetDelta;
 	a3_SpatialPose* basePose = demoMode->hierarchyState_skel_base->objectHPose->spatialPose + demoMode->currentExamineNode;
@@ -678,7 +682,7 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 		currentDrawable = demoState->draw_unit_sphere;
 		a3mat4* posMat;
 		a3mat4 scale = a3mat4_identity;
-		a3real4x4SetScale(scale.m, 0.25f);
+		a3real4x4SetScale(scale.m, 1.0f);
 		for (a3ui32 k = 0; k < demoMode->hierarchy_bvh->numNodes; ++k)
 		{
 			a3mat4* selectedBaseMat;
