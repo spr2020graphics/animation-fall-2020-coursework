@@ -414,6 +414,8 @@ a3i32 a3hierarchyPoseGroupLoadBVH(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 		}
 		a3byte* contentsCopy = malloc(fs->length * sizeof(a3byte));
 		strncpy(contentsCopy, fs->contents, fs->length);
+
+
 		//loop 1:
 		//count joints, create empty hierarchy. Also cache total number of channels.
 		char* token = strtok((char*)contentsCopy, "\n");
@@ -438,6 +440,8 @@ a3i32 a3hierarchyPoseGroupLoadBVH(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 
 			token = strtok(NULL, "\n");
 		}
+
+
 		//loop 1.5:
 		//create array specifying the number of channels per joint, used in loop 3
 		a3ui32* channelsPerJoint = calloc(nodeCount, sizeof(a3ui32));	//parallel to joint indices
@@ -493,9 +497,10 @@ a3i32 a3hierarchyPoseGroupLoadBVH(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 				channelsPerJoint[jointIndex] = 0;
 			}
 
-
 			token = strtok(NULL, "\n");
 		}
+
+
 
 		//loop 2:
 		//construct hierarchy, track the number of {} to determine hierarchical relationship. "End site" ends a recursive loop. Name end sites "parentNodeName"Off.
@@ -518,11 +523,17 @@ a3i32 a3hierarchyPoseGroupLoadBVH(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 			}
 			token = strtok(NULL, "\n");
 		}
+
+
+
 		//loop 3: motion
 		//store frames and frame time (fps is line 268, a3_callbacks.c).
 		//find the number of lines to skip to match the fps
 		//allocate a LOT of poses in the HPoseGroup
 		//while file, track frame index.
+
+		// We also generate a clip file (to use with our parser from project 1) with all keyframes and a clip declaration
+
 		a3i32 currentFrame = 0;
 		//skip to "MOTION" in case there's extra lines
 		while (strncmp(token, "MOTION", 6) != 0)
@@ -552,7 +563,7 @@ a3i32 a3hierarchyPoseGroupLoadBVH(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 			{
 				a3_SpatialPose* poseToEdit = &poseGroup_out->hierarchyPosePool[currentFrame + 2].spatialPose[i];
 				a3vec3 pos, rot;
-				if (channelsPerJoint[i] == 6)
+				if (channelsPerJoint[i] == 6)	//This is the root node
 				{
 					pos.x = strtof(tmpPtr, &tmpPtr);
 					tmpPtr = strchr(tmpPtr, ' ') + 1;
@@ -570,7 +581,7 @@ a3i32 a3hierarchyPoseGroupLoadBVH(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 					rot.x = strtof(tmpPtr, &tmpPtr);
 					a3spatialPoseSetRotation(poseToEdit, rot.x, rot.y, rot.z);
 				}
-				else if (channelsPerJoint[i] != 0)
+				else if (channelsPerJoint[i] != 0)	// this is NOT a root node (i.e joint), we don't need to handle end-sites
 				{
 					rot.z = strtof(tmpPtr, &tmpPtr);
 					tmpPtr = strchr(tmpPtr, ' ') + 1;
@@ -587,6 +598,7 @@ a3i32 a3hierarchyPoseGroupLoadBVH(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 					//check for next space
 					
 			}
+
 			//create new keyframe line
 			a3byte* result = calloc(12, sizeof(char));
 
@@ -597,6 +609,7 @@ a3i32 a3hierarchyPoseGroupLoadBVH(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 			strcat(result, tmpIndex);
 			strcat(result, "\n");
 
+			// Write new keyframe to file
 			if (fputs(result, clipFile) == EOF)
 			{
 				fputs("Failed", clipFile);
@@ -609,7 +622,11 @@ a3i32 a3hierarchyPoseGroupLoadBVH(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 		// create the clip definition line
 		a3byte* clipLine = calloc(25, sizeof(char));
 		a3byte* strFloat = malloc(sizeof(float));
+
+
 		fputs("#---------------------------------------------------------#\n\n", clipFile);
+
+
 		strcat(clipLine, clipPrefix);
 		_itoa(frameCount - 1, tmpIndex, 10);	//convert int to string, last param is numeric base
 		strcat(clipLine, tmpIndex);
@@ -623,6 +640,7 @@ a3i32 a3hierarchyPoseGroupLoadBVH(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 		fputs(clipLine, clipFile);
 
 		fclose(clipFile);
+
 
 		//full clip has 1280 frames at 120fps
 		//set fps to 30 we get 320 frames or 10.6 seconds

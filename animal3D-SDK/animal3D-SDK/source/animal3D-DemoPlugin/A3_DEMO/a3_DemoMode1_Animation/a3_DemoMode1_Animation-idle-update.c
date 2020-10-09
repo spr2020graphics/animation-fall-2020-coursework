@@ -126,6 +126,7 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 	// Currently lerp from zero delta to the new delta by lerpParam
 	//a3hierarchyPoseLerp(currentState->sampleHPose, &demoMode->hierarchyPoseGroup_bvh->hierarchyPosePool[demoMode->currentClipKeyVal + 1], &demoMode->hierarchyPoseGroup_bvh->hierarchyPosePool[((demoMode->currentClipKeyVal + 1) % 724) + 1], demoMode->hierarchy_bvh->numNodes, lerpParam);
 
+	// Determine the previous and next poses for camull-rom
 	a3_HierarchyPose* prev = &demoMode->hierarchyPoseGroup_bvh->hierarchyPosePool[demoMode->currentClipKeyVal];
 	a3_HierarchyPose* next = &demoMode->hierarchyPoseGroup_bvh->hierarchyPosePool[((demoMode->currentClipKeyVal + 1) % 724) + 2];
 

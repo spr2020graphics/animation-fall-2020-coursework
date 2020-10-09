@@ -140,7 +140,7 @@ a3i32 a3spatialPoseLerp(a3_SpatialPose* spatialPose_out, a3_SpatialPose* spatial
 //Find the nearest of two poses
 a3i32 a3spatialPoseNearest(a3_SpatialPose* spatialPose_out, a3_SpatialPose* spatialPose_0, a3_SpatialPose* spatialPose_1, const a3real u);
 
-// Lerp between two poses by a parameter via smoothstep/hermite
+// Lerp between two poses by a parameter via catmull-rom
 a3i32 a3spatialPoseCatRom(a3_SpatialPose* spatialPose_out, a3_SpatialPose* spatialPose_Prev, a3_SpatialPose* spatialPose_0, a3_SpatialPose* spatialPose_1, a3_SpatialPose* spatialPose_Next, const a3real u);
 
 // init a spatial pose with user-specified values

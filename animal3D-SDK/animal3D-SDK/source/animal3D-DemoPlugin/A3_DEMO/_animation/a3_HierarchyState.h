@@ -137,7 +137,7 @@ a3i32 a3hierarchyPoseLerp(const a3_HierarchyPose* pose_out, const a3_HierarchyPo
 //find the nearest of two poses
 a3i32 a3hierarchyPoseNearest(const a3_HierarchyPose* pose_out, const a3_HierarchyPose* pose_0, const a3_HierarchyPose* pose_1, const a3ui32 nodeCount, const a3real u);
 
-// lerp between poses via smoothstep/hermite
+// lerp between poses via catmull-rom
 a3i32 a3hierarchyPoseCatRom(const a3_HierarchyPose* pose_out, const a3_HierarchyPose* pose_Prev, const a3_HierarchyPose* pose_0, const a3_HierarchyPose* pose_1, const a3_HierarchyPose* pose_Next, const a3ui32 nodeCount, const a3real u);
 
 // initializes a hierarchy pose
