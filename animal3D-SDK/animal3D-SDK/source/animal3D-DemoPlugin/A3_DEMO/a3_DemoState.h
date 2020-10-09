@@ -341,9 +341,9 @@ struct a3_DemoState
 	a3_KeyframePool keyPool[1];
 	a3_ClipPool clipPool[1];
 
-	a3ui8 keyframeCount;
-	a3ui8 clipCount;
-	a3ui8 controllerCount;
+	a3i32 keyframeCount;
+	a3i32 clipCount;
+	a3i32 controllerCount;
 	a3f32 globalSpeedMod;
 	a3i32 globalPlaybackDir; //serves as a secondary modifier/lock on top of the clip controller play directions.
 	a3ui8 waypointCount; //these are hardcoded currently to allow for a perfect circle but we COULD read them from a file.

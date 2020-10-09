@@ -83,6 +83,7 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 				clipCtrl->keyframeTime = frame.duration;
 				clipCtrl->clipTime = clipCtrl->clipPool->clipArray[clipCtrl->clipIndex].duration;
 				clipCtrl->playbackDir = 0;
+				resolved = true;
 				break;
 			}
 			case a3clipTransitionForwardFrame:	  // Forward pause at end of first frame, plays only first frame
@@ -161,7 +162,7 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 			}
 			}
 
-			resolved = true;
+			//resolved = true;
 		}
 		else if (clipCtrl->keyframeTime >= clipCtrl->clipPool->clipArray[clipCtrl->clipIndex].keyframes->keyframeArray[clipCtrl->keyframeIndex].duration)	// FORWARD: Playhead enters next keyframe (if current keyframeTime >= current keyframe duration)
 		{
@@ -175,10 +176,9 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 			}
 
 			clipCtrl->keyframeIndex++;
+			clipCtrl->keyframeTime -= clipCtrl->clipPool->clipArray[clipCtrl->clipIndex].keyframes->keyframeArray[clipCtrl->keyframeIndex].duration;
 
-			clipCtrl->keyframeTime = 0.0f;
-
-			resolved = true;
+			//resolved = true;
 		}
 		else if (clipCtrl->keyframeTime < 0.0f)	// REVERSE: Playhead enters previous keyframe
 		{
@@ -192,15 +192,19 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 		 	}
 
 			clipCtrl->keyframeIndex--;
-			clipCtrl->keyframeTime = clipCtrl->clipPool->clipArray[clipCtrl->clipIndex].keyframes->keyframeArray[clipCtrl->keyframeIndex].duration;
+			clipCtrl->keyframeTime += clipCtrl->clipPool->clipArray[clipCtrl->clipIndex].keyframes->keyframeArray[clipCtrl->keyframeIndex].duration;
 
-			resolved = true;
+			//resolved = true;
 		}
 		else if (directionalDT < 0.0f)	// REVERSE: Playhead moving backward in time, but not to next keyframe
 		{
 			resolved = true;
 		}
 		else if (directionalDT > 0.0f)	// FORWARD: Playhead moving forward in time, but not to next keyframe
+		{
+			resolved = true;
+		}
+		else
 		{
 			resolved = true;
 		}

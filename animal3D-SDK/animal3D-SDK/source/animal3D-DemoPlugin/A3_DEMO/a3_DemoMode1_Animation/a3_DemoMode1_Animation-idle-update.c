@@ -124,7 +124,7 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 	//a3hierarchyPoseCopy(currentState->sampleHPose, &demoMode->hierarchyPoseGroup_skel->hierarchyPosePool[demoMode->currentClipKeyVal + 1], demoMode->hierarchy_skel->numNodes);
 
 	// Currently lerp from zero delta to the new delta by lerpParam
-	a3hierarchyPoseLerp(currentState->sampleHPose, &demoMode->hierarchyPoseGroup_bvh->hierarchyPosePool[demoMode->currentClipKeyVal + 1], &demoMode->hierarchyPoseGroup_bvh->hierarchyPosePool[((demoMode->currentClipKeyVal + 1) % 4) + 1], demoMode->hierarchy_bvh->numNodes, lerpParam);
+	a3hierarchyPoseLerp(currentState->sampleHPose, &demoMode->hierarchyPoseGroup_bvh->hierarchyPosePool[demoMode->currentClipKeyVal + 1], &demoMode->hierarchyPoseGroup_bvh->hierarchyPosePool[((demoMode->currentClipKeyVal + 1) % 724) + 1], demoMode->hierarchy_bvh->numNodes, lerpParam);
 
 	//concat deltaPose (in samplePose) with base pose
 	a3hierarchyPoseConcat(currentState->localHPose, &demoMode->hierarchyPoseGroup_bvh->hierarchyPosePool[0], currentState->sampleHPose, demoMode->hierarchy_bvh->numNodes);
