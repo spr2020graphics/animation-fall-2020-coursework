@@ -134,6 +134,9 @@ a3i32 a3hierarchyPoseConcat(const a3_HierarchyPose* pose_out, const a3_Hierarchy
 // lerp between poses
 a3i32 a3hierarchyPoseLerp(const a3_HierarchyPose* pose_out, const a3_HierarchyPose* pose_0, const a3_HierarchyPose* pose_1, const a3ui32 nodeCount, const a3real u);
 
+// lerp between poses via smoothstep/hermite
+a3i32 a3hierarchyPoseCatRom(const a3_HierarchyPose* pose_out, const a3_HierarchyPose* pose_Prev, const a3_HierarchyPose* pose_0, const a3_HierarchyPose* pose_1, const a3_HierarchyPose* pose_Next, const a3ui32 nodeCount, const a3real u);
+
 // initializes a hierarchy pose
 a3i32 a3hierarchyPoseInit(a3_HierarchyPose* pose, a3ui32 numPoses);
 //-----------------------------------------------------------------------------

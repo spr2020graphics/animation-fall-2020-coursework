@@ -132,6 +132,20 @@ inline a3i32 a3hierarchyPoseLerp(const a3_HierarchyPose* pose_out, const a3_Hier
 	return -1;
 }
 
+inline a3i32 a3hierarchyPoseCatRom(const a3_HierarchyPose* pose_out, const a3_HierarchyPose* pose_Prev, const a3_HierarchyPose* pose_0, const a3_HierarchyPose* pose_1, const a3_HierarchyPose* pose_Next, const a3ui32 nodeCount, const a3real u)
+{
+	if (pose_out && pose_0 && pose_1)
+	{
+		for (a3ui32 i = 0; i < nodeCount; i++)
+		{
+			a3spatialPoseCatRom(&pose_out->spatialPose[i], &pose_Prev->spatialPose[i], &pose_0->spatialPose[i], &pose_1->spatialPose[i], &pose_Next->spatialPose[i], u);
+		}
+
+		return 1;
+	}
+	return -1;
+}
+
 //-----------------------------------------------------------------------------
 
 // update inverse object-space matrices
