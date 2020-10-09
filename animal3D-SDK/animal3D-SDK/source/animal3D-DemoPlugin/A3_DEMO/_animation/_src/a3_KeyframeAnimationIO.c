@@ -269,7 +269,7 @@ a3i32 a3animationParseFile(a3_DemoState* state, a3byte const* data)
 	a3keyframePoolCreate(state->keyPool, state->keyframeCount);
 	token = strtok((char*)data, "\n");
 	size_t len = strlen(token);
-	if (token + (len - 1) == '\r')
+	if (*(token + (len - 1)) == '\r')
 	{
 		*(token + (len - 1)) = '\0';
 	}
@@ -278,7 +278,7 @@ a3i32 a3animationParseFile(a3_DemoState* state, a3byte const* data)
 	// Now that we have the clipPool and keyframePool created, we can actually re-iterate and create the actual clips/keyframes
 	while (token != NULL)
 	{
-		if (token + (len - 1) == '\r')
+		if (*(token + (len - 1)) == '\r')
 		{
 			*(token + (len - 1)) = '\0';
 		}

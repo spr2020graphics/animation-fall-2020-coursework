@@ -538,7 +538,7 @@ a3i32 a3hierarchyPoseGroupLoadBVH(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 		a3real clipDuration = frameCount * frameTime;
 		const a3byte* clipPath = "../../../../resource/animdata/bvh_clip.txt";
 		a3byte* tmpIndex = malloc(sizeof(int));
-		a3byte* keyframePrefix = "$ 0.0 ";
+		a3byte* keyframePrefix = "$ 1.0 ";
 		a3byte* clipPrefix = "@ bvh-skel true 0 ";	// default name, we also want to use the clip duration and not individual keyframe durations
 		a3byte* clipTransitions = " | bvh-skel | bvh-skel";	 //just default for now
 		char* space = " ";
@@ -595,7 +595,7 @@ a3i32 a3hierarchyPoseGroupLoadBVH(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 			strcat(result, tmpIndex);
 			strcat(result, space);
 			strcat(result, tmpIndex);
-			strcat(result, "\r");
+			strcat(result, "\n");
 
 			if (fputs(result, clipFile) == EOF)
 			{
@@ -617,6 +617,7 @@ a3i32 a3hierarchyPoseGroupLoadBVH(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 		_gcvt(clipDuration, 5, strFloat);	//convert float to string, middle param is # of digits
 		strcat(clipLine, space);
 		strcat(clipLine, strFloat);
+		strcat(clipLine, "\n");
 
 		// write clip declaration to file
 		fputs(clipLine, clipFile);
