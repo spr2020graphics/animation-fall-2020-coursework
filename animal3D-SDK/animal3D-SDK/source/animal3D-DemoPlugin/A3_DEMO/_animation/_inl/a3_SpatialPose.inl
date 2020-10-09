@@ -109,6 +109,17 @@ inline a3i32 a3spatialPoseConvert(a3mat4* mat_out, const a3_SpatialPose* spatial
 		//create rotation matrix
 		a3mat4 rotate = a3mat4_identity;
 		a3mat4 xRot, yRot, zRot, tmp;
+
+		//initialize rotation matrices
+		xRot = a3mat4_identity;
+		a3real4x4SetRotateX(xRot.m, spatialPose_in->orientation.x);
+		yRot = a3mat4_identity;
+		a3real4x4SetRotateY(yRot.m, spatialPose_in->orientation.y);
+		zRot = a3mat4_identity;
+		a3real4x4SetRotateZ(zRot.m, spatialPose_in->orientation.z);
+		tmp = a3mat4_identity;
+
+		//concatenate rotation matrices. xyz and zyx have shortcuts
 		switch (order)
 		{
 		case a3poseEulerOrder_xyz:
@@ -118,21 +129,20 @@ inline a3i32 a3spatialPoseConvert(a3mat4* mat_out, const a3_SpatialPose* spatial
 			a3real4x4SetRotateZYX(rotate.m, spatialPose_in->orientation.x, spatialPose_in->orientation.y, spatialPose_in->orientation.z);
 			break;
 		case a3poseEulerOrder_zxy:
-			//create the y, x, and z matrices
-			//xytmp = mult(x,y)
-			//zxy = mult(z, xytmp)
+			a3real4x4Product(tmp.m, xRot.m, yRot.m);
+			a3real4x4Product(rotate.m, zRot.m, tmp.m);
 			break;
 		case a3poseEulerOrder_yxz:
-			xRot = a3mat4_identity;
-			a3real4x4SetRotateX(xRot.m, spatialPose_in->orientation.x);
-			yRot = a3mat4_identity;
-			a3real4x4SetRotateY(yRot.m, spatialPose_in->orientation.y);
-			zRot = a3mat4_identity;
-			a3real4x4SetRotateZ(zRot.m, spatialPose_in->orientation.z);
-			tmp = a3mat4_identity;
 			a3real4x4Product(tmp.m, xRot.m, zRot.m);
 			a3real4x4Product(rotate.m, yRot.m, tmp.m);
 			break;
+		case a3poseEulerOrder_xzy:
+			a3real4x4Product(tmp.m, zRot.m, yRot.m);
+			a3real4x4Product(rotate.m, xRot.m, tmp.m);
+			break;
+		case a3poseEulerOrder_yzx:
+			a3real4x4Product(tmp.m, zRot.m, xRot.m);
+			a3real4x4Product(rotate.m, yRot.m, tmp.m);
 		}
 
 		//create scale matrix

@@ -60,6 +60,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	hierarchy = demoMode->hierarchy_bvh;
 	hierarchyPoseGroup = demoMode->hierarchyPoseGroup_bvh;
 
+	//create BVH
 	a3hierarchyPoseGroupLoadBVH(hierarchyPoseGroup, hierarchy, animationfilePath);
 
 	// stream animation assets
