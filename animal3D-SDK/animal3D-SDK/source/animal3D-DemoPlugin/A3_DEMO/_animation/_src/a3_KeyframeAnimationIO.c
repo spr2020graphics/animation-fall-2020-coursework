@@ -268,12 +268,20 @@ a3i32 a3animationParseFile(a3_DemoState* state, a3byte const* data)
 	a3clipPoolCreate(state->clipPool, state->clipCount);
 	a3keyframePoolCreate(state->keyPool, state->keyframeCount);
 	token = strtok((char*)data, "\n");
-
+	size_t len = strlen(token);
+	if (token + (len - 1) == '\r')
+	{
+		*(token + (len - 1)) = '\0';
+	}
 	a3ui32 currentClipIndex = 0;	//Needed only for clips, since their indices aren't specified in-file
 
 	// Now that we have the clipPool and keyframePool created, we can actually re-iterate and create the actual clips/keyframes
 	while (token != NULL)
 	{
+		if (token + (len - 1) == '\r')
+		{
+			*(token + (len - 1)) = '\0';
+		}
 		switch (token[0])
 		{
 		case '@':

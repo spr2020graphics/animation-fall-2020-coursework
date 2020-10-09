@@ -75,6 +75,7 @@ inline a3i32 a3clipDistributeDuration(a3_Clip* clip, const a3real newClipDuratio
 		clip->keyframes->keyframeArray[frame].duration = newDur;
 		clip->keyframes->keyframeArray[frame].durInv = 1.0f / newDur;
 	}
+	clip->duration = newClipDuration;
 	return 1;
 }
 
