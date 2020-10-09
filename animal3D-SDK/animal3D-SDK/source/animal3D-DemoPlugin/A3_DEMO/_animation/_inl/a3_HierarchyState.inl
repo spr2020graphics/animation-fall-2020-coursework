@@ -1,3 +1,4 @@
+#include "..\a3_HierarchyState.h"
 /*
 	Copyright 2011-2020 Daniel S. Buckstein
 
@@ -124,6 +125,21 @@ inline a3i32 a3hierarchyPoseLerp(const a3_HierarchyPose* pose_out, const a3_Hier
 		for (a3ui32 i = 0; i < nodeCount; i++)
 		{
 			a3spatialPoseLerp(&pose_out->spatialPose[i], &pose_0->spatialPose[i], &pose_1->spatialPose[i], u);
+		}
+
+		return 1;
+	}
+
+	return -1;
+}
+
+inline a3i32 a3hierarchyPoseNearest(const a3_HierarchyPose* pose_out, const a3_HierarchyPose* pose_0, const a3_HierarchyPose* pose_1, const a3ui32 nodeCount, const a3real u)
+{
+	if (pose_out && pose_0 && pose_1)
+	{
+		for (a3ui32 i = 0; i < nodeCount; i++)
+		{
+			a3spatialPoseNearest(&pose_out->spatialPose[i], &pose_0->spatialPose[i], &pose_1->spatialPose[i], u);
 		}
 
 		return 1;
