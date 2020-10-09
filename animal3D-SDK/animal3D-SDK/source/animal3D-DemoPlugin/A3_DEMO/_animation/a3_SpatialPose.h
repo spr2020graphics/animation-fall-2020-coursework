@@ -137,6 +137,9 @@ a3i32 a3spatialPoseConcat(a3_SpatialPose* spatialPose_out, a3_SpatialPose* spati
 // Lerp between two poses by a parameter
 a3i32 a3spatialPoseLerp(a3_SpatialPose* spatialPose_out, a3_SpatialPose* spatialPose_0, a3_SpatialPose* spatialPose_1, const a3real u);
 
+//Find the nearest of two poses
+a3i32 a3spatialPoseNearest(a3_SpatialPose* spatialPose_out, a3_SpatialPose* spatialPose_0, a3_SpatialPose* spatialPose_1, const a3real u);
+
 // init a spatial pose with user-specified values
 a3i32 a3spatialPoseInit(a3_SpatialPose* pose,
 	a3real xPos, a3real yPos, a3real zPos,

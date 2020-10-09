@@ -259,6 +259,27 @@ inline a3i32 a3spatialPoseLerp(a3_SpatialPose* spatialPose_out, a3_SpatialPose* 
 	return -1;
 }
 
+inline a3i32 a3spatialPoseNearest(a3_SpatialPose* spatialPose_out, a3_SpatialPose* spatialPose_0, a3_SpatialPose* spatialPose_1, const a3real u)
+{
+	if (spatialPose_out && spatialPose_0 && spatialPose_1)
+	{
+		if (u < 0.5f)
+		{
+			spatialPose_out->orientation = spatialPose_0->orientation;
+			spatialPose_out->scale = spatialPose_0->scale;
+			spatialPose_out->position = spatialPose_0->position;
+		}
+		else
+		{
+			spatialPose_out->orientation = spatialPose_1->orientation;
+			spatialPose_out->scale = spatialPose_1->scale;
+			spatialPose_out->position = spatialPose_1->position;
+		}
+		return 1;
+	}
+	return -1;
+}
+
 
 //-----------------------------------------------------------------------------
 
