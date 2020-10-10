@@ -45,7 +45,7 @@ extern "C"
 a3_SpatialPose* a3spatialPoseOpIdentity(a3_SpatialPose* pose_out);
 
 
-a3_SpatialPose* a3spatialPoseDOpInit(a3_SpatialPose* pose, a3vec3 scale, a3vec3 orientation, a3vec3 translation);
+
 
 // pointer-based LERP operation for single spatial pose
 a3_SpatialPose* a3spatialPoseOpLERP(a3_SpatialPose* pose_out, a3_SpatialPose const* pose0, a3_SpatialPose const* pose1, a3real const u);
@@ -55,6 +55,9 @@ a3_SpatialPose* a3spatialPoseOpLERP(a3_SpatialPose* pose_out, a3_SpatialPose con
 
 // data-based reset/identity
 a3_SpatialPose a3spatialPoseDOpIdentity();
+
+// data-based constructor
+a3_SpatialPose a3spatialPoseDOpInit(const a3vec3 scale, const a3vec3 orientation, const a3vec3 translation);
 
 // data-based LERP
 a3_SpatialPose a3spatialPoseDOpLERP(a3_SpatialPose const pose0, a3_SpatialPose const pose1, a3real const u);

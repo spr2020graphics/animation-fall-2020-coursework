@@ -82,9 +82,12 @@ inline a3_SpatialPose a3spatialPoseDOpIdentity()
 
 
 
-inline a3_SpatialPose a3spatialPoseDOpInit(a3vec3 scale, a3vec3 orientation, a3vec3 translation)
+inline a3_SpatialPose a3spatialPoseDOpInit(const a3vec3 scale, const a3vec3 orientation, const a3vec3 translation)
 {
-	a3_SpatialPose result = { a3mat4_identity, orientation, scale, translation };
+	a3_SpatialPose result = { 0 };
+
+	a3spatialPoseOpInit(&result, scale, orientation, translation);
+
 	return result;
 }
 
