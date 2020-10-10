@@ -144,10 +144,7 @@ a3i32 a3spatialPoseNearest(a3_SpatialPose* spatialPose_out, a3_SpatialPose* spat
 a3i32 a3spatialPoseCatRom(a3_SpatialPose* spatialPose_out, a3_SpatialPose* spatialPose_Prev, a3_SpatialPose* spatialPose_0, a3_SpatialPose* spatialPose_1, a3_SpatialPose* spatialPose_Next, const a3real u);
 
 // init a spatial pose with user-specified values
-a3i32 a3spatialPoseInit(a3_SpatialPose* pose,
-	a3real xPos, a3real yPos, a3real zPos,
-	a3real xRot, a3real yRot, a3real zRot,
-	a3real xScale, a3real yScale, a3real zScale);
+a3i32 a3spatialPoseInit(a3_SpatialPose* pose, a3vec3 scale, a3vec3 orientation, a3vec3 translation);
 
 
 //-----------------------------------------------------------------------------

@@ -32,20 +32,4 @@
 
 //-----------------------------------------------------------------------------
 
-//Initialize spatial pose with custom inputs. Not currently used but might be useful eventually
-a3i32 a3spatialPoseInit(a3_SpatialPose* pose,
-	a3real xPos, a3real yPos, a3real zPos,
-	a3real xRot, a3real yRot, a3real zRot,
-	a3real xScale, a3real yScale, a3real zScale)
-{
-	if (pose)
-	{
-		a3spatialPoseSetRotation(pose, xRot, yRot, zRot);
-		a3spatialPoseSetScale(pose, xScale, yScale, zScale);
-		a3spatialPoseSetTranslation(pose, xPos, yPos, zPos);
-		return 1;
-	}
-	return -1;
-}
-
 //-----------------------------------------------------------------------------
