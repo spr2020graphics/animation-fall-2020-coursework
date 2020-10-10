@@ -31,14 +31,17 @@
 #ifndef __ANIMAL3D_HIERARCHYSTATEBLEND_INL
 #define __ANIMAL3D_HIERARCHYSTATEBLEND_INL
 
+#include <string.h>
+#include <math.h>
+
 
 //-----------------------------------------------------------------------------
 
 // pointer-based reset/identity operation for single spatial pose
 inline a3_SpatialPose* a3spatialPoseOpIdentity(a3_SpatialPose* pose_out)
 {
-	pose_out->transform = a3mat4_identity;
 	// ...
+	pose_out->transform = a3mat4_identity;
 	pose_out->orientation = a3vec3_zero;
 	pose_out->scale = a3vec3_one;
 	pose_out->position = a3vec3_zero;
@@ -48,11 +51,21 @@ inline a3_SpatialPose* a3spatialPoseOpIdentity(a3_SpatialPose* pose_out)
 
 inline a3_SpatialPose* a3spatialPoseOpInit(a3_SpatialPose* pose_out, a3vec3 scale, a3vec3 orientation, a3vec3 translation)
 {
+	pose_out->transform = a3mat4_identity;
 	pose_out->scale = scale;
+	orientation.x = (a3real) fmod(orientation.x, 360.0f);
+	orientation.y = (a3real) fmod(orientation.y, 360.0f);
+	orientation.z = (a3real) fmod(orientation.z, 360.0f);
 	pose_out->orientation = orientation;
 	pose_out->position = translation;
 	//a3spatialPoseConvert(pose_out->transform.m, pose_out, a3poseChannel_translate_xyz | a3poseChannel_orient_xyz | a3poseChannel_scale_xyz, 0); //how to handle different euler orders?
 	return pose_out;
+}
+
+inline a3_SpatialPose* a3spatialPoseOpCopy(a3_SpatialPose* pose_out, a3_SpatialPose* pose_in)
+{
+	memcpy(pose_out, pose_in, sizeof(a3_SpatialPose));
+	return pose_out; //there's no reason to do anything other than this, it's a direct bit-for-bit copy
 }
 
 // pointer-based LERP operation for single spatial pose
