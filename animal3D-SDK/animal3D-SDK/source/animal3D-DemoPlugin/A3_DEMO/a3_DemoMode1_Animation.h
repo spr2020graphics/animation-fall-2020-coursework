@@ -158,6 +158,11 @@ typedef enum a3_DemoMode1_Animation_TargetName				a3_DemoMode1_Animation_TargetN
 		a3ui32 currentExamineHierarchyState;// Which hierarchy state are we currently editing?
 		a3ui32 currentExamineNode;			// Which node are we currently looking at?
 		a3ui32 interpFunction;				// copy, lerp, nearest, or catmull
+		a3_HierarchyState hierarchyState_skel[2];
+		a3mat4 mvp_joint[128], mvp_bone[128], t_skin[128];
+		a3dualquat dq_skin[128];
+		a3ui32 hierarchyKeyPose_display[2];
+		a3real hierarchyKeyPose_param;
 
 		// objects
 		union {
