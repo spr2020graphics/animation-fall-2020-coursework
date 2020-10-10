@@ -92,9 +92,6 @@ inline a3_SpatialPose a3spatialPoseDOpIdentity()
 	return result;
 }
 
-
-
-
 inline a3_SpatialPose a3spatialPoseDOpInit(const a3vec3 scale, const a3vec3 orientation, const a3vec3 translation)
 {
 	a3_SpatialPose result = { 0 };
@@ -128,6 +125,20 @@ inline a3_HierarchyPose* a3hierarchyPoseOpIdentity(a3_HierarchyPose* pose_out, c
 
 	// done
 	return pose_out;
+}
+
+inline a3_HierarchyPose* a3hierarchyPoseOpInit(a3_HierarchyPose* pose_out, a3vec3 const* orientations, a3vec3 const* scales, a3vec3 const* translations, const a3ui32 nodeCount)
+{
+	if (pose_out)
+	{
+		for (a3ui32 i = 0; i < nodeCount; i++)
+		{
+			a3spatialPoseOpInit(&pose_out->spatialPose[i], scales[i], orientations[i], translations[i]);
+		}
+
+		return pose_out;
+	}
+
 }
 
 // pointer-based LERP operation for hierarchical pose
