@@ -60,6 +60,15 @@ inline a3_SpatialPose a3spatialPoseDOpIdentity()
 	return result;
 }
 
+
+
+
+inline a3_SpatialPose a3spatialPoseDOpInit(a3vec3 scale, a3vec3 orientation, a3vec3 translation)
+{
+	a3_SpatialPose result = { a3mat4_identity, orientation, scale, translation };
+	return result;
+}
+
 // data-based LERP
 inline a3_SpatialPose a3spatialPoseDOpLERP(a3_SpatialPose const pose0, a3_SpatialPose const pose1, a3real const u)
 {
