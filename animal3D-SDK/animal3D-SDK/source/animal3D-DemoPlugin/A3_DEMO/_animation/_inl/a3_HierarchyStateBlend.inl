@@ -22,6 +22,10 @@
 	Implementation of inline hierarchical blend operations.
 */
 
+/*
+	Animation Framework Addons by Scott Dagen and Cameron Schneider
+*/
+
 
 #ifdef __ANIMAL3D_HIERARCHYSTATEBLEND_H
 #ifndef __ANIMAL3D_HIERARCHYSTATEBLEND_INL
@@ -34,10 +38,10 @@
 inline a3_SpatialPose* a3spatialPoseOpIdentity(a3_SpatialPose* pose_out)
 {
 	pose_out->transform = a3mat4_identity;
+	// ...
 	pose_out->orientation = a3vec3_zero;
-	pose_out->position = a3vec3_zero;
 	pose_out->scale = a3vec3_one;
-
+	pose_out->position = a3vec3_zero;
 	// done
 	return pose_out;
 }
@@ -45,7 +49,13 @@ inline a3_SpatialPose* a3spatialPoseOpIdentity(a3_SpatialPose* pose_out)
 // pointer-based LERP operation for single spatial pose
 inline a3_SpatialPose* a3spatialPoseOpLERP(a3_SpatialPose* pose_out, a3_SpatialPose const* pose0, a3_SpatialPose const* pose1, a3real const u)
 {
+	pose_out->transform = a3mat4_identity;
+	// ...
+	a3real3Slerp(pose_out->orientation.v, pose0->orientation.v, pose1->orientation.v, u);
+	a3real3Lerp(pose_out->scale.v, pose0->scale.v, pose1->scale.v, u);
+	a3real3Lerp(pose_out->position.v, pose0->position.v, pose1->position.v, u);
 
+	//a3spatialPoseConvert(pose_out->transform.m, pose_out, a3poseChannel_translate_xyz | a3poseChannel_orient_xyz | a3poseChannel_scale_xyz, 0); //how to handle different euler orders?
 	// done
 	return pose_out;
 }
@@ -56,7 +66,7 @@ inline a3_SpatialPose* a3spatialPoseOpLERP(a3_SpatialPose* pose_out, a3_SpatialP
 // data-based reset/identity
 inline a3_SpatialPose a3spatialPoseDOpIdentity()
 {
-	a3_SpatialPose const result = { a3mat4_identity, a3vec3_zero, a3vec3_zero, a3vec3_one };
+	a3_SpatialPose const result = { a3mat4_identity, a3vec3_zero, a3vec3_one, a3vec3_zero };
 	return result;
 }
 
