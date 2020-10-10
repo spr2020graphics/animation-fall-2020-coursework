@@ -92,6 +92,18 @@ inline a3_SpatialPose a3spatialPoseDOpIdentity()
 	return result;
 }
 
+
+
+
+inline a3_SpatialPose a3spatialPoseDOpInit(const a3vec3 scale, const a3vec3 orientation, const a3vec3 translation)
+{
+	a3_SpatialPose result = { 0 };
+
+	a3spatialPoseOpInit(&result, scale, orientation, translation);
+
+	return result;
+}
+
 // data-based LERP
 inline a3_SpatialPose a3spatialPoseDOpLERP(a3_SpatialPose const pose0, a3_SpatialPose const pose1, a3real const u)
 {
