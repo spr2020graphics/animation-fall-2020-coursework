@@ -64,7 +64,7 @@ inline a3_SpatialPose* a3spatialPoseOpInit(a3_SpatialPose* pose_out, a3vec3 scal
 
 inline a3_SpatialPose* a3spatialPoseOpCopy(a3_SpatialPose* pose_out, a3_SpatialPose* pose_in)
 {
-	memcpy(pose_out, pose_in, sizeof(a3_SpatialPose));
+	*pose_out = *pose_in;
 	return pose_out; //there's no reason to do anything other than this, it's a direct bit-for-bit copy
 }
 
@@ -94,22 +94,22 @@ inline a3_SpatialPose a3spatialPoseDOpIdentity()
 
 inline a3_SpatialPose a3spatialPoseDOpInit(const a3vec3 scale, const a3vec3 orientation, const a3vec3 translation)
 {
-	a3_SpatialPose result = { 0 };
+	a3_SpatialPose result[1];
 
-	a3spatialPoseOpInit(&result, scale, orientation, translation);
+	a3spatialPoseOpInit(result, scale, orientation, translation);
 
-	return result;
+	return *result;
 }
 
 // data-based LERP
 inline a3_SpatialPose a3spatialPoseDOpLERP(a3_SpatialPose const pose0, a3_SpatialPose const pose1, a3real const u)
 {
-	a3_SpatialPose result = { 0 };
+	a3_SpatialPose result[1];
 	
-	a3spatialPoseOpLERP(&result, &pose0, &pose1, u);
+	a3spatialPoseOpLERP(result, &pose0, &pose1, u);
 
 	// done
-	return result;
+	return *result;
 }
 
 
