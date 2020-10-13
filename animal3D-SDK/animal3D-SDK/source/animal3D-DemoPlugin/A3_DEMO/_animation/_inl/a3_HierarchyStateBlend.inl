@@ -33,6 +33,7 @@
 
 #include <string.h>
 #include <math.h>
+#include "..\a3_HierarchyStateBlend.h"
 
 
 //-----------------------------------------------------------------------------
@@ -65,7 +66,12 @@ inline a3_SpatialPose* a3spatialPoseOpInit(a3_SpatialPose* pose_out, a3vec3 scal
 inline a3_SpatialPose* a3spatialPoseOpCopy(a3_SpatialPose* pose_out, a3_SpatialPose* pose_in)
 {
 	*pose_out = *pose_in;
-	return pose_out; //there's no reason to do anything other than this, it's a direct bit-for-bit copy
+	return pose_out;
+}
+
+inline a3_SpatialPose* a3spatialPoseOpConst(a3_SpatialPose* pose_inout)
+{
+	return pose_inout;
 }
 
 // pointer-based LERP operation for single spatial pose
@@ -81,6 +87,8 @@ inline a3_SpatialPose* a3spatialPoseOpLERP(a3_SpatialPose* pose_out, a3_SpatialP
 	// done
 	return pose_out;
 }
+
+
 
 
 //-----------------------------------------------------------------------------
@@ -110,6 +118,16 @@ inline a3_SpatialPose a3spatialPoseDOpLERP(a3_SpatialPose const pose0, a3_Spatia
 
 	// done
 	return *result;
+}
+
+inline a3_SpatialPose a3spatialPoseDOpConst(a3_SpatialPose pose_inout)
+{
+	return pose_inout;
+}
+
+inline a3_SpatialPose a3spatialPoseDOpCopy(a3_SpatialPose pose_out, a3_SpatialPose pose_in)
+{
+	return pose_in;
 }
 
 
