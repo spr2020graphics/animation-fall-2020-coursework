@@ -109,7 +109,9 @@ inline a3_SpatialPose* a3spatialPoseOpTriangularLERP(a3_SpatialPose* pose_out, a
 {
 	a3real u0 = 1 - u1 - u2;
 	
-	//pose_out = a3spatialPoseOpConcat(a3spatialPoseOpConcat(a3spatialPoseOpScale(pose0, u0), a3spatialPoseOpScale(pose1, u1)), a3spatialPoseOpScale(pose2, u2));
+	a3_SpatialPose result = a3spatialPoseDOpConcat(a3spatialPoseDOpConcat(a3spatialPoseDOpScale(pose0, u0), a3spatialPoseDOpScale(pose1, u1)), a3spatialPoseDOpScale(pose2, u2));
+
+	a3spatialPoseOpCopy(pose_out, &result);
 
 	return pose_out;
 }
@@ -137,6 +139,16 @@ inline a3_SpatialPose* a3spatialPoseOpConcat(a3_SpatialPose* pose_out, a3_Spatia
 	a3real3Sum(pose_out->orientation.v, pose0->orientation.v, pose1->orientation.v);
 	a3real3ProductComp(pose_out->scale.v, pose0->scale.v, pose1->scale.v);
 
+
+	return pose_out;
+}
+
+inline a3_SpatialPose* a3spatialPoseOpDeconcat(a3_SpatialPose* pose_out, a3_SpatialPose* pose0, a3_SpatialPose* pose1)
+{
+	a3real3Diff(pose_out->position.v, pose0->position.v, pose1->position.v);
+	a3real3Diff(pose_out->orientation.v, pose0->orientation.v, pose1->orientation.v);
+
+	a3real3SetReal3(pose_out->scale.v, a3real4DivComp(pose0->scale.v, pose1->scale.v));	// I see this being a large issue since pose0 will get modified, and there is no other function i can see
 
 	return pose_out;
 }
@@ -225,6 +237,14 @@ inline a3_SpatialPose a3spatialPoseDOpConcat(a3_SpatialPose pose0, a3_SpatialPos
 	return *result;
 }
 
+inline a3_SpatialPose a3spatialPoseDOpDeconcat(a3_SpatialPose* pose0, a3_SpatialPose* pose1)
+{
+	a3_SpatialPose result[1];
+
+	a3spatialPoseOpDeconcat(result, pose0, pose1);
+
+	return *result;
+}
 
 //-----------------------------------------------------------------------------
 
@@ -285,6 +305,16 @@ inline a3_HierarchyPose* a3hierarchyPoseOpConcat(a3_HierarchyPose* pose_out, a3_
 	}
 
 	// done
+	return pose_out;
+}
+
+inline a3_HierarchyPose* a3hierarchyPoseOpDeconcat(a3_HierarchyPose* pose_out, a3_HierarchyPose* pose0, a3_HierarchyPose* pose1, const a3ui32 nodeCount)
+{
+	for (a3ui32 i = 0; i < nodeCount; i++)
+	{
+		a3spatialPoseOpDeconcat(&pose_out->spatialPose[i], &pose0->spatialPose[i], &pose1->spatialPose[i]);
+	}
+
 	return pose_out;
 }
 

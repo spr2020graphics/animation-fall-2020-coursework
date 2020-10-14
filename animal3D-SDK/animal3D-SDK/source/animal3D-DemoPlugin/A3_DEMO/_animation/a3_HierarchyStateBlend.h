@@ -69,6 +69,8 @@ a3_SpatialPose* a3spatialPoseOpCopy(a3_SpatialPose* pose_out, a3_SpatialPose* po
 a3_SpatialPose* a3spatialPoseOpNegate(a3_SpatialPose* pose_out, a3_SpatialPose* pose_in);
 
 a3_SpatialPose* a3spatialPoseOpConcat(a3_SpatialPose* pose_out, a3_SpatialPose* pose0, a3_SpatialPose* pose1);
+
+a3_SpatialPose* a3spatialPoseOpDeconcat(a3_SpatialPose* pose_out, a3_SpatialPose* pose0, a3_SpatialPose* pose1);
 //-----------------------------------------------------------------------------
 
 // data-based reset/identity
@@ -97,6 +99,8 @@ a3_SpatialPose a3spatialPoseDOpConst(a3_SpatialPose pose_in);
 a3_SpatialPose a3spatialPoseDOpCopy(a3_SpatialPose pose_in);
 
 a3_SpatialPose a3spatialPoseDOpConcat(a3_SpatialPose pose0, a3_SpatialPose pose1);
+
+a3_SpatialPose a3spatialPoseDOpDeconcat(a3_SpatialPose* pose0, a3_SpatialPose* pose1);
 //-----------------------------------------------------------------------------
 
 // pointer-based reset/identity operation for hierarchical pose
@@ -121,6 +125,8 @@ a3_HierarchyPose* a3hierarchyPoseOpScale(a3_HierarchyPose* pose_out, a3_Hierarch
 a3_HierarchyPose* a3hierarchyPoseOpNegate(a3_HierarchyPose* pose_out, a3_HierarchyPose* pose_in, const a3ui32 nodeCount);
 
 a3_HierarchyPose* a3hierarchyPoseOpConcat(a3_HierarchyPose* pose_out, a3_HierarchyPose* pose0, a3_HierarchyPose* pose1, const a3ui32 nodeCount);
+
+a3_HierarchyPose* a3hierarchyPoseOpDeconcat(a3_HierarchyPose* pose_out, a3_HierarchyPose* pose0, a3_HierarchyPose* pose1, const a3ui32 nodeCount);
 
 a3_HierarchyPose* a3hierarchyPoseOpCopy(a3_HierarchyPose* pose_out, a3_HierarchyPose* pose_in, const a3ui32 nodeCount);
 
