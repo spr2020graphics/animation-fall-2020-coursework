@@ -113,6 +113,14 @@ inline a3_SpatialPose* a3spatialPoseOpNegate(a3_SpatialPose* pose_out, a3_Spatia
 	return pose_out;
 }
 
+inline a3_SpatialPose* a3spatialPoseOpConcat(a3_SpatialPose* pose_out, a3_SpatialPose* pose0, a3_SpatialPose* pose1)
+{
+	a3real3Sum(pose_out->position.v, pose0->position.v, pose1->position.v);
+	a3real3Sum(pose_out->orientation.v, pose0->orientation.v, pose1->orientation.v);
+	a3real3ProductComp(pose_out->scale.v, pose0->scale.v, pose1->scale.v);
+	return pose_out;
+}
+
 //-----------------------------------------------------------------------------
 
 // data-based reset/identity
@@ -161,14 +169,24 @@ inline a3_SpatialPose a3spatialPoseDOpNegate(a3_SpatialPose pose_in)
 	return *result;
 }
 
-inline a3_SpatialPose a3spatialPoseDOpConst(a3_SpatialPose pose_inout)
-{
-	return pose_inout;
-}
-
-inline a3_SpatialPose a3spatialPoseDOpCopy(a3_SpatialPose pose_out, a3_SpatialPose pose_in)
+inline a3_SpatialPose a3spatialPoseDOpConst(a3_SpatialPose pose_in)
 {
 	return pose_in;
+}
+
+inline a3_SpatialPose a3spatialPoseDOpCopy(a3_SpatialPose pose_in)
+{
+	return pose_in;
+}
+
+inline a3_SpatialPose a3spatialPoseDOpConcat(a3_SpatialPose pose0, a3_SpatialPose pose1)
+{
+	a3_SpatialPose result[1];
+
+	a3spatialPoseOpConcat(result, &pose0, &pose1);
+
+	// done
+	return *result;
 }
 
 
@@ -217,6 +235,17 @@ inline a3_HierarchyPose* a3hierarchyPoseOpNegate(a3_HierarchyPose* pose_out, a3_
 	for (a3ui32 i = 0; i < nodeCount; i++)
 	{
 		a3spatialPoseOpNegate(&pose_out->spatialPose[i], &pose_in->spatialPose[i]);
+	}
+
+	// done
+	return pose_out;
+}
+
+inline a3_HierarchyPose* a3hierarchyPoseOpConcat(a3_HierarchyPose* pose_out, a3_HierarchyPose* pose0, a3_HierarchyPose* pose1, const a3ui32 nodeCount)
+{
+	for (a3ui32 i = 0; i < nodeCount; i++)
+	{
+		a3spatialPoseOpConcat(&pose_out->spatialPose[i], &pose0->spatialPose[i], &pose1->spatialPose[i]);
 	}
 
 	// done

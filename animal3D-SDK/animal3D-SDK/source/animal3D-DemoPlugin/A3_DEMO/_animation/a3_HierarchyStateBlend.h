@@ -60,6 +60,8 @@ a3_SpatialPose* a3spatialPoseOpCopy(a3_SpatialPose* pose_out, a3_SpatialPose* po
 
 //pointer-based negate operation
 a3_SpatialPose* a3spatialPoseOpNegate(a3_SpatialPose* pose_out, a3_SpatialPose* pose_in);
+
+a3_SpatialPose* a3spatialPoseOpConcat(a3_SpatialPose* pose_out, a3_SpatialPose* pose0, a3_SpatialPose* pose1);
 //-----------------------------------------------------------------------------
 
 // data-based reset/identity
@@ -76,6 +78,12 @@ a3_SpatialPose a3spatialPoseDOpCubic(a3_SpatialPose* spatialPose_Prev, a3_Spatia
 
 // data-based negate
 a3_SpatialPose a3spatialPoseDOpNegate(a3_SpatialPose pose_in);
+
+a3_SpatialPose a3spatialPoseDOpConst(a3_SpatialPose pose_in);
+
+a3_SpatialPose a3spatialPoseDOpCopy(a3_SpatialPose pose_in);
+
+a3_SpatialPose a3spatialPoseDOpConcat(a3_SpatialPose pose0, a3_SpatialPose pose1);
 //-----------------------------------------------------------------------------
 
 // pointer-based reset/identity operation for hierarchical pose
@@ -92,6 +100,8 @@ a3_HierarchyPose* a3hierarchyPoseOpCubic(a3_HierarchyPose* pose_out, const a3_Hi
 
 // pointer-based negate operation for hierarchical poses
 a3_HierarchyPose* a3hierarchyPoseOpNegate(a3_HierarchyPose* pose_out, a3_HierarchyPose* pose_in, const a3ui32 nodeCount);
+
+a3_HierarchyPose* a3hierarchyPoseOpConcat(a3_HierarchyPose* pose_out, a3_HierarchyPose* pose0, a3_HierarchyPose* pose1, const a3ui32 nodeCount);
 
 
 //-----------------------------------------------------------------------------
