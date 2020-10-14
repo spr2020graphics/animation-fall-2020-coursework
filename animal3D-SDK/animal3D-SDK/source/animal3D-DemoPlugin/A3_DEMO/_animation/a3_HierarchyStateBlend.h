@@ -103,6 +103,10 @@ a3_HierarchyPose* a3hierarchyPoseOpNegate(a3_HierarchyPose* pose_out, a3_Hierarc
 
 a3_HierarchyPose* a3hierarchyPoseOpConcat(a3_HierarchyPose* pose_out, a3_HierarchyPose* pose0, a3_HierarchyPose* pose1, const a3ui32 nodeCount);
 
+a3_HierarchyPose* a3hierarchyPoseOpCopy(a3_HierarchyPose* pose_out, a3_HierarchyPose* pose_in, const a3ui32 nodeCount);
+
+a3_HierarchyPose* a3hierarchyPoseOpConst(a3_HierarchyPose* pose_inout);
+
 
 //-----------------------------------------------------------------------------
 

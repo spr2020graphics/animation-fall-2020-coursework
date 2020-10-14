@@ -264,7 +264,19 @@ inline a3_HierarchyPose* a3hierarchyPoseOpCubic(a3_HierarchyPose* pose_out, cons
 	return pose_out;
 }
 
+inline a3_HierarchyPose* a3hierarchyPoseOpCopy(a3_HierarchyPose* pose_out, a3_HierarchyPose* pose_in, const a3ui32 nodeCount)
+{
+	for (a3ui32 i = 0; i < nodeCount; i++)
+	{
+		a3spatialPoseOpCopy(&pose_out->spatialPose[i], &pose_in->spatialPose[i]);
+	}
+	return pose_out;
+}
 
+inline a3_HierarchyPose* a3hierarchyPoseOpConst(a3_HierarchyPose* pose_inout)
+{
+	return pose_inout;
+}
 //-----------------------------------------------------------------------------
 
 
