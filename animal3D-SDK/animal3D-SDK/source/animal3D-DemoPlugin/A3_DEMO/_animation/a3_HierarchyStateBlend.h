@@ -44,8 +44,8 @@ extern "C"
 // pointer-based reset/identity operation for single spatial pose
 a3_SpatialPose* a3spatialPoseOpIdentity(a3_SpatialPose* pose_out);
 
-
-
+// init with values
+a3_SpatialPose* a3spatialPoseOpInit(a3_SpatialPose* pose_out, a3vec3 scale, a3vec3 orientation, a3vec3 translation);
 
 // pointer-based LERP operation for single spatial pose
 a3_SpatialPose* a3spatialPoseOpLERP(a3_SpatialPose* pose_out, a3_SpatialPose const* pose0, a3_SpatialPose const* pose1, a3real const u);
@@ -54,6 +54,9 @@ a3_SpatialPose* a3spatialPoseOpConst(a3_SpatialPose* pose_inout);
 
 // pointer-based copy operation
 a3_SpatialPose* a3spatialPoseOpCopy(a3_SpatialPose* pose_out, a3_SpatialPose* pose_in);
+
+//negate
+a3_SpatialPose* a3spatialPoseOpNegate(a3_SpatialPose* pose_out, a3_SpatialPose* pose_in);
 //-----------------------------------------------------------------------------
 
 // data-based reset/identity
@@ -64,6 +67,8 @@ a3_SpatialPose a3spatialPoseDOpInit(const a3vec3 scale, const a3vec3 orientation
 
 // data-based LERP
 a3_SpatialPose a3spatialPoseDOpLERP(a3_SpatialPose const pose0, a3_SpatialPose const pose1, a3real const u);
+
+a3_SpatialPose a3spatialPoseDOpNegate(a3_SpatialPose pose_in);
 //-----------------------------------------------------------------------------
 
 // pointer-based reset/identity operation for hierarchical pose
@@ -74,6 +79,8 @@ a3_HierarchyPose* a3hierarchyPoseOpInit(a3_HierarchyPose* pose_out, a3vec3 const
 
 // pointer-based LERP operation for hierarchical pose
 a3_HierarchyPose* a3hierarchyPoseOpLERP(a3_HierarchyPose* pose_out, a3_HierarchyPose const* pose0, a3_HierarchyPose const* pose1, a3real const u, const a3ui32 nodeCount);
+
+a3_HierarchyPose* a3hierarchyPoseOpNegate(a3_HierarchyPose* pose_out, a3HierarchyPose* pose_in, const a3ui32 nodeCount);
 
 
 //-----------------------------------------------------------------------------

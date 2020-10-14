@@ -88,6 +88,14 @@ inline a3_SpatialPose* a3spatialPoseOpLERP(a3_SpatialPose* pose_out, a3_SpatialP
 	return pose_out;
 }
 
+inline a3_SpatialPose* a3spatialPoseOpNegate(a3_SpatialPose* pose_out, a3_SpatialPose* pose_in)
+{
+	a3real3GetNegative(pose_out->orientation.v, pose_in->orientation.v);
+	a3real3GetNegative(pose_out->position.v,	pose_in->position.v);
+	a3real3GetNegative(pose_out->scale.v,		pose_in->scale.v);
+	return pose_out;
+}
+
 
 
 
@@ -115,6 +123,16 @@ inline a3_SpatialPose a3spatialPoseDOpLERP(a3_SpatialPose const pose0, a3_Spatia
 	a3_SpatialPose result[1];
 	
 	a3spatialPoseOpLERP(result, &pose0, &pose1, u);
+
+	// done
+	return *result;
+}
+
+inline a3_SpatialPose a3spatialPoseDOpNegate(a3_SpatialPose pose_in)
+{
+	a3_SpatialPose result[1];
+
+	a3spatialPoseOpNegate(result, &pose_in);
 
 	// done
 	return *result;
@@ -165,6 +183,17 @@ inline a3_HierarchyPose* a3hierarchyPoseOpLERP(a3_HierarchyPose* pose_out, a3_Hi
 	for (a3ui32 i = 0; i < nodeCount; i++)
 	{
 		a3spatialPoseOpLERP(&pose_out->spatialPose[i], &pose0->spatialPose[i], &pose1->spatialPose[i], u);
+	}
+
+	// done
+	return pose_out;
+}
+
+inline a3_HierarchyPose* a3hierarchyPoseOpNegate(a3_HierarchyPose* pose_out, a3_HierarchyPose* pose_in, const a3ui32 nodeCount)
+{
+	for (a3ui32 i = 0; i < nodeCount; i++)
+	{
+		a3spatialPoseOpNegate(&pose_out->spatialPose[i], &pose_in->spatialPose[i]);
 	}
 
 	// done
