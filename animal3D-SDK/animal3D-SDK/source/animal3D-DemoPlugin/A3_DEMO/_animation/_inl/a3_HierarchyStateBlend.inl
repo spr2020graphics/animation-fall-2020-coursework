@@ -105,6 +105,24 @@ inline a3_SpatialPose* a3spatialPoseOpCubic(a3_SpatialPose* spatialPose_out, a3_
 	return spatialPose_out;
 }
 
+inline a3_SpatialPose* a3spatialPoseOpTriangularLERP(a3_SpatialPose* pose_out, a3_SpatialPose const* pose0, a3_SpatialPose const* pose1, a3_SpatialPose const* pose2, a3real const u1, a3real const u2)
+{
+	a3real u0 = 1 - u1 - u2;
+	
+	//pose_out = a3spatialPoseOpConcat(a3spatialPoseOpConcat(a3spatialPoseOpScale(pose0, u0), a3spatialPoseOpScale(pose1, u1)), a3spatialPoseOpScale(pose2, u2));
+
+	return pose_out;
+}
+
+inline a3_SpatialPose* a3spatialPoseOpScale(a3_SpatialPose* pose_out, a3_SpatialPose const* pose_in, a3real u)
+{
+	a3_SpatialPose result = a3spatialPoseDOpLERP(a3spatialPoseDOpIdentity(), *pose_in, u);
+
+	a3spatialPoseOpCopy(pose_out, &result);
+
+	return pose_out;
+}
+
 inline a3_SpatialPose* a3spatialPoseOpNegate(a3_SpatialPose* pose_out, a3_SpatialPose* pose_in)
 {
 	a3real3GetNegative(pose_out->orientation.v, pose_in->orientation.v);
@@ -118,6 +136,8 @@ inline a3_SpatialPose* a3spatialPoseOpConcat(a3_SpatialPose* pose_out, a3_Spatia
 	a3real3Sum(pose_out->position.v, pose0->position.v, pose1->position.v);
 	a3real3Sum(pose_out->orientation.v, pose0->orientation.v, pose1->orientation.v);
 	a3real3ProductComp(pose_out->scale.v, pose0->scale.v, pose1->scale.v);
+
+
 	return pose_out;
 }
 
@@ -157,6 +177,22 @@ inline a3_SpatialPose a3spatialPoseDOpCubic(a3_SpatialPose* spatialPose_Prev, a3
 	a3spatialPoseOpCubic(result, spatialPose_Prev, spatialPose_0, spatialPose_1, spatialPose_Next, u);
 
 	return *result;
+}
+
+inline a3_SpatialPose a3spatialPoseDOpTriangularLERP(a3_SpatialPose const* pose0, a3_SpatialPose const* pose1, a3_SpatialPose const* pose2, a3real const u1, a3real const u2)
+{
+	a3_SpatialPose result[1];
+
+	a3spatialPoseOpTriangularLERP(result, pose0, pose1, pose2, u1, u2);
+
+	return *result;
+}
+
+inline a3_SpatialPose a3spatialPoseDOpScale(a3_SpatialPose const* pose_in, a3real u)
+{
+	a3_SpatialPose result = a3spatialPoseDOpLERP(a3spatialPoseDOpIdentity(), *pose_in, u);
+
+	return result;
 }
 
 inline a3_SpatialPose a3spatialPoseDOpNegate(a3_SpatialPose pose_in)
@@ -264,6 +300,25 @@ inline a3_HierarchyPose* a3hierarchyPoseOpCubic(a3_HierarchyPose* pose_out, cons
 	return pose_out;
 }
 
+inline a3_HierarchyPose* a3hierarchyPoseOpTriangularLERP(a3_HierarchyPose* pose_out, a3_HierarchyPose const* pose0, a3_HierarchyPose const* pose1, a3_HierarchyPose const* pose2, a3real const u1, a3real const u2, const a3ui32 nodeCount)
+{
+	for (a3ui32 i = 0; i < nodeCount; i++)
+	{
+		a3spatialPoseOpTriangularLERP(&pose_out->spatialPose[i], &pose0->spatialPose[i], &pose1->spatialPose[i], &pose2->spatialPose[i], u1, u2);
+	}
+
+	return pose_out;
+}
+
+inline a3_HierarchyPose* a3hierarchyPoseOpScale(a3_HierarchyPose* pose_out, a3_HierarchyPose const* pose_in, a3real const u, const a3ui32 nodeCount)
+{
+	for (a3ui32 i = 0; i < nodeCount; i++)
+	{
+		a3spatialPoseOpScale(&pose_out->spatialPose[i], &pose_in->spatialPose[i], u);
+	}
+
+	return pose_out;
+}
 
 //-----------------------------------------------------------------------------
 
