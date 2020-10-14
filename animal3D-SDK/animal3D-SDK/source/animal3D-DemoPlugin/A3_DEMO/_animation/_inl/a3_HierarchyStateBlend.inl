@@ -300,6 +300,16 @@ inline a3_HierarchyPose* a3hierarchyPoseOpCubic(a3_HierarchyPose* pose_out, cons
 	return pose_out;
 }
 
+inline a3_HierarchyPose* a3hierarchyPoseOpCopy(a3_HierarchyPose* pose_out, a3_HierarchyPose* pose_in, const a3ui32 nodeCount)
+{
+	for (a3ui32 i = 0; i < nodeCount; i++)
+	{
+		a3spatialPoseOpCopy(&pose_out->spatialPose[i], &pose_in->spatialPose[i]);
+	}
+
+	return pose_out;
+}
+
 inline a3_HierarchyPose* a3hierarchyPoseOpTriangularLERP(a3_HierarchyPose* pose_out, a3_HierarchyPose const* pose0, a3_HierarchyPose const* pose1, a3_HierarchyPose const* pose2, a3real const u1, a3real const u2, const a3ui32 nodeCount)
 {
 	for (a3ui32 i = 0; i < nodeCount; i++)
@@ -320,6 +330,10 @@ inline a3_HierarchyPose* a3hierarchyPoseOpScale(a3_HierarchyPose* pose_out, a3_H
 	return pose_out;
 }
 
+inline a3_HierarchyPose* a3hierarchyPoseOpConst(a3_HierarchyPose* pose_inout)
+{
+	return pose_inout;
+}
 //-----------------------------------------------------------------------------
 
 
