@@ -111,7 +111,7 @@ a3_SpatialPose a3spatialPoseDOpBiNearest(a3_SpatialPose pose00, a3_SpatialPose p
 
 a3_SpatialPose a3spatialPoseDOpBiLerp(a3_SpatialPose pose0, a3_SpatialPose pose1, a3_SpatialPose pose2, a3_SpatialPose pose3, a3real const u0, a3real const u1, a3real const u);
 
-a3_SpatialPose* a3spatialPoseDOpBiCubic(a3_SpatialPose pose_prev00, a3_SpatialPose pose_prev01, 
+a3_SpatialPose a3spatialPoseDOpBiCubic(a3_SpatialPose pose_prev00, a3_SpatialPose pose_prev01, 
 	a3_SpatialPose pose_prev10, a3_SpatialPose pose_prev11, 
 	a3_SpatialPose pose00, a3_SpatialPose pose01, 
 	a3_SpatialPose pose10, a3_SpatialPose pose11, 
