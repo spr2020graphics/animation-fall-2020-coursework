@@ -34,6 +34,7 @@
 #include <string.h>
 #include <math.h>
 #include "..\a3_HierarchyStateBlend.h"
+#include <stdlib.h>
 
 
 //-----------------------------------------------------------------------------
@@ -73,12 +74,14 @@ inline a3_SpatialPose* a3spatialPoseOpNearest(a3_SpatialPose* spatialPose_out, a
 		spatialPose_out->orientation = spatialPose_0->orientation;
 		spatialPose_out->scale = spatialPose_0->scale;
 		spatialPose_out->position = spatialPose_0->position;
+		spatialPose_out->rotation = spatialPose_0->rotation;
 	}
 	else
 	{
 		spatialPose_out->orientation = spatialPose_1->orientation;
 		spatialPose_out->scale = spatialPose_1->scale;
 		spatialPose_out->position = spatialPose_1->position;
+		spatialPose_out->rotation = spatialPose_1->rotation;
 	}
 
 	return spatialPose_out;
@@ -127,17 +130,25 @@ inline a3_SpatialPose* a3spatialPoseOpTriangularLERP(a3_SpatialPose* pose_out, a
 {
 	a3real u0 = 1 - u1 - u2;
 	
-	a3_SpatialPose result = a3spatialPoseDOpConcat(a3spatialPoseDOpConcat(a3spatialPoseDOpScale(pose0, u0), a3spatialPoseDOpScale(pose1, u1)), a3spatialPoseDOpScale(pose2, u2));
+	a3_SpatialPose* tmpPoses = calloc(4, sizeof(a3_SpatialPose));
+	a3spatialPoseOpScale(&tmpPoses[0], pose0, u0);
+	a3spatialPoseOpScale(&tmpPoses[1], pose1, u1);
+	a3spatialPoseOpScale(&tmpPoses[2], pose2, u2);
 
-	a3spatialPoseOpCopy(pose_out, &result);
+	a3spatialPoseOpConcat(&tmpPoses[3], &tmpPoses[0], &tmpPoses[1]);
+	a3spatialPoseOpConcat(pose_out, &tmpPoses[3], &tmpPoses[2]);
 
+	free(tmpPoses);
 	return pose_out;
 }
 
 inline a3_SpatialPose* a3spatialPoseOpBiNearest(a3_SpatialPose* pose_out, a3_SpatialPose const* pose00, a3_SpatialPose const* pose01, a3_SpatialPose const* pose10, a3_SpatialPose const* pose11, a3real const u0, a3real const u1, a3real const u)
 {
-	a3_SpatialPose pose0_inout = a3spatialPoseDOpNearest(pose00, pose01, u), pose1_inout = a3spatialPoseDOpNearest(pose10, pose11, u);
-	a3spatialPoseNearest(pose_out, &pose0_inout, &pose1_inout, u);
+	a3_SpatialPose* tmpPoses = calloc(2, sizeof(a3_SpatialPose));
+	a3spatialPoseOpNearest(&tmpPoses[0],pose00, pose01, u0);
+	a3spatialPoseOpNearest(&tmpPoses[1],pose10, pose11, u1);
+	a3spatialPoseOpNearest(pose_out, &tmpPoses[0], &tmpPoses[1], u);
+	free(tmpPoses);
 	return pose_out;
 }
 
@@ -219,11 +230,11 @@ inline a3_SpatialPose a3spatialPoseDOpInit(const a3vec3 scale, const a3vec3 orie
 	return *result;
 }
 
-inline a3_SpatialPose a3spatialPoseDOpNearest(a3_SpatialPose* spatialPose_0, a3_SpatialPose* spatialPose_1, const a3real u)
+inline a3_SpatialPose a3spatialPoseDOpNearest(a3_SpatialPose spatialPose_0, a3_SpatialPose spatialPose_1, const a3real u)
 {
 	a3_SpatialPose result[1];
 
-	a3spatialPoseOpNearest(result, spatialPose_0, spatialPose_1, u);
+	a3spatialPoseOpNearest(result, &spatialPose_0, &spatialPose_1, u);
 
 	return *result;
 }
@@ -239,20 +250,20 @@ inline a3_SpatialPose a3spatialPoseDOpLERP(a3_SpatialPose const pose0, a3_Spatia
 	return *result;
 }
 
-inline a3_SpatialPose a3spatialPoseDOpCubic(a3_SpatialPose* spatialPose_Prev, a3_SpatialPose* spatialPose_0, a3_SpatialPose* spatialPose_1, a3_SpatialPose* spatialPose_Next, const a3real u)
+inline a3_SpatialPose a3spatialPoseDOpCubic(a3_SpatialPose const spatialPose_Prev, a3_SpatialPose const spatialPose_0, a3_SpatialPose const spatialPose_1, a3_SpatialPose const spatialPose_Next, const a3real u)
 {
 	a3_SpatialPose result[1];
 
-	a3spatialPoseOpCubic(result, spatialPose_Prev, spatialPose_0, spatialPose_1, spatialPose_Next, u);
+	a3spatialPoseOpCubic(result, &spatialPose_Prev, &spatialPose_0, &spatialPose_1, &spatialPose_Next, u);
 
 	return *result;
 }
 
-inline a3_SpatialPose a3spatialPoseDOpTriangularLERP(a3_SpatialPose const* pose0, a3_SpatialPose const* pose1, a3_SpatialPose const* pose2, a3real const u1, a3real const u2)
+inline a3_SpatialPose a3spatialPoseDOpTriangularLERP(a3_SpatialPose const pose0, a3_SpatialPose const pose1, a3_SpatialPose const pose2, a3real const u1, a3real const u2)
 {
 	a3_SpatialPose result[1];
 
-	a3spatialPoseOpTriangularLERP(result, pose0, pose1, pose2, u1, u2);
+	a3spatialPoseOpTriangularLERP(result, &pose0, &pose1, &pose2, u1, u2);
 
 	return *result;
 }
@@ -261,6 +272,7 @@ inline a3_SpatialPose a3spatialPoseDOpBiNearest(a3_SpatialPose const* pose00, a3
 {
 	a3_SpatialPose result[1];
 
+	a3spatialPoseOpBiNearest(result, &pose00, &pose01, &pose10, &pose10, u0, u1, u);
 	return *result;
 }
 
