@@ -153,7 +153,7 @@ a3_HierarchyPose* a3hierarchyPoseOpCubic(a3_HierarchyPose* pose_out, a3_Hierarch
 // pointer-based triangular lerp operation for hierarchy poses
 a3_HierarchyPose* a3hierarchyPoseOpTriangularLERP(a3_HierarchyPose* pose_out, a3_HierarchyPose* const pose0, a3_HierarchyPose* const pose1, a3_HierarchyPose* const pose2, a3real const u1, a3real const u2, const a3ui32 nodeCount);
 
-a3_HierarchyPose* a3hierarchyPoseOpBiNearest(a3_HierarchyPose* pose_out, a3_HierarchyPose* const pose00, a3_HierarchyPose* const pose01, a3_HierarchyPose* const pose10, a3_HierarchyPose* const pose11, a3real const u0, a3real const u1, a3real const u);
+a3_HierarchyPose* a3hierarchyPoseOpBiNearest(a3_HierarchyPose* pose_out, a3_HierarchyPose* const pose00, a3_HierarchyPose* const pose01, a3_HierarchyPose* const pose10, a3_HierarchyPose* const pose11, a3real const u0, a3real const u1, a3real const u, const a3ui32 nodeCount);
 
 a3_HierarchyPose* a3hierarchyPoseOpBiLerp(a3_HierarchyPose* pose_out, a3_HierarchyPose* const pose0, a3_HierarchyPose* const pose1, a3_HierarchyPose* const pose2, a3_HierarchyPose* const pose3, a3real const u0, a3real const u1, a3real const u, const a3ui32 nodeCount);
 

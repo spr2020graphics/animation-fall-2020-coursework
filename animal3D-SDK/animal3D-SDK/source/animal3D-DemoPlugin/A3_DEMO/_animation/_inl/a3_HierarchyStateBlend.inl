@@ -52,6 +52,7 @@ inline a3_SpatialPose* a3spatialPoseOpIdentity(a3_SpatialPose* pose_out)
 	return pose_out;
 }
 
+// pointer-based initialization with specified values
 inline a3_SpatialPose* a3spatialPoseOpInit(a3_SpatialPose* pose_out, a3vec3 scale, a3vec3 orientation, a3vec3 translation)
 {
 	pose_out->transform = a3mat4_identity;
@@ -87,12 +88,14 @@ inline a3_SpatialPose* a3spatialPoseOpNearest(a3_SpatialPose* spatialPose_out, a
 	return spatialPose_out;
 }
 
+//pointer-based copy operation
 inline a3_SpatialPose* a3spatialPoseOpCopy(a3_SpatialPose* pose_out, a3_SpatialPose* const pose_in)
 {
 	*pose_out = *pose_in;
 	return pose_out;
 }
 
+//simple passthrough.
 inline a3_SpatialPose* a3spatialPoseOpConst(a3_SpatialPose* pose_inout)
 {
 	return pose_inout;
@@ -457,9 +460,14 @@ inline a3_HierarchyPose* a3hierarchyPoseOpTriangularLERP(a3_HierarchyPose* pose_
 	return pose_out;
 }
 
-inline a3_HierarchyPose* a3hierarchyPoseOpBiNearest(a3_HierarchyPose* pose_out, a3_HierarchyPose* const pose00, a3_HierarchyPose* const pose01, a3_HierarchyPose* const pose10, a3_HierarchyPose* const pose11, a3real const u0, a3real const u1, a3real const u)
+inline a3_HierarchyPose* a3hierarchyPoseOpBiNearest(a3_HierarchyPose* pose_out, a3_HierarchyPose* const pose00, a3_HierarchyPose* const pose01, a3_HierarchyPose* const pose10, a3_HierarchyPose* const pose11, a3real const u0, a3real const u1, a3real const u, const a3ui32 nodeCount)
 {
-	return NULL;
+	for (a3ui32 i = 0; i < nodeCount; i++)
+	{
+		a3spatialPoseOpBiNearest(&pose_out->spatialPose[i], &pose00->spatialPose[i], &pose01->spatialPose[i], &pose10->spatialPose[i], &pose11->spatialPose[i], u0, u1, u);
+	}
+
+	return pose_out;
 }
 
 inline a3_HierarchyPose* a3hierarchyPoseOpBiLerp(a3_HierarchyPose* pose_out, a3_HierarchyPose* const pose00, a3_HierarchyPose* const pose01, a3_HierarchyPose* const pose10, a3_HierarchyPose* const pose11, a3real const u0, a3real const u1, a3real const u, const a3ui32 nodeCount)
