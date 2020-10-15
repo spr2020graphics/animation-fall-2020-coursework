@@ -53,7 +53,7 @@ a3_SpatialPose* a3spatialPoseOpNearest(a3_SpatialPose* spatialPose_out, a3_Spati
 a3_SpatialPose* a3spatialPoseOpLERP(a3_SpatialPose* pose_out, a3_SpatialPose* const pose0, a3_SpatialPose* const pose1, a3real const u);
 
 // pointer-based cubic lerp operation for spatial poses
-a3_SpatialPose* a3spatialPoseOpCubic(a3_SpatialPose* spatialPose_out, a3_SpatialPose* spatialPose_Prev, a3_SpatialPose* spatialPose_0, a3_SpatialPose* spatialPose_1, a3_SpatialPose* spatialPose_Next, const a3real u);
+a3_SpatialPose* a3spatialPoseOpCubic(a3_SpatialPose* spatialPose_out, a3_SpatialPose* const spatialPose_Prev, a3_SpatialPose* const spatialPose_0, a3_SpatialPose* const spatialPose_1, a3_SpatialPose* const spatialPose_Next, const a3real u);
 
 // pointer-based triangular lerp operation for spatial poses
 a3_SpatialPose* a3spatialPoseOpTriangularLERP(a3_SpatialPose* pose_out, a3_SpatialPose* const pose0, a3_SpatialPose* const pose1, a3_SpatialPose* const pose2, a3real const u1, a3real const u2);
@@ -99,7 +99,7 @@ a3_SpatialPose a3spatialPoseDOpInit(const a3vec3 scale, const a3vec3 orientation
 a3_SpatialPose a3spatialPoseDOpNearest(a3_SpatialPose spatialPose_0, a3_SpatialPose spatialPose_1, const a3real u);
 
 // data-based LERP
-a3_SpatialPose a3spatialPoseDOpLERP(a3_SpatialPose const pose0, a3_SpatialPose const pose1, a3real const u);
+a3_SpatialPose a3spatialPoseDOpLERP(a3_SpatialPose pose0, a3_SpatialPose pose1, a3real const u);
 
 // data-based cubic lerp
 a3_SpatialPose a3spatialPoseDOpCubic(a3_SpatialPose spatialPose_Prev, a3_SpatialPose spatialPose_0, a3_SpatialPose spatialPose_1, a3_SpatialPose spatialPose_Next, const a3real u);
@@ -166,7 +166,7 @@ a3_HierarchyPose* a3hierarchyPoseOpBiCubic(a3_HierarchyPose* pose_out,
 	a3_HierarchyPose* const pose02, a3_HierarchyPose* const pose22,
 	a3_HierarchyPose* const pose_next00, a3_HierarchyPose* const pose_next01,
 	a3_HierarchyPose* const pose_next10, a3_HierarchyPose* const pose_next11,
-	a3real const u_prev, a3real const u0, a3real const u1, a3real const u_next, a3real u);
+	a3real const u_prev, a3real const u0, a3real const u1, a3real const u_next, a3real const u, a3ui32 const nodeCount);
 
 // pointer-based scale operation for hierarchy poses
 a3_HierarchyPose* a3hierarchyPoseOpScale(a3_HierarchyPose* pose_out, a3_HierarchyPose* const pose_in, a3real const u, const a3ui32 nodeCount);
