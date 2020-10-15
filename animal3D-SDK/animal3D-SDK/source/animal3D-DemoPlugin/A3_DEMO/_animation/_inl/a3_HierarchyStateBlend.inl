@@ -113,7 +113,7 @@ inline a3_SpatialPose* a3spatialPoseOpLERP(a3_SpatialPose* pose_out, a3_SpatialP
 	return pose_out;
 }
 
-inline a3_SpatialPose* a3spatialPoseOpCubic(a3_SpatialPose* spatialPose_out, a3_SpatialPose* spatialPose_Prev, a3_SpatialPose* spatialPose_0, a3_SpatialPose* spatialPose_1, a3_SpatialPose* spatialPose_Next, const a3real u)
+inline a3_SpatialPose* a3spatialPoseOpCubic(a3_SpatialPose* spatialPose_out, a3_SpatialPose const* spatialPose_Prev, a3_SpatialPose const* spatialPose_0, a3_SpatialPose const* spatialPose_1, a3_SpatialPose const* spatialPose_Next, const a3real u)
 {
 	// still need to account for quaternion lerping
 
@@ -173,7 +173,16 @@ inline a3_SpatialPose* a3spatialPoseOpBiCubic(a3_SpatialPose* pose_out,
 	a3_SpatialPose const* pose_next10, a3_SpatialPose const* pose_next11, 
 	a3real const u_prev, a3real const u0, a3real const u1, a3real const u_next, a3real u)
 {
-	return NULL;
+	a3_SpatialPose result_prev[1], result_0[1], result_1[1], result_next[1];
+
+	a3spatialPoseOpCubic(result_prev, pose_prev00, pose00, pose12, pose_next00, u_prev);
+	a3spatialPoseOpCubic(result_0, pose_prev01, pose01, pose20, pose_next01, u0);
+	a3spatialPoseOpCubic(result_1, pose_prev10, pose10, pose02, pose_next10, u1);
+	a3spatialPoseOpCubic(result_next, pose_prev11, pose11, pose22, pose_next11, u_next);
+
+	a3spatialPoseOpCubic(pose_out, result_prev, result_0, result_1, result_next, u);
+
+	return pose_out;
 }
 
 inline a3_SpatialPose* a3spatialPoseOpScale(a3_SpatialPose* pose_out, a3_SpatialPose const* pose_in, a3real u)
