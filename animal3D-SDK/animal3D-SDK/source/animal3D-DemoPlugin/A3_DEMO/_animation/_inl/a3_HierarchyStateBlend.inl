@@ -66,6 +66,11 @@ inline a3_SpatialPose* a3spatialPoseOpInit(a3_SpatialPose* pose_out, a3vec3 scal
 	return pose_out;
 }
 
+inline a3_SpatialPose* a3spatialPoseOpNearest(a3_SpatialPose* spatialPose_out, a3_SpatialPose* spatialPose_0, a3_SpatialPose* spatialPose_1, const a3real u)
+{
+	return NULL;
+}
+
 inline a3_SpatialPose* a3spatialPoseOpCopy(a3_SpatialPose* pose_out, a3_SpatialPose* pose_in)
 {
 	*pose_out = *pose_in;
@@ -114,6 +119,21 @@ inline a3_SpatialPose* a3spatialPoseOpTriangularLERP(a3_SpatialPose* pose_out, a
 	a3spatialPoseOpCopy(pose_out, &result);
 
 	return pose_out;
+}
+
+inline a3_SpatialPose* a3spatialPoseOpBiNearest(a3_SpatialPose* pose_out, a3_SpatialPose const* pose00, a3_SpatialPose const* pose01, a3_SpatialPose const* pose10, a3_SpatialPose const* pose11, a3real const u0, a3real const u1, a3real const u)
+{
+	return NULL;
+}
+
+inline a3_SpatialPose* a3spatialPoseOpBiLerp(a3_SpatialPose* pose_out, a3_SpatialPose const* pose00, a3_SpatialPose const* pose01, a3_SpatialPose const* pose10, a3_SpatialPose const* pose11, a3real const u0, a3real const u1, a3real const u)
+{
+	return NULL;
+}
+
+inline a3_SpatialPose* a3spatialPoseOpBiCubic(a3_SpatialPose* pose_out, a3_SpatialPose const* pose_prev00, a3_SpatialPose const* pose_prev01, a3_SpatialPose const* pose_prev10, a3_SpatialPose const* pose_prev11, a3_SpatialPose const* pose00, a3_SpatialPose const* pose01, a3_SpatialPose const* pose10, a3_SpatialPose const* pose11, a3_SpatialPose const* pose12, a3_SpatialPose const* pose20, a3_SpatialPose const* pose02, a3_SpatialPose const* pose22, a3_SpatialPose const* pose_next00, a3_SpatialPose const* pose_next01, a3_SpatialPose const* pose_next10, a3_SpatialPose const* pose_next11, a3real const u_prev, a3real const u0, a3real const u1, a3real const u_next, a3real u)
+{
+	return NULL;
 }
 
 inline a3_SpatialPose* a3spatialPoseOpScale(a3_SpatialPose* pose_out, a3_SpatialPose const* pose_in, a3real u)
@@ -171,6 +191,13 @@ inline a3_SpatialPose a3spatialPoseDOpInit(const a3vec3 scale, const a3vec3 orie
 	return *result;
 }
 
+inline a3_SpatialPose a3spatialPoseDOpNearest(a3_SpatialPose* spatialPose_0, a3_SpatialPose* spatialPose_1, const a3real u)
+{
+	a3_SpatialPose result[1];
+
+	return *result;
+}
+
 // data-based LERP
 inline a3_SpatialPose a3spatialPoseDOpLERP(a3_SpatialPose const pose0, a3_SpatialPose const pose1, a3real const u)
 {
@@ -198,6 +225,25 @@ inline a3_SpatialPose a3spatialPoseDOpTriangularLERP(a3_SpatialPose const* pose0
 	a3spatialPoseOpTriangularLERP(result, pose0, pose1, pose2, u1, u2);
 
 	return *result;
+}
+
+inline a3_SpatialPose a3spatialPoseDOpBiNearest(a3_SpatialPose const* pose00, a3_SpatialPose const* pose01, a3_SpatialPose const* pose10, a3_SpatialPose const* pose11, a3real const u0, a3real const u1, a3real const u)
+{
+	a3_SpatialPose result[1];
+
+	return *result;
+}
+
+inline a3_SpatialPose a3spatialPoseDOpBiLerp(a3_SpatialPose const* pose0, a3_SpatialPose const* pose1, a3_SpatialPose const* pose2, a3_SpatialPose const* pose3, a3real const u0, a3real const u1, a3real const u)
+{
+	a3_SpatialPose result[1];
+
+	return *result;
+}
+
+inline a3_SpatialPose* a3spatialPoseDOpBiCubic(a3_SpatialPose const* pose_prev00, a3_SpatialPose const* pose_prev01, a3_SpatialPose const* pose_prev10, a3_SpatialPose const* pose_prev11, a3_SpatialPose const* pose00, a3_SpatialPose const* pose01, a3_SpatialPose const* pose10, a3_SpatialPose const* pose11, a3_SpatialPose const* pose12, a3_SpatialPose const* pose20, a3_SpatialPose const* pose02, a3_SpatialPose const* pose22, a3_SpatialPose const* pose_next00, a3_SpatialPose const* pose_next01, a3_SpatialPose const* pose_next10, a3_SpatialPose const* pose_next11, a3real const u_prev, a3real const u0, a3real const u1, a3real const u_next, a3real u)
+{
+	return NULL;
 }
 
 inline a3_SpatialPose a3spatialPoseDOpScale(a3_SpatialPose const* pose_in, a3real u)
@@ -274,6 +320,11 @@ inline a3_HierarchyPose* a3hierarchyPoseOpInit(a3_HierarchyPose* pose_out, a3vec
 
 }
 
+inline a3_HierarchyPose* a3hierarchyPoseOpNearest(a3_HierarchyPose* pose_out, a3_HierarchyPose* pose_0, a3_HierarchyPose* pose_1, const a3real u)
+{
+	return NULL;
+}
+
 // pointer-based LERP operation for hierarchical pose
 inline a3_HierarchyPose* a3hierarchyPoseOpLERP(a3_HierarchyPose* pose_out, a3_HierarchyPose const* pose0, a3_HierarchyPose const* pose1, a3real const u, const a3ui32 nodeCount)
 {
@@ -348,6 +399,21 @@ inline a3_HierarchyPose* a3hierarchyPoseOpTriangularLERP(a3_HierarchyPose* pose_
 	}
 
 	return pose_out;
+}
+
+inline a3_HierarchyPose* a3hierarchyPoseOpBiNearest(a3_HierarchyPose* pose_out, a3_HierarchyPose const* pose00, a3_HierarchyPose const* pose01, a3_HierarchyPose const* pose10, a3_HierarchyPose const* pose11, a3real const u0, a3real const u1, a3real const u)
+{
+	return NULL;
+}
+
+inline a3_HierarchyPose* a3hierarchyPoseOpBiLerp(a3_HierarchyPose* pose_out, a3_HierarchyPose const* pose0, a3_HierarchyPose const* pose1, a3_HierarchyPose const* pose2, a3_HierarchyPose const* pose3, a3real const u0, a3real const u1, a3real const u, const a3ui32 nodeCount)
+{
+	return NULL;
+}
+
+inline a3_HierarchyPose* a3hierarchyPoseOpBiCubic(a3_HierarchyPose* pose_out, a3_HierarchyPose const* pose_prev00, a3_HierarchyPose const* pose_prev01, a3_HierarchyPose const* pose_prev10, a3_HierarchyPose const* pose_prev11, a3_HierarchyPose const* pose00, a3_HierarchyPose const* pose01, a3_HierarchyPose const* pose10, a3_HierarchyPose const* pose11, a3_HierarchyPose const* pose12, a3_HierarchyPose const* pose20, a3_HierarchyPose const* pose02, a3_HierarchyPose const* pose22, a3_HierarchyPose const* pose_next00, a3_HierarchyPose const* pose_next01, a3_HierarchyPose const* pose_next10, a3_HierarchyPose const* pose_next11, a3real const u_prev, a3real const u0, a3real const u1, a3real const u_next, a3real u)
+{
+	return NULL;
 }
 
 inline a3_HierarchyPose* a3hierarchyPoseOpScale(a3_HierarchyPose* pose_out, a3_HierarchyPose const* pose_in, a3real const u, const a3ui32 nodeCount)
