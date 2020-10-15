@@ -68,7 +68,20 @@ inline a3_SpatialPose* a3spatialPoseOpInit(a3_SpatialPose* pose_out, a3vec3 scal
 
 inline a3_SpatialPose* a3spatialPoseOpNearest(a3_SpatialPose* spatialPose_out, a3_SpatialPose* spatialPose_0, a3_SpatialPose* spatialPose_1, const a3real u)
 {
-	return NULL;
+	if (u < 0.5f)
+	{
+		spatialPose_out->orientation = spatialPose_0->orientation;
+		spatialPose_out->scale = spatialPose_0->scale;
+		spatialPose_out->position = spatialPose_0->position;
+	}
+	else
+	{
+		spatialPose_out->orientation = spatialPose_1->orientation;
+		spatialPose_out->scale = spatialPose_1->scale;
+		spatialPose_out->position = spatialPose_1->position;
+	}
+
+	return spatialPose_out;
 }
 
 inline a3_SpatialPose* a3spatialPoseOpCopy(a3_SpatialPose* pose_out, a3_SpatialPose* pose_in)
@@ -167,8 +180,7 @@ inline a3_SpatialPose* a3spatialPoseOpDeconcat(a3_SpatialPose* pose_out, a3_Spat
 {
 	a3real3Diff(pose_out->position.v, pose0->position.v, pose1->position.v);
 	a3real3Diff(pose_out->orientation.v, pose0->orientation.v, pose1->orientation.v);
-
-	a3real3SetReal3(pose_out->scale.v, a3real4DivComp(pose0->scale.v, pose1->scale.v));	// I see this being a large issue since pose0 will get modified, and there is no other function i can see
+	a3real3QuotientComp(pose_out->scale.v, pose0->scale.v, pose1->scale.v);
 
 	return pose_out;
 }
@@ -194,6 +206,8 @@ inline a3_SpatialPose a3spatialPoseDOpInit(const a3vec3 scale, const a3vec3 orie
 inline a3_SpatialPose a3spatialPoseDOpNearest(a3_SpatialPose* spatialPose_0, a3_SpatialPose* spatialPose_1, const a3real u)
 {
 	a3_SpatialPose result[1];
+
+	a3spatialPoseOpNearest(result, spatialPose_0, spatialPose_1, u);
 
 	return *result;
 }
