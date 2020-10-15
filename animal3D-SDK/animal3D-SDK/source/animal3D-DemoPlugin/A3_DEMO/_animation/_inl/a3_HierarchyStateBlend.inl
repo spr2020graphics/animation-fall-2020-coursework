@@ -136,7 +136,9 @@ inline a3_SpatialPose* a3spatialPoseOpTriangularLERP(a3_SpatialPose* pose_out, a
 
 inline a3_SpatialPose* a3spatialPoseOpBiNearest(a3_SpatialPose* pose_out, a3_SpatialPose const* pose00, a3_SpatialPose const* pose01, a3_SpatialPose const* pose10, a3_SpatialPose const* pose11, a3real const u0, a3real const u1, a3real const u)
 {
-	return NULL;
+	a3_SpatialPose pose0_inout = a3spatialPoseDOpNearest(pose00, pose01, u), pose1_inout = a3spatialPoseDOpNearest(pose10, pose11, u);
+	a3spatialPoseNearest(pose_out, &pose0_inout, &pose1_inout, u);
+	return pose_out;
 }
 
 inline a3_SpatialPose* a3spatialPoseOpBiLerp(a3_SpatialPose* pose_out, a3_SpatialPose const* pose00, a3_SpatialPose const* pose01, a3_SpatialPose const* pose10, a3_SpatialPose const* pose11, a3real const u0, a3real const u1, a3real const u)
