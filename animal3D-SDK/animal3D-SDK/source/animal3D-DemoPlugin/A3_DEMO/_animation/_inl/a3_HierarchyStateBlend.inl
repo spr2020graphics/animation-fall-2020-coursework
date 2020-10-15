@@ -285,14 +285,14 @@ inline a3_SpatialPose a3spatialPoseDOpBiLerp(a3_SpatialPose pose00, a3_SpatialPo
 	return *result;
 }
 
-inline a3_SpatialPose* a3spatialPoseDOpBiCubic(a3_SpatialPose const* pose_prev00, a3_SpatialPose const* pose_prev01, a3_SpatialPose const* pose_prev10, a3_SpatialPose const* pose_prev11, a3_SpatialPose const* pose00, a3_SpatialPose const* pose01, a3_SpatialPose const* pose10, a3_SpatialPose const* pose11, a3_SpatialPose const* pose12, a3_SpatialPose const* pose20, a3_SpatialPose const* pose02, a3_SpatialPose const* pose22, a3_SpatialPose const* pose_next00, a3_SpatialPose const* pose_next01, a3_SpatialPose const* pose_next10, a3_SpatialPose const* pose_next11, a3real const u_prev, a3real const u0, a3real const u1, a3real const u_next, a3real u)
+inline a3_SpatialPose* a3spatialPoseDOpBiCubic(a3_SpatialPose pose_prev00, a3_SpatialPose pose_prev01, a3_SpatialPose pose_prev10, a3_SpatialPose pose_prev11, a3_SpatialPose pose00, a3_SpatialPose pose01, a3_SpatialPose pose10, a3_SpatialPose pose11, a3_SpatialPose pose12, a3_SpatialPose pose20, a3_SpatialPose pose02, a3_SpatialPose pose22, a3_SpatialPose pose_next00, a3_SpatialPose pose_next01, a3_SpatialPose pose_next10, a3_SpatialPose pose_next11, a3real const u_prev, a3real const u0, a3real const u1, a3real const u_next, a3real u)
 {
 	return NULL;
 }
 
-inline a3_SpatialPose a3spatialPoseDOpScale(a3_SpatialPose const* pose_in, a3real u)
+inline a3_SpatialPose a3spatialPoseDOpScale(a3_SpatialPose pose_in, a3real u)
 {
-	a3_SpatialPose result = a3spatialPoseDOpLERP(a3spatialPoseDOpIdentity(), *pose_in, u);
+	a3_SpatialPose result = a3spatialPoseDOpLERP(a3spatialPoseDOpIdentity(), pose_in, u);
 
 	return result;
 }
@@ -327,11 +327,11 @@ inline a3_SpatialPose a3spatialPoseDOpConcat(a3_SpatialPose pose0, a3_SpatialPos
 	return *result;
 }
 
-inline a3_SpatialPose a3spatialPoseDOpDeconcat(a3_SpatialPose* pose0, a3_SpatialPose* pose1)
+inline a3_SpatialPose a3spatialPoseDOpDeconcat(a3_SpatialPose pose0, a3_SpatialPose pose1)
 {
 	a3_SpatialPose result[1];
 
-	a3spatialPoseOpDeconcat(result, pose0, pose1);
+	a3spatialPoseOpDeconcat(result, &pose0, &pose1);
 
 	return *result;
 }
@@ -364,7 +364,7 @@ inline a3_HierarchyPose* a3hierarchyPoseOpInit(a3_HierarchyPose* pose_out, a3vec
 
 }
 
-inline a3_HierarchyPose* a3hierarchyPoseOpNearest(a3_HierarchyPose* pose_out, a3_HierarchyPose* pose_0, a3_HierarchyPose* pose_1, const a3real u, const a3ui32 nodeCount)
+inline a3_HierarchyPose* a3hierarchyPoseOpNearest(a3_HierarchyPose* pose_out, a3_HierarchyPose* const pose_0, a3_HierarchyPose* const pose_1, const a3real u, const a3ui32 nodeCount)
 {
 	for (a3ui32 i = 0; i < nodeCount; i++)
 	{
@@ -386,7 +386,7 @@ inline a3_HierarchyPose* a3hierarchyPoseOpLERP(a3_HierarchyPose* pose_out, a3_Hi
 	return pose_out;
 }
 
-inline a3_HierarchyPose* a3hierarchyPoseOpNegate(a3_HierarchyPose* pose_out, a3_HierarchyPose* pose_in, const a3ui32 nodeCount)
+inline a3_HierarchyPose* a3hierarchyPoseOpNegate(a3_HierarchyPose* pose_out, a3_HierarchyPose* const pose_in, const a3ui32 nodeCount)
 {
 	for (a3ui32 i = 0; i < nodeCount; i++)
 	{
@@ -397,7 +397,7 @@ inline a3_HierarchyPose* a3hierarchyPoseOpNegate(a3_HierarchyPose* pose_out, a3_
 	return pose_out;
 }
 
-inline a3_HierarchyPose* a3hierarchyPoseOpConcat(a3_HierarchyPose* pose_out, a3_HierarchyPose* pose0, a3_HierarchyPose* pose1, const a3ui32 nodeCount)
+inline a3_HierarchyPose* a3hierarchyPoseOpConcat(a3_HierarchyPose* pose_out, a3_HierarchyPose* const pose0, a3_HierarchyPose* const pose1, const a3ui32 nodeCount)
 {
 	for (a3ui32 i = 0; i < nodeCount; i++)
 	{
@@ -408,7 +408,7 @@ inline a3_HierarchyPose* a3hierarchyPoseOpConcat(a3_HierarchyPose* pose_out, a3_
 	return pose_out;
 }
 
-inline a3_HierarchyPose* a3hierarchyPoseOpDeconcat(a3_HierarchyPose* pose_out, a3_HierarchyPose* pose0, a3_HierarchyPose* pose1, const a3ui32 nodeCount)
+inline a3_HierarchyPose* a3hierarchyPoseOpDeconcat(a3_HierarchyPose* pose_out, a3_HierarchyPose* const pose0, a3_HierarchyPose* const pose1, const a3ui32 nodeCount)
 {
 	for (a3ui32 i = 0; i < nodeCount; i++)
 	{
@@ -419,7 +419,7 @@ inline a3_HierarchyPose* a3hierarchyPoseOpDeconcat(a3_HierarchyPose* pose_out, a
 }
 
 
-inline a3_HierarchyPose* a3hierarchyPoseOpCubic(a3_HierarchyPose* pose_out, const a3_HierarchyPose* pose_Prev, const a3_HierarchyPose* pose_0, const a3_HierarchyPose* pose_1, const a3_HierarchyPose* pose_Next, const a3ui32 nodeCount, const a3real u)
+inline a3_HierarchyPose* a3hierarchyPoseOpCubic(a3_HierarchyPose* pose_out, a3_HierarchyPose* const pose_Prev, a3_HierarchyPose* const pose_0, a3_HierarchyPose* const pose_1, a3_HierarchyPose* const pose_Next, const a3ui32 nodeCount, const a3real u)
 {
 	for (a3ui32 i = 0; i < nodeCount; i++)
 	{
@@ -430,7 +430,7 @@ inline a3_HierarchyPose* a3hierarchyPoseOpCubic(a3_HierarchyPose* pose_out, cons
 	return pose_out;
 }
 
-inline a3_HierarchyPose* a3hierarchyPoseOpCopy(a3_HierarchyPose* pose_out, a3_HierarchyPose* pose_in, const a3ui32 nodeCount)
+inline a3_HierarchyPose* a3hierarchyPoseOpCopy(a3_HierarchyPose* pose_out, a3_HierarchyPose* const pose_in, const a3ui32 nodeCount)
 {
 	for (a3ui32 i = 0; i < nodeCount; i++)
 	{
@@ -440,7 +440,7 @@ inline a3_HierarchyPose* a3hierarchyPoseOpCopy(a3_HierarchyPose* pose_out, a3_Hi
 	return pose_out;
 }
 
-inline a3_HierarchyPose* a3hierarchyPoseOpTriangularLERP(a3_HierarchyPose* pose_out, a3_HierarchyPose const* pose0, a3_HierarchyPose const* pose1, a3_HierarchyPose const* pose2, a3real const u1, a3real const u2, const a3ui32 nodeCount)
+inline a3_HierarchyPose* a3hierarchyPoseOpTriangularLERP(a3_HierarchyPose* pose_out, a3_HierarchyPose* const pose0, a3_HierarchyPose* const pose1, a3_HierarchyPose* const pose2, a3real const u1, a3real const u2, const a3ui32 nodeCount)
 {
 	for (a3ui32 i = 0; i < nodeCount; i++)
 	{
@@ -450,12 +450,12 @@ inline a3_HierarchyPose* a3hierarchyPoseOpTriangularLERP(a3_HierarchyPose* pose_
 	return pose_out;
 }
 
-inline a3_HierarchyPose* a3hierarchyPoseOpBiNearest(a3_HierarchyPose* pose_out, a3_HierarchyPose const* pose00, a3_HierarchyPose const* pose01, a3_HierarchyPose const* pose10, a3_HierarchyPose const* pose11, a3real const u0, a3real const u1, a3real const u)
+inline a3_HierarchyPose* a3hierarchyPoseOpBiNearest(a3_HierarchyPose* pose_out, a3_HierarchyPose* const pose00, a3_HierarchyPose* const pose01, a3_HierarchyPose* const pose10, a3_HierarchyPose* const pose11, a3real const u0, a3real const u1, a3real const u)
 {
 	return NULL;
 }
 
-inline a3_HierarchyPose* a3hierarchyPoseOpBiLerp(a3_HierarchyPose* pose_out, a3_HierarchyPose const* pose00, a3_HierarchyPose const* pose01, a3_HierarchyPose const* pose10, a3_HierarchyPose const* pose11, a3real const u0, a3real const u1, a3real const u, const a3ui32 nodeCount)
+inline a3_HierarchyPose* a3hierarchyPoseOpBiLerp(a3_HierarchyPose* pose_out, a3_HierarchyPose* const pose00, a3_HierarchyPose* const pose01, a3_HierarchyPose* const pose10, a3_HierarchyPose* const pose11, a3real const u0, a3real const u1, a3real const u, const a3ui32 nodeCount)
 {
 	for (a3ui32 i = 0; i < nodeCount; i++)
 	{
@@ -465,12 +465,21 @@ inline a3_HierarchyPose* a3hierarchyPoseOpBiLerp(a3_HierarchyPose* pose_out, a3_
 	return pose_out;
 }
 
-inline a3_HierarchyPose* a3hierarchyPoseOpBiCubic(a3_HierarchyPose* pose_out, a3_HierarchyPose const* pose_prev00, a3_HierarchyPose const* pose_prev01, a3_HierarchyPose const* pose_prev10, a3_HierarchyPose const* pose_prev11, a3_HierarchyPose const* pose00, a3_HierarchyPose const* pose01, a3_HierarchyPose const* pose10, a3_HierarchyPose const* pose11, a3_HierarchyPose const* pose12, a3_HierarchyPose const* pose20, a3_HierarchyPose const* pose02, a3_HierarchyPose const* pose22, a3_HierarchyPose const* pose_next00, a3_HierarchyPose const* pose_next01, a3_HierarchyPose const* pose_next10, a3_HierarchyPose const* pose_next11, a3real const u_prev, a3real const u0, a3real const u1, a3real const u_next, a3real u)
+inline a3_HierarchyPose* a3hierarchyPoseOpBiCubic(a3_HierarchyPose* pose_out,
+	a3_HierarchyPose* const pose_prev00, a3_HierarchyPose* const pose_prev01,
+	a3_HierarchyPose* const pose_prev10, a3_HierarchyPose* const pose_prev11,
+	a3_HierarchyPose* const pose00, a3_HierarchyPose* const pose01,
+	a3_HierarchyPose* const pose10, a3_HierarchyPose* const pose11,
+	a3_HierarchyPose* const pose12, a3_HierarchyPose* const pose20,
+	a3_HierarchyPose* const pose02, a3_HierarchyPose* const pose22,
+	a3_HierarchyPose* const pose_next00, a3_HierarchyPose* const pose_next01,
+	a3_HierarchyPose* const pose_next10, a3_HierarchyPose* const pose_next11,
+	a3real const u_prev, a3real const u0, a3real const u1, a3real const u_next, a3real u)
 {
 	return NULL;
 }
 
-inline a3_HierarchyPose* a3hierarchyPoseOpScale(a3_HierarchyPose* pose_out, a3_HierarchyPose const* pose_in, a3real const u, const a3ui32 nodeCount)
+inline a3_HierarchyPose* a3hierarchyPoseOpScale(a3_HierarchyPose* pose_out, a3_HierarchyPose* const pose_in, a3real const u, const a3ui32 nodeCount)
 {
 	for (a3ui32 i = 0; i < nodeCount; i++)
 	{

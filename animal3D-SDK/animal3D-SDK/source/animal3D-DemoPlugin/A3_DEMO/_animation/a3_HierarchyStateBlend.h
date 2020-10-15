@@ -111,15 +111,14 @@ a3_SpatialPose a3spatialPoseDOpBiNearest(a3_SpatialPose pose00, a3_SpatialPose p
 
 a3_SpatialPose a3spatialPoseDOpBiLerp(a3_SpatialPose pose0, a3_SpatialPose pose1, a3_SpatialPose pose2, a3_SpatialPose pose3, a3real const u0, a3real const u1, a3real const u);
 
-a3_SpatialPose* a3spatialPoseDOpBiCubic(
-	a3_SpatialPose* const pose_prev00, a3_SpatialPose* const pose_prev01,
-	a3_SpatialPose* const pose_prev10, a3_SpatialPose* const pose_prev11,
-	a3_SpatialPose* const pose00, a3_SpatialPose* const pose01,
-	a3_SpatialPose* const pose10, a3_SpatialPose* const pose11,
-	a3_SpatialPose* const pose12, a3_SpatialPose* const pose20,
-	a3_SpatialPose* const pose02, a3_SpatialPose* const pose22,
-	a3_SpatialPose* const pose_next00, a3_SpatialPose* const pose_next01,
-	a3_SpatialPose* const pose_next10, a3_SpatialPose* const pose_next11,
+a3_SpatialPose* a3spatialPoseDOpBiCubic(a3_SpatialPose pose_prev00, a3_SpatialPose pose_prev01, 
+	a3_SpatialPose pose_prev10, a3_SpatialPose pose_prev11, 
+	a3_SpatialPose pose00, a3_SpatialPose pose01, 
+	a3_SpatialPose pose10, a3_SpatialPose pose11, 
+	a3_SpatialPose pose12, a3_SpatialPose pose20, 
+	a3_SpatialPose pose02, a3_SpatialPose pose22, 
+	a3_SpatialPose pose_next00, a3_SpatialPose pose_next01, 
+	a3_SpatialPose pose_next10, a3_SpatialPose pose_next11, 
 	a3real const u_prev, a3real const u0, a3real const u1, a3real const u_next, a3real u);
 
 // data-based scaling operator for spatial poses
