@@ -139,7 +139,7 @@ void a3animation_render_skeletal_controls(a3_DemoState const* demoState, a3_Demo
 	a3byte const* correctClip[2] = { //debug information on clips
 		"Selected", "Not Selected"
 	};
-	
+
 	a3byte const* playing[2] = { //is the clip playing?
 		"Playing", "Paused"
 	};
@@ -586,13 +586,13 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 			a3framebufferActivate(currentWriteFBO);
 			glDisable(GL_STENCIL_TEST);
 			glClear(GL_COLOR_BUFFER_BIT);
-		
+
 			// draw grid aligned to world
 			if (demoState->displayGrid)
 			{
 				a3demo_drawModelSolidColor(modelViewProjectionMat.m, viewProjectionMat.m, a3mat4_identity.m, demoState->prog_drawColorUnif, demoState->draw_grid, blue);
 			}
-		
+
 			if (demoState->displayTangentBases || demoState->displayWireframe)
 			{
 				const a3i32 flag[1] = { demoState->displayTangentBases * 3 + demoState->displayWireframe * 4 };
@@ -635,7 +635,7 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 					a3shaderUniformSendInt(a3unif_single, currentDemoProgram->uIndex, 1, &i);
 					a3vertexDrawableActivateAndRender(currentDrawable);
 				}
-				
+
 				// draw skeleton joint bases. Mostly derived from demoMode0, but for rendering the tangent bases for a node in the base state. Doesn't behave correctly
 				// with other states. Also uses draw_node instead of draw_unit_circle because we were using nodes for debug.
 				for (a3ui32 k = 0; k < demoMode->hierarchyState_skel_base->hierarchy->numNodes; k++)
@@ -1109,7 +1109,7 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 				// This is the currently selected node in the current hierarchy pose (key/delta)
 				a3demo_drawModelSolidColor(modelViewProjectionMat.m, viewProjectionMat.m, newPosMat.m, currentDemoProgram, currentDrawable, green);
 				a3vertexDrawableActivateAndRender(currentDrawable);
-				
+
 				// Scale down this matrix as well (this is the corresponding base pose node)
 				selectedBaseMat = &demoMode->hierarchyState_skel_base->objectHPose->spatialPose[k].transform;
 				a3real4x4Product(newPosMat.m, selectedBaseMat->m, scale.m);
@@ -1130,23 +1130,12 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 		for (a3ui32 k = 0; k < demoMode->hierarchy_skel->numNodes; ++k) //hierarchy_bvh
 		{
 
-			// Only draw axes for the currently selected hierarchy state
-			switch (demoMode->currentExamineHierarchyState)
-			{
-			case 0:
-				posMat = &demoMode->hierarchyState_skel_base->objectHPose->spatialPose[k].transform;
-				break;
-			case 1:
-				posMat = &demoMode->hierarchyState_skel_toggle->objectHPose->spatialPose[k].transform;
-				break;
-			case 2:
-				posMat = &demoMode->hierarchyState_skel_clip->objectHPose->spatialPose[k].transform;
-				break;
-			}
+			posMat = &demoMode->hierarchyState_skel_clip->objectHPose->spatialPose[k].transform;
 
-			// Scale down the matrix for smaller axes
+			a3mat4 tempPosMat = a3mat4_identity;
 			a3mat4 newPosMat = a3mat4_identity;
-			a3real4x4Product(newPosMat.m, posMat->m, scale.m);
+			a3real4x4Product(tempPosMat.m, posMat->m, scale.m);
+			a3real4x4Product(newPosMat.m, offset.m, tempPosMat.m);
 
 			// Draw them in "white" aka normal. Fixes a bug when drawing the last selected node colored, where the axes would be drawn in that same color.
 			a3demo_drawModelSolidColor(modelViewProjectionMat.m, viewProjectionMat.m, newPosMat.m, currentDemoProgram, currentDrawable, white);
