@@ -22,6 +22,10 @@
 	Hierarchy blend operations.
 */
 
+/*
+	Animation Framework Addons by Scott Dagen and Cameron Schneider
+*/
+
 #ifndef __ANIMAL3D_HIERARCHYSTATEBLEND_H
 #define __ANIMAL3D_HIERARCHYSTATEBLEND_H
 

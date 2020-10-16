@@ -68,6 +68,7 @@ inline a3_SpatialPose* a3spatialPoseOpInit(a3_SpatialPose* pose_out, a3vec3 scal
 	return pose_out;
 }
 
+// pointer-based nearest, takes 2 controls and u
 inline a3_SpatialPose* a3spatialPoseOpNearest(a3_SpatialPose* spatialPose_out, a3_SpatialPose* const spatialPose_0, a3_SpatialPose* const spatialPose_1, const a3real u)
 {
 	if (u < 0.5f)
@@ -88,14 +89,14 @@ inline a3_SpatialPose* a3spatialPoseOpNearest(a3_SpatialPose* spatialPose_out, a
 	return spatialPose_out;
 }
 
-//pointer-based copy operation
+// pointer-based copy operation
 inline a3_SpatialPose* a3spatialPoseOpCopy(a3_SpatialPose* pose_out, a3_SpatialPose* const pose_in)
 {
 	*pose_out = *pose_in;
 	return pose_out;
 }
 
-//simple passthrough.
+// simple passthrough.
 inline a3_SpatialPose* a3spatialPoseOpConst(a3_SpatialPose* pose_inout)
 {
 	return pose_inout;
@@ -114,6 +115,7 @@ inline a3_SpatialPose* a3spatialPoseOpLERP(a3_SpatialPose* pose_out, a3_SpatialP
 	return pose_out;
 }
 
+// pointer-based cubic, 4 controls + u
 inline a3_SpatialPose* a3spatialPoseOpCubic(a3_SpatialPose* spatialPose_out, a3_SpatialPose* const spatialPose_Prev, a3_SpatialPose* const spatialPose_0, a3_SpatialPose* const spatialPose_1, a3_SpatialPose* const spatialPose_Next, const a3real u)
 {
 	// still need to account for quaternion lerping
@@ -125,6 +127,7 @@ inline a3_SpatialPose* a3spatialPoseOpCubic(a3_SpatialPose* spatialPose_out, a3_
 	return spatialPose_out;
 }
 
+// pointer-based triangular lerp, 3 controls + u1 + u2
 inline a3_SpatialPose* a3spatialPoseOpTriangularLERP(a3_SpatialPose* pose_out, a3_SpatialPose* const pose0, a3_SpatialPose* const pose1, a3_SpatialPose* const pose2, a3real const u1, a3real const u2)
 {
 	a3real u0 = 1 - u1 - u2;
@@ -140,6 +143,7 @@ inline a3_SpatialPose* a3spatialPoseOpTriangularLERP(a3_SpatialPose* pose_out, a
 	return pose_out;
 }
 
+// pointer-based binearest, 4 controls + 3 u values
 inline a3_SpatialPose* a3spatialPoseOpBiNearest(a3_SpatialPose* pose_out, a3_SpatialPose* const pose00, a3_SpatialPose* const pose01, a3_SpatialPose* const pose10, a3_SpatialPose* const pose11, a3real const u0, a3real const u1, a3real const u)
 {
 	a3_SpatialPose tmpPoses[2];
@@ -149,6 +153,7 @@ inline a3_SpatialPose* a3spatialPoseOpBiNearest(a3_SpatialPose* pose_out, a3_Spa
 	return pose_out;
 }
 
+// pointer-based bilerp, 4 controls + 3 u values
 inline a3_SpatialPose* a3spatialPoseOpBiLerp(a3_SpatialPose* pose_out, a3_SpatialPose* const pose00, a3_SpatialPose* const pose01, a3_SpatialPose* const pose10, a3_SpatialPose* const pose11, a3real const u0, a3real const u1, a3real const u)
 {
 	a3_SpatialPose tmpPoses[2];
@@ -159,6 +164,7 @@ inline a3_SpatialPose* a3spatialPoseOpBiLerp(a3_SpatialPose* pose_out, a3_Spatia
 	return pose_out;
 }
 
+// pointer-based bicubic, 16 controls + 5 u values
 inline a3_SpatialPose* a3spatialPoseOpBiCubic(a3_SpatialPose* pose_out, 
 	a3_SpatialPose* const pose_prev00, a3_SpatialPose* const pose_prev01, 
 	a3_SpatialPose* const pose_prev10, a3_SpatialPose* const pose_prev11, 
@@ -182,6 +188,7 @@ inline a3_SpatialPose* a3spatialPoseOpBiCubic(a3_SpatialPose* pose_out,
 	return pose_out;
 }
 
+// pointer-based scale. 1 control + u
 inline a3_SpatialPose* a3spatialPoseOpScale(a3_SpatialPose* pose_out, a3_SpatialPose* const pose_in, a3real u)
 {
 	a3_SpatialPose identity[1];
@@ -190,6 +197,7 @@ inline a3_SpatialPose* a3spatialPoseOpScale(a3_SpatialPose* pose_out, a3_Spatial
 	return pose_out;
 }
 
+// pointer-based negate
 inline a3_SpatialPose* a3spatialPoseOpNegate(a3_SpatialPose* pose_out, a3_SpatialPose* const pose_in)
 {
 	a3real3GetNegative(pose_out->orientation.v, pose_in->orientation.v);
@@ -200,6 +208,7 @@ inline a3_SpatialPose* a3spatialPoseOpNegate(a3_SpatialPose* pose_out, a3_Spatia
 	return pose_out;
 }
 
+//pointer-based concat
 inline a3_SpatialPose* a3spatialPoseOpConcat(a3_SpatialPose* pose_out, a3_SpatialPose* const pose0, a3_SpatialPose* const pose1)
 {
 	a3real3Sum(pose_out->position.v, pose0->position.v, pose1->position.v);
@@ -210,6 +219,7 @@ inline a3_SpatialPose* a3spatialPoseOpConcat(a3_SpatialPose* pose_out, a3_Spatia
 	return pose_out;
 }
 
+//pointer-based deconcat (subtract/divide)
 inline a3_SpatialPose* a3spatialPoseOpDeconcat(a3_SpatialPose* pose_out, a3_SpatialPose* const pose0, a3_SpatialPose* const pose1)
 {
 	a3real3Diff(pose_out->position.v, pose0->position.v, pose1->position.v);
@@ -229,6 +239,7 @@ inline a3_SpatialPose a3spatialPoseDOpIdentity()
 	return result;
 }
 
+// data-based init
 inline a3_SpatialPose a3spatialPoseDOpInit(const a3vec3 scale, const a3vec3 orientation, const a3vec3 translation)
 {
 	a3_SpatialPose result[1];
@@ -238,6 +249,7 @@ inline a3_SpatialPose a3spatialPoseDOpInit(const a3vec3 scale, const a3vec3 orie
 	return *result;
 }
 
+// data-based nearest
 inline a3_SpatialPose a3spatialPoseDOpNearest(a3_SpatialPose spatialPose_0, a3_SpatialPose spatialPose_1, const a3real u)
 {
 	a3_SpatialPose result[1];
@@ -258,6 +270,7 @@ inline a3_SpatialPose a3spatialPoseDOpLERP(a3_SpatialPose pose0, a3_SpatialPose 
 	return *result;
 }
 
+// data-based cubic
 inline a3_SpatialPose a3spatialPoseDOpCubic(a3_SpatialPose spatialPose_Prev, a3_SpatialPose spatialPose_0, a3_SpatialPose spatialPose_1, a3_SpatialPose spatialPose_Next, const a3real u)
 {
 	a3_SpatialPose result[1];
@@ -267,6 +280,7 @@ inline a3_SpatialPose a3spatialPoseDOpCubic(a3_SpatialPose spatialPose_Prev, a3_
 	return *result;
 }
 
+// data-based triangular lerp
 inline a3_SpatialPose a3spatialPoseDOpTriangularLERP(a3_SpatialPose pose0, a3_SpatialPose pose1, a3_SpatialPose pose2, a3real const u1, a3real const u2)
 {
 	a3_SpatialPose result[1];
@@ -276,6 +290,7 @@ inline a3_SpatialPose a3spatialPoseDOpTriangularLERP(a3_SpatialPose pose0, a3_Sp
 	return *result;
 }
 
+// data-based binearest
 inline a3_SpatialPose a3spatialPoseDOpBiNearest(a3_SpatialPose pose00, a3_SpatialPose pose01, a3_SpatialPose pose10, a3_SpatialPose pose11, a3real const u0, a3real const u1, a3real const u)
 {
 	a3_SpatialPose result[1];
@@ -284,6 +299,7 @@ inline a3_SpatialPose a3spatialPoseDOpBiNearest(a3_SpatialPose pose00, a3_Spatia
 	return *result;
 }
 
+// data-based bilerp
 inline a3_SpatialPose a3spatialPoseDOpBiLerp(a3_SpatialPose pose00, a3_SpatialPose pose01, a3_SpatialPose pose10, a3_SpatialPose pose11, a3real const u0, a3real const u1, a3real const u)
 {
 	a3_SpatialPose result[1];
@@ -293,6 +309,7 @@ inline a3_SpatialPose a3spatialPoseDOpBiLerp(a3_SpatialPose pose00, a3_SpatialPo
 	return *result;
 }
 
+// data-based bicubic
 inline a3_SpatialPose a3spatialPoseDOpBiCubic(a3_SpatialPose pose_prev00, a3_SpatialPose pose_prev01, a3_SpatialPose pose_prev10, a3_SpatialPose pose_prev11, a3_SpatialPose pose00, a3_SpatialPose pose01, a3_SpatialPose pose10, a3_SpatialPose pose11, a3_SpatialPose pose00_2, a3_SpatialPose pose20, a3_SpatialPose pose02, a3_SpatialPose pose22, a3_SpatialPose pose_next00, a3_SpatialPose pose_next01, a3_SpatialPose pose_next10, a3_SpatialPose pose_next11, a3real const u_prev, a3real const u0, a3real const u1, a3real const u_next, a3real u)
 {
 	a3_SpatialPose result[1];
@@ -305,6 +322,7 @@ inline a3_SpatialPose a3spatialPoseDOpBiCubic(a3_SpatialPose pose_prev00, a3_Spa
 	return *result;
 }
 
+// data-based scale
 inline a3_SpatialPose a3spatialPoseDOpScale(a3_SpatialPose pose_in, a3real u)
 {
 	a3_SpatialPose result = a3spatialPoseDOpLERP(a3spatialPoseDOpIdentity(), pose_in, u);
@@ -312,6 +330,7 @@ inline a3_SpatialPose a3spatialPoseDOpScale(a3_SpatialPose pose_in, a3real u)
 	return result;
 }
 
+// data-based negate
 inline a3_SpatialPose a3spatialPoseDOpNegate(a3_SpatialPose pose_in)
 {
 	a3_SpatialPose result[1];
@@ -322,16 +341,19 @@ inline a3_SpatialPose a3spatialPoseDOpNegate(a3_SpatialPose pose_in)
 	return *result;
 }
 
+// data-based const. Same as copy
 inline a3_SpatialPose a3spatialPoseDOpConst(a3_SpatialPose pose_in)
 {
 	return pose_in;
 }
 
+// data-based copy. Same as const
 inline a3_SpatialPose a3spatialPoseDOpCopy(a3_SpatialPose pose_in)
 {
 	return pose_in;
 }
 
+// data-based concat
 inline a3_SpatialPose a3spatialPoseDOpConcat(a3_SpatialPose pose0, a3_SpatialPose pose1)
 {
 	a3_SpatialPose result[1];
@@ -342,6 +364,8 @@ inline a3_SpatialPose a3spatialPoseDOpConcat(a3_SpatialPose pose0, a3_SpatialPos
 	return *result;
 }
 
+
+//data-based deconcat
 inline a3_SpatialPose a3spatialPoseDOpDeconcat(a3_SpatialPose pose0, a3_SpatialPose pose1)
 {
 	a3_SpatialPose result[1];
@@ -365,6 +389,7 @@ inline a3_HierarchyPose* a3hierarchyPoseOpIdentity(a3_HierarchyPose* pose_out, c
 	return pose_out;
 }
 
+// pointer-based init operation for hierarchical pose
 inline a3_HierarchyPose* a3hierarchyPoseOpInit(a3_HierarchyPose* pose_out, a3vec3 const* orientations, a3vec3 const* scales, a3vec3 const* translations, const a3ui32 nodeCount)
 {
 	if (pose_out)
@@ -379,6 +404,7 @@ inline a3_HierarchyPose* a3hierarchyPoseOpInit(a3_HierarchyPose* pose_out, a3vec
 
 }
 
+// pointer-based nearest operation for hierarchical pose
 inline a3_HierarchyPose* a3hierarchyPoseOpNearest(a3_HierarchyPose* pose_out, a3_HierarchyPose* const pose_0, a3_HierarchyPose* const pose_1, const a3real u, const a3ui32 nodeCount)
 {
 	for (a3ui32 i = 0; i < nodeCount; i++)
@@ -401,6 +427,7 @@ inline a3_HierarchyPose* a3hierarchyPoseOpLERP(a3_HierarchyPose* pose_out, a3_Hi
 	return pose_out;
 }
 
+// pointer-based negate operation for hierarchical pose
 inline a3_HierarchyPose* a3hierarchyPoseOpNegate(a3_HierarchyPose* pose_out, a3_HierarchyPose* const pose_in, const a3ui32 nodeCount)
 {
 	for (a3ui32 i = 0; i < nodeCount; i++)
@@ -412,6 +439,7 @@ inline a3_HierarchyPose* a3hierarchyPoseOpNegate(a3_HierarchyPose* pose_out, a3_
 	return pose_out;
 }
 
+// pointer-based concat operation for hierarchical pose
 inline a3_HierarchyPose* a3hierarchyPoseOpConcat(a3_HierarchyPose* pose_out, a3_HierarchyPose* const pose0, a3_HierarchyPose* const pose1, const a3ui32 nodeCount)
 {
 	for (a3ui32 i = 0; i < nodeCount; i++)
@@ -423,6 +451,7 @@ inline a3_HierarchyPose* a3hierarchyPoseOpConcat(a3_HierarchyPose* pose_out, a3_
 	return pose_out;
 }
 
+// pointer-based deconcat operation for hierarchical pose
 inline a3_HierarchyPose* a3hierarchyPoseOpDeconcat(a3_HierarchyPose* pose_out, a3_HierarchyPose* const pose0, a3_HierarchyPose* const pose1, const a3ui32 nodeCount)
 {
 	for (a3ui32 i = 0; i < nodeCount; i++)
@@ -433,7 +462,7 @@ inline a3_HierarchyPose* a3hierarchyPoseOpDeconcat(a3_HierarchyPose* pose_out, a
 	return pose_out;
 }
 
-
+// pointer-based cubic operation for hierarchical pose
 inline a3_HierarchyPose* a3hierarchyPoseOpCubic(a3_HierarchyPose* pose_out, a3_HierarchyPose* const pose_Prev, a3_HierarchyPose* const pose_0, a3_HierarchyPose* const pose_1, a3_HierarchyPose* const pose_Next, const a3ui32 nodeCount, const a3real u)
 {
 	for (a3ui32 i = 0; i < nodeCount; i++)
@@ -445,6 +474,7 @@ inline a3_HierarchyPose* a3hierarchyPoseOpCubic(a3_HierarchyPose* pose_out, a3_H
 	return pose_out;
 }
 
+// pointer-based copy operation for hierarchical pose
 inline a3_HierarchyPose* a3hierarchyPoseOpCopy(a3_HierarchyPose* pose_out, a3_HierarchyPose* const pose_in, const a3ui32 nodeCount)
 {
 	for (a3ui32 i = 0; i < nodeCount; i++)
@@ -455,6 +485,7 @@ inline a3_HierarchyPose* a3hierarchyPoseOpCopy(a3_HierarchyPose* pose_out, a3_Hi
 	return pose_out;
 }
 
+// pointer-based triangular lerp operation for hierarchical pose
 inline a3_HierarchyPose* a3hierarchyPoseOpTriangularLERP(a3_HierarchyPose* pose_out, a3_HierarchyPose* const pose0, a3_HierarchyPose* const pose1, a3_HierarchyPose* const pose2, a3real const u1, a3real const u2, const a3ui32 nodeCount)
 {
 	for (a3ui32 i = 0; i < nodeCount; i++)
@@ -465,6 +496,7 @@ inline a3_HierarchyPose* a3hierarchyPoseOpTriangularLERP(a3_HierarchyPose* pose_
 	return pose_out;
 }
 
+// pointer-based binearest operation for hierarchical pose
 inline a3_HierarchyPose* a3hierarchyPoseOpBiNearest(a3_HierarchyPose* pose_out, a3_HierarchyPose* const pose00, a3_HierarchyPose* const pose01, a3_HierarchyPose* const pose10, a3_HierarchyPose* const pose11, a3real const u0, a3real const u1, a3real const u, const a3ui32 nodeCount)
 {
 	for (a3ui32 i = 0; i < nodeCount; i++)
@@ -475,6 +507,7 @@ inline a3_HierarchyPose* a3hierarchyPoseOpBiNearest(a3_HierarchyPose* pose_out, 
 	return pose_out;
 }
 
+// pointer-based bilerp operation for hierarchical pose
 inline a3_HierarchyPose* a3hierarchyPoseOpBiLerp(a3_HierarchyPose* pose_out, a3_HierarchyPose* const pose00, a3_HierarchyPose* const pose01, a3_HierarchyPose* const pose10, a3_HierarchyPose* const pose11, a3real const u0, a3real const u1, a3real const u, const a3ui32 nodeCount)
 {
 	for (a3ui32 i = 0; i < nodeCount; i++)
@@ -485,6 +518,7 @@ inline a3_HierarchyPose* a3hierarchyPoseOpBiLerp(a3_HierarchyPose* pose_out, a3_
 	return pose_out;
 }
 
+// pointer-based bicubic operation for hierarchical pose
 inline a3_HierarchyPose* a3hierarchyPoseOpBiCubic(a3_HierarchyPose* pose_out,
 	a3_HierarchyPose* const pose_prev00, a3_HierarchyPose* const pose_prev01,
 	a3_HierarchyPose* const pose_prev10, a3_HierarchyPose* const pose_prev11,
@@ -509,6 +543,7 @@ inline a3_HierarchyPose* a3hierarchyPoseOpBiCubic(a3_HierarchyPose* pose_out,
 	return pose_out;
 }
 
+// pointer-based scale operation for hierarchical pose
 inline a3_HierarchyPose* a3hierarchyPoseOpScale(a3_HierarchyPose* pose_out, a3_HierarchyPose* const pose_in, a3real const u, const a3ui32 nodeCount)
 {
 	for (a3ui32 i = 0; i < nodeCount; i++)
@@ -519,6 +554,7 @@ inline a3_HierarchyPose* a3hierarchyPoseOpScale(a3_HierarchyPose* pose_out, a3_H
 	return pose_out;
 }
 
+// pointer-based const operation for hierarchical pose
 inline a3_HierarchyPose* a3hierarchyPoseOpConst(a3_HierarchyPose* pose_inout)
 {
 	return pose_inout;

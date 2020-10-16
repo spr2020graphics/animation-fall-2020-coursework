@@ -170,7 +170,7 @@ typedef enum a3_DemoMode1_Animation_TargetName				a3_DemoMode1_Animation_TargetN
 		union {
 			a3real uVals[5];
 			struct {
-				a3real u, u_n1, u_0, u_1, u_2;
+				a3real u, u_n1, u_0, u_1, u_2;	// interpolation parameters
 			};
 		};
 		a3ui32 uValIndex;					// which uVal to access
