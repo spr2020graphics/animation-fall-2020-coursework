@@ -57,11 +57,11 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	const a3byte* const animationfilePath = "../../../../resource/animdata/moonwalk.bvh";
 
 	// Assign hierarchyPoseGroup and hierarchy to new variables in demoState
-	hierarchy = demoMode->hierarchy_bvh;
-	hierarchyPoseGroup = demoMode->hierarchyPoseGroup_bvh;
+	hierarchy = demoMode->hierarchy_skel; 
+	hierarchyPoseGroup = demoMode->hierarchyPoseGroup_skel; //hierarchy_bvh
 
 	//create BVH
-	a3hierarchyPoseGroupLoadBVH(hierarchyPoseGroup, hierarchy, animationfilePath);
+	//a3hierarchyPoseGroupLoadBVH(hierarchyPoseGroup, hierarchy, animationfilePath);
 
 	// stream animation assets
 	if (demoState->streaming && a3fileStreamOpenRead(fileStream, geometryStream))
@@ -363,15 +363,15 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	// finally set up hierarchy states
 	hierarchyState = demoMode->hierarchyState_skel_base;
 	hierarchyState->hierarchy = 0;
-	a3hierarchyStateCreate(hierarchyState, demoMode->hierarchy_bvh);
+	a3hierarchyStateCreate(hierarchyState, demoMode->hierarchy_skel); //hierarchy_bvh
 
 	hierarchyState = demoMode->hierarchyState_skel_toggle;
 	hierarchyState->hierarchy = 0;
-	a3hierarchyStateCreate(hierarchyState, demoMode->hierarchy_bvh);
+	a3hierarchyStateCreate(hierarchyState, demoMode->hierarchy_skel); //hierarchy_bvh
 
 	hierarchyState = demoMode->hierarchyState_skel_clip;
 	hierarchyState->hierarchy = 0;
-	a3hierarchyStateCreate(hierarchyState, demoMode->hierarchy_bvh);
+	a3hierarchyStateCreate(hierarchyState, demoMode->hierarchy_skel); //hierarchy_bvh
 
 }
 
@@ -403,8 +403,8 @@ void a3animation_loadValidate(a3_DemoState* demoState, a3_DemoMode1_Animation* d
 	// initialize cameras not dependent on viewport
 
 	// animation
-	demoMode->hierarchyState_skel_base->hierarchy = demoMode->hierarchy_bvh;
-	demoMode->hierarchyPoseGroup_skel->hierarchy = demoMode->hierarchy_bvh;
+	demoMode->hierarchyState_skel_base->hierarchy = demoMode->hierarchy_skel; //hierarchy_bvh
+	demoMode->hierarchyPoseGroup_skel->hierarchy = demoMode->hierarchy_skel; //hierarchy_bvh
 }
 
 
