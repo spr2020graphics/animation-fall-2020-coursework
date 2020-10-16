@@ -729,7 +729,307 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 		currentDrawable = demoState->draw_unit_sphere;
 		a3mat4* posMat;
 		a3mat4 scale = a3mat4_identity;
-		a3real4x4SetScale(scale.m, 1.0f);
+		a3mat4 offset = a3mat4_identity;
+
+		a3real4x4SetScale(scale.m, 0.5f);
+
+		switch (demoMode->blendOp)
+		{
+		case 0: //identity, output = base pose
+			break;
+		case 1: //constant/copy, output = delta pose 2, index 3; still display delta pose 2 in control[0]
+		case 2: //negate/invert, output = -delta pose 1, index 2; still display delta pose 1 in control[0]
+			offset.m03 += 5.0f;
+			for (a3ui32 k = 0; k < demoMode->hierarchy_skel->numNodes; ++k) //hierarchy_bvh
+			{
+				a3mat4* selectedBaseMat;
+
+				posMat = &demoMode->hierarchyState_skel_control[0].objectHPose->spatialPose[k].transform;
+
+				// Scale down the matrix so the spheres aren't huge
+				a3mat4 newPosMat = a3mat4_identity;
+				a3real4x4Product(newPosMat.m, posMat->m, offset.m);
+				a3real4x4Product(newPosMat.m, posMat->m, scale.m);
+
+				// If this is the node that's currently selected, draw it green, and also draw the corresponding node in the base pose as magenta
+				if (demoMode->currentExamineNode == k)
+				{
+					// This is the currently selected node in the current hierarchy pose (key/delta)
+					a3demo_drawModelSolidColor(modelViewProjectionMat.m, viewProjectionMat.m, newPosMat.m, currentDemoProgram, currentDrawable, green);
+					a3vertexDrawableActivateAndRender(currentDrawable);
+
+					// Scale down this matrix as well (this is the corresponding base pose node)
+					selectedBaseMat = &demoMode->hierarchyState_skel_base->objectHPose->spatialPose[k].transform;
+					a3real4x4Product(newPosMat.m, selectedBaseMat->m, scale.m);
+					a3demo_drawModelSolidColor(modelViewProjectionMat.m, viewProjectionMat.m, newPosMat.m, currentDemoProgram, currentDrawable, magenta);
+					a3vertexDrawableActivateAndRender(currentDrawable);
+				}
+				else
+				{
+					// Draw all other nodes in white
+					a3demo_drawModelSolidColor(modelViewProjectionMat.m, viewProjectionMat.m, newPosMat.m, currentDemoProgram, currentDrawable, white);
+					a3vertexDrawableActivateAndRender(currentDrawable);
+				}
+			}
+			break;
+		case 3: //concatenate, output = delta pose 1 + delta pose 2; display both in control[0] and control[1]
+		case 4: //nearest, output = nearest(delta pose 2, delta pose 3); display both in control[0] and control[1], display u in text (controllable +/- 0.1, limited at 1.0)
+		case 5: //lerp, output = lerp(delta pose 2, delta pose 3);  display both in control[0] and control[1], display u in text (controllable +/- 0.1, limited at 1.0)
+			for (a3ui32 i = 0; i < 2; i++)	// i is the control index
+			{
+				offset.m03 += 5.0f;
+				for (a3ui32 k = 0; k < demoMode->hierarchy_skel->numNodes; ++k) //hierarchy_bvh
+				{
+					a3mat4* selectedBaseMat;
+
+					posMat = &demoMode->hierarchyState_skel_control[i].objectHPose->spatialPose[k].transform;
+
+					// Scale down the matrix so the spheres aren't huge
+					a3mat4 newPosMat = a3mat4_identity;
+					a3real4x4Product(newPosMat.m, posMat->m, offset.m);
+					a3real4x4Product(newPosMat.m, posMat->m, scale.m);
+
+					// If this is the node that's currently selected, draw it green, and also draw the corresponding node in the base pose as magenta
+					if (demoMode->currentExamineNode == k)
+					{
+						// This is the currently selected node in the current hierarchy pose (key/delta)
+						a3demo_drawModelSolidColor(modelViewProjectionMat.m, viewProjectionMat.m, newPosMat.m, currentDemoProgram, currentDrawable, green);
+						a3vertexDrawableActivateAndRender(currentDrawable);
+
+						// Scale down this matrix as well (this is the corresponding base pose node)
+						selectedBaseMat = &demoMode->hierarchyState_skel_base->objectHPose->spatialPose[k].transform;
+						a3real4x4Product(newPosMat.m, selectedBaseMat->m, scale.m);
+						a3demo_drawModelSolidColor(modelViewProjectionMat.m, viewProjectionMat.m, newPosMat.m, currentDemoProgram, currentDrawable, magenta);
+						a3vertexDrawableActivateAndRender(currentDrawable);
+					}
+					else
+					{
+						// Draw all other nodes in white
+						a3demo_drawModelSolidColor(modelViewProjectionMat.m, viewProjectionMat.m, newPosMat.m, currentDemoProgram, currentDrawable, white);
+						a3vertexDrawableActivateAndRender(currentDrawable);
+					}
+				}
+			}
+			break;
+		case 6: //catmull, output = catmull(1, 2, 3, "0"); display all in control[], u in text
+			for (a3ui32 i = 0; i < 4; i++)	// i is the control index
+			{
+				offset.m03 += 5.0f;
+				for (a3ui32 k = 0; k < demoMode->hierarchy_skel->numNodes; ++k) //hierarchy_bvh
+				{
+					a3mat4* selectedBaseMat;
+
+					posMat = &demoMode->hierarchyState_skel_control[i].objectHPose->spatialPose[k].transform;
+
+					// Scale down the matrix so the spheres aren't huge
+					a3mat4 newPosMat = a3mat4_identity;
+					a3real4x4Product(newPosMat.m, posMat->m, offset.m);
+					a3real4x4Product(newPosMat.m, posMat->m, scale.m);
+
+					// If this is the node that's currently selected, draw it green, and also draw the corresponding node in the base pose as magenta
+					if (demoMode->currentExamineNode == k)
+					{
+						// This is the currently selected node in the current hierarchy pose (key/delta)
+						a3demo_drawModelSolidColor(modelViewProjectionMat.m, viewProjectionMat.m, newPosMat.m, currentDemoProgram, currentDrawable, green);
+						a3vertexDrawableActivateAndRender(currentDrawable);
+
+						// Scale down this matrix as well (this is the corresponding base pose node)
+						selectedBaseMat = &demoMode->hierarchyState_skel_base->objectHPose->spatialPose[k].transform;
+						a3real4x4Product(newPosMat.m, selectedBaseMat->m, scale.m);
+						a3demo_drawModelSolidColor(modelViewProjectionMat.m, viewProjectionMat.m, newPosMat.m, currentDemoProgram, currentDrawable, magenta);
+						a3vertexDrawableActivateAndRender(currentDrawable);
+					}
+					else
+					{
+						// Draw all other nodes in white
+						a3demo_drawModelSolidColor(modelViewProjectionMat.m, viewProjectionMat.m, newPosMat.m, currentDemoProgram, currentDrawable, white);
+						a3vertexDrawableActivateAndRender(currentDrawable);
+					}
+				}
+			}
+			break;
+		case 7: //deconcat, output = 3 - 1; display 3 and 1 in control[0,1]
+			for (a3ui32 i = 0; i < 2; i++)	// i is the control index
+			{
+				offset.m03 += 5.0f;
+				for (a3ui32 k = 0; k < demoMode->hierarchy_skel->numNodes; ++k) //hierarchy_bvh
+				{
+					a3mat4* selectedBaseMat;
+
+					posMat = &demoMode->hierarchyState_skel_control[i].objectHPose->spatialPose[k].transform;
+
+					// Scale down the matrix so the spheres aren't huge
+					a3mat4 newPosMat = a3mat4_identity;
+					a3real4x4Product(newPosMat.m, posMat->m, offset.m);
+					a3real4x4Product(newPosMat.m, posMat->m, scale.m);
+
+					// If this is the node that's currently selected, draw it green, and also draw the corresponding node in the base pose as magenta
+					if (demoMode->currentExamineNode == k)
+					{
+						// This is the currently selected node in the current hierarchy pose (key/delta)
+						a3demo_drawModelSolidColor(modelViewProjectionMat.m, viewProjectionMat.m, newPosMat.m, currentDemoProgram, currentDrawable, green);
+						a3vertexDrawableActivateAndRender(currentDrawable);
+
+						// Scale down this matrix as well (this is the corresponding base pose node)
+						selectedBaseMat = &demoMode->hierarchyState_skel_base->objectHPose->spatialPose[k].transform;
+						a3real4x4Product(newPosMat.m, selectedBaseMat->m, scale.m);
+						a3demo_drawModelSolidColor(modelViewProjectionMat.m, viewProjectionMat.m, newPosMat.m, currentDemoProgram, currentDrawable, magenta);
+						a3vertexDrawableActivateAndRender(currentDrawable);
+					}
+					else
+					{
+						// Draw all other nodes in white
+						a3demo_drawModelSolidColor(modelViewProjectionMat.m, viewProjectionMat.m, newPosMat.m, currentDemoProgram, currentDrawable, white);
+						a3vertexDrawableActivateAndRender(currentDrawable);
+					}
+				}
+			}
+			break;
+		case 8: //scale, output = delta pose 2; display 2 in control[0], u in text
+			offset.m03 += 5.0f;
+			for (a3ui32 k = 0; k < demoMode->hierarchy_skel->numNodes; ++k) //hierarchy_bvh
+			{
+				a3mat4* selectedBaseMat;
+
+				posMat = &demoMode->hierarchyState_skel_control[0].objectHPose->spatialPose[k].transform;
+
+				// Scale down the matrix so the spheres aren't huge
+				a3mat4 newPosMat = a3mat4_identity;
+				a3real4x4Product(newPosMat.m, posMat->m, offset.m);
+				a3real4x4Product(newPosMat.m, posMat->m, scale.m);
+
+				// If this is the node that's currently selected, draw it green, and also draw the corresponding node in the base pose as magenta
+				if (demoMode->currentExamineNode == k)
+				{
+					// This is the currently selected node in the current hierarchy pose (key/delta)
+					a3demo_drawModelSolidColor(modelViewProjectionMat.m, viewProjectionMat.m, newPosMat.m, currentDemoProgram, currentDrawable, green);
+					a3vertexDrawableActivateAndRender(currentDrawable);
+
+					// Scale down this matrix as well (this is the corresponding base pose node)
+					selectedBaseMat = &demoMode->hierarchyState_skel_base->objectHPose->spatialPose[k].transform;
+					a3real4x4Product(newPosMat.m, selectedBaseMat->m, scale.m);
+					a3demo_drawModelSolidColor(modelViewProjectionMat.m, viewProjectionMat.m, newPosMat.m, currentDemoProgram, currentDrawable, magenta);
+					a3vertexDrawableActivateAndRender(currentDrawable);
+				}
+				else
+				{
+					// Draw all other nodes in white
+					a3demo_drawModelSolidColor(modelViewProjectionMat.m, viewProjectionMat.m, newPosMat.m, currentDemoProgram, currentDrawable, white);
+					a3vertexDrawableActivateAndRender(currentDrawable);
+				}
+			}
+			break;
+		case 9: //triangular, output = triangle(1,2,3); display in control[0,1,2], u1 and u2 in text, limited to u1+u2=1
+			for (a3ui32 i = 0; i < 3; i++)	// i is the control index
+			{
+				offset.m03 += 5.0f;
+				for (a3ui32 k = 0; k < demoMode->hierarchy_skel->numNodes; ++k) //hierarchy_bvh
+				{
+					a3mat4* selectedBaseMat;
+
+					posMat = &demoMode->hierarchyState_skel_control[i].objectHPose->spatialPose[k].transform;
+
+					// Scale down the matrix so the spheres aren't huge
+					a3mat4 newPosMat = a3mat4_identity;
+					a3real4x4Product(newPosMat.m, posMat->m, offset.m);
+					a3real4x4Product(newPosMat.m, posMat->m, scale.m);
+
+					// If this is the node that's currently selected, draw it green, and also draw the corresponding node in the base pose as magenta
+					if (demoMode->currentExamineNode == k)
+					{
+						// This is the currently selected node in the current hierarchy pose (key/delta)
+						a3demo_drawModelSolidColor(modelViewProjectionMat.m, viewProjectionMat.m, newPosMat.m, currentDemoProgram, currentDrawable, green);
+						a3vertexDrawableActivateAndRender(currentDrawable);
+
+						// Scale down this matrix as well (this is the corresponding base pose node)
+						selectedBaseMat = &demoMode->hierarchyState_skel_base->objectHPose->spatialPose[k].transform;
+						a3real4x4Product(newPosMat.m, selectedBaseMat->m, scale.m);
+						a3demo_drawModelSolidColor(modelViewProjectionMat.m, viewProjectionMat.m, newPosMat.m, currentDemoProgram, currentDrawable, magenta);
+						a3vertexDrawableActivateAndRender(currentDrawable);
+					}
+					else
+					{
+						// Draw all other nodes in white
+						a3demo_drawModelSolidColor(modelViewProjectionMat.m, viewProjectionMat.m, newPosMat.m, currentDemoProgram, currentDrawable, white);
+						a3vertexDrawableActivateAndRender(currentDrawable);
+					}
+				}
+			}
+			break;
+		case 10: //bi-nearest, output = ("0', 1, 2, 3); display all in controls; u0, u1, u in text
+		case 11: //bilinear, output = ("0', 1, 2, 3); display all in controls; u0, u1, u in text
+		case 12: //bicubic: output = ((0123),(1230),(2301),(3012)); display all in controls; all 5 u's in text
+			for (a3ui32 i = 0; i < 4; i++)	// i is the control index
+			{
+				offset.m03 += 5.0f;
+				for (a3ui32 k = 0; k < demoMode->hierarchy_skel->numNodes; ++k) //hierarchy_bvh
+				{
+					a3mat4* selectedBaseMat;
+
+					posMat = &demoMode->hierarchyState_skel_control[i].objectHPose->spatialPose[k].transform;
+
+					// Scale down the matrix so the spheres aren't huge
+					a3mat4 newPosMat = a3mat4_identity;
+					a3real4x4Product(newPosMat.m, posMat->m, offset.m);
+					a3real4x4Product(newPosMat.m, posMat->m, scale.m);
+
+					// If this is the node that's currently selected, draw it green, and also draw the corresponding node in the base pose as magenta
+					if (demoMode->currentExamineNode == k)
+					{
+						// This is the currently selected node in the current hierarchy pose (key/delta)
+						a3demo_drawModelSolidColor(modelViewProjectionMat.m, viewProjectionMat.m, newPosMat.m, currentDemoProgram, currentDrawable, green);
+						a3vertexDrawableActivateAndRender(currentDrawable);
+
+						// Scale down this matrix as well (this is the corresponding base pose node)
+						selectedBaseMat = &demoMode->hierarchyState_skel_base->objectHPose->spatialPose[k].transform;
+						a3real4x4Product(newPosMat.m, selectedBaseMat->m, scale.m);
+						a3demo_drawModelSolidColor(modelViewProjectionMat.m, viewProjectionMat.m, newPosMat.m, currentDemoProgram, currentDrawable, magenta);
+						a3vertexDrawableActivateAndRender(currentDrawable);
+					}
+					else
+					{
+						// Draw all other nodes in white
+						a3demo_drawModelSolidColor(modelViewProjectionMat.m, viewProjectionMat.m, newPosMat.m, currentDemoProgram, currentDrawable, white);
+						a3vertexDrawableActivateAndRender(currentDrawable);
+					}
+				}
+			}
+			break;
+		}
+
+		//Draw output state, drawn at center
+		for (a3ui32 k = 0; k < demoMode->hierarchy_skel->numNodes; ++k) //hierarchy_bvh
+		{
+			a3mat4* selectedBaseMat;
+
+			posMat = &demoMode->hierarchyState_skel_output->objectHPose->spatialPose[k].transform;
+
+			// Scale down the matrix so the spheres aren't huge
+			a3mat4 newPosMat = a3mat4_identity;
+			a3real4x4Product(newPosMat.m, posMat->m, scale.m);
+
+			// If this is the node that's currently selected, draw it green, and also draw the corresponding node in the base pose as magenta
+			if (demoMode->currentExamineNode == k)
+			{
+				// This is the currently selected node in the current hierarchy pose (key/delta)
+				a3demo_drawModelSolidColor(modelViewProjectionMat.m, viewProjectionMat.m, newPosMat.m, currentDemoProgram, currentDrawable, green);
+				a3vertexDrawableActivateAndRender(currentDrawable);
+
+				// Scale down this matrix as well (this is the corresponding base pose node)
+				selectedBaseMat = &demoMode->hierarchyState_skel_base->objectHPose->spatialPose[k].transform;
+				a3real4x4Product(newPosMat.m, selectedBaseMat->m, scale.m);
+				a3demo_drawModelSolidColor(modelViewProjectionMat.m, viewProjectionMat.m, newPosMat.m, currentDemoProgram, currentDrawable, magenta);
+				a3vertexDrawableActivateAndRender(currentDrawable);
+			}
+			else
+			{
+				// Draw all other nodes in white
+				a3demo_drawModelSolidColor(modelViewProjectionMat.m, viewProjectionMat.m, newPosMat.m, currentDemoProgram, currentDrawable, white);
+				a3vertexDrawableActivateAndRender(currentDrawable);
+			}
+		}
+
+		/*
 		for (a3ui32 k = 0; k < demoMode->hierarchy_skel->numNodes; ++k) //hierarchy_bvh
 		{
 			a3mat4* selectedBaseMat;
@@ -772,7 +1072,7 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 				a3vertexDrawableActivateAndRender(currentDrawable);
 			}
 		}
-
+		*/
 		// Render axes over top of the spheres
 		currentDrawable = demoState->draw_axes;
 		a3vertexDrawableActivate(currentDrawable);
