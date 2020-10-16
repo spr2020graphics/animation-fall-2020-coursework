@@ -132,8 +132,8 @@ void a3animation_render_skeletal_controls(a3_DemoState const* demoState, a3_Demo
 	a3_TextRenderer const* text, a3vec4 const col,
 	a3f32 const textAlign, a3f32 const textDepth, a3f32 const textOffsetDelta, a3f32 textOffset)
 {
-	a3byte const* hSNames[3] = { //which hState we're examining
-		"Base", "Toggle", "Clip"
+	a3byte const* hSNames[8] = { //which hState we're examining
+		"Base", "Toggle", "Clip", "Control0", "Control1", "Control2", "Control3", "Output"
 	};
 
 	a3byte const* correctClip[2] = { //debug information on clips
