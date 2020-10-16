@@ -373,6 +373,27 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	hierarchyState->hierarchy = 0;
 	a3hierarchyStateCreate(hierarchyState, demoMode->hierarchy_skel); //hierarchy_bvh
 
+	//the 4 control poses
+	hierarchyState = &demoMode->hierarchyState_skel_control[0];
+	hierarchyState->hierarchy = 0;
+	a3hierarchyStateCreate(hierarchyState, demoMode->hierarchy_skel); //hierarchy_bvh
+
+	hierarchyState = &demoMode->hierarchyState_skel_control[1];
+	hierarchyState->hierarchy = 0;
+	a3hierarchyStateCreate(hierarchyState, demoMode->hierarchy_skel); //hierarchy_bvh
+
+	hierarchyState = &demoMode->hierarchyState_skel_control[2];
+	hierarchyState->hierarchy = 0;
+	a3hierarchyStateCreate(hierarchyState, demoMode->hierarchy_skel); //hierarchy_bvh
+
+	hierarchyState = &demoMode->hierarchyState_skel_control[3];
+	hierarchyState->hierarchy = 0;
+	a3hierarchyStateCreate(hierarchyState, demoMode->hierarchy_skel); //hierarchy_bvh
+
+	hierarchyState = demoMode->hierarchyState_skel_output;
+	hierarchyState->hierarchy = 0;
+	a3hierarchyStateCreate(hierarchyState, demoMode->hierarchy_skel); //hierarchy_bvh
+
 }
 
 

@@ -762,7 +762,6 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 				// Scale down this matrix as well (this is the corresponding base pose node)
 				selectedBaseMat = &demoMode->hierarchyState_skel_base->objectHPose->spatialPose[k].transform;
 				a3real4x4Product(newPosMat.m, selectedBaseMat->m, scale.m);
-
 				a3demo_drawModelSolidColor(modelViewProjectionMat.m, viewProjectionMat.m, newPosMat.m, currentDemoProgram, currentDrawable, magenta);
 				a3vertexDrawableActivateAndRender(currentDrawable);
 			}
