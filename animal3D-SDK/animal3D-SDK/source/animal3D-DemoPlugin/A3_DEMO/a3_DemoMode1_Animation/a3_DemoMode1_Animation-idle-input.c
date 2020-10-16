@@ -99,9 +99,9 @@ void a3animation_input_keyCharPress(a3_DemoState const* demoState, a3_DemoMode1_
 			}
 			demoMode->u_0 = 1.0f - demoMode->u_1 - demoMode->u_2;
 			break;
-		case 10: //bi-nearest, u, u1, u2
+		case 10: //bi-nearest, u, u0, u1
 		case 11: //bilinear, u, u1, u2
-			if (demoMode->uValIndex == 0 || demoMode->uValIndex >= 3)
+			if (demoMode->uValIndex == 0 || demoMode->uValIndex == 2 || demoMode->uValIndex == 3)
 			{
 				demoMode->uVals[demoMode->uValIndex] = min(1.0f, demoMode->uVals[demoMode->uValIndex] + 0.1f);
 			}
