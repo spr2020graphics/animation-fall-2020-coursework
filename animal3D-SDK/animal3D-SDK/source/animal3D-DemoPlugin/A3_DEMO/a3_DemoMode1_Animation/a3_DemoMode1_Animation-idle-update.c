@@ -312,6 +312,12 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 			a3kinematicsSolveForward(&control[2]);
 			break;
 		case 10: //bi-nearest, output = ("0', 1, 2, 3); display all in controls; u0, u1, u in text
+			a3hierarchyPoseOpBiNearest(output->sampleHPose,
+				&poseGroup->hierarchyPosePool[1],
+				&poseGroup->hierarchyPosePool[2],
+				&poseGroup->hierarchyPosePool[3],
+				&poseGroup->hierarchyPosePool[4],
+				demoMode->u_0, demoMode->u_1, demoMode->u, hierarchy->numNodes);
 			break;
 		case 11: //bilinear, output = ("0', 1, 2, 3); display all in controls; u0, u1, u in text
 			break;

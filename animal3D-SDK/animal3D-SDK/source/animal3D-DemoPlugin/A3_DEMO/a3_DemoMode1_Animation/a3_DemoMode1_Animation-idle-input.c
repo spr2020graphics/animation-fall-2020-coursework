@@ -90,12 +90,12 @@ void a3animation_input_keyCharPress(a3_DemoState const* demoState, a3_DemoMode1_
 			if (demoMode->uValIndex == 3) // u1
 			{
 				demoMode->u_1 = min(1.0f, demoMode->u_1 + 0.1f);
-				demoMode->u_2 = 1.0f - demoMode->u_1;
+				demoMode->u_2 = min(demoMode->u_2, 1.0f - demoMode->u_1);
 			}
 			else if (demoMode->uValIndex == 4) // u2
 			{
 				demoMode->u_2 = min(1.0f, demoMode->u_2 + 0.1f);
-				demoMode->u_1 = 1.0f - demoMode->u_2;
+				demoMode->u_1 = min(demoMode->u_1, 1.0f - demoMode->u_2);
 			}
 			demoMode->u_0 = 1.0f - demoMode->u_1 - demoMode->u_2;
 			break;
@@ -127,12 +127,12 @@ void a3animation_input_keyCharPress(a3_DemoState const* demoState, a3_DemoMode1_
 			if (demoMode->uValIndex == 3) // u1
 			{
 				demoMode->u_1 = max(0.0f, demoMode->u_1 - 0.1f);
-				demoMode->u_2 = 1.0f - demoMode->u_1;
+				demoMode->u_2 = max(demoMode->u_2, 1.0f - demoMode->u_1);
 			}
 			else if (demoMode->uValIndex == 4) // u2
 			{
 				demoMode->u_2 = max(0.0f, demoMode->u_2 - 0.1f);
-				demoMode->u_1 = 1.0f - demoMode->u_2;
+				demoMode->u_1 = max(demoMode->u_1, 1.0f - demoMode->u_2);
 			}
 			demoMode->u_0 = 1.0f - demoMode->u_1 - demoMode->u_2;
 			break;
