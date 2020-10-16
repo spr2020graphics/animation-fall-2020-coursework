@@ -195,6 +195,8 @@ inline a3_SpatialPose* a3spatialPoseOpNegate(a3_SpatialPose* pose_out, a3_Spatia
 	a3real3GetNegative(pose_out->orientation.v, pose_in->orientation.v);
 	a3real3GetNegative(pose_out->position.v,	pose_in->position.v);
 	a3real3GetNegative(pose_out->scale.v,		pose_in->scale.v);
+	a3real4GetNegative(pose_out->rotation.v,    pose_in->rotation.v);
+
 	return pose_out;
 }
 
@@ -203,6 +205,8 @@ inline a3_SpatialPose* a3spatialPoseOpConcat(a3_SpatialPose* pose_out, a3_Spatia
 	a3real3Sum(pose_out->position.v, pose0->position.v, pose1->position.v);
 	a3real3Sum(pose_out->orientation.v, pose0->orientation.v, pose1->orientation.v);
 	a3real3ProductComp(pose_out->scale.v, pose0->scale.v, pose1->scale.v);
+	a3real4ProductComp(pose_out->rotation.v, pose0->rotation.v, pose1->rotation.v);
+
 	return pose_out;
 }
 
@@ -211,6 +215,7 @@ inline a3_SpatialPose* a3spatialPoseOpDeconcat(a3_SpatialPose* pose_out, a3_Spat
 	a3real3Diff(pose_out->position.v, pose0->position.v, pose1->position.v);
 	a3real3Diff(pose_out->orientation.v, pose0->orientation.v, pose1->orientation.v);
 	a3real3QuotientComp(pose_out->scale.v, pose0->scale.v, pose1->scale.v);
+	a3real4QuotientComp(pose_out->rotation.v, pose0->rotation.v, pose1->rotation.v);
 
 	return pose_out;
 }
