@@ -110,6 +110,7 @@ void a3animation_input_keyCharPress(a3_DemoState const* demoState, a3_DemoMode1_
 			demoMode->uVals[demoMode->uValIndex] = min(1.0f, demoMode->uVals[demoMode->uValIndex] + 0.1f);
 			break;
 		}
+		break;
 	case '-':
 		switch (demoMode->blendOp)
 		{
@@ -119,7 +120,7 @@ void a3animation_input_keyCharPress(a3_DemoState const* demoState, a3_DemoMode1_
 		case 8: //scale, u modifier
 			if (demoMode->uValIndex == 0)
 			{
-				demoMode->u = max(0.0f, demoMode->u + 0.1f);
+				demoMode->u = max(0.0f, demoMode->u - 0.1f);
 			}
 			break;
 		case 9: //triangular, u1, u2, (u0 not modifiable)
@@ -146,6 +147,7 @@ void a3animation_input_keyCharPress(a3_DemoState const* demoState, a3_DemoMode1_
 			demoMode->uVals[demoMode->uValIndex] = max(0.0f, demoMode->uVals[demoMode->uValIndex] - 0.1f);
 			break;
 		}
+		break;
 	}
 }
 
