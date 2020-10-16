@@ -739,7 +739,7 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 		a3mat4 scale = a3mat4_identity;
 		a3mat4 offset = a3mat4_identity;
 
-		a3real4x4SetScale(scale.m, 0.5f);
+		a3real4x4SetScale(scale.m, 0.25f);
 
 		switch (demoMode->blendOp)
 		{
@@ -747,7 +747,7 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 			break;
 		case 1: //constant/copy, output = delta pose 2, index 3; still display delta pose 2 in control[0]
 		case 2: //negate/invert, output = -delta pose 1, index 2; still display delta pose 1 in control[0]
-			offset.m03 += 5.0f;
+			offset.m30 += 8.0f;
 			for (a3ui32 k = 0; k < demoMode->hierarchy_skel->numNodes; ++k) //hierarchy_bvh
 			{
 				a3mat4* selectedBaseMat;
@@ -756,8 +756,9 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 
 				// Scale down the matrix so the spheres aren't huge
 				a3mat4 newPosMat = a3mat4_identity;
-				a3real4x4Product(newPosMat.m, posMat->m, offset.m);
-				a3real4x4Product(newPosMat.m, posMat->m, scale.m);
+				a3mat4 tempPosMat = a3mat4_identity;
+				a3real4x4Product(tempPosMat.m, posMat->m, scale.m);
+				a3real4x4Product(newPosMat.m, offset.m, tempPosMat.m);
 
 				// If this is the node that's currently selected, draw it green, and also draw the corresponding node in the base pose as magenta
 				if (demoMode->currentExamineNode == k)
@@ -785,7 +786,7 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 		case 5: //lerp, output = lerp(delta pose 2, delta pose 3);  display both in control[0] and control[1], display u in text (controllable +/- 0.1, limited at 1.0)
 			for (a3ui32 i = 0; i < 2; i++)	// i is the control index
 			{
-				offset.m03 += 5.0f;
+				offset.m30 += 8.0f;
 				for (a3ui32 k = 0; k < demoMode->hierarchy_skel->numNodes; ++k) //hierarchy_bvh
 				{
 					a3mat4* selectedBaseMat;
@@ -794,8 +795,9 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 
 					// Scale down the matrix so the spheres aren't huge
 					a3mat4 newPosMat = a3mat4_identity;
-					a3real4x4Product(newPosMat.m, posMat->m, offset.m);
-					a3real4x4Product(newPosMat.m, posMat->m, scale.m);
+					a3mat4 tempPosMat = a3mat4_identity;
+					a3real4x4Product(tempPosMat.m, posMat->m, scale.m);
+					a3real4x4Product(newPosMat.m, offset.m, tempPosMat.m);
 
 					// If this is the node that's currently selected, draw it green, and also draw the corresponding node in the base pose as magenta
 					if (demoMode->currentExamineNode == k)
@@ -822,7 +824,7 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 		case 6: //catmull, output = catmull(1, 2, 3, "0"); display all in control[], u in text
 			for (a3ui32 i = 0; i < 4; i++)	// i is the control index
 			{
-				offset.m03 += 5.0f;
+				offset.m30 += 8.0f;
 				for (a3ui32 k = 0; k < demoMode->hierarchy_skel->numNodes; ++k) //hierarchy_bvh
 				{
 					a3mat4* selectedBaseMat;
@@ -831,8 +833,9 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 
 					// Scale down the matrix so the spheres aren't huge
 					a3mat4 newPosMat = a3mat4_identity;
-					a3real4x4Product(newPosMat.m, posMat->m, offset.m);
-					a3real4x4Product(newPosMat.m, posMat->m, scale.m);
+					a3mat4 tempPosMat = a3mat4_identity;
+					a3real4x4Product(tempPosMat.m, posMat->m, scale.m);
+					a3real4x4Product(newPosMat.m, offset.m, tempPosMat.m);
 
 					// If this is the node that's currently selected, draw it green, and also draw the corresponding node in the base pose as magenta
 					if (demoMode->currentExamineNode == k)
@@ -859,7 +862,7 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 		case 7: //deconcat, output = 3 - 1; display 3 and 1 in control[0,1]
 			for (a3ui32 i = 0; i < 2; i++)	// i is the control index
 			{
-				offset.m03 += 5.0f;
+				offset.m30 += 8.0f;
 				for (a3ui32 k = 0; k < demoMode->hierarchy_skel->numNodes; ++k) //hierarchy_bvh
 				{
 					a3mat4* selectedBaseMat;
@@ -868,8 +871,9 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 
 					// Scale down the matrix so the spheres aren't huge
 					a3mat4 newPosMat = a3mat4_identity;
-					a3real4x4Product(newPosMat.m, posMat->m, offset.m);
-					a3real4x4Product(newPosMat.m, posMat->m, scale.m);
+					a3mat4 tempPosMat = a3mat4_identity;
+					a3real4x4Product(tempPosMat.m, posMat->m, scale.m);
+					a3real4x4Product(newPosMat.m, offset.m, tempPosMat.m);
 
 					// If this is the node that's currently selected, draw it green, and also draw the corresponding node in the base pose as magenta
 					if (demoMode->currentExamineNode == k)
@@ -894,7 +898,7 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 			}
 			break;
 		case 8: //scale, output = delta pose 2; display 2 in control[0], u in text
-			offset.m03 += 5.0f;
+			offset.m30 += 8.0f;
 			for (a3ui32 k = 0; k < demoMode->hierarchy_skel->numNodes; ++k) //hierarchy_bvh
 			{
 				a3mat4* selectedBaseMat;
@@ -903,8 +907,9 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 
 				// Scale down the matrix so the spheres aren't huge
 				a3mat4 newPosMat = a3mat4_identity;
-				a3real4x4Product(newPosMat.m, posMat->m, offset.m);
-				a3real4x4Product(newPosMat.m, posMat->m, scale.m);
+				a3mat4 tempPosMat = a3mat4_identity;
+				a3real4x4Product(tempPosMat.m, posMat->m, scale.m);
+				a3real4x4Product(newPosMat.m, offset.m, tempPosMat.m);
 
 				// If this is the node that's currently selected, draw it green, and also draw the corresponding node in the base pose as magenta
 				if (demoMode->currentExamineNode == k)
@@ -930,7 +935,7 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 		case 9: //triangular, output = triangle(1,2,3); display in control[0,1,2], u1 and u2 in text, limited to u1+u2=1
 			for (a3ui32 i = 0; i < 3; i++)	// i is the control index
 			{
-				offset.m03 += 5.0f;
+				offset.m30 += 8.0f;
 				for (a3ui32 k = 0; k < demoMode->hierarchy_skel->numNodes; ++k) //hierarchy_bvh
 				{
 					a3mat4* selectedBaseMat;
@@ -939,8 +944,9 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 
 					// Scale down the matrix so the spheres aren't huge
 					a3mat4 newPosMat = a3mat4_identity;
-					a3real4x4Product(newPosMat.m, posMat->m, offset.m);
-					a3real4x4Product(newPosMat.m, posMat->m, scale.m);
+					a3mat4 tempPosMat = a3mat4_identity;
+					a3real4x4Product(tempPosMat.m, posMat->m, scale.m);
+					a3real4x4Product(newPosMat.m, offset.m, tempPosMat.m);
 
 					// If this is the node that's currently selected, draw it green, and also draw the corresponding node in the base pose as magenta
 					if (demoMode->currentExamineNode == k)
@@ -969,7 +975,7 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 		case 12: //bicubic: output = ((0123),(1230),(2301),(3012)); display all in controls; all 5 u's in text
 			for (a3ui32 i = 0; i < 4; i++)	// i is the control index
 			{
-				offset.m03 += 5.0f;
+				offset.m30 += 8.0f;
 				for (a3ui32 k = 0; k < demoMode->hierarchy_skel->numNodes; ++k) //hierarchy_bvh
 				{
 					a3mat4* selectedBaseMat;
@@ -978,8 +984,9 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 
 					// Scale down the matrix so the spheres aren't huge
 					a3mat4 newPosMat = a3mat4_identity;
-					a3real4x4Product(newPosMat.m, posMat->m, offset.m);
-					a3real4x4Product(newPosMat.m, posMat->m, scale.m);
+					a3mat4 tempPosMat = a3mat4_identity;
+					a3real4x4Product(tempPosMat.m, posMat->m, scale.m);
+					a3real4x4Product(newPosMat.m, offset.m, tempPosMat.m);
 
 					// If this is the node that's currently selected, draw it green, and also draw the corresponding node in the base pose as magenta
 					if (demoMode->currentExamineNode == k)
