@@ -71,15 +71,86 @@ void a3animation_input_keyCharPress(a3_DemoState const* demoState, a3_DemoMode1_
 		a3demoCtrlCaseIncLoop(demoMode->currentExamineHierarchyState, demoMode->numHierarchyStates, 'h');
 		a3demoCtrlCasesLoop(demoMode->currentExamineNode, demoMode->hierarchy_skel->numNodes, 'H', 'G'); //hierarchy_bvh
 		a3demoCtrlCaseIncLoop(demoMode->interpFunction, 4, '?');
+
+		a3demoCtrlCasesLoop(demoMode->blendOp, 13U, '|', '\\');
+		a3demoCtrlCasesLoop(demoMode->uValIndex, 6, 'M', 'N');
+	case '+':
+		switch (demoMode->blendOp)
+		{
+		case 4: //nearest, u modifier
+		case 5: //lerp, u modifier
+		case 6: //catmull, u modifier
+		case 8: //scale, u modifier
+			if (demoMode->uValIndex == 0)
+			{
+				demoMode->u = min(1.0f, demoMode->u + 0.1f);
+			}
+			break;
+		case 9: //triangular, u1, u2, (u0 not modifiable)
+			if (demoMode->uValIndex == 3) // u1
+			{
+				demoMode->u_1 = a3clamp(0.0f, 1.0f - demoMode->u_2, demoMode->u_1 + 0.1f);
+			}
+			else if (demoMode->uValIndex == 4) // u2
+			{
+				demoMode->u_1 = a3clamp(0.0f, 1.0f - demoMode->u_1, demoMode->u_2 + 0.1f);
+			}
+			demoMode->u_0 = 1.0f - demoMode->u_1 - demoMode->u_2;
+			break;
+		case 10: //bi-nearest, u, u1, u2
+		case 11: //bilinear, u, u1, u2
+			if (demoMode->uValIndex == 0 || demoMode->uValIndex >= 3)
+			{
+				demoMode->uVals[demoMode->uValIndex] = min(1.0f, demoMode->uVals[demoMode->uValIndex] + 0.1f);
+			}
+			break;
+		case 12: //bicubic, all values
+			demoMode->uVals[demoMode->uValIndex] = min(1.0f, demoMode->uVals[demoMode->uValIndex] + 0.1f);
+			break;
+		}
+	case '-':
+		switch (demoMode->blendOp)
+		{
+		case 4: //nearest, u modifier
+		case 5: //lerp, u modifier
+		case 6: //catmull, u modifier
+		case 8: //scale, u modifier
+			if (demoMode->uValIndex == 0)
+			{
+				demoMode->u = max(0.0f, demoMode->u + 0.1f);
+			}
+			break;
+		case 9: //triangular, u1, u2, (u0 not modifiable)
+			if (demoMode->uValIndex == 3) // u1
+			{
+				demoMode->u_1 = a3clamp(0.0f, 1.0f - demoMode->u_2, demoMode->u_1 - 0.1f);
+			}
+			else if (demoMode->uValIndex == 4) // u2
+			{
+				demoMode->u_1 = a3clamp(0.0f, 1.0f - demoMode->u_1, demoMode->u_2 - 0.1f);
+			}
+			demoMode->u_0 = 1.0f - demoMode->u_1 - demoMode->u_2;
+			break;
+		case 10: //bi-nearest, u, u1, u2
+		case 11: //bilinear, u, u1, u2
+			if (demoMode->uValIndex == 0 || demoMode->uValIndex >= 3)
+			{
+				demoMode->uVals[demoMode->uValIndex] = max(0.0f, demoMode->uVals[demoMode->uValIndex] - 0.1f);
+			}
+			break;
+		case 12: //bicubic, all values
+			demoMode->uVals[demoMode->uValIndex] = max(0.0f, demoMode->uVals[demoMode->uValIndex] - 0.1f);
+			break;
+		}
 	}
 }
 
 void a3animation_input_keyCharHold(a3_DemoState const* demoState, a3_DemoMode1_Animation* demoMode, a3i32 const asciiKey, a3i32 const state)
 {
-//	switch (asciiKey)
-//	{
-//
-//	}
+	//	switch (asciiKey)
+	//	{
+	//
+	//	}
 }
 
 
@@ -113,7 +184,7 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 		// transform to world space
 		a3real4Real4x4Mul(projector->sceneObject->modelMat.m, coord.v);
 	}
-	
+
 	// move camera
 	a3demo_input_controlProjector(demoState, projector,
 		dt, projector->ctrlMoveSpeed, projector->ctrlRotateSpeed, projector->ctrlZoomSpeed);

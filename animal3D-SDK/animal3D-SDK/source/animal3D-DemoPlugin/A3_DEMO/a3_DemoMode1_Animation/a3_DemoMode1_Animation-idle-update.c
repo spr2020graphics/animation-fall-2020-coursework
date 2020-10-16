@@ -180,31 +180,29 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 	{
 		case 0: //identity, output = base pose
 			break;
-		case 1: //construct, output = delta pose 1, index 2
+		case 1: //constant/copy, output = delta pose 2, index 3; still display delta pose 2 in control[0]
 			break;
-		case 2: //constant/copy, output = delta pose 2, index 3; still display delta pose 2 in control[0]
+		case 2: //negate/invert, output = -delta pose 1, index 2; still display delta pose 1 in control[0]
 			break;
-		case 3: //negate/invert, output = -delta pose 1, index 2; still display delta pose 1 in control[0]
+		case 3: //concatenate, output = delta pose 1 + delta pose 2; display both in control[0] and control[1]
 			break;
-		case 4: //concatenate, output = delta pose 1 + delta pose 2; display both in control[0] and control[1]
+		case 4: //nearest, output = nearest(delta pose 2, delta pose 3); display both in control[0] and control[1], display u in text (controllable +/- 0.1, limited at 1.0)
 			break;
-		case 5: //nearest, output = nearest(delta pose 2, delta pose 3); display both in control[0] and control[1], display u in text (controllable +/- 0.1, limited at 1.0)
+		case 5: //lerp, output = lerp(delta pose 2, delta pose 3);  display both in control[0] and control[1], display u in text (controllable +/- 0.1, limited at 1.0)
 			break;
-		case 6: //lerp, output = lerp(delta pose 2, delta pose 3);  display both in control[0] and control[1], display u in text (controllable +/- 0.1, limited at 1.0)
+		case 6: //catmull, output = catmull(1, 2, 3, "0"); display all in control[], u in text
 			break;
-		case 7: //catmull, output = catmull(1, 2, 3, "0"); display all in control[], u in text
+		case 7: //deconcat, output = 3 - 1; display 3 and 1 in control[0,1]
 			break;
-		case 8: //deconcat, output = 3 - 1; display 3 and 1 in control[0,1]
+		case 8: //scale, output = delta pose 2; display 2 in control[0], u in text
 			break;
-		case 9: //scale, output = delta pose 2; display 2 in control[0], u in text
+		case 9: //triangular, output = triangle(1,2,3); display in control[0,1,2], u1 and u2 in text, limited to u1+u2=1
 			break;
-		case 10: //triangular, output = triangle(1,2,3); display in control[0,1,2], u1 and u2 in text, limited to u1+u2=1
+		case 10: //bi-nearest, output = ("0', 1, 2, 3); display all in controls; u0, u1, u in text
 			break;
-		case 11: //bi-nearest, output = ("0', 1, 2, 3); display all in controls; u0, u1, u in text
+		case 11: //bilinear, output = ("0', 1, 2, 3); display all in controls; u0, u1, u in text
 			break;
-		case 12: //bilinear, output = ("0', 1, 2, 3); display all in controls; u0, u1, u in text
-			break;
-		case 13: //bicubic: output = ((0123),(1230),(2301),(3012)); display all in controls; all 5 u's in text
+		case 12: //bicubic: output = ((0123),(1230),(2301),(3012)); display all in controls; all 5 u's in text
 			break;
 	}
 /*
