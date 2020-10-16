@@ -73,7 +73,7 @@ void a3animation_input_keyCharPress(a3_DemoState const* demoState, a3_DemoMode1_
 		a3demoCtrlCaseIncLoop(demoMode->interpFunction, 4, '?');
 
 		a3demoCtrlCasesLoop(demoMode->blendOp, 13U, '|', '\\');
-		a3demoCtrlCasesLoop(demoMode->uValIndex, 6, 'M', 'N');
+		a3demoCtrlCasesLoop(demoMode->uValIndex, 5, 'M', 'N');
 	case '+':
 		switch (demoMode->blendOp)
 		{
