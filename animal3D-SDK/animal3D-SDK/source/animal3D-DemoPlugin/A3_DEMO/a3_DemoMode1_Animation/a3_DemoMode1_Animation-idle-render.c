@@ -168,6 +168,14 @@ void a3animation_render_skeletal_controls(a3_DemoState const* demoState, a3_Demo
 		"Set Interp Function: '?' (%d selected)",	//switch examined node
 		demoMode->interpFunction);
 
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"Set Blend Op: '<- \\ / | ->' (%d selected)",	//switch examined node
+		demoMode->blendOp);
+
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"U Values: u (%.1f), u_n1 (%.1f), u_0 (%.1f), u_1 (%.1f), u_2 (%.1f) | Selected: %d",	//switch examined node
+		demoMode->u, demoMode->u_n1, demoMode->u_0, demoMode->u_1, demoMode->u_2, demoMode->uValIndex);
+
 	//as much data as we can pull from the transform. Tried restoring the pose data, didn't quite work.
 	textOffset += textOffsetDelta;
 	a3_SpatialPose* basePose = demoMode->hierarchyState_skel_base->objectHPose->spatialPose + demoMode->currentExamineNode;
