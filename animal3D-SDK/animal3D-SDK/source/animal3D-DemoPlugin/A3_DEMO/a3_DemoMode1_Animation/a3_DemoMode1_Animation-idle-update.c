@@ -340,8 +340,60 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 			a3kinematicsSolveForward(&control[3]);
 			break;
 		case 11: //bilinear, output = ("0', 1, 2, 3); display all in controls; u0, u1, u in text
+			a3hierarchyPoseOpBiLerp(output->sampleHPose,
+				&poseGroup->hierarchyPosePool[1],
+				&poseGroup->hierarchyPosePool[2],
+				&poseGroup->hierarchyPosePool[3],
+				&poseGroup->hierarchyPosePool[4],
+				demoMode->u_0, demoMode->u_1, demoMode->u, hierarchy->numNodes);
+
+			a3hierarchyPoseOpCopy(control[0].sampleHPose, &poseGroup->hierarchyPosePool[1], hierarchy->numNodes);
+			a3hierarchyPoseOpConcat(control[0].localHPose, &poseGroup->hierarchyPosePool[0], control[0].sampleHPose, hierarchy->numNodes);
+			a3hierarchyPoseConvert(control[0].localHPose, hierarchy->numNodes, poseGroup->channels, poseGroup->eulerOrders);
+			a3kinematicsSolveForward(&control[0]);
+
+			a3hierarchyPoseOpCopy(control[1].sampleHPose, &poseGroup->hierarchyPosePool[2], hierarchy->numNodes);
+			a3hierarchyPoseOpConcat(control[1].localHPose, &poseGroup->hierarchyPosePool[0], control[1].sampleHPose, hierarchy->numNodes);
+			a3hierarchyPoseConvert(control[1].localHPose, hierarchy->numNodes, poseGroup->channels, poseGroup->eulerOrders);
+			a3kinematicsSolveForward(&control[1]);
+
+			a3hierarchyPoseOpCopy(control[2].sampleHPose, &poseGroup->hierarchyPosePool[3], hierarchy->numNodes);
+			a3hierarchyPoseOpConcat(control[2].localHPose, &poseGroup->hierarchyPosePool[0], control[2].sampleHPose, hierarchy->numNodes);
+			a3hierarchyPoseConvert(control[2].localHPose, hierarchy->numNodes, poseGroup->channels, poseGroup->eulerOrders);
+			a3kinematicsSolveForward(&control[2]);
+
+			a3hierarchyPoseOpCopy(control[3].sampleHPose, &poseGroup->hierarchyPosePool[4], hierarchy->numNodes);
+			a3hierarchyPoseOpConcat(control[3].localHPose, &poseGroup->hierarchyPosePool[0], control[3].sampleHPose, hierarchy->numNodes);
+			a3hierarchyPoseConvert(control[3].localHPose, hierarchy->numNodes, poseGroup->channels, poseGroup->eulerOrders);
+			a3kinematicsSolveForward(&control[3]);
 			break;
 		case 12: //bicubic: output = ((0123),(1230),(2301),(3012)); display all in controls; all 5 u's in text
+			a3hierarchyPoseOpBiCubic(output->sampleHPose,
+				&poseGroup->hierarchyPosePool[1], &poseGroup->hierarchyPosePool[2], &poseGroup->hierarchyPosePool[3], &poseGroup->hierarchyPosePool[4],
+				&poseGroup->hierarchyPosePool[2], &poseGroup->hierarchyPosePool[3], &poseGroup->hierarchyPosePool[4], &poseGroup->hierarchyPosePool[1],
+				&poseGroup->hierarchyPosePool[3], &poseGroup->hierarchyPosePool[4], &poseGroup->hierarchyPosePool[1], &poseGroup->hierarchyPosePool[2],
+				&poseGroup->hierarchyPosePool[4], &poseGroup->hierarchyPosePool[1], &poseGroup->hierarchyPosePool[2], &poseGroup->hierarchyPosePool[3],
+				demoMode->u_n1, demoMode->u_0, demoMode->u_1, demoMode->u_2, demoMode->u, hierarchy->numNodes);
+
+			a3hierarchyPoseOpCopy(control[0].sampleHPose, &poseGroup->hierarchyPosePool[1], hierarchy->numNodes);
+			a3hierarchyPoseOpConcat(control[0].localHPose, &poseGroup->hierarchyPosePool[0], control[0].sampleHPose, hierarchy->numNodes);
+			a3hierarchyPoseConvert(control[0].localHPose, hierarchy->numNodes, poseGroup->channels, poseGroup->eulerOrders);
+			a3kinematicsSolveForward(&control[0]);
+
+			a3hierarchyPoseOpCopy(control[1].sampleHPose, &poseGroup->hierarchyPosePool[2], hierarchy->numNodes);
+			a3hierarchyPoseOpConcat(control[1].localHPose, &poseGroup->hierarchyPosePool[0], control[1].sampleHPose, hierarchy->numNodes);
+			a3hierarchyPoseConvert(control[1].localHPose, hierarchy->numNodes, poseGroup->channels, poseGroup->eulerOrders);
+			a3kinematicsSolveForward(&control[1]);
+
+			a3hierarchyPoseOpCopy(control[2].sampleHPose, &poseGroup->hierarchyPosePool[3], hierarchy->numNodes);
+			a3hierarchyPoseOpConcat(control[2].localHPose, &poseGroup->hierarchyPosePool[0], control[2].sampleHPose, hierarchy->numNodes);
+			a3hierarchyPoseConvert(control[2].localHPose, hierarchy->numNodes, poseGroup->channels, poseGroup->eulerOrders);
+			a3kinematicsSolveForward(&control[2]);
+
+			a3hierarchyPoseOpCopy(control[3].sampleHPose, &poseGroup->hierarchyPosePool[4], hierarchy->numNodes);
+			a3hierarchyPoseOpConcat(control[3].localHPose, &poseGroup->hierarchyPosePool[0], control[3].sampleHPose, hierarchy->numNodes);
+			a3hierarchyPoseConvert(control[3].localHPose, hierarchy->numNodes, poseGroup->channels, poseGroup->eulerOrders);
+			a3kinematicsSolveForward(&control[3]);
 			break;
 	}
 	a3hierarchyPoseOpConcat(output->localHPose, &poseGroup->hierarchyPosePool[0], output->sampleHPose, hierarchy->numNodes);
