@@ -741,7 +741,6 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 
 		a3real4x4SetScale(scale.m, 0.25f);
 
-		/*
 		switch (demoMode->blendOp)
 		{
 		case 0: //identity, output = base pose
@@ -1012,7 +1011,6 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 			}
 			break;
 		}
-		*/
 
 		//Draw output state, drawn at center
 		for (a3ui32 k = 0; k < demoMode->hierarchy_skel->numNodes; ++k) //hierarchy_bvh
