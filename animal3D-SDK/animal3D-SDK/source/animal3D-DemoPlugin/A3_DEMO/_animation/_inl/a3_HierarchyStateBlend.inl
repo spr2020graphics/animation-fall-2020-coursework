@@ -202,7 +202,9 @@ inline a3_SpatialPose* a3spatialPoseOpNegate(a3_SpatialPose* pose_out, a3_Spatia
 {
 	a3real3GetNegative(pose_out->orientation.v, pose_in->orientation.v);
 	a3real3GetNegative(pose_out->position.v,	pose_in->position.v);
-	a3real3GetNegative(pose_out->scale.v,		pose_in->scale.v);
+	pose_out->scale.x = 1.0f / pose_in->scale.x;
+	pose_out->scale.y = 1.0f / pose_in->scale.y;
+	pose_out->scale.z = 1.0f / pose_in->scale.z;
 	a3real4GetNegative(pose_out->rotation.v,    pose_in->rotation.v);
 
 	return pose_out;
