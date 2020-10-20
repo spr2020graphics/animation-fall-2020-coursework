@@ -105,7 +105,7 @@ struct a3_SpatialPose
 {
 	a3mat4 transform;
 	a3vec3 orientation, scale, position;
-	a3vec4 rotation; //Quaternion representation of rotation
+	a3quat rotation; //Quaternion representation of rotation
 };
 
 

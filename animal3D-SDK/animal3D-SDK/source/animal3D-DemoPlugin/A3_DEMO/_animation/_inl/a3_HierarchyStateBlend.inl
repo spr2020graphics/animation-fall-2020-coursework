@@ -47,7 +47,8 @@ inline a3_SpatialPose* a3spatialPoseOpIdentity(a3_SpatialPose* pose_out)
 	pose_out->orientation = a3vec3_zero;
 	pose_out->scale = a3vec3_one;
 	pose_out->position = a3vec3_zero;
-	pose_out->rotation = a3vec4_w;
+	pose_out->rotation = a3quat_identity;
+	pose_out->rotation.w = 1.0f;
 	// done
 	return pose_out;
 }
@@ -62,7 +63,7 @@ inline a3_SpatialPose* a3spatialPoseOpInit(a3_SpatialPose* pose_out, a3vec3 scal
 	orientation.z = (a3real) fmod(orientation.z, 360.0f);
 	pose_out->orientation = orientation;
 	pose_out->position = translation;
-	a3quatSetEulerXYZ(pose_out->rotation.v, orientation.x, orientation.y, orientation.z);
+	a3quatSetEulerXYZ(pose_out->rotation.q, orientation.x, orientation.y, orientation.z);
 
 	//a3spatialPoseConvert(pose_out->transform.m, pose_out, a3poseChannel_translate_xyz | a3poseChannel_orient_xyz | a3poseChannel_scale_xyz, 0); //how to handle different euler orders?
 	return pose_out;
@@ -110,7 +111,7 @@ inline a3_SpatialPose* a3spatialPoseOpLERP(a3_SpatialPose* pose_out, a3_SpatialP
 	a3real3Lerp(pose_out->orientation.v, pose0->orientation.v, pose1->orientation.v, u);
 	a3real3Lerp(pose_out->scale.v, pose0->scale.v, pose1->scale.v, u);
 	a3real3Lerp(pose_out->position.v, pose0->position.v, pose1->position.v, u);
-	a3real4Slerp(pose_out->rotation.v, pose0->rotation.v, pose1->rotation.v, u);
+	a3quatSlerp(pose_out->rotation.q, pose0->rotation.q, pose1->rotation.q, u);
 
 	return pose_out;
 }
@@ -122,7 +123,7 @@ inline a3_SpatialPose* a3spatialPoseOpCubic(a3_SpatialPose* spatialPose_out, a3_
 	a3real3CatmullRom(spatialPose_out->orientation.v, spatialPose_Prev->orientation.v, spatialPose_0->orientation.v, spatialPose_1->orientation.v, spatialPose_Next->orientation.v, u);
 	a3real3CatmullRom(spatialPose_out->scale.v, spatialPose_Prev->scale.v, spatialPose_0->scale.v, spatialPose_1->scale.v, spatialPose_Next->scale.v, u);
 	a3real3CatmullRom(spatialPose_out->position.v, spatialPose_Prev->position.v, spatialPose_0->position.v, spatialPose_1->position.v, spatialPose_Next->position.v, u);
-	a3real4CatmullRom(spatialPose_out->rotation.v, spatialPose_Prev->rotation.v, spatialPose_0->rotation.v, spatialPose_1->rotation.v, spatialPose_Next->rotation.v, u);
+	a3real4CatmullRom(spatialPose_out->rotation.qv, spatialPose_Prev->rotation.qv, spatialPose_0->rotation.qv, spatialPose_1->rotation.qv, spatialPose_Next->rotation.qv, u);	//Sketchy, but there's no quaternion catmull rom (qv is the vector portion of a quat)
 
 	return spatialPose_out;
 }
@@ -205,7 +206,7 @@ inline a3_SpatialPose* a3spatialPoseOpNegate(a3_SpatialPose* pose_out, a3_Spatia
 	pose_out->scale.x = 1.0f / pose_in->scale.x;
 	pose_out->scale.y = 1.0f / pose_in->scale.y;
 	pose_out->scale.z = 1.0f / pose_in->scale.z;
-	a3real4GetNegative(pose_out->rotation.v,    pose_in->rotation.v);
+	a3quatGetConjugated(pose_out->rotation.q, pose_in->rotation.q);	// the conjugate is the inverse
 
 	return pose_out;
 }
@@ -216,7 +217,7 @@ inline a3_SpatialPose* a3spatialPoseOpConcat(a3_SpatialPose* pose_out, a3_Spatia
 	a3real3Sum(pose_out->position.v, pose0->position.v, pose1->position.v);
 	a3real3Sum(pose_out->orientation.v, pose0->orientation.v, pose1->orientation.v);
 	a3real3ProductComp(pose_out->scale.v, pose0->scale.v, pose1->scale.v);
-	a3real4ProductComp(pose_out->rotation.v, pose0->rotation.v, pose1->rotation.v);
+	a3quatProduct(pose_out->rotation.q, pose0->rotation.q, pose1->rotation.q);
 
 	return pose_out;
 }
@@ -227,7 +228,7 @@ inline a3_SpatialPose* a3spatialPoseOpDeconcat(a3_SpatialPose* pose_out, a3_Spat
 	a3real3Diff(pose_out->position.v, pose0->position.v, pose1->position.v);
 	a3real3Diff(pose_out->orientation.v, pose0->orientation.v, pose1->orientation.v);
 	a3real3QuotientComp(pose_out->scale.v, pose0->scale.v, pose1->scale.v);
-	a3real4QuotientComp(pose_out->rotation.v, pose0->rotation.v, pose1->rotation.v);
+	a3real4QuotientComp(pose_out->rotation.qv, pose0->rotation.qv, pose1->rotation.qv); // This is sketchy, but I don't see any sort of a3quat division or reversal
 
 	return pose_out;
 }
@@ -237,7 +238,9 @@ inline a3_SpatialPose* a3spatialPoseOpDeconcat(a3_SpatialPose* pose_out, a3_Spat
 // data-based reset/identity
 inline a3_SpatialPose a3spatialPoseDOpIdentity()
 {
-	a3_SpatialPose const result = { a3mat4_identity, a3vec3_zero, a3vec3_one, a3vec3_zero, a3vec4_w };
+	a3_SpatialPose result = { a3mat4_identity, a3vec3_zero, a3vec3_one, a3vec3_zero, a3quat_identity };
+	result.rotation.w = 1.0f;	//ensuring this is 1, always
+
 	return result;
 }
 
