@@ -42,17 +42,6 @@ extern "C"
 
 #endif	// __cplusplus
 
-typedef struct a3_SpatialBlendNode a3_SpatialBlendNode;
-typedef void (*a3_SpatialBlendOp)(a3_SpatialPose* pose, ...);
-typedef void (*a3_SpatialBlendExec)(a3_SpatialBlendNode* node_in);
-
-
-
-struct a3_SpatialBlendNode
-{
-	a3ui32 in;
-};
-
 //-----------------------------------------------------------------------------
 
 // pointer-based reset/identity operation for single spatial pose

@@ -158,7 +158,7 @@
     </ClCompile>
     <ClCompile Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\_animation\_src\a3_KeyframeAnimationIO.c">
       <Filter>Source Files\common\A3_DEMO\_animation\_src</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\a3_DemoMode1_Animation\a3_DemoMode1_Animation-idle-input.c">
       <Filter>Source Files\common\A3_DEMO\a3_DemoMode1_Animation</Filter>
     </ClCompile>
@@ -222,6 +222,9 @@
       <Filter>Header Files\A3_DEMO</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\_animation\a3_KeyframeAnimationIO.h">
+      <Filter>Header Files\A3_DEMO\_animation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\_animation\a3_HierarchyBlendNode.h">
       <Filter>Header Files\A3_DEMO\_animation</Filter>
     </ClInclude>
   </ItemGroup>
