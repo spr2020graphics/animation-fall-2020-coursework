@@ -15,4 +15,5 @@ void a3spatialBlendExec0C(a3_SpatialBlendNode* node_inout)
 /// <param name="node_inout"></param>
 void a3spatialBlendExec1C(a3_SpatialBlendNode* node_inout)
 {
+	node_inout->operation(node_inout->pose, node_inout->controls[0]);
 }

@@ -22,7 +22,7 @@ struct a3_SpatialBlendNode
 struct a3_SpatialBlendTree
 {
 	a3_Hierarchy* hierarchy;
-	a3ui32 leafIndices;
+	a3ui32* leafIndices;
 
 	/*
 	LEAVES 1 5 18 34
