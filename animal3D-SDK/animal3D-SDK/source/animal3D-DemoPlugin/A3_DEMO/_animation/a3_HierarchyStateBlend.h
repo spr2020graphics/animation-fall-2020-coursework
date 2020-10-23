@@ -97,6 +97,9 @@ a3_SpatialPose* a3spatialPoseOpConcat(a3_SpatialPose* pose_out, a3_SpatialPose* 
 
 // pointer-based deconcat
 a3_SpatialPose* a3spatialPoseOpDeconcat(a3_SpatialPose* pose_out, a3_SpatialPose* const pose0, a3_SpatialPose* const pose1);
+
+// pointer-based cubic ease in-out, using bezier
+a3_SpatialPose* a3spatialPoseOpEaseInOut(a3_SpatialPose* pose_out, a3_SpatialPose* const pose0, a3_SpatialPose* const pose1, const a3real u);
 //-----------------------------------------------------------------------------
 
 // data-based reset/identity

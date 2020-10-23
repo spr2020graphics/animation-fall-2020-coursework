@@ -233,6 +233,15 @@ inline a3_SpatialPose* a3spatialPoseOpDeconcat(a3_SpatialPose* pose_out, a3_Spat
 	return pose_out;
 }
 
+inline a3_SpatialPose* a3spatialPoseOpEaseInOut(a3_SpatialPose* pose_out, a3_SpatialPose* const pose0, a3_SpatialPose* const pose1, const a3real u)
+{
+	a3real3Bezier1(pose_out->position.v, pose0->position.v, pose1->position.v, u);
+	a3real3Bezier1(pose_out->orientation.v, pose0->orientation.v, pose1->orientation.v, u);
+	a3real3Bezier1(pose_out->scale.v, pose0->scale.v, pose1->scale.v, u);
+
+	return pose_out;
+}
+
 //-----------------------------------------------------------------------------
 
 // data-based reset/identity
