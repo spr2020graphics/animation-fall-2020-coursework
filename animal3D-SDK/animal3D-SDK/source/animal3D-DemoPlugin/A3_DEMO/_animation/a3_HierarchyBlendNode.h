@@ -1,3 +1,8 @@
+/*
+	Animation Framework Addons by Scott Dagen and Cameron Schneider
+	a3_HierarchyBlendNode.h: declarations for blend trees and blend nodes.
+*/
+
 #ifndef A3_HIERARCHYBLENDNODE_H
 
 #include "a3_SpatialPose.h"
@@ -9,6 +14,12 @@ typedef void (*a3_SpatialBlendExec)(a3_SpatialBlendNode* node_in);
 
 void a3spatialBlendExec0C(a3_SpatialBlendNode* node_inout);
 void a3spatialBlendExec1C(a3_SpatialBlendNode* node_inout);
+void a3spatialBlendExec1C1I(a3_SpatialBlendNode* node_inout);
+void a3spatialBlendExec2C(a3_SpatialBlendNode* node_inout);
+void a3spatialBlendExec2C1I(a3_SpatialBlendNode* node_inout);
+void a3spatialBlendExec3C2I(a3_SpatialBlendNode* node_inout);
+void a3spatialBlendExec4C1I(a3_SpatialBlendNode* node_inout);
+void a3spatialBlendExec4C3I(a3_SpatialBlendNode* node_inout);
 
 struct a3_SpatialBlendNode
 {
