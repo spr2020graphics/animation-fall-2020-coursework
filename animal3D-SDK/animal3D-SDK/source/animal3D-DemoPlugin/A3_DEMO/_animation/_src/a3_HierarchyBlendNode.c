@@ -73,7 +73,7 @@ void a3spatialBlendExec4C1I(a3_SpatialBlendNode* node_inout)
 }
 
 /// <summary>
-/// Binearest
+/// Binearest, Bilinear
 /// </summary>
 /// <param name="node_inout"></param>
 void a3spatialBlendExec4C3I(a3_SpatialBlendNode* node_inout)
@@ -83,4 +83,14 @@ void a3spatialBlendExec4C3I(a3_SpatialBlendNode* node_inout)
 		node_inout->controls[1],
 		node_inout->controls[2],
 		node_inout->controls[3], &node_inout->uVals[0], &node_inout->uVals[1], &node_inout->uVals[2]);
+}
+
+void a3spatialBlendExec16C5I(a3_SpatialBlendNode* node_inout)
+{
+	node_inout->operation(node_inout->pose,
+		node_inout->controls[0 * 4 + 0], node_inout->controls[0 * 4 + 1], node_inout->controls[0 * 4 + 2], node_inout->controls[0 * 4 + 3],
+		node_inout->controls[1 * 4 + 0], node_inout->controls[1 * 4 + 1], node_inout->controls[1 * 4 + 2], node_inout->controls[1 * 4 + 3],
+		node_inout->controls[2 * 4 + 0], node_inout->controls[2 * 4 + 1], node_inout->controls[2 * 4 + 2], node_inout->controls[2 * 4 + 3],
+		node_inout->controls[3 * 4 + 0], node_inout->controls[3 * 4 + 1], node_inout->controls[3 * 4 + 2], node_inout->controls[3 * 4 + 3],
+		&node_inout->uVals[0], &node_inout->uVals[1], &node_inout->uVals[2], &node_inout->uVals[3], &node_inout->uVals[4]);
 }

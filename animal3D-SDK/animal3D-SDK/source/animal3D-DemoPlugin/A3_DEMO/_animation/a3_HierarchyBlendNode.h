@@ -20,6 +20,7 @@ void a3spatialBlendExec2C1I(a3_SpatialBlendNode* node_inout);
 void a3spatialBlendExec3C2I(a3_SpatialBlendNode* node_inout);
 void a3spatialBlendExec4C1I(a3_SpatialBlendNode* node_inout);
 void a3spatialBlendExec4C3I(a3_SpatialBlendNode* node_inout);
+void a3spatialBlendExec16C5I(a3_SpatialBlendNode* node_inout);
 
 struct a3_SpatialBlendNode
 {
