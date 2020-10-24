@@ -5,8 +5,9 @@
 
 #ifndef A3_HIERARCHYBLENDNODE_H
 
-#include "a3_SpatialPose.h"
+#include "a3_HierarchyState.h"
 #include "a3_Hierarchy.h"
+#include "a3_KeyframeAnimation.h"
 
 typedef struct a3_SpatialBlendNode a3_SpatialBlendNode;
 typedef void (*a3_SpatialBlendOp)(a3_SpatialPose* pose, ...);
@@ -29,12 +30,14 @@ struct a3_SpatialBlendNode
 	a3_SpatialBlendExec exec;
 	a3_SpatialPose* pose;
 	a3_SpatialPose* controls[16];
+	a3_Clip* controlClips[16];
 };
 
 struct a3_SpatialBlendTree
 {
 	a3_Hierarchy* hierarchy;
 	a3ui32* leafIndices;
+	a3_SpatialBlendNode* blendNodes;
 
 	/*
 	LEAVES 1 5 18 34
@@ -42,6 +45,39 @@ struct a3_SpatialBlendTree
 	5 BLENDNODE LERP CLIP skel CLIP fish 0.5 END
 	6 BLENDNODE SCALE NODE 5 CONTROL 0.5
 	*/
+};
+
+///Hierarchy Version
+
+typedef struct a3_HierarchyBlendNode a3_HierarchyBlendNode;
+typedef void (*a3_HierarchyBlendOp)(a3_HierarchyPose* pose, ...);
+typedef void (*a3_HierarchyBlendExec)(a3_HierarchyBlendNode* node_in);
+
+void a3HierarchyBlendExec0C(a3_HierarchyBlendNode* node_inout, const a3ui32 nodeCount);
+void a3HierarchyBlendExec1C(a3_HierarchyBlendNode* node_inout, const a3ui32 nodeCount);
+void a3HierarchyBlendExec1C1I(a3_HierarchyBlendNode* node_inout, const a3ui32 nodeCount);
+void a3HierarchyBlendExec2C(a3_HierarchyBlendNode* node_inout, const a3ui32 nodeCount);
+void a3HierarchyBlendExec2C1I(a3_HierarchyBlendNode* node_inout, const a3ui32 nodeCount);
+void a3HierarchyBlendExec3C2I(a3_HierarchyBlendNode* node_inout, const a3ui32 nodeCount);
+void a3HierarchyBlendExec4C1I(a3_HierarchyBlendNode* node_inout, const a3ui32 nodeCount);
+void a3HierarchyBlendExec4C3I(a3_HierarchyBlendNode* node_inout, const a3ui32 nodeCount);
+void a3HierarchyBlendExec16C5I(a3_HierarchyBlendNode* node_inout, const a3ui32 nodeCount);
+
+struct a3_HierarchyBlendNode
+{
+	a3f32* uVals[8];
+	a3_HierarchyBlendOp operation;
+	a3_HierarchyBlendExec exec;
+	a3_HierarchyPose* pose;
+	a3_HierarchyPose* controls[16];
+	a3_Clip* controlClips[16];
+};
+
+struct a3_HierarchyBlendTree
+{
+	a3_Hierarchy* hierarchy;
+	a3ui32* leafIndices;
+	a3_HierarchyBlendNode* blendNodes;
 };
 
 #endif // !A3_HIERARCHYBLENDNODE_H
