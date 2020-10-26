@@ -242,6 +242,80 @@ inline a3_SpatialPose* a3spatialPoseOpEaseInOut(a3_SpatialPose* pose_out, a3_Spa
 	return pose_out;
 }
 
+inline a3_SpatialPose* a3spatialPoseOpConvert(a3_SpatialPose* pose_inout, const a3_SpatialPoseEulerOrder order)
+{
+	//create translate matrix. There's probably an a3 call for this, but it works.
+	a3mat4 mat_out = a3mat4_identity;
+
+	a3mat4 translate = a3mat4_identity;
+	a3vec4 spatial_translate;
+	spatial_translate.xyz = pose_inout->position;
+	spatial_translate.w = 1;
+	translate.v3 = spatial_translate;
+
+	//create rotation matrix
+	a3mat4 rotate = a3mat4_identity;
+	a3mat4 xRot, yRot, zRot, tmp;
+
+	//initialize rotation matrices
+	xRot = a3mat4_identity;
+	a3real4x4SetRotateX(xRot.m, pose_inout->orientation.x);
+	yRot = a3mat4_identity;
+	a3real4x4SetRotateY(yRot.m, pose_inout->orientation.y);
+	zRot = a3mat4_identity;
+	a3real4x4SetRotateZ(zRot.m, pose_inout->orientation.z);
+	tmp = a3mat4_identity;
+
+	//concatenate rotation matrices. xyz and zyx have shortcuts
+	switch (order)
+	{
+	case a3poseEulerOrder_xyz:
+		a3real4x4SetRotateXYZ(rotate.m, pose_inout->orientation.x, pose_inout->orientation.y, pose_inout->orientation.z);
+		break;
+	case a3poseEulerOrder_zyx:
+		a3real4x4SetRotateZYX(rotate.m, pose_inout->orientation.x, pose_inout->orientation.y, pose_inout->orientation.z);
+		break;
+	case a3poseEulerOrder_zxy:
+		a3real4x4Product(tmp.m, xRot.m, yRot.m);
+		a3real4x4Product(rotate.m, zRot.m, tmp.m);
+		break;
+	case a3poseEulerOrder_yxz:
+		a3real4x4Product(tmp.m, xRot.m, zRot.m);
+		a3real4x4Product(rotate.m, yRot.m, tmp.m);
+		break;
+	case a3poseEulerOrder_xzy:
+		a3real4x4Product(tmp.m, zRot.m, yRot.m);
+		a3real4x4Product(rotate.m, xRot.m, tmp.m);
+		break;
+	case a3poseEulerOrder_yzx:
+		a3real4x4Product(tmp.m, zRot.m, xRot.m);
+		a3real4x4Product(rotate.m, yRot.m, tmp.m);
+	}
+
+	//create scale matrix
+	a3mat4 scale = a3mat4_identity;
+	scale.m00 = pose_inout->scale.x;
+	scale.m11 = pose_inout->scale.y;
+	scale.m22 = pose_inout->scale.z;
+	// Algorithm in slides
+
+	//form TRS matrix
+	a3mat4 rs;
+	a3real4x4Product(rs.m, rotate.m, scale.m);
+	a3real4x4Product(mat_out.m, translate.m, rs.m);
+
+	a3real4x4SetReal4x4(pose_inout->transform.m, mat_out.m);
+
+	return pose_inout;
+}
+
+inline a3mat4* a3OpForwardKinematics(a3mat4* const objectTransform_out, a3_Hierarchy* const hierarchy, a3mat4* const localTransform)
+{
+	
+
+	return objectTransform_out;
+}
+
 //-----------------------------------------------------------------------------
 
 // data-based reset/identity
@@ -571,6 +645,26 @@ inline a3_HierarchyPose* a3hierarchyPoseOpScale(a3_HierarchyPose* pose_out, a3_H
 // pointer-based const operation for hierarchical pose
 inline a3_HierarchyPose* a3hierarchyPoseOpConst(a3_HierarchyPose* pose_inout)
 {
+	return pose_inout;
+}
+
+inline a3_HierarchyPose* a3hierarchyPoseOpEaseInOut(a3_HierarchyPose* pose_out, a3_HierarchyPose* const pose0, a3_HierarchyPose* const pose1, const a3real u, const a3ui32 nodeCount)
+{
+	for (a3ui32 i = 0; i < nodeCount; i++)
+	{
+		a3spatialPoseOpEaseInOut(&pose_out->spatialPose[i], &pose0->spatialPose[i], &pose1->spatialPose[i], u);
+	}
+
+	return pose_out;
+}
+
+inline a3_HierarchyPose* a3hierarchyPoseOpConvert(a3_HierarchyPose* pose_inout, const a3_SpatialPoseEulerOrder order, const a3ui32 nodeCount)
+{
+	for (a3ui32 i = 0; i < nodeCount; i++)
+	{
+		a3spatialPoseOpConvert(&pose_inout->spatialPose[i], order);
+	}
+
 	return pose_inout;
 }
 //-----------------------------------------------------------------------------
