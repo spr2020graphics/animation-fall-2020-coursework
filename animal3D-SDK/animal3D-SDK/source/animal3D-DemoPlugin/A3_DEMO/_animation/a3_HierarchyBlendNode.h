@@ -10,6 +10,7 @@
 #include "a3_KeyframeAnimation.h"
 
 typedef struct a3_SpatialBlendNode a3_SpatialBlendNode;
+typedef struct a3_SpatialBlendTree a3_SpatialBlendTree;
 typedef void (*a3_SpatialBlendOp)(a3_SpatialPose* pose, ...);
 typedef void (*a3_SpatialBlendExec)(a3_SpatialBlendNode* node_in);
 
@@ -50,6 +51,7 @@ struct a3_SpatialBlendTree
 ///Hierarchy Version
 
 typedef struct a3_HierarchyBlendNode a3_HierarchyBlendNode;
+typedef struct a3_HierarchyBlendTree a3_HierarchyBlendTree;
 typedef void (*a3_HierarchyBlendOp)(a3_HierarchyPose* pose, ...);
 typedef void (*a3_HierarchyBlendExec)(a3_HierarchyBlendNode* node_in);
 
@@ -80,4 +82,6 @@ struct a3_HierarchyBlendTree
 	a3_HierarchyBlendNode* blendNodes;
 };
 
+
+a3i32 a3hierarchyBlendTreeLoad(a3_HierarchyBlendTree* blendTree_out, a3_Hierarchy* hierarchy_out, const a3byte* resourceFilePath);
 #endif // !A3_HIERARCHYBLENDNODE_H

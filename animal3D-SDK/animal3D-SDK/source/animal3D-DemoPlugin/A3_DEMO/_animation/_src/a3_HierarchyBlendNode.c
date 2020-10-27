@@ -4,6 +4,8 @@
 */
 
 #include "..\a3_HierarchyBlendNode.h"
+#include <stdlib.h>
+#include <string.h>
 
 /// <summary>
 /// Identity
@@ -187,4 +189,21 @@ void a3HierarchyBlendExec16C5I(a3_HierarchyBlendNode* node_inout, const a3ui32 n
 		node_inout->controls[3 * 4 + 0], node_inout->controls[3 * 4 + 1], node_inout->controls[3 * 4 + 2], node_inout->controls[3 * 4 + 3],
 		&node_inout->uVals[0], &node_inout->uVals[1], &node_inout->uVals[2], &node_inout->uVals[3], &node_inout->uVals[4],
 		nodeCount);
+}
+
+a3i32 a3hierarchyBlendTreeLoad(a3_HierarchyBlendTree* blendTree_out, a3_Hierarchy* hierarchy_out, const a3byte* resourceFilePath)
+{
+	if (blendTree_out && hierarchy_out && !hierarchy_out->numNodes && resourceFilePath && *resourceFilePath)
+	{
+		a3_Stream fs[1] = { 0 };
+		a3ui32 fileLength = a3streamLoadContents(&fs[0], resourceFilePath);
+		if (fileLength <= 0)
+		{
+			return -1;
+		}
+		a3byte* contentsCopy = malloc(fs->length * sizeof(a3byte));
+		strncpy(contentsCopy, fs->contents, fs->length);
+		return 1;
+	}
+	return -1;
 }
