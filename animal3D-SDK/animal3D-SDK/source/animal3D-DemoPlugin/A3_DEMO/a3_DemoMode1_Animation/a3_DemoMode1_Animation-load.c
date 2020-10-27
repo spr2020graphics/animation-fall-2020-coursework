@@ -36,6 +36,8 @@
 
 #include "../a3_DemoState.h"
 
+#include "../_animation/a3_HierarchyBlendNode.h"
+
 
 //-----------------------------------------------------------------------------
 
@@ -55,13 +57,16 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	a3_FileStream fileStream[1] = { 0 };
 	const a3byte* const geometryStream = "./data/anim_data_gpro_base.dat";
 	const a3byte* const animationfilePath = "../../../../resource/animdata/moonwalk.bvh";
+	const a3byte* const blendfilePath = "../../../../resource/animdata/blend_input.txt";
 
 	// Assign hierarchyPoseGroup and hierarchy to new variables in demoState
 	hierarchy = demoMode->hierarchy_skel; 
 	hierarchyPoseGroup = demoMode->hierarchyPoseGroup_skel; //hierarchy_bvh
 
 	//create BVH
+	a3_HierarchyBlendTree* blendTree = malloc(sizeof(a3_HierarchyBlendTree));
 	//a3hierarchyPoseGroupLoadBVH(hierarchyPoseGroup, hierarchy, animationfilePath);
+	a3hierarchyBlendTreeLoad(blendTree, demoMode->hierarchy_skel, blendfilePath);
 
 	// stream animation assets
 	if (demoState->streaming && a3fileStreamOpenRead(fileStream, geometryStream))

@@ -203,6 +203,34 @@ a3i32 a3hierarchyBlendTreeLoad(a3_HierarchyBlendTree* blendTree_out, a3_Hierarch
 		}
 		a3byte* contentsCopy = malloc(fs->length * sizeof(a3byte));
 		strncpy(contentsCopy, fs->contents, fs->length);
+
+		char* token = strtok((char*)contentsCopy, "\n");
+		while (token != NULL && strncmp(token, "NODECOUNT", 9) != 0)
+		{
+			token = strtok(NULL, "\n");
+		}
+		char* text = token;
+		size_t len = strlen(text);
+		if (text[len - 1] == '\r')
+		{
+			text[len - 1] = '\0';
+		}
+		int blendHierarchyCount = atoi(text + 9);
+		blendTree_out->hierarchy = malloc(sizeof(a3_Hierarchy));
+		a3hierarchyCreate(blendTree_out->hierarchy, blendHierarchyCount, NULL);
+		while (token != NULL && strncmp(token, "LEAFCOUNT", 9) != 0)
+		{
+			token = strtok(NULL, "\n");
+		}
+		text = token;
+		len = strlen(text);
+		if (text[len - 1] == '\r')
+		{
+			text[len - 1] = '\0';
+		}
+		int leafCount = atoi(text + 9);
+		blendTree_out->leafCount = (a3ui32)leafCount;
+		blendTree_out->leafIndices = calloc(leafCount, sizeof(a3i32));
 		return 1;
 	}
 	return -1;

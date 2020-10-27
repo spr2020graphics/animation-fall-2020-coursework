@@ -78,7 +78,8 @@ struct a3_HierarchyBlendNode
 struct a3_HierarchyBlendTree
 {
 	a3_Hierarchy* hierarchy;
-	a3ui32* leafIndices;
+	a3i32* leafIndices;
+	a3ui32 leafCount;
 	a3_HierarchyBlendNode* blendNodes;
 };
 
