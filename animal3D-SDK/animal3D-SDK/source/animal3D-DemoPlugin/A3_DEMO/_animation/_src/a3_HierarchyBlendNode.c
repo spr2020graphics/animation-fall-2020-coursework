@@ -204,6 +204,7 @@ a3i32 a3hierarchyBlendTreeLoad(a3_HierarchyBlendTree* blendTree_out, a3_Hierarch
 		a3byte* contentsCopy = malloc(fs->length * sizeof(a3byte));
 		strncpy(contentsCopy, fs->contents, fs->length);
 
+		//node count
 		char* token = strtok((char*)contentsCopy, "\n");
 		while (token != NULL && strncmp(token, "NODECOUNT", 9) != 0)
 		{
@@ -218,6 +219,8 @@ a3i32 a3hierarchyBlendTreeLoad(a3_HierarchyBlendTree* blendTree_out, a3_Hierarch
 		int blendHierarchyCount = atoi(text + 9);
 		blendTree_out->hierarchy = malloc(sizeof(a3_Hierarchy));
 		a3hierarchyCreate(blendTree_out->hierarchy, blendHierarchyCount, NULL);
+
+		//leaf count
 		while (token != NULL && strncmp(token, "LEAFCOUNT", 9) != 0)
 		{
 			token = strtok(NULL, "\n");
@@ -231,6 +234,26 @@ a3i32 a3hierarchyBlendTreeLoad(a3_HierarchyBlendTree* blendTree_out, a3_Hierarch
 		int leafCount = atoi(text + 9);
 		blendTree_out->leafCount = (a3ui32)leafCount;
 		blendTree_out->leafIndices = calloc(leafCount, sizeof(a3i32));
+
+		//leaves
+		while (token != NULL && strncmp(token, "LEAVES", 6) != 0)
+		{
+			token = strtok(NULL, "\n");
+		}
+		text = token;
+		len = strlen(text);
+		if (text[len - 1] == '\r')
+		{
+			text[len - 1] = '\0';
+		}
+		text = text + 6;
+		text = strchr(text, ' ') + 1; //advance past the number of channels
+		//need to advance past the channel count
+		for (int i = 0; i < leafCount; i++) //loop through all channels and store the data both as a combined mask and as an array
+		{
+			blendTree_out->leafIndices[i] = atoi(text);
+			text = strchr(text, ' ') + 1; //advance past the number of channels. parsePos will be 1 at the end of the loop, but that's fine
+		}
 		return 1;
 	}
 	return -1;
