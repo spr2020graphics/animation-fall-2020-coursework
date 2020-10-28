@@ -64,7 +64,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	hierarchyPoseGroup = demoMode->hierarchyPoseGroup_skel; //hierarchy_bvh
 
 	//create BVH
-	a3_HierarchyBlendTree* blendTree = malloc(sizeof(a3_HierarchyBlendTree));
+	a3_HierarchyBlendTree blendTree[1];
 	//a3hierarchyPoseGroupLoadBVH(hierarchyPoseGroup, hierarchy, animationfilePath);
 	a3hierarchyBlendTreeLoad(blendTree, demoMode->hierarchy_skel, blendfilePath);
 

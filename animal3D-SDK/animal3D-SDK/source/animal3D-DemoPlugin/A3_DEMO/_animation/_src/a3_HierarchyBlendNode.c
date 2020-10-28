@@ -7,6 +7,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+enum NodeType { addClip, lerpClip, scaleClip, negateClip };
+typedef enum NodeType NodeType;
+
 /// <summary>
 /// Identity
 /// </summary>
@@ -191,6 +194,29 @@ void a3HierarchyBlendExec16C5I(a3_HierarchyBlendNode* node_inout, const a3ui32 n
 		nodeCount);
 }
 
+a3i32 a3hierarchyBlendNodeCreate(a3_HierarchyBlendTree* refTree, a3_HierarchyBlendNode* blendNode_out, a3_HierarchyBlendOp op, a3_HierarchyBlendExec exec,
+	a3ui32 clipCount, a3byte** clipNames,
+	a3ui32 controlNodeCount, a3ui32* controlNodes,
+	a3ui32 inputCount, a3f32** uValPtrs)
+{
+	blendNode_out->exec = exec;
+	blendNode_out->operation = op;
+	for (a3ui32 i = 0; i < clipCount; i++)
+	{
+		blendNode_out->clipNames[i] = clipNames[i];
+	}
+	for (a3ui32 i = 0; i < controlNodeCount; i++)
+	{
+		//assign input control pose as the output of a different node's blend op
+		blendNode_out->controls[i] = refTree->blendNodes[controlNodes[i]].pose;
+	}
+	for (a3ui32 i = 0; i < inputCount; i++)
+	{
+		blendNode_out->uVals[i] = uValPtrs[i];
+	}
+	return 1;
+}
+
 a3i32 a3hierarchyBlendTreeLoad(a3_HierarchyBlendTree* blendTree_out, a3_Hierarchy* hierarchy_out, const a3byte* resourceFilePath)
 {
 	if (blendTree_out && hierarchy_out && !hierarchy_out->numNodes && resourceFilePath && *resourceFilePath)
@@ -203,7 +229,7 @@ a3i32 a3hierarchyBlendTreeLoad(a3_HierarchyBlendTree* blendTree_out, a3_Hierarch
 		}
 		a3byte* contentsCopy = malloc(fs->length * sizeof(a3byte));
 		strncpy(contentsCopy, fs->contents, fs->length);
-
+		*strrchr(contentsCopy, '\r') = '\0';
 		//node count
 		char* token = strtok((char*)contentsCopy, "\n");
 		while (token != NULL && strncmp(token, "NODECOUNT", 9) != 0)
@@ -217,8 +243,9 @@ a3i32 a3hierarchyBlendTreeLoad(a3_HierarchyBlendTree* blendTree_out, a3_Hierarch
 			text[len - 1] = '\0';
 		}
 		int blendHierarchyCount = atoi(text + 9);
-		blendTree_out->hierarchy = malloc(sizeof(a3_Hierarchy));
+		blendTree_out->hierarchy->nodes = 0; //won't run otherwise
 		a3hierarchyCreate(blendTree_out->hierarchy, blendHierarchyCount, NULL);
+		blendTree_out->blendNodes = calloc(blendHierarchyCount, sizeof(a3_HierarchyBlendNode));
 
 		//leaf count
 		while (token != NULL && strncmp(token, "LEAFCOUNT", 9) != 0)
@@ -254,6 +281,93 @@ a3i32 a3hierarchyBlendTreeLoad(a3_HierarchyBlendTree* blendTree_out, a3_Hierarch
 			blendTree_out->leafIndices[i] = atoi(text);
 			text = strchr(text, ' ') + 1; //advance past the number of channels. parsePos will be 1 at the end of the loop, but that's fine
 		}
+
+		//parse each node
+		a3byte* str = malloc(sizeof(a3byte));
+		str[0] = 'N';
+		for (a3ui32 i = 0; i < blendTree_out->hierarchy->numNodes; i++)
+		{
+			a3hierarchySetNode(blendTree_out->hierarchy, i, -1, str); //pre-assign them
+		}
+		//leaves
+		while (token != NULL && strncmp(token, "NODES", 5) != 0)
+		{
+			token = strtok(NULL, "\n");
+		}
+		token = strtok(NULL, "\n"); //go to line after "NODES"
+
+		while (token != NULL)
+		{
+			text = token;
+			a3ui32 index = atoi(text);
+			text = strchr(text, ' ') + 1;
+			a3boolean isClipNode = text[0] == 'C';
+			text = strchr(text, ' ') + 1;
+			NodeType clipType;
+			//determine blend op
+			a3byte* clipNames[16];
+			a3ui32 clipNameIndex = 0;
+			a3ui32 sourceNodeIndices[16];
+			a3ui32 sourceNodeCount = 0;
+			a3f32* inputParams[8];
+			a3ui32 paramCount = 0;
+			if (isClipNode)
+			{
+				switch (text[0])
+				{
+				case 'A':
+					clipType = addClip;
+					break;
+				case 'L':
+					clipType = lerpClip;
+					break;
+				case 'N':
+					clipType = negateClip;
+				case 'S':
+					clipType = scaleClip;
+				}
+			}
+			else
+			{
+				/////HOWEVER MANY CASE SWITCH STATEMENT
+			}
+			while (strncmp(text, "END", 3) != 0)
+			{
+				//store controls
+				if (strncmp(text, "CLIP", 4) == 0) //clip!
+				{
+					//do a lot of pointer math to copy over the name of a clip
+					text = strchr(text, ' ') + 1;
+					a3byte* terminator = strchr(text, ' ');
+					*terminator = '\0';
+					clipNames[clipNameIndex] = malloc((strlen(text)+1) * sizeof(a3byte));
+					clipNames[clipNameIndex][strlen(text)] = '\0';
+					strncpy(clipNames[clipNameIndex], text, strlen(text));
+					text = terminator + 1;
+					clipNameIndex++;
+				}
+				else if (strncmp(text, "NODE", 4) == 0) //node
+				{
+					text = strchr(text, ' ') + 1;
+					sourceNodeIndices[sourceNodeCount] = atoi(text);
+					sourceNodeCount++;
+				}
+				else if (strncmp(text, "PARAM", 5) == 0)
+				{
+					text = strchr(text, ' ') + 1;
+					inputParams[paramCount] = malloc(sizeof(a3f32));
+					*inputParams[paramCount] = (float)atof(text);
+					paramCount++;
+				}
+				else
+				{
+					text = strchr(text, ' ') + 1;
+				}
+			}
+			token = strtok(NULL, "\n");
+			
+		}
+
 		return 1;
 	}
 	return -1;

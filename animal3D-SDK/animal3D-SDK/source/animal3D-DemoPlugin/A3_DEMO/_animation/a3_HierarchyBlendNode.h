@@ -72,12 +72,12 @@ struct a3_HierarchyBlendNode
 	a3_HierarchyBlendExec exec;
 	a3_HierarchyPose* pose;
 	a3_HierarchyPose* controls[16];
-	a3_Clip* controlClips[16];
+	a3byte* clipNames[16]; //array of 16 cstrings
 };
 
 struct a3_HierarchyBlendTree
 {
-	a3_Hierarchy* hierarchy;
+	a3_Hierarchy hierarchy[1];
 	a3i32* leafIndices;
 	a3ui32 leafCount;
 	a3_HierarchyBlendNode* blendNodes;
