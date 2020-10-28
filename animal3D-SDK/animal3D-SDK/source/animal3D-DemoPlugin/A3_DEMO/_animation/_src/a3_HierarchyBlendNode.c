@@ -32,7 +32,7 @@ void a3spatialBlendExec0C(a3_SpatialBlendNode* node_inout)
 }
 
 /// <summary>
-/// Copy, Const, Negate, Concat
+/// Copy, Const, Negate, Concat, Convert, Revert
 /// </summary>
 /// <param name="node_inout"></param>
 void a3spatialBlendExec1C(a3_SpatialBlendNode* node_inout)
@@ -42,7 +42,7 @@ void a3spatialBlendExec1C(a3_SpatialBlendNode* node_inout)
 }
 
 /// <summary>
-/// Scale
+/// Scale, Bidirectional scale
 /// </summary>
 /// <param name="node_inout"></param>
 void a3spatialBlendExec1C1I(a3_SpatialBlendNode* node_inout)
@@ -64,7 +64,7 @@ void a3spatialBlendExec2C(a3_SpatialBlendNode* node_inout)
 }
 
 /// <summary>
-/// Nearest, LERP
+/// Nearest, LERP, EaseInOut
 /// </summary>
 /// <param name="node_inout"></param>
 void a3spatialBlendExec2C1I(a3_SpatialBlendNode* node_inout)

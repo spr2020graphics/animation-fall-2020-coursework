@@ -242,7 +242,7 @@ inline a3_SpatialPose* a3spatialPoseOpEaseInOut(a3_SpatialPose* pose_out, a3_Spa
 	return pose_out;
 }
 
-inline a3_SpatialPose* a3spatialPoseOpConvert(a3_SpatialPose* pose_inout, const a3_SpatialPoseEulerOrder order)
+inline a3_SpatialPose* a3spatialPoseOpConvert(a3_SpatialPose* pose_inout)
 {
 	//create translate matrix. There's probably an a3 call for this, but it works.
 	a3mat4 mat_out = a3mat4_identity;
@@ -266,31 +266,8 @@ inline a3_SpatialPose* a3spatialPoseOpConvert(a3_SpatialPose* pose_inout, const 
 	a3real4x4SetRotateZ(zRot.m, pose_inout->orientation.z);
 	tmp = a3mat4_identity;
 
-	//concatenate rotation matrices. xyz and zyx have shortcuts
-	switch (order)
-	{
-	case a3poseEulerOrder_xyz:
-		a3real4x4SetRotateXYZ(rotate.m, pose_inout->orientation.x, pose_inout->orientation.y, pose_inout->orientation.z);
-		break;
-	case a3poseEulerOrder_zyx:
-		a3real4x4SetRotateZYX(rotate.m, pose_inout->orientation.x, pose_inout->orientation.y, pose_inout->orientation.z);
-		break;
-	case a3poseEulerOrder_zxy:
-		a3real4x4Product(tmp.m, xRot.m, yRot.m);
-		a3real4x4Product(rotate.m, zRot.m, tmp.m);
-		break;
-	case a3poseEulerOrder_yxz:
-		a3real4x4Product(tmp.m, xRot.m, zRot.m);
-		a3real4x4Product(rotate.m, yRot.m, tmp.m);
-		break;
-	case a3poseEulerOrder_xzy:
-		a3real4x4Product(tmp.m, zRot.m, yRot.m);
-		a3real4x4Product(rotate.m, xRot.m, tmp.m);
-		break;
-	case a3poseEulerOrder_yzx:
-		a3real4x4Product(tmp.m, zRot.m, xRot.m);
-		a3real4x4Product(rotate.m, yRot.m, tmp.m);
-	}
+	//concatenate rotation matrices using XYZ order
+	a3real4x4SetRotateXYZ(rotate.m, pose_inout->orientation.x, pose_inout->orientation.y, pose_inout->orientation.z);
 
 	//create scale matrix
 	a3mat4 scale = a3mat4_identity;
@@ -748,11 +725,11 @@ inline a3_HierarchyPose* a3hierarchyPoseOpEaseInOut(a3_HierarchyPose* pose_out, 
 	return pose_out;
 }
 
-inline a3_HierarchyPose* a3hierarchyPoseOpConvert(a3_HierarchyPose* pose_inout, const a3_SpatialPoseEulerOrder order, const a3ui32 nodeCount)
+inline a3_HierarchyPose* a3hierarchyPoseOpConvert(a3_HierarchyPose* pose_inout, const a3ui32 nodeCount)
 {
 	for (a3ui32 i = 0; i < nodeCount; i++)
 	{
-		a3spatialPoseOpConvert(&pose_inout->spatialPose[i], order);
+		a3spatialPoseOpConvert(&pose_inout->spatialPose[i]);
 	}
 
 	return pose_inout;
