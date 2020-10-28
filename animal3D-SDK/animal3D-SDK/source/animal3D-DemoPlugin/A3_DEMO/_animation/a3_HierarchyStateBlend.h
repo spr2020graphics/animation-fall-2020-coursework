@@ -230,6 +230,8 @@ a3_HierarchyPose* a3hierarchyPoseOpConvert(a3_HierarchyPose* pose_inout, const a
 a3_HierarchyPose* a3hierarchyPoseOpBiDirectionalScale(a3_HierarchyPose* pose_out, a3_HierarchyPose* const pose_in, const a3real u, const a3ui32 nodeCount);
 
 a3_HierarchyPose* a3hierarchyPoseOpRevert(a3_HierarchyPose* pose_inout, const a3ui32 nodeCount);
+
+//a3_HierarchyPose* a3hierarchyPoseOpClipAdd(a3_HierarchyPose* pose_inout, a3_DemoMode1_Animation* animation);
 //-----------------------------------------------------------------------------
 
 
