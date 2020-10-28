@@ -104,7 +104,12 @@ a3_SpatialPose* a3spatialPoseOpEaseInOut(a3_SpatialPose* pose_out, a3_SpatialPos
 // pointer-based conversion operation
 a3_SpatialPose* a3spatialPoseOpConvert(a3_SpatialPose* pose_inout, const a3_SpatialPoseEulerOrder order);
 
+// pointer-based operation to perform forward kinematics
 a3mat4* a3OpForwardKinematics(a3mat4* const objectTransform_out, a3_Hierarchy* const hierarchy, a3mat4* const localTransform);
+
+a3_SpatialPose* a3spatialPoseOpBiDirectionalScale(a3_SpatialPose* pose_out, a3_SpatialPose* const pose_in, const a3real u);
+
+a3_SpatialPose* a3spatialPoseOpRevert(a3_SpatialPose* pose_inout);
 //-----------------------------------------------------------------------------
 
 // data-based reset/identity
@@ -219,6 +224,10 @@ a3_HierarchyPose* a3hierarchyPoseOpEaseInOut(a3_HierarchyPose* pose_out, a3_Hier
 
 // pointer-based conversion operation
 a3_HierarchyPose* a3hierarchyPoseOpConvert(a3_HierarchyPose* pose_inout, const a3_SpatialPoseEulerOrder order, const a3ui32 nodeCount);
+
+a3_HierarchyPose* a3hierarchyPoseOpBiDirectionalScale(a3_HierarchyPose* pose_out, a3_HierarchyPose* const pose_in, const a3real u, const a3ui32 nodeCount);
+
+a3_HierarchyPose* a3hierarchyPoseOpRevert(a3_HierarchyPose* pose_inout, const a3ui32 nodeCount);
 //-----------------------------------------------------------------------------
 
 
