@@ -10,7 +10,15 @@
 
 enum NodeType {
 	addClip, lerpClip, scaleClip, negateClip,
-	identity, init, nearest, lerp, negate, concat, deconcat, copy
+	identity, init,
+	copy, constant, negate, concat,
+	scale,
+	deconcat,
+	nearest, lerp,
+	triangular,
+	cubic,
+	binearest, bilerp,
+	bicubic
 };
 typedef enum NodeType NodeType;
 
@@ -252,6 +260,10 @@ a3i32 a3hierarchyBlendNodeCreate(a3_HierarchyBlendTree* refTree, a3_HierarchyBle
 		blendNode_out->exec = &a3hierarchyBlendExec1C;
 		blendNode_out->operation = &a3hierarchyPoseOpNegate;
 		break;
+	case concat:
+	case deconcat:
+	case copy:
+		break;
 	}
 	return 1;
 }
@@ -363,12 +375,20 @@ a3i32 a3hierarchyBlendTreeLoad(a3_HierarchyBlendTree* blendTree_out, a3_Hierarch
 					break;
 				case 'N':
 					clipType = negateClip;
+					break;
 				case 'S':
 					clipType = scaleClip;
+					break;
 				}
 			}
 			else
 			{
+				switch (text[0])
+				{
+				case 'L':
+					clipType = lerp;
+					break;
+				}
 				/////HOWEVER MANY CASE SWITCH STATEMENT
 			}
 			while (strncmp(text, "END", 3) != 0)
