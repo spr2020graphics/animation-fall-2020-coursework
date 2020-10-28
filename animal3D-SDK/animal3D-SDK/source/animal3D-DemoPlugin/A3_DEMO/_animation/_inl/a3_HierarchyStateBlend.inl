@@ -309,11 +309,101 @@ inline a3_SpatialPose* a3spatialPoseOpConvert(a3_SpatialPose* pose_inout, const 
 	return pose_inout;
 }
 
-inline a3mat4* a3OpForwardKinematics(a3mat4* const objectTransform_out, a3_Hierarchy* const hierarchy, a3mat4* const localTransform)
+inline a3mat4* a3OpForwardKinematics(a3mat4* const objectTransform_inout, a3_Hierarchy* const hierarchy, a3mat4* const localTransform)
+{
+	// this assumes that the object transform passed in is the PARENT'S object-space transform
+
+	a3real4x4Product(objectTransform_inout->m, objectTransform_inout->m, localTransform->m);
+
+	return objectTransform_inout;
+}
+
+inline a3mat4* a3OpInverseKinematics(a3mat4* const localTransform_inout, a3_Hierarchy* const hierarchy, a3mat4* const objectTransform)
 {
 	
 
-	return objectTransform_out;
+	return localTransform_inout;
+}
+
+inline a3_SpatialPose* a3spatialPoseOpBiDirectionalScale(a3_SpatialPose* pose_out, a3_SpatialPose* const pose_in, const a3real u)
+{
+	a3_SpatialPose identity[1];
+	a3spatialPoseOpIdentity(identity);
+
+	if (u > 0)
+	{
+		// scale(pose_in)
+		a3spatialPoseOpScale(pose_out, pose_in, u);
+	}
+	else if (u < 0)
+	{
+		// scale(negate(pose_in))
+		a3_SpatialPose inverse[1];
+		a3spatialPoseOpNegate(inverse, pose_in);
+		a3spatialPoseOpScale(pose_out, inverse, u);
+	}
+	else
+	{
+		pose_out = identity;
+	}
+
+	return pose_out;
+}
+
+inline a3_SpatialPose* a3spatialPoseOpRevert(a3_SpatialPose* pose_inout)
+{
+	a3mat4* TRS = &pose_inout->transform;
+	a3vec3 position, scale, orientation;
+
+	// Extract position
+	position.x = TRS->m30;
+	position.y = TRS->m31;
+	position.z = TRS->m32;
+	
+	// Reset transform matrix translation
+	TRS->m30 = 0;
+	TRS->m31 = 0;
+	TRS->m32 = 0;
+	
+	// Extract scale
+	a3vec3 col;
+	col.x = TRS->m00;
+	col.y = TRS->m01;
+	col.z = TRS->m02;
+	scale.x = a3real3Length(col.v);
+
+	col.x = TRS->m10;
+	col.y = TRS->m11;
+	col.z = TRS->m12;
+	scale.y = a3real3Length(col.v);
+
+	col.x = TRS->m20;
+	col.y = TRS->m21;
+	col.z = TRS->m22;
+	scale.z = a3real3Length(col.v);
+
+	// Extract rotation (these 3 blocks essentially turn the TRS into just a rotation matrix)
+	TRS->m00 /= scale.x;
+	TRS->m01 /= scale.x;
+	TRS->m02 /= scale.x;
+
+	TRS->m10 /= scale.y;
+	TRS->m11 /= scale.y;
+	TRS->m12 /= scale.y;
+
+	TRS->m20 /= scale.z;
+	TRS->m21 /= scale.z;
+	TRS->m22 /= scale.z;
+
+	a3real4x4GetEulerXYZIgnoreScale(TRS->m, &orientation.x, &orientation.y, &orientation.z);
+
+	pose_inout->orientation = orientation;
+	pose_inout->position = position;
+	pose_inout->scale = scale;
+
+	pose_inout->transform = a3mat4_identity;
+
+	return pose_inout;
 }
 
 //-----------------------------------------------------------------------------
@@ -663,6 +753,26 @@ inline a3_HierarchyPose* a3hierarchyPoseOpConvert(a3_HierarchyPose* pose_inout, 
 	for (a3ui32 i = 0; i < nodeCount; i++)
 	{
 		a3spatialPoseOpConvert(&pose_inout->spatialPose[i], order);
+	}
+
+	return pose_inout;
+}
+
+inline a3_HierarchyPose* a3hierarchyPoseOpBiDirectionalScale(a3_HierarchyPose* pose_out, a3_HierarchyPose* const pose_in, const a3real u, const a3ui32 nodeCount)
+{
+	for (a3ui32 i = 0; i < nodeCount; i++)
+	{
+		a3spatialPoseOpBiDirectionalScale(&pose_out->spatialPose[i], &pose_in->spatialPose[i], u);
+	}
+
+	return pose_out;
+}
+
+inline a3_HierarchyPose* a3hierarchyPoseOpRevert(a3_HierarchyPose* pose_inout, const a3ui32 nodeCount)
+{
+	for (a3ui32 i = 0; i < nodeCount; i++)
+	{
+		a3spatialPoseOpRevert(&pose_inout->spatialPose[i]);
 	}
 
 	return pose_inout;

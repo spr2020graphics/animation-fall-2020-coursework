@@ -139,7 +139,6 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 	a3hierarchyPoseConvert(currentState->localHPose, hierarchy->numNodes, poseGroup->channels, poseGroup->eulerOrders);
 	a3kinematicsSolveForward(currentState);
 
-
 	// Update the clip-controlled state. Copy, concat base with either sample or identity, convert, FK.
 	currentState = demoMode->hierarchyState_skel_clip;
 
