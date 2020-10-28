@@ -105,7 +105,9 @@ a3_SpatialPose* a3spatialPoseOpEaseInOut(a3_SpatialPose* pose_out, a3_SpatialPos
 a3_SpatialPose* a3spatialPoseOpConvert(a3_SpatialPose* pose_inout, const a3_SpatialPoseEulerOrder order);
 
 // pointer-based operation to perform forward kinematics
-a3mat4* a3OpForwardKinematics(a3mat4* const objectTransform_out, a3_Hierarchy* const hierarchy, a3mat4* const localTransform);
+a3mat4* a3OpForwardKinematics(a3mat4* const objectTransform_inout, a3_Hierarchy* const hierarchy, a3mat4* const localTransform);
+
+a3mat4* a3OpInverseKinematics(a3mat4* const localTransform_inout, a3_Hierarchy* const hierarchy, a3mat4* const objectTransform);
 
 a3_SpatialPose* a3spatialPoseOpBiDirectionalScale(a3_SpatialPose* pose_out, a3_SpatialPose* const pose_in, const a3real u);
 

@@ -309,11 +309,20 @@ inline a3_SpatialPose* a3spatialPoseOpConvert(a3_SpatialPose* pose_inout, const 
 	return pose_inout;
 }
 
-inline a3mat4* a3OpForwardKinematics(a3mat4* const objectTransform_out, a3_Hierarchy* const hierarchy, a3mat4* const localTransform)
+inline a3mat4* a3OpForwardKinematics(a3mat4* const objectTransform_inout, a3_Hierarchy* const hierarchy, a3mat4* const localTransform)
+{
+	// this assumes that the object transform passed in is the PARENT'S object-space transform
+
+	a3real4x4Product(objectTransform_inout->m, objectTransform_inout->m, localTransform->m);
+
+	return objectTransform_inout;
+}
+
+inline a3mat4* a3OpInverseKinematics(a3mat4* const localTransform_inout, a3_Hierarchy* const hierarchy, a3mat4* const objectTransform)
 {
 	
 
-	return objectTransform_out;
+	return localTransform_inout;
 }
 
 inline a3_SpatialPose* a3spatialPoseOpBiDirectionalScale(a3_SpatialPose* pose_out, a3_SpatialPose* const pose_in, const a3real u)
