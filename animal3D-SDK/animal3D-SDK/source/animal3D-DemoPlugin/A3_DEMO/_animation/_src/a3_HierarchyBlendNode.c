@@ -6,6 +6,7 @@
 #include "..\a3_HierarchyBlendNode.h"
 #include <stdlib.h>
 #include <string.h>
+#include "..\a3_HierarchyStateBlend.h"
 
 enum NodeType { addClip, lerpClip, scaleClip, negateClip };
 typedef enum NodeType NodeType;
@@ -201,6 +202,7 @@ a3i32 a3hierarchyBlendNodeCreate(a3_HierarchyBlendTree* refTree, a3_HierarchyBle
 {
 	blendNode_out->exec = exec;
 	blendNode_out->operation = op;
+	a3hierarchyPoseOpIdentity(blendNode_out->pose, refTree->hierarchy->numNodes);
 	for (a3ui32 i = 0; i < clipCount; i++)
 	{
 		blendNode_out->clipNames[i] = clipNames[i];
@@ -365,7 +367,7 @@ a3i32 a3hierarchyBlendTreeLoad(a3_HierarchyBlendTree* blendTree_out, a3_Hierarch
 				}
 			}
 			token = strtok(NULL, "\n");
-			
+			a3hierarchyBlendNodeCreate(blendTree_out, &blendTree_out->blendNodes[index], NULL, NULL, clipNameIndex, clipNames, sourceNodeCount, sourceNodeIndices, paramCount, inputParams);
 		}
 
 		return 1;
