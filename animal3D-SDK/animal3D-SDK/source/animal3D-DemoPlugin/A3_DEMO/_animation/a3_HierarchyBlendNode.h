@@ -52,18 +52,18 @@ struct a3_SpatialBlendTree
 
 typedef struct a3_HierarchyBlendNode a3_HierarchyBlendNode;
 typedef struct a3_HierarchyBlendTree a3_HierarchyBlendTree;
-typedef void (*a3_HierarchyBlendOp)(a3_HierarchyPose* pose, ...);
-typedef void (*a3_HierarchyBlendExec)(a3_HierarchyBlendNode* node_in);
+typedef a3_HierarchyPose* (*a3_HierarchyBlendOp)(a3_HierarchyPose* pose, ...);
+typedef void (*a3_HierarchyBlendExec)(a3_HierarchyBlendNode* node_in, a3ui32 nodeCount);
 
-void a3HierarchyBlendExec0C(a3_HierarchyBlendNode* node_inout, const a3ui32 nodeCount);
-void a3HierarchyBlendExec1C(a3_HierarchyBlendNode* node_inout, const a3ui32 nodeCount);
-void a3HierarchyBlendExec1C1I(a3_HierarchyBlendNode* node_inout, const a3ui32 nodeCount);
-void a3HierarchyBlendExec2C(a3_HierarchyBlendNode* node_inout, const a3ui32 nodeCount);
-void a3HierarchyBlendExec2C1I(a3_HierarchyBlendNode* node_inout, const a3ui32 nodeCount);
-void a3HierarchyBlendExec3C2I(a3_HierarchyBlendNode* node_inout, const a3ui32 nodeCount);
-void a3HierarchyBlendExec4C1I(a3_HierarchyBlendNode* node_inout, const a3ui32 nodeCount);
-void a3HierarchyBlendExec4C3I(a3_HierarchyBlendNode* node_inout, const a3ui32 nodeCount);
-void a3HierarchyBlendExec16C5I(a3_HierarchyBlendNode* node_inout, const a3ui32 nodeCount);
+void a3hierarchyBlendExec0C(a3_HierarchyBlendNode* node_inout, const a3ui32 nodeCount);
+void a3hierarchyBlendExec1C(a3_HierarchyBlendNode* node_inout, const a3ui32 nodeCount);
+void a3hierarchyBlendExec1C1I(a3_HierarchyBlendNode* node_inout, const a3ui32 nodeCount);
+void a3hierarchyBlendExec2C(a3_HierarchyBlendNode* node_inout, const a3ui32 nodeCount);
+void a3hierarchyBlendExec2C1I(a3_HierarchyBlendNode* node_inout, const a3ui32 nodeCount);
+void a3hierarchyBlendExec3C2I(a3_HierarchyBlendNode* node_inout, const a3ui32 nodeCount);
+void a3hierarchyBlendExec4C1I(a3_HierarchyBlendNode* node_inout, const a3ui32 nodeCount);
+void a3hierarchyBlendExec4C3I(a3_HierarchyBlendNode* node_inout, const a3ui32 nodeCount);
+void a3hierarchyBlendExec16C5I(a3_HierarchyBlendNode* node_inout, const a3ui32 nodeCount);
 
 struct a3_HierarchyBlendNode
 {

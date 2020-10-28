@@ -8,7 +8,10 @@
 #include <string.h>
 #include "..\a3_HierarchyStateBlend.h"
 
-enum NodeType { addClip, lerpClip, scaleClip, negateClip };
+enum NodeType {
+	addClip, lerpClip, scaleClip, negateClip,
+	identity, init, nearest, lerp, negate, concat, deconcat, copy
+};
 typedef enum NodeType NodeType;
 
 /// <summary>
@@ -114,20 +117,19 @@ void a3spatialBlendExec16C5I(a3_SpatialBlendNode* node_inout)
 		&node_inout->uVals[0], &node_inout->uVals[1], &node_inout->uVals[2], &node_inout->uVals[3], &node_inout->uVals[4]);
 }
 
-
-void a3HierarchyBlendExec0C(a3_HierarchyBlendNode* node_inout, const a3ui32 nodeCount)
+void a3hierarchyBlendExec0C(a3_HierarchyBlendNode* node_inout, const a3ui32 nodeCount)
 {
 	node_inout->operation(node_inout->pose, nodeCount);
 }
 
-void a3HierarchyBlendExec1C(a3_HierarchyBlendNode* node_inout, const a3ui32 nodeCount)
+void a3hierarchyBlendExec1C(a3_HierarchyBlendNode* node_inout, const a3ui32 nodeCount)
 {
 	node_inout->operation(node_inout->pose,
 		node_inout->controls[0],
 		nodeCount);
 }
 
-void a3HierarchyBlendExec1C1I(a3_HierarchyBlendNode* node_inout, const a3ui32 nodeCount)
+void a3hierarchyBlendExec1C1I(a3_HierarchyBlendNode* node_inout, const a3ui32 nodeCount)
 {
 	node_inout->operation(node_inout->pose,
 		node_inout->controls[0],
@@ -135,7 +137,7 @@ void a3HierarchyBlendExec1C1I(a3_HierarchyBlendNode* node_inout, const a3ui32 no
 		nodeCount);
 }
 
-void a3HierarchyBlendExec2C(a3_HierarchyBlendNode* node_inout, const a3ui32 nodeCount)
+void a3hierarchyBlendExec2C(a3_HierarchyBlendNode* node_inout, const a3ui32 nodeCount)
 {
 	node_inout->operation(node_inout->pose,
 		node_inout->controls[0],
@@ -143,7 +145,7 @@ void a3HierarchyBlendExec2C(a3_HierarchyBlendNode* node_inout, const a3ui32 node
 		nodeCount);
 }
 
-void a3HierarchyBlendExec2C1I(a3_HierarchyBlendNode* node_inout, const a3ui32 nodeCount)
+void a3hierarchyBlendExec2C1I(a3_HierarchyBlendNode* node_inout, const a3ui32 nodeCount)
 {
 	node_inout->operation(node_inout->pose,
 		node_inout->controls[0],
@@ -152,7 +154,7 @@ void a3HierarchyBlendExec2C1I(a3_HierarchyBlendNode* node_inout, const a3ui32 no
 		nodeCount);
 }
 
-void a3HierarchyBlendExec3C2I(a3_HierarchyBlendNode* node_inout, const a3ui32 nodeCount)
+void a3hierarchyBlendExec3C2I(a3_HierarchyBlendNode* node_inout, const a3ui32 nodeCount)
 {
 	node_inout->operation(node_inout->pose,
 		node_inout->controls[0],
@@ -162,7 +164,7 @@ void a3HierarchyBlendExec3C2I(a3_HierarchyBlendNode* node_inout, const a3ui32 no
 		nodeCount);
 }
 
-void a3HierarchyBlendExec4C1I(a3_HierarchyBlendNode* node_inout, const a3ui32 nodeCount)
+void a3hierarchyBlendExec4C1I(a3_HierarchyBlendNode* node_inout, const a3ui32 nodeCount)
 {
 	node_inout->operation(node_inout->pose,
 		node_inout->controls[0],
@@ -173,7 +175,7 @@ void a3HierarchyBlendExec4C1I(a3_HierarchyBlendNode* node_inout, const a3ui32 no
 		nodeCount);
 }
 
-void a3HierarchyBlendExec4C3I(a3_HierarchyBlendNode* node_inout, const a3ui32 nodeCount)
+void a3hierarchyBlendExec4C3I(a3_HierarchyBlendNode* node_inout, const a3ui32 nodeCount)
 {
 	node_inout->operation(node_inout->pose,
 		node_inout->controls[0],
@@ -184,7 +186,7 @@ void a3HierarchyBlendExec4C3I(a3_HierarchyBlendNode* node_inout, const a3ui32 no
 		nodeCount);
 }
 
-void a3HierarchyBlendExec16C5I(a3_HierarchyBlendNode* node_inout, const a3ui32 nodeCount)
+void a3hierarchyBlendExec16C5I(a3_HierarchyBlendNode* node_inout, const a3ui32 nodeCount)
 {
 	node_inout->operation(node_inout->pose,
 		node_inout->controls[0 * 4 + 0], node_inout->controls[0 * 4 + 1], node_inout->controls[0 * 4 + 2], node_inout->controls[0 * 4 + 3],
@@ -195,13 +197,11 @@ void a3HierarchyBlendExec16C5I(a3_HierarchyBlendNode* node_inout, const a3ui32 n
 		nodeCount);
 }
 
-a3i32 a3hierarchyBlendNodeCreate(a3_HierarchyBlendTree* refTree, a3_HierarchyBlendNode* blendNode_out, a3_HierarchyBlendOp op, a3_HierarchyBlendExec exec,
+a3i32 a3hierarchyBlendNodeCreate(a3_HierarchyBlendTree* refTree, a3_HierarchyBlendNode* blendNode_out, NodeType type,
 	a3ui32 clipCount, a3byte** clipNames,
 	a3ui32 controlNodeCount, a3ui32* controlNodes,
 	a3ui32 inputCount, a3f32** uValPtrs)
 {
-	blendNode_out->exec = exec;
-	blendNode_out->operation = op;
 	a3hierarchyPoseOpIdentity(blendNode_out->pose, refTree->hierarchy->numNodes);
 	for (a3ui32 i = 0; i < clipCount; i++)
 	{
@@ -215,6 +215,43 @@ a3i32 a3hierarchyBlendNodeCreate(a3_HierarchyBlendTree* refTree, a3_HierarchyBle
 	for (a3ui32 i = 0; i < inputCount; i++)
 	{
 		blendNode_out->uVals[i] = uValPtrs[i];
+	}
+
+	switch (type)
+	{
+	case addClip:
+		blendNode_out->exec = &a3hierarchyBlendExec2C;
+		blendNode_out->operation = NULL;
+		break;
+	case lerpClip:
+		blendNode_out->exec = &a3hierarchyBlendExec2C1I;
+		blendNode_out->operation = NULL;
+		break;
+	case scaleClip:
+		blendNode_out->exec = &a3hierarchyBlendExec1C1I;
+		blendNode_out->operation = NULL;
+		break;
+	case negateClip:
+		blendNode_out->exec = &a3hierarchyBlendExec1C;
+		blendNode_out->operation = NULL;
+		break;
+	case identity:
+	case init: //sorry, not letting people use init, too hard.
+		blendNode_out->exec = &a3hierarchyBlendExec0C;
+		blendNode_out->operation = a3hierarchyPoseOpIdentity;
+		break;
+	case nearest:
+		blendNode_out->exec = &a3hierarchyBlendExec2C1I;
+		blendNode_out->operation = &a3hierarchyPoseOpNearest;
+		break;
+	case lerp:
+		blendNode_out->exec = &a3hierarchyBlendExec2C1I;
+		blendNode_out->operation = &a3hierarchyPoseOpLERP;
+		break;
+	case negate:
+		blendNode_out->exec = &a3hierarchyBlendExec1C;
+		blendNode_out->operation = &a3hierarchyPoseOpNegate;
+		break;
 	}
 	return 1;
 }
@@ -313,6 +350,7 @@ a3i32 a3hierarchyBlendTreeLoad(a3_HierarchyBlendTree* blendTree_out, a3_Hierarch
 			a3ui32 sourceNodeCount = 0;
 			a3f32* inputParams[8];
 			a3ui32 paramCount = 0;
+
 			if (isClipNode)
 			{
 				switch (text[0])
@@ -367,7 +405,7 @@ a3i32 a3hierarchyBlendTreeLoad(a3_HierarchyBlendTree* blendTree_out, a3_Hierarch
 				}
 			}
 			token = strtok(NULL, "\n");
-			a3hierarchyBlendNodeCreate(blendTree_out, &blendTree_out->blendNodes[index], NULL, NULL, clipNameIndex, clipNames, sourceNodeCount, sourceNodeIndices, paramCount, inputParams);
+			a3hierarchyBlendNodeCreate(blendTree_out, &blendTree_out->blendNodes[index], clipType, clipNameIndex, clipNames, sourceNodeCount, sourceNodeIndices, paramCount, inputParams);
 		}
 
 		return 1;
