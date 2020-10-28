@@ -11,10 +11,10 @@
 enum NodeType {
 	addClip, lerpClip, scaleClip, negateClip,
 	identity, init,
-	copy, constant, negate, concat,
-	scale,
+	copy, constant, negate, concat, convert, revert,
+	scale, biscale,
 	deconcat,
-	nearest, lerp,
+	nearest, lerp, easeinout,
 	triangular,
 	cubic,
 	binearest, bilerp,
@@ -210,7 +210,7 @@ a3i32 a3hierarchyBlendNodeCreate(a3_HierarchyBlendTree* refTree, a3_HierarchyBle
 	a3ui32 controlNodeCount, a3ui32* controlNodes,
 	a3ui32 inputCount, a3f32** uValPtrs)
 {
-	a3hierarchyPoseOpIdentity(blendNode_out->pose, refTree->hierarchy->numNodes);
+	//how do I bind the hPose????
 	for (a3ui32 i = 0; i < clipCount; i++)
 	{
 		blendNode_out->clipNames[i] = clipNames[i];
@@ -244,9 +244,45 @@ a3i32 a3hierarchyBlendNodeCreate(a3_HierarchyBlendTree* refTree, a3_HierarchyBle
 		blendNode_out->operation = NULL;
 		break;
 	case identity:
-	case init: //sorry, not letting people use init, too hard.
+	case init: //too hard
 		blendNode_out->exec = &a3hierarchyBlendExec0C;
-		blendNode_out->operation = a3hierarchyPoseOpIdentity;
+		blendNode_out->operation = &a3hierarchyPoseOpIdentity;
+		break;
+	case copy:
+		blendNode_out->exec = &a3hierarchyBlendExec1C;
+		blendNode_out->operation = &a3hierarchyPoseOpCopy;
+		break;
+	case constant:
+		blendNode_out->exec = &a3hierarchyBlendExec1C;
+		blendNode_out->operation = &a3hierarchyPoseOpConst;
+		break;
+	case negate:
+		blendNode_out->exec = &a3hierarchyBlendExec1C;
+		blendNode_out->operation = &a3hierarchyPoseOpNegate;
+		break;
+	case concat:
+		blendNode_out->exec = &a3hierarchyBlendExec1C;
+		blendNode_out->operation = &a3hierarchyPoseOpConcat;
+		break;
+	case convert:
+		blendNode_out->exec = &a3hierarchyBlendExec1C;
+		blendNode_out->operation = &a3hierarchyPoseOpConvert;
+		break;
+	case revert:
+		blendNode_out->exec = &a3hierarchyBlendExec1C;
+		blendNode_out->operation = &a3hierarchyPoseOpRevert;
+		break;
+	case scale:
+		blendNode_out->exec = &a3hierarchyBlendExec1C1I;
+		blendNode_out->operation = &a3hierarchyPoseOpScale;
+		break;
+	case biscale:
+		blendNode_out->exec = &a3hierarchyBlendExec1C1I;
+		blendNode_out->operation = &a3hierarchyPoseOpBiDirectionalScale;
+		break;
+	case deconcat:
+		blendNode_out->exec = &a3hierarchyBlendExec2C;
+		blendNode_out->operation = &a3hierarchyPoseOpDeconcat;
 		break;
 	case nearest:
 		blendNode_out->exec = &a3hierarchyBlendExec2C1I;
@@ -256,13 +292,29 @@ a3i32 a3hierarchyBlendNodeCreate(a3_HierarchyBlendTree* refTree, a3_HierarchyBle
 		blendNode_out->exec = &a3hierarchyBlendExec2C1I;
 		blendNode_out->operation = &a3hierarchyPoseOpLERP;
 		break;
-	case negate:
-		blendNode_out->exec = &a3hierarchyBlendExec1C;
-		blendNode_out->operation = &a3hierarchyPoseOpNegate;
+	case easeinout:
+		blendNode_out->exec = &a3hierarchyBlendExec2C1I;
+		blendNode_out->operation = &a3hierarchyPoseOpEaseInOut;
 		break;
-	case concat:
-	case deconcat:
-	case copy:
+	case triangular:
+		blendNode_out->exec = &a3hierarchyBlendExec3C2I;
+		blendNode_out->operation = &a3hierarchyPoseOpTriangularLERP;
+		break;
+	case cubic:
+		blendNode_out->exec = &a3hierarchyBlendExec4C1I;
+		blendNode_out->operation = &a3hierarchyPoseOpCubic;
+		break;
+	case binearest:
+		blendNode_out->exec = &a3hierarchyBlendExec4C3I;
+		blendNode_out->operation = &a3hierarchyPoseOpBiNearest;
+		break;
+	case bilerp:
+		blendNode_out->exec = &a3hierarchyBlendExec4C3I;
+		blendNode_out->operation = &a3hierarchyPoseOpBiLerp;
+		break;
+	case bicubic:
+		blendNode_out->exec = &a3hierarchyBlendExec16C5I;
+		blendNode_out->operation = &a3hierarchyPoseOpBiCubic;
 		break;
 	}
 	return 1;
@@ -338,7 +390,7 @@ a3i32 a3hierarchyBlendTreeLoad(a3_HierarchyBlendTree* blendTree_out, a3_Hierarch
 		str[0] = 'N';
 		for (a3ui32 i = 0; i < blendTree_out->hierarchy->numNodes; i++)
 		{
-			a3hierarchySetNode(blendTree_out->hierarchy, i, -1, str); //pre-assign them
+			a3hierarchySetNode(blendTree_out->hierarchy, i, -1, "Node"); //pre-assign them
 		}
 		//leaves
 		while (token != NULL && strncmp(token, "NODES", 5) != 0)
@@ -354,7 +406,7 @@ a3i32 a3hierarchyBlendTreeLoad(a3_HierarchyBlendTree* blendTree_out, a3_Hierarch
 			text = strchr(text, ' ') + 1;
 			a3boolean isClipNode = text[0] == 'C';
 			text = strchr(text, ' ') + 1;
-			NodeType clipType;
+			NodeType clipType = identity;
 			//determine blend op
 			a3byte* clipNames[16];
 			a3ui32 clipNameIndex = 0;
@@ -409,7 +461,9 @@ a3i32 a3hierarchyBlendTreeLoad(a3_HierarchyBlendTree* blendTree_out, a3_Hierarch
 				else if (strncmp(text, "NODE", 4) == 0) //node
 				{
 					text = strchr(text, ' ') + 1;
-					sourceNodeIndices[sourceNodeCount] = atoi(text);
+					a3i32 childIndex = atoi(text);
+					sourceNodeIndices[sourceNodeCount] = childIndex;
+					a3hierarchySetNode(blendTree_out->hierarchy, childIndex, index, "Node"); //sets parent
 					sourceNodeCount++;
 				}
 				else if (strncmp(text, "PARAM", 5) == 0)
@@ -428,6 +482,7 @@ a3i32 a3hierarchyBlendTreeLoad(a3_HierarchyBlendTree* blendTree_out, a3_Hierarch
 			a3hierarchyBlendNodeCreate(blendTree_out, &blendTree_out->blendNodes[index], clipType, clipNameIndex, clipNames, sourceNodeCount, sourceNodeIndices, paramCount, inputParams);
 		}
 
+		///Bind outputs after everything's parsed
 		return 1;
 	}
 	return -1;

@@ -100,14 +100,14 @@ a3ret a3hierarchySetNode(const a3_Hierarchy *hierarchy, const a3ui32 index, cons
 	{
 		if (hierarchy->nodes && index < hierarchy->numNodes)
 		{
-			if ((a3i32)index > parentIndex)
+			//if ((a3i32)index > parentIndex)
 			{
 				node = hierarchy->nodes + index;
 				a3hierarchyInternalSetNode(node, index, parentIndex, name);
 				return index;
 			}
-			else
-				printf("\n A3 ERROR: Hierarchy node\'s index must be greater than its parent\'s.");
+			//else
+			//	printf("\n A3 ERROR: Hierarchy node\'s index must be greater than its parent\'s.");
 		}
 	}
 	return -1;
