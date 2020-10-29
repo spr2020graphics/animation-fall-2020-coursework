@@ -530,98 +530,71 @@ a3i32 a3hierarchyBlendTreeLoad(a3_HierarchyBlendTree* blendTree_out, a3_Hierarch
 //probably need a different exec for the clipOps because those require timing information
 
 
-/// <summary>
-/// Pass in the tree, the demo state, and a pose group, and the tree will be configured appropriately.
-/// </summary>
-/// <param name="tree_in"></param>
-/// <param name="demoState"></param>
-/// <param name="selectedHierarchy"></param>
-/// <returns></returns>
-a3i32 a3hierarchyBlendTreeBind(a3_HierarchyBlendTree* tree_in, a3_DemoState* demoState, a3_HierarchyPoseGroup* poseGroup)
+a3i32 copyUniqueArray(a3ui32** arr_out, a3ui32* size_out, a3ui32** arr_in, a3ui32 maxSize_in)
 {
-	if (tree_in && demoState)
+	if (arr_out && arr_in)
 	{
-		//get total number of clip controllers to allocate
-		a3i32 clipCtrlCount = 0;
-		for (a3ui32 i = 0; i < tree_in->leafCount; i++)
+		a3ui32 initVal = 0;
+		for (a3ui32 i = 0; i < maxSize_in; i++)
 		{
-			clipCtrlCount += tree_in->blendNodes[tree_in->leafIndices[i]].clipCount;
+			initVal += *arr_in[i];
 		}
-
-		demoState->demoMode1_animation->bTreeControllerCount = clipCtrlCount;
-		if (demoState->demoMode1_animation->bTreeClipControllers)
+		initVal++;
+		///sample: [0,0,0,0,0,0], [0,1,3,2,1,5]
+		for (a3ui32 i = 0; i < maxSize_in; i++)
 		{
-			free(demoState->demoMode1_animation->bTreeClipControllers); //clear out any old data
+			*arr_out[i] = initVal; //[13,13,13,13,13,13]
 		}
-		demoState->demoMode1_animation->bTreeClipControllers = malloc(clipCtrlCount * sizeof(a3_ClipController));
-
-		a3ui32 controllerIndex = 0;
-
-		//bind base inputs and init controllers
-		for (a3ui32 leafIndex = 0; leafIndex < tree_in->leafCount; leafIndex++)
+		//how many indices we've filled
+		int outIndex = 0;
+		for (a3ui32 inIndex = 0; inIndex < maxSize_in; inIndex++)
 		{
-			a3_HierarchyBlendNode* node = &tree_in->blendNodes[tree_in->leafIndices[leafIndex]];
-			for (a3ui32 nodeClipIndex = 0; nodeClipIndex < node->clipCount; nodeClipIndex++)
+			a3ui32 val = *arr_in[inIndex];
+
+			a3boolean shouldAdd = true;
+
+			//check if contains, among the indices that have been added to.
+			for (int tmp = 0; tmp < outIndex; tmp++)  //first loop checks out[0] = 1. False, so should add.
 			{
-				//assign a clip controller and increment the controller index. Also assign the clip itself
-				node->clipControllers[nodeClipIndex] = &demoState->demoMode1_animation->bTreeClipControllers[controllerIndex];
-				a3i32 clipPoolIndex = a3clipGetIndexInPool(demoState->clipPool, node->clipNames[nodeClipIndex]);
-				a3clipControllerInit(node->clipControllers[nodeClipIndex], "CTRL", demoState->clipPool, clipPoolIndex);
-				controllerIndex++;
-			}
-		}
-
-		//next is binding hstates. Total HStates = all clip inputs + all node outputs, or more conveniently, controllerCount + nodeCount
-		demoState->demoMode1_animation->bTreeHStateCount = clipCtrlCount + tree_in->bt_hierarchy->numNodes;
-
-		//free hstates if necessary
-		if (demoState->demoMode1_animation->bTreeHStates)
-		{
-			free(demoState->demoMode1_animation->bTreeHStates);
-		}
-
-		//create new hstates
-		demoState->demoMode1_animation->bTreeHStates = malloc(demoState->demoMode1_animation->bTreeHStateCount * sizeof(a3_HierarchyState));
-		//init hstates
-		for (int hStateIndex = 0; hStateIndex < demoState->demoMode1_animation->bTreeHStateCount; hStateIndex++)
-		{
-			a3hierarchyStateCreate(&demoState->demoMode1_animation->bTreeHStates[hStateIndex], poseGroup->hierarchy);
-		}
-
-		//bind hState outputs
-		a3ui32 hStateBindIndex = 0;
-		for (a3ui32 nodeIndex = 0; nodeIndex < tree_in->bt_hierarchy->numNodes; nodeIndex++)
-		{
-			//clip nodes have to also load data into their input states
-			a3_HierarchyBlendNode* node = &tree_in->blendNodes[nodeIndex];
-			if (node->nodeType < identity) //clip node
-			{
-				for (a3ui32 clipIndex = 0; clipIndex < node->clipCount; clipIndex++) //all clip counts combined = clipCtrlCount, then we add in one per node
+				if (val == *arr_out[tmp])
 				{
-					node->controlStates[clipIndex] = &demoState->demoMode1_animation->bTreeHStates[hStateBindIndex];
-					hStateBindIndex++;
+					shouldAdd = false;
+					break;
 				}
 			}
-			node->state_out = &demoState->demoMode1_animation->bTreeHStates[hStateBindIndex];
-			hStateBindIndex++;
-		}
-
-		//bind child poses!!
-		for (a3ui32 nodeIndex = 0; nodeIndex < tree_in->bt_hierarchy->numNodes; nodeIndex++)
-		{
-			a3_HierarchyBlendNode* node = &tree_in->blendNodes[nodeIndex];
-			if (node->nodeType >= identity) //internal node
+			if (shouldAdd)	//out[0] = 0
 			{
-				//node index within node's control _node_index array
-				for (a3ui32 controlIndex = 0; controlIndex < node->controlNodeCount; controlIndex++) //all clip counts combined = clipCtrlCount, then we add in one per node
-				{
-					a3ui32 controlNodeIndex = node->controlNodeIndices[controlIndex];
-					node->controlStates[controlIndex] = tree_in->blendNodes[controlNodeIndex].state_out;
-				}
+				*arr_out[outIndex] = val;
+				outIndex++;
 			}
 		}
-		demoState->demoMode1_animation->blendTree = tree_in;
+		*size_out = outIndex;
 		return 1;
 	}
 	return -1;
+}
+
+a3i32 a3hierarchyblendTreeUpdate(a3_HierarchyBlendTree* blendTree_out)
+{
+	if (!blendTree_out)
+	{
+		return -1;
+	}
+	//we always read from A and write to B, then copy b into a.
+	a3ui32* parentArrayRead = malloc(blendTree_out->leafCount * 2 * sizeof(a3ui32));
+	a3ui32 parentCountRead = 0;
+	a3ui32* parentArrayWrite = parentArrayRead + blendTree_out->leafCount;
+	a3ui32 parentCountWrite = 0;
+
+	for (a3ui32 leaf = 0; leaf < blendTree_out->leafCount; leaf++)
+	{
+		blendTree_out->blendNodes[leaf].exec(&blendTree_out->blendNodes[leaf]);
+		parentArrayWrite[leaf] = blendTree_out->bt_hierarchy->nodes[leaf].parentIndex;
+		parentCountWrite++;
+	}
+	while (parentCountWrite > 0 && parentArrayWrite[0] != -1)
+	{
+		copyUniqueArray(&parentArrayRead, &parentCountRead, &parentArrayWrite, parentCountWrite);
+	}
+	return 1;
 }

@@ -37,6 +37,7 @@
 //typedef struct a3_DemoState a3_DemoState;
 #include "../a3_DemoState.h"
 #include "../_a3_demo_utilities/a3_DemoMacros.h"
+#include "../_animation/a3_HierarchyBlendNode.h"
 
 
 //-----------------------------------------------------------------------------
@@ -182,10 +183,12 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 	
 	//lab 3 materials
 
-	a3_HierarchyState* output = demoMode->hierarchyState_skel_output;
-	a3_HierarchyState* controls = demoMode->hierarchyState_skel_control;
-	switch (demoMode->blendOp)
+	if (true)
 	{
+		a3_HierarchyState* output = demoMode->hierarchyState_skel_output;
+		a3_HierarchyState* controls = demoMode->hierarchyState_skel_control;
+		switch (demoMode->blendOp)
+		{
 		case 0: //identity, output = base pose
 			a3hierarchyPoseOpIdentity(output->sampleHPose, hierarchy->numNodes);
 			break;
@@ -341,9 +344,12 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 			a3hierarchyPoseOpCopy(controls[3].sampleHPose, &poseGroup->hierarchyPosePool[4], hierarchy->numNodes);
 			a3hierarchyPosePack(&controls[3], poseGroup);
 			break;
+		}
+		a3hierarchyPosePack(output, poseGroup);
 	}
-	a3hierarchyPosePack(output, poseGroup);
+	
 
+	a3hierarchyblendTreeUpdate(demoMode->blendTree);
 /*
 	// skeletal
 	if (demoState->updateAnimation)
