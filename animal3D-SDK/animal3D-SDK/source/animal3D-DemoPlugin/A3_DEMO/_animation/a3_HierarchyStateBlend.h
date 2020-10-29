@@ -231,14 +231,14 @@ a3_HierarchyPose* a3hierarchyPoseOpBiDirectionalScale(a3_HierarchyPose* pose_out
 
 a3_HierarchyPose* a3hierarchyPoseOpRevert(a3_HierarchyPose* pose_inout, const a3ui32 nodeCount);
 
-a3_HierarchyPose* a3clipOpAdd(a3_HierarchyPose* pose_out, a3_HierarchyPose* const clipAPose1, a3_HierarchyPose* const clipAPose2, a3_HierarchyPose* const clipBPose1, a3_HierarchyPose* const clipBPose2, const a3real clipAParam, const a3real clipBParam, const a3ui32 nodeCount);
+a3_HierarchyPose* a3clipOpAdd(a3_HierarchyPose* pose_out, a3_ClipController* const controller1, a3_ClipController* const controller2, a3_HierarchyPoseGroup* const poseGroup);
 
 // Not sure where mainParam comes from yet, think thats part of the next unit
-a3_HierarchyPose* a3clipOpLerp(a3_HierarchyPose* pose_out, a3_HierarchyPose* const clipAPose1, a3_HierarchyPose* const clipAPose2, a3_HierarchyPose* const clipBPose1, a3_HierarchyPose* const clipBPose2, const a3real clipAParam, const a3real clipBParam, const a3real mainParam, const a3ui32 nodeCount);
+a3_HierarchyPose* a3clipOpLerp(a3_HierarchyPose* pose_out, a3_HierarchyPoseGroup* const poseGroup, a3_ClipController* const controller1, a3_ClipController* const controller2, const a3real u);
 
-a3_HierarchyPose* a3clipOpScale(a3_HierarchyPose* pose_out, a3_HierarchyPose* const clipAPose1, a3_HierarchyPose* const clipAPose2, const a3real clipAParam, const a3real u, const a3ui32 nodeCount);
+a3_HierarchyPose* a3clipOpScale(a3_HierarchyPose* pose_out, a3_HierarchyPoseGroup* const poseGroup, a3_ClipController* const controller1, const a3real u);
 
-a3_HierarchyPose* a3clipOpNegate(a3_HierarchyPose* pose_out, a3_HierarchyPose* const clipAPose1, a3_HierarchyPose* const clipAPose2, const a3real clipAParam, const a3ui32 nodeCount);
+a3_HierarchyPose* a3clipOpNegate(a3_HierarchyPose* pose_out, a3_HierarchyPoseGroup* const poseGroup, a3_ClipController* const controller1);
 //-----------------------------------------------------------------------------
 
 
