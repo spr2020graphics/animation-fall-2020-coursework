@@ -174,6 +174,9 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		break;
 	}
 
+	//clip name, keyFrameParameter => pose0 and pose1. Basically get whatever data you need to find the current sample pose for the clip (from clipController)
+	//do that ^ twice (or once, depending on whether it's add/lerp or negate/scale) and then apply the blend op to it/them
+
 	//concat deltaPose (in samplePose) with base pose
 	a3hierarchyPosePack(currentState, poseGroup);
 	

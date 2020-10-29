@@ -320,9 +320,9 @@ a3i32 a3hierarchyBlendNodeCreate(a3_HierarchyBlendTree* refTree, a3_HierarchyBle
 	return 1;
 }
 
-a3i32 a3hierarchyBlendTreeLoad(a3_HierarchyBlendTree* blendTree_out, a3_Hierarchy* hierarchy_out, const a3byte* resourceFilePath)
+a3i32 a3hierarchyBlendTreeLoad(a3_HierarchyBlendTree* blendTree_out, a3_Hierarchy* skeletal_hierarchy, const a3byte* resourceFilePath)
 {
-	if (blendTree_out && hierarchy_out && !hierarchy_out->numNodes && resourceFilePath && *resourceFilePath)
+	if (blendTree_out && skeletal_hierarchy && !skeletal_hierarchy->numNodes && resourceFilePath && *resourceFilePath)
 	{
 		a3_Stream fs[1] = { 0 };
 		a3ui32 fileLength = a3streamLoadContents(&fs[0], resourceFilePath);
