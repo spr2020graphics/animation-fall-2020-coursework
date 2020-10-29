@@ -581,19 +581,32 @@ a3i32 a3hierarchyblendTreeUpdate(a3_HierarchyBlendTree* blendTree_out)
 		return -1;
 	}
 	//we always read from A and write to B, then copy b into a.
-	a3ui32* parentArrayRead = malloc(blendTree_out->leafCount * 2 * sizeof(a3ui32));
-	a3ui32 parentCountRead = 0;
+	a3ui32* parentArrayRead = calloc(blendTree_out->leafCount * 2, sizeof(a3ui32));
+	a3ui32 parentCountRead = blendTree_out->leafCount;
 	a3ui32* parentArrayWrite = parentArrayRead + blendTree_out->leafCount;
-	a3ui32 parentCountWrite = 0;
+	a3ui32 parentCountWrite = blendTree_out->leafCount;
 
-	for (a3ui32 leaf = 0; leaf < blendTree_out->leafCount; leaf++)
+	//I tried abstracting this but it became too messy.
+	
+	//initial leaf iteration
+	for (a3ui32 leaf = 0; leaf < parentCountRead; leaf++)
 	{
 		blendTree_out->blendNodes[leaf].exec(&blendTree_out->blendNodes[leaf]);
 		parentArrayWrite[leaf] = blendTree_out->bt_hierarchy->nodes[leaf].parentIndex;
-		parentCountWrite++;
 	}
-	while (parentCountWrite > 0 && parentArrayWrite[0] != -1)
+	//initial parent check
+	copyUniqueArray(&parentArrayRead, &parentCountRead, &parentArrayWrite, parentCountWrite);
+
+	//loop till there are no parents to evaluate
+	while (parentCountRead > 0 && parentArrayRead[0] != -1)
 	{
+		parentCountWrite = parentCountRead;
+		for (a3ui32 nodeIndex = 0; nodeIndex < parentCountRead; nodeIndex++)
+		{
+			a3_HierarchyBlendNode* node = &blendTree_out->blendNodes[parentArrayRead[nodeIndex]];
+			node->exec(node);
+			parentArrayWrite[nodeIndex] = blendTree_out->bt_hierarchy->nodes[nodeIndex].parentIndex;
+		}
 		copyUniqueArray(&parentArrayRead, &parentCountRead, &parentArrayWrite, parentCountWrite);
 	}
 	return 1;
