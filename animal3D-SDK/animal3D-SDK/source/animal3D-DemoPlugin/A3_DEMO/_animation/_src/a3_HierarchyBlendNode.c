@@ -572,13 +572,20 @@ a3i32 a3hierarchyBlendTreeBind(a3_HierarchyBlendTree* tree_in, a3_DemoState* dem
 			hStateBindIndex++;
 		}
 
-
-		//attach parent poses
-		a3i32 parentCountA = 0;
-		a3i32* parentArrayA = malloc(tree_in->leafCount * 2 * sizeof(a3i32)); //can't have more parents than children
-		a3i32 parentCountB = 0;
-		a3i32* parentArrayB = parentArrayA + tree_in->leafCount; //load new parents into this one, then shift over
-
+		//bind child poses!!
+		for (a3ui32 nodeIndex = 0; nodeIndex < tree_in->bt_hierarchy->numNodes; nodeIndex++)
+		{
+			a3_HierarchyBlendNode* node = &tree_in->blendNodes[nodeIndex];
+			if (node->nodeType >= identity) //internal node
+			{
+				//node index within node's control _node_index array
+				for (a3ui32 controlIndex = 0; controlIndex < node->controlNodeCount; controlIndex++) //all clip counts combined = clipCtrlCount, then we add in one per node
+				{
+					a3ui32 controlNodeIndex = node->controlNodeIndices[controlIndex];
+					node->controlStates[controlIndex] = tree_in->blendNodes[controlNodeIndex].state_out;
+				}
+			}
+		}
 		return 1;
 	}
 	return -1;
