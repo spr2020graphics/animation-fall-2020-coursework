@@ -487,3 +487,9 @@ a3i32 a3hierarchyBlendTreeLoad(a3_HierarchyBlendTree* blendTree_out, a3_Hierarch
 	}
 	return -1;
 }
+
+//TODO: once skeleton has been obtained, assign HPoseStates by iterating through the hierarchy leafnode first. Each leafnode gets an HState for its pose and inputs
+//next, all the parents get their output nodes and have their input nodes bound
+//repeat till done
+
+//this pattern is also used for the update loop, though I don't know how to get the info for those clip nodes.
