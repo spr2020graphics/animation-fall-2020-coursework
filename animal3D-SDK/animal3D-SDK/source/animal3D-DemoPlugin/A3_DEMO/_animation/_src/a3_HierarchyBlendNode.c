@@ -620,6 +620,7 @@ a3i32 a3hierarchyBlendTreeBind(a3_HierarchyBlendTree* tree_in, a3_DemoState* dem
 				}
 			}
 		}
+		demoState->demoMode1_animation->blendTree = tree_in;
 		return 1;
 	}
 	return -1;

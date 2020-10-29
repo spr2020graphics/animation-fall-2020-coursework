@@ -4,6 +4,7 @@
 */
 
 #ifndef A3_HIERARCHYBLENDNODE_H
+#define A3_HIERARCHYBLENDNODE_H
 
 #include "a3_HierarchyState.h"
 #include "a3_Hierarchy.h"

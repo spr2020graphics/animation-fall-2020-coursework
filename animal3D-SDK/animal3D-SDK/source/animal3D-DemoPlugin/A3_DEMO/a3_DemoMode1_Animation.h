@@ -40,6 +40,7 @@
 #include "_animation/a3_Kinematics.h"
 #include "_animation/a3_HierarchyStateBlend.h"
 #include "_animation/a3_KeyframeAnimationController.h"
+#include "_animation/a3_HierarchyBlendNode.h"
 
 
 //-----------------------------------------------------------------------------
@@ -181,6 +182,8 @@ typedef enum a3_DemoMode1_Animation_TargetName				a3_DemoMode1_Animation_TargetN
 		a3i32 bTreeControllerCount;
 		a3_HierarchyState* bTreeHStates;
 		a3i32 bTreeHStateCount;
+
+		a3_HierarchyBlendTree* blendTree;
 
 		// objects
 		union {
