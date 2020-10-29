@@ -349,7 +349,7 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 	}
 	
 
-	a3hierarchyblendTreeUpdate(demoMode->blendTree);
+	//a3hierarchyblendTreeUpdate(demoMode->blendTree);
 /*
 	// skeletal
 	if (demoState->updateAnimation)
