@@ -285,7 +285,7 @@ a3i32 a3hierarchyBlendNodeCreate(a3_HierarchyBlendTree* refTree, a3_HierarchyBle
 		break;
 	case copyClip:
 		blendNode_out->exec = &a3hierarchyClipExec1C;
-		blendNode_out->operation = NULL;
+		blendNode_out->operation = &a3clipOpSampleClip;
 		break;
 	case identity:
 	case init: //too hard
