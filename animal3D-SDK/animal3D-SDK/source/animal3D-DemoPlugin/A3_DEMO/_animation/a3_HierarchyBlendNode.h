@@ -10,9 +10,9 @@
 #include "a3_KeyframeAnimationController.h"
 
 enum NodeType {
-	addClip, lerpClip, scaleClip, negateClip,
-	identity, init,
-	copy, constant, negate, concat, convert, revert,
+	addClip, lerpClip, scaleClip, negateClip, copyClip,
+	identity, init, fk, ik,
+	copy, negate, concat, convert, revert,
 	scale, biscale,
 	deconcat,
 	nearest, lerp, easeinout,

@@ -235,6 +235,10 @@ a3i32 a3hierarchyBlendNodeCreate(a3_HierarchyBlendTree* refTree, a3_HierarchyBle
 		blendNode_out->exec = &a3hierarchyBlendExec1C;
 		blendNode_out->operation = NULL;
 		break;
+	case copyClip:
+		blendNode_out->exec = &a3hierarchyBlendExec1C;
+		blendNode_out->operation = NULL;
+		break;
 	case identity:
 	case init: //too hard
 		blendNode_out->exec = &a3hierarchyBlendExec0C;
@@ -243,10 +247,6 @@ a3i32 a3hierarchyBlendNodeCreate(a3_HierarchyBlendTree* refTree, a3_HierarchyBle
 	case copy:
 		blendNode_out->exec = &a3hierarchyBlendExec1C;
 		blendNode_out->operation = &a3hierarchyPoseOpCopy;
-		break;
-	case constant:
-		blendNode_out->exec = &a3hierarchyBlendExec1C;
-		blendNode_out->operation = &a3hierarchyPoseOpConst;
 		break;
 	case negate:
 		blendNode_out->exec = &a3hierarchyBlendExec1C;
@@ -307,6 +307,14 @@ a3i32 a3hierarchyBlendNodeCreate(a3_HierarchyBlendTree* refTree, a3_HierarchyBle
 	case bicubic:
 		blendNode_out->exec = &a3hierarchyBlendExec16C5I;
 		blendNode_out->operation = &a3hierarchyPoseOpBiCubic;
+		break;
+	case fk:
+		blendNode_out->exec = &a3hierarchyBlendExec0C;
+		blendNode_out->operation = NULL;
+		break;
+	case ik:
+		blendNode_out->exec = &a3hierarchyBlendExec0C;
+		blendNode_out->operation = NULL; //this operation needs to call copy before doing anything
 		break;
 	}
 	return 1;
@@ -413,31 +421,57 @@ a3i32 a3hierarchyBlendTreeLoad(a3_HierarchyBlendTree* blendTree_out, a3_Hierarch
 
 			if (isClipNode)
 			{
-				switch (text[0])
-				{
-				case 'A':
+				if (strncmp(text, "ADD", 3) == 0)
 					clipType = addClip;
-					break;
-				case 'L':
+				else if (strncmp(text, "LERP", 4) == 0)
 					clipType = lerpClip;
-					break;
-				case 'N':
+				else if (strncmp(text, "NEGATE", 6) == 0)
 					clipType = negateClip;
-					break;
-				case 'S':
+				else if (strncmp(text, "SCALE", 5) == 0)
 					clipType = scaleClip;
-					break;
-				}
+				else if (strncmp(text, "COPY", 4) == 0)
+					clipType = copyClip;
 			}
 			else
 			{
-				switch (text[0])
-				{
-				case 'L':
+				if (strncmp(text, "IDENTITY", 8) == 0)
+					clipType = identity;
+				else if (strncmp(text, "FK", 2) == 0)
+					clipType = fk;
+				else if (strncmp(text, "FK", 2) == 0)
+					clipType = ik;
+				else if (strncmp(text, "COPY", 4) == 0)
+					clipType = copy;
+				else if (strncmp(text, "NEGATE", 6) == 0)
+					clipType = negate;
+				else if (strncmp(text, "CONCAT", 6) == 0)
+					clipType = concat;
+				else if (strncmp(text, "CONVERT", 7) == 0)
+					clipType = convert;
+				else if (strncmp(text, "REVERT", 6) == 0)
+					clipType = revert;
+				else if (strncmp(text, "SCALE", 5) == 0)
+					clipType = scale;
+				else if (strncmp(text, "BISCALE", 7) == 0)
+					clipType = biscale;
+				else if (strncmp(text, "DECONCAT", 8) == 0)
+					clipType = deconcat;
+				else if (strncmp(text, "NEAREST", 7) == 0)
+					clipType = nearest;
+				else if (strncmp(text, "LERP", 4) == 0)
 					clipType = lerp;
-					break;
-				}
-				/////HOWEVER MANY CASE SWITCH STATEMENT
+				else if (strncmp(text, "EASE", 4) == 0)
+					clipType = easeinout;
+				else if (strncmp(text, "TRIANGULAR", 10) == 0)
+					clipType = triangular;
+				else if (strncmp(text, "CUBIC", 5) == 0)
+					clipType = cubic;
+				else if (strncmp(text, "BINEAREST", 9) == 0)
+					clipType = binearest;
+				else if (strncmp(text, "BILERP", 6) == 0)
+					clipType = bilerp;
+				else if (strncmp(text, "BICUBIC", 7) == 0)
+					clipType = bicubic;
 			}
 			while (strncmp(text, "END", 3) != 0)
 			{
