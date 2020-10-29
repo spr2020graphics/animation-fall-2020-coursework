@@ -759,14 +759,22 @@ inline a3_HierarchyPose* a3clipOpAdd(a3_HierarchyPose* pose_out, a3_HierarchyPos
 {
 	a3_HierarchyPose controller1Result[1], controller2Result[1];
 
-	
+	a3clipOpSampleClip(controller1Result, poseGroup, controller1);
+	a3clipOpSampleClip(controller2Result, poseGroup, controller2);
+
+	a3hierarchyPoseOpConcat(pose_out, controller1Result, controller2Result, poseGroup->hierarchy->numNodes);
 
 	return pose_out;
 }
 
 inline a3_HierarchyPose* a3clipOpLerp(a3_HierarchyPose* pose_out, a3_HierarchyPoseGroup* const poseGroup, a3_ClipController* const controller1, a3_ClipController* const controller2, const a3real u)
 {
-	//a3hierarchyPoseOpBiLerp(pose_out, clipAPose1, clipAPose2, clipBPose1, clipBPose2, clipAParam, clipBParam, mainParam, nodeCount);
+	a3_HierarchyPose controller1Result[1], controller2Result[1];
+
+	a3clipOpSampleClip(controller1Result, poseGroup, controller1);
+	a3clipOpSampleClip(controller2Result, poseGroup, controller2);
+
+	a3hierarchyPoseOpLERP(pose_out, controller1Result, controller2Result, u, poseGroup->hierarchy->numNodes);
 
 	return pose_out;
 }
@@ -775,9 +783,9 @@ inline a3_HierarchyPose* a3clipOpScale(a3_HierarchyPose* pose_out, a3_HierarchyP
 {
 	a3_HierarchyPose clipAResult[1];
 
-	//a3hierarchyPoseOpLERP(clipAResult, clipAPose1, clipAPose2, clipAParam, nodeCount);
+	a3clipOpSampleClip(clipAResult, poseGroup, controller1);
 
-	//a3hierarchyPoseOpScale(pose_out, clipAResult, u, nodeCount);
+	a3hierarchyPoseOpScale(pose_out, clipAResult, u, poseGroup->hierarchy->numNodes);
 
 	return pose_out;
 }
@@ -786,15 +794,24 @@ inline a3_HierarchyPose* a3clipOpNegate(a3_HierarchyPose* pose_out, a3_Hierarchy
 {
 	a3_HierarchyPose clipAResult[1];
 
-	//a3hierarchyPoseOpLERP(clipAResult, clipAPose1, clipAPose2, clipAParam, nodeCount);
+	a3clipOpSampleClip(clipAResult, poseGroup, controller1);
 
-	//a3hierarchyPoseOpNegate(pose_out, clipAResult, nodeCount);
+	a3hierarchyPoseOpNegate(pose_out, clipAResult, poseGroup->hierarchy->numNodes);
 
 	return pose_out;
 }
 
 inline a3_HierarchyPose* a3clipOpSampleClip(a3_HierarchyPose* pose_out, a3_HierarchyPoseGroup* const poseGroup, a3_ClipController* const controller1)
 {
+	a3ui32 currentKeyValue = (a3ui32)(controller1->clipPool->clipArray[controller1->clipIndex].keyframes->keyframeArray[controller1->keyframeIndex].sample.value);
+	a3ui32 deltaPoses = poseGroup->poseCount - 1;
+	a3_HierarchyPose* currentPose;
+	a3_HierarchyPose* nextPose;
+
+	currentPose = &poseGroup->hierarchyPosePool[((currentKeyValue + deltaPoses) % deltaPoses) + 1];
+	nextPose = &poseGroup->hierarchyPosePool[((currentKeyValue + deltaPoses + 1) % deltaPoses) + 1];
+
+	a3hierarchyPoseOpLERP(pose_out, currentPose, nextPose, controller1->keyframeParameter, poseGroup->hierarchy->numNodes);
 
 	return pose_out;
 }
