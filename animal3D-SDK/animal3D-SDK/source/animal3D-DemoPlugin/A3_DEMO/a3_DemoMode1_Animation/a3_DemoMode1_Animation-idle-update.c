@@ -348,7 +348,11 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		a3hierarchyPosePack(output, poseGroup);
 	}
 	
-
+	for (a3i32 ctrlInd = 0; ctrlInd < demoMode->bTreeControllerCount; ctrlInd++)
+	{
+		a3_ClipController* ctrl = &demoState->controllers[ctrlInd];
+		a3clipControllerUpdate(ctrl, (a3real)dt* demoState->globalPlaybackDir* demoState->globalSpeedMod);
+	}
 	a3hierarchyblendTreeUpdate(demoMode->blendTree);
 /*
 	// skeletal
