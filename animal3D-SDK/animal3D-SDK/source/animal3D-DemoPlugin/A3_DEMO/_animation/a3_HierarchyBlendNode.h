@@ -7,7 +7,21 @@
 
 #include "a3_HierarchyState.h"
 #include "a3_Hierarchy.h"
-#include "a3_KeyframeAnimation.h"
+#include "a3_KeyframeAnimationController.h"
+
+enum NodeType {
+	addClip, lerpClip, scaleClip, negateClip,
+	identity, init,
+	copy, constant, negate, concat, convert, revert,
+	scale, biscale,
+	deconcat,
+	nearest, lerp, easeinout,
+	triangular,
+	cubic,
+	binearest, bilerp,
+	bicubic
+};
+typedef enum NodeType NodeType;
 
 typedef struct a3_SpatialBlendNode a3_SpatialBlendNode;
 typedef struct a3_SpatialBlendTree a3_SpatialBlendTree;
@@ -53,31 +67,42 @@ struct a3_SpatialBlendTree
 typedef struct a3_HierarchyBlendNode a3_HierarchyBlendNode;
 typedef struct a3_HierarchyBlendTree a3_HierarchyBlendTree;
 typedef a3_HierarchyPose* (*a3_HierarchyBlendOp)(a3_HierarchyPose* pose, ...);
-typedef void (*a3_HierarchyBlendExec)(a3_HierarchyBlendNode* node_in, a3ui32 nodeCount);
+typedef void (*a3_HierarchyBlendExec)(a3_HierarchyBlendNode* node_in);
 
-void a3hierarchyBlendExec0C(a3_HierarchyBlendNode* node_inout, const a3ui32 nodeCount);
-void a3hierarchyBlendExec1C(a3_HierarchyBlendNode* node_inout, const a3ui32 nodeCount);
-void a3hierarchyBlendExec1C1I(a3_HierarchyBlendNode* node_inout, const a3ui32 nodeCount);
-void a3hierarchyBlendExec2C(a3_HierarchyBlendNode* node_inout, const a3ui32 nodeCount);
-void a3hierarchyBlendExec2C1I(a3_HierarchyBlendNode* node_inout, const a3ui32 nodeCount);
-void a3hierarchyBlendExec3C2I(a3_HierarchyBlendNode* node_inout, const a3ui32 nodeCount);
-void a3hierarchyBlendExec4C1I(a3_HierarchyBlendNode* node_inout, const a3ui32 nodeCount);
-void a3hierarchyBlendExec4C3I(a3_HierarchyBlendNode* node_inout, const a3ui32 nodeCount);
-void a3hierarchyBlendExec16C5I(a3_HierarchyBlendNode* node_inout, const a3ui32 nodeCount);
+void a3hierarchyBlendExec0C(a3_HierarchyBlendNode* node_inout);
+void a3hierarchyBlendExec1C(a3_HierarchyBlendNode* node_inout);
+void a3hierarchyBlendExec1C1I(a3_HierarchyBlendNode* node_inout);
+void a3hierarchyBlendExec2C(a3_HierarchyBlendNode* node_inout);
+void a3hierarchyBlendExec2C1I(a3_HierarchyBlendNode* node_inout);
+void a3hierarchyBlendExec3C2I(a3_HierarchyBlendNode* node_inout);
+void a3hierarchyBlendExec4C1I(a3_HierarchyBlendNode* node_inout);
+void a3hierarchyBlendExec4C3I(a3_HierarchyBlendNode* node_inout);
+void a3hierarchyBlendExec16C5I(a3_HierarchyBlendNode* node_inout);
 
 struct a3_HierarchyBlendNode
 {
 	a3f32* uVals[8];
 	a3_HierarchyBlendOp operation;
 	a3_HierarchyBlendExec exec;
-	a3_HierarchyPose* pose;
-	a3_HierarchyPose* controls[16];
-	a3byte* clipNames[16]; //array of 16 cstrings
+	a3_HierarchyState* state_out;
+	a3_HierarchyState* controlStates[16];
+	a3byte* clipNames[16]; //array of 16 cstrings. Load these clips into clip controllers
+	a3_ClipController* clipControllers[16]; //array of 16 pointers to clip controllers. How do I bind these????
+
+	//binding information
+	NodeType nodeType; //reference for binding
+	a3ui32 clipCount; //useful for iterating when binding
+	a3ui32 controlNodeIndices[16];
+	a3ui32 controlNodeCount; //node equivalent of clipCount
+	a3ui32 uValCount;
+
+
+	a3_HierarchyPoseGroup* poseGroup; //needed for clip nodes only
 };
 
 struct a3_HierarchyBlendTree
 {
-	a3_Hierarchy hierarchy[1];
+	a3_Hierarchy bt_hierarchy[1];
 	a3i32* leafIndices;
 	a3ui32 leafCount;
 	a3_HierarchyBlendNode* blendNodes;

@@ -39,6 +39,7 @@
 #include "_a3_demo_utilities/a3_DemoSceneObject.h"
 #include "_animation/a3_Kinematics.h"
 #include "_animation/a3_HierarchyStateBlend.h"
+#include "_animation/a3_KeyframeAnimationController.h"
 
 
 //-----------------------------------------------------------------------------
@@ -174,6 +175,12 @@ typedef enum a3_DemoMode1_Animation_TargetName				a3_DemoMode1_Animation_TargetN
 			};
 		};
 		a3ui32 uValIndex;					// which uVal to access
+
+
+		a3_ClipController* bTreeClipControllers;
+		a3i32 bTreeControllerCount;
+		a3_HierarchyState* bTreeHStates;
+		a3i32 bTreeHStateCount;
 
 		// objects
 		union {
