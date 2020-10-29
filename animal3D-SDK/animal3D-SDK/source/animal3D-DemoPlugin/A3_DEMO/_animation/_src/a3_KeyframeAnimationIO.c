@@ -156,6 +156,7 @@ a3i32 a3clipParse(a3_DemoState* state, a3byte const* data, const a3ui32 clipInde
 
 		token = strtok(token + strlen(token) + 1, " ");	// token + strlen(token) + 1 moves us to the next line in the file without breaking data
 		lineIndex++;
+
 	}
 
 	// Initialize the clip and its transitions
@@ -175,6 +176,8 @@ a3i32 a3clipParse(a3_DemoState* state, a3byte const* data, const a3ui32 clipInde
 		a3clipCalculateDuration(state->clipPool->clipArray + clipIndex);
 	}
 
+	free(forwardTrans.targetClipName);
+	free(reverseTrans.targetClipName);
 	return 0;
 }
 
@@ -223,6 +226,7 @@ a3i32 a3keyframeParse(a3_DemoState* state, a3byte const* data)
 	// Initialize the keyframe
 	a3keyframeInit(state->keyPool->keyframeArray + index, duration, &sample);
 
+	free(parseDataCopy);
 	return 0;
 }
 
