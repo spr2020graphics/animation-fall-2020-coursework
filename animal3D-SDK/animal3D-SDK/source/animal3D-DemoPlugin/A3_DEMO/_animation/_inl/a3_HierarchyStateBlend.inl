@@ -793,6 +793,12 @@ inline a3_HierarchyPose* a3clipOpNegate(a3_HierarchyPose* pose_out, a3_Hierarchy
 	return pose_out;
 }
 
+inline a3_HierarchyPose* a3clipOpSampleClip(a3_HierarchyPose* pose_out, a3_HierarchyPoseGroup* const poseGroup, a3_ClipController* const controller1)
+{
+
+	return pose_out;
+}
+
 //-----------------------------------------------------------------------------
 
 
