@@ -48,9 +48,9 @@
 /// <param name="demoState"></param>
 /// <param name="selectedHierarchy"></param>
 /// <returns></returns>
-a3i32 a3hierarchyBlendTreeBind(a3_HierarchyBlendTree* tree_in, a3_DemoState* demoState, a3_HierarchyPoseGroup* poseGroup)
+a3i32 a3hierarchyBlendTreeBind(a3_HierarchyBlendTree* tree_in, a3_DemoMode1_Animation* const demoMode, const a3_DemoState* demoState, a3_HierarchyPoseGroup* poseGroup)
 {
-	if (tree_in && demoState)
+	if (tree_in && demoMode)
 	{
 		//get total number of clip controllers to allocate
 		a3i32 clipCtrlCount = 0;
@@ -59,12 +59,12 @@ a3i32 a3hierarchyBlendTreeBind(a3_HierarchyBlendTree* tree_in, a3_DemoState* dem
 			clipCtrlCount += tree_in->blendNodes[tree_in->leafIndices[i]].clipCount;
 		}
 
-		demoState->demoMode1_animation->bTreeControllerCount = clipCtrlCount;
-		if (demoState->demoMode1_animation->bTreeClipControllers)
+		demoMode->bTreeControllerCount = clipCtrlCount;
+		if (demoMode->bTreeClipControllers)
 		{
-			free(demoState->demoMode1_animation->bTreeClipControllers); //clear out any old data
+			free(demoMode->bTreeClipControllers); //clear out any old data
 		}
-		demoState->demoMode1_animation->bTreeClipControllers = malloc(clipCtrlCount * sizeof(a3_ClipController));
+		demoMode->bTreeClipControllers = malloc(clipCtrlCount * sizeof(a3_ClipController));
 
 		a3ui32 controllerIndex = 0;
 
@@ -75,7 +75,7 @@ a3i32 a3hierarchyBlendTreeBind(a3_HierarchyBlendTree* tree_in, a3_DemoState* dem
 			for (a3ui32 nodeClipIndex = 0; nodeClipIndex < node->clipCount; nodeClipIndex++)
 			{
 				//assign a clip controller and increment the controller index. Also assign the clip itself
-				node->clipControllers[nodeClipIndex] = &demoState->demoMode1_animation->bTreeClipControllers[controllerIndex];
+				node->clipControllers[nodeClipIndex] = &demoMode->bTreeClipControllers[controllerIndex];
 				a3i32 clipPoolIndex = a3clipGetIndexInPool(demoState->clipPool, node->clipNames[nodeClipIndex]);
 				a3clipControllerInit(node->clipControllers[nodeClipIndex], "CTRL", demoState->clipPool, clipPoolIndex);
 				controllerIndex++;
@@ -83,7 +83,7 @@ a3i32 a3hierarchyBlendTreeBind(a3_HierarchyBlendTree* tree_in, a3_DemoState* dem
 		}
 
 		//next is binding hstates. Total HStates = all clip inputs + all node outputs, or more conveniently, controllerCount + nodeCount
-		demoState->demoMode1_animation->bTreeHStateCount = clipCtrlCount + tree_in->bt_hierarchy->numNodes;
+		demoMode->bTreeHStateCount = clipCtrlCount + tree_in->bt_hierarchy->numNodes;
 
 		//free hstates if necessary
 		if (demoState->demoMode1_animation->bTreeHStates)
@@ -92,7 +92,7 @@ a3i32 a3hierarchyBlendTreeBind(a3_HierarchyBlendTree* tree_in, a3_DemoState* dem
 		}
 
 		//create new hstates
-		demoState->demoMode1_animation->bTreeHStates = malloc(demoState->demoMode1_animation->bTreeHStateCount * sizeof(a3_HierarchyState));
+		demoMode->bTreeHStates = malloc(demoState->demoMode1_animation->bTreeHStateCount * sizeof(a3_HierarchyState));
 		//init hstates
 		for (int hStateIndex = 0; hStateIndex < demoState->demoMode1_animation->bTreeHStateCount; hStateIndex++)
 		{
@@ -109,11 +109,11 @@ a3i32 a3hierarchyBlendTreeBind(a3_HierarchyBlendTree* tree_in, a3_DemoState* dem
 			{
 				for (a3ui32 clipIndex = 0; clipIndex < node->clipCount; clipIndex++) //all clip counts combined = clipCtrlCount, then we add in one per node
 				{
-					node->controlStates[clipIndex] = &demoState->demoMode1_animation->bTreeHStates[hStateBindIndex];
+					node->controlStates[clipIndex] = &demoMode->bTreeHStates[hStateBindIndex];
 					hStateBindIndex++;
 				}
 			}
-			node->state_out = &demoState->demoMode1_animation->bTreeHStates[hStateBindIndex];
+			node->state_out = &demoMode->bTreeHStates[hStateBindIndex];
 			hStateBindIndex++;
 		}
 
@@ -131,7 +131,7 @@ a3i32 a3hierarchyBlendTreeBind(a3_HierarchyBlendTree* tree_in, a3_DemoState* dem
 				}
 			}
 		}
-		demoState->demoMode1_animation->blendTree = tree_in;
+		demoMode->blendTree = tree_in;
 		return 1;
 	}
 	return -1;
@@ -617,6 +617,9 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	hierarchyState = demoMode->hierarchyState_skel_output;
 	hierarchyState->hierarchy = 0;
 	a3hierarchyStateCreate(hierarchyState, demoMode->hierarchy_skel); //hierarchy_bvh
+
+
+	a3hierarchyBlendTreeBind(demoMode->blendTree, demoMode, demoState, hierarchyPoseGroup);
 
 }
 
