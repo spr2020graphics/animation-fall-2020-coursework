@@ -76,7 +76,7 @@ a3i32 a3hierarchyBlendTreeBind(a3_HierarchyBlendTree* tree_in, a3_DemoMode1_Anim
 			{
 				//assign a clip controller and increment the controller index. Also assign the clip itself
 				node->clipControllers[nodeClipIndex] = &demoMode->bTreeClipControllers[controllerIndex];
-				a3i32 clipPoolIndex = a3clipGetIndexInPool(demoState->clipPool, node->clipNames[nodeClipIndex]);
+				a3ui32 clipPoolIndex = a3clipGetIndexInPool(demoState->clipPool, node->clipNames[nodeClipIndex]);
 				a3clipControllerInit(node->clipControllers[nodeClipIndex], "CTRL", demoState->clipPool, clipPoolIndex);
 				controllerIndex++;
 			}
@@ -92,7 +92,7 @@ a3i32 a3hierarchyBlendTreeBind(a3_HierarchyBlendTree* tree_in, a3_DemoMode1_Anim
 		}
 
 		//create new hstates
-		demoMode->bTreeHStates = malloc(demoState->demoMode1_animation->bTreeHStateCount * sizeof(a3_HierarchyState));
+		demoMode->bTreeHStates = calloc(demoState->demoMode1_animation->bTreeHStateCount, sizeof(a3_HierarchyState));
 		//init hstates
 		for (int hStateIndex = 0; hStateIndex < demoState->demoMode1_animation->bTreeHStateCount; hStateIndex++)
 		{
@@ -107,6 +107,7 @@ a3i32 a3hierarchyBlendTreeBind(a3_HierarchyBlendTree* tree_in, a3_DemoMode1_Anim
 			a3_HierarchyBlendNode* node = &tree_in->blendNodes[nodeIndex];
 			if (node->nodeType < identity) //clip node
 			{
+				node->poseGroup = poseGroup;
 				for (a3ui32 clipIndex = 0; clipIndex < node->clipCount; clipIndex++) //all clip counts combined = clipCtrlCount, then we add in one per node
 				{
 					node->controlStates[clipIndex] = &demoMode->bTreeHStates[hStateBindIndex];
@@ -160,9 +161,8 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	hierarchyPoseGroup = demoMode->hierarchyPoseGroup_skel; //hierarchy_bvh
 
 	//create BVH
-	a3_HierarchyBlendTree blendTree[1];
+	a3_HierarchyBlendTree* blendTree = calloc(1, sizeof(a3_HierarchyBlendTree));
 	//a3hierarchyPoseGroupLoadBVH(hierarchyPoseGroup, hierarchy, animationfilePath);
-	a3hierarchyBlendTreeLoad(blendTree, demoMode->hierarchy_skel, blendfilePath);
 
 	// stream animation assets
 	if (demoState->streaming && a3fileStreamOpenRead(fileStream, geometryStream))
@@ -618,8 +618,8 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	hierarchyState->hierarchy = 0;
 	a3hierarchyStateCreate(hierarchyState, demoMode->hierarchy_skel); //hierarchy_bvh
 
-
-	a3hierarchyBlendTreeBind(demoMode->blendTree, demoMode, demoState, hierarchyPoseGroup);
+	a3hierarchyBlendTreeLoad(blendTree, demoMode->hierarchy_skel, blendfilePath);
+	a3hierarchyBlendTreeBind(blendTree, demoMode, demoState, hierarchyPoseGroup);
 
 }
 

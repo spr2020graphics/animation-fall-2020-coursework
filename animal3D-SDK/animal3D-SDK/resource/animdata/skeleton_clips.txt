@@ -32,6 +32,7 @@ $ 1.5 3 3
 
 # @ clip_name use_clip_duration first_frame last_frame forward_trans reverse_trans clip_duration
 
-@ skelly false 0 3 > skelly > skelly
+@ skel false 0 3 > skel > skel
+@ skel2 false 0 3 > skel2 > skel2
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------#

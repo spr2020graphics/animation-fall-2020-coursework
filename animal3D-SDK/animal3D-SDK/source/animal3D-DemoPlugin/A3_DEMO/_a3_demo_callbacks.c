@@ -137,6 +137,10 @@ void a3demo_load(a3_DemoState* demoState)
 	demoState->demoMode = demoState_modeAnimation;
 	demoState->demoModeCallbacksPtr = demoState->demoModeCallbacks + demoState->demoMode;
 	a3starter_load(demoState, demoState->demoMode0_starter);
+
+	// clip info
+	a3demo_loadClipData(demoState);
+
 	a3animation_load(demoState, demoState->demoMode1_animation);
 
 
@@ -149,8 +153,7 @@ void a3demo_load(a3_DemoState* demoState)
 	// textures
 	a3demo_loadTextures(demoState);
 
-	// clip info
-	a3demo_loadClipData(demoState);
+
 
 
 	// set flags

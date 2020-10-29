@@ -252,7 +252,7 @@ a3i32 a3hierarchyBlendNodeCreate(a3_HierarchyBlendTree* refTree, a3_HierarchyBle
 	{
 		blendNode_out->clipNames[i] = clipNames[i];
 	}
-	blendNode_out->clipCount;
+	blendNode_out->clipCount = clipCount;
 	for (a3ui32 i = 0; i < inputCount; i++)
 	{
 		blendNode_out->uVals[i] = uValPtrs[i];
@@ -368,9 +368,16 @@ a3i32 a3hierarchyBlendNodeCreate(a3_HierarchyBlendTree* refTree, a3_HierarchyBle
 	return 1;
 }
 
+/// <summary>
+/// Last index is not parsing. Why?
+/// </summary>
+/// <param name="blendTree_out"></param>
+/// <param name="skeletal_hierarchy"></param>
+/// <param name="resourceFilePath"></param>
+/// <returns></returns>
 a3i32 a3hierarchyBlendTreeLoad(a3_HierarchyBlendTree* blendTree_out, a3_Hierarchy* skeletal_hierarchy, const a3byte* resourceFilePath)
 {
-	if (blendTree_out && skeletal_hierarchy && !skeletal_hierarchy->numNodes && resourceFilePath && *resourceFilePath)
+	if (blendTree_out && skeletal_hierarchy && resourceFilePath && *resourceFilePath)
 	{
 		a3_Stream fs[1] = { 0 };
 		a3ui32 fileLength = a3streamLoadContents(&fs[0], resourceFilePath);
@@ -380,7 +387,7 @@ a3i32 a3hierarchyBlendTreeLoad(a3_HierarchyBlendTree* blendTree_out, a3_Hierarch
 		}
 		a3byte* contentsCopy = malloc(fs->length * sizeof(a3byte));
 		strncpy(contentsCopy, fs->contents, fs->length);
-		*strrchr(contentsCopy, '\r') = '\0';
+		//*strrchr(contentsCopy, '\r') = '\0';
 		//node count
 		char* token = strtok((char*)contentsCopy, "\n");
 		while (token != NULL && strncmp(token, "NODECOUNT", 9) != 0)
@@ -529,10 +536,13 @@ a3i32 a3hierarchyBlendTreeLoad(a3_HierarchyBlendTree* blendTree_out, a3_Hierarch
 					//do a lot of pointer math to copy over the name of a clip
 					text = strchr(text, ' ') + 1;
 					a3byte* terminator = strchr(text, ' ');
-					*terminator = '\0';
+					if (*terminator == '\r')
+					{
+						*terminator = '\0';
+					}
 					clipNames[clipNameIndex] = malloc((strlen(text) + 1) * sizeof(a3byte));
-					clipNames[clipNameIndex][strlen(text)] = '\0';
-					strncpy(clipNames[clipNameIndex], text, strlen(text));
+					clipNames[clipNameIndex][terminator - text] = '\0';
+					strncpy(clipNames[clipNameIndex], text, terminator - text);
 					text = terminator + 1;
 					clipNameIndex++;
 				}
@@ -583,28 +593,30 @@ a3i32 copyUniqueArray(a3ui32** arr_out, a3ui32* size_out, a3ui32** arr_in, a3ui3
 	if (arr_out && arr_in)
 	{
 		a3ui32 initVal = 0;
+		a3ui32* arrInLoc = *arr_in;
+		a3ui32* arrOutLoc = *arr_out;
 		for (a3ui32 i = 0; i < maxSize_in; i++)
 		{
-			initVal += *arr_in[i];
+			initVal += arrInLoc[i];
 		}
 		initVal++;
 		///sample: [0,0,0,0,0,0], [0,1,3,2,1,5]
 		for (a3ui32 i = 0; i < maxSize_in; i++)
 		{
-			*arr_out[i] = initVal; //[13,13,13,13,13,13]
+			arrOutLoc[i] = initVal; //[13,13,13,13,13,13]
 		}
 		//how many indices we've filled
 		int outIndex = 0;
 		for (a3ui32 inIndex = 0; inIndex < maxSize_in; inIndex++)
 		{
-			a3ui32 val = *arr_in[inIndex];
+			a3ui32 val = arrInLoc[inIndex];
 
 			a3boolean shouldAdd = true;
 
 			//check if contains, among the indices that have been added to.
 			for (int tmp = 0; tmp < outIndex; tmp++)  //first loop checks out[0] = 1. False, so should add.
 			{
-				if (val == *arr_out[tmp])
+				if (val == arrOutLoc[tmp])
 				{
 					shouldAdd = false;
 					break;
@@ -612,7 +624,7 @@ a3i32 copyUniqueArray(a3ui32** arr_out, a3ui32* size_out, a3ui32** arr_in, a3ui3
 			}
 			if (shouldAdd)	//out[0] = 0
 			{
-				*arr_out[outIndex] = val;
+				arrOutLoc[outIndex] = val;
 				outIndex++;
 			}
 		}
@@ -639,21 +651,22 @@ a3i32 a3hierarchyblendTreeUpdate(a3_HierarchyBlendTree* blendTree_out)
 	//initial leaf iteration
 	for (a3ui32 leaf = 0; leaf < parentCountRead; leaf++)
 	{
-		blendTree_out->blendNodes[leaf].exec(&blendTree_out->blendNodes[leaf]);
+		a3_HierarchyBlendNode* node = &blendTree_out->blendNodes[leaf];
+		node->exec(node);
 		parentArrayWrite[leaf] = blendTree_out->bt_hierarchy->nodes[leaf].parentIndex;
 	}
 	//initial parent check
 	copyUniqueArray(&parentArrayRead, &parentCountRead, &parentArrayWrite, parentCountWrite);
 
 	//loop till there are no parents to evaluate
-	while (parentCountRead > 0 && parentArrayRead[0] != -1)
+	while (parentCountRead > 0 && parentArrayRead[0] != -1 && parentArrayRead[0] != 4294967295u)
 	{
 		parentCountWrite = parentCountRead;
 		for (a3ui32 nodeIndex = 0; nodeIndex < parentCountRead; nodeIndex++)
 		{
 			a3_HierarchyBlendNode* node = &blendTree_out->blendNodes[parentArrayRead[nodeIndex]];
 			node->exec(node);
-			parentArrayWrite[nodeIndex] = blendTree_out->bt_hierarchy->nodes[nodeIndex].parentIndex;
+			parentArrayWrite[nodeIndex] = blendTree_out->bt_hierarchy->nodes[parentArrayRead[nodeIndex]].parentIndex;
 		}
 		copyUniqueArray(&parentArrayRead, &parentCountRead, &parentArrayWrite, parentCountWrite);
 	}

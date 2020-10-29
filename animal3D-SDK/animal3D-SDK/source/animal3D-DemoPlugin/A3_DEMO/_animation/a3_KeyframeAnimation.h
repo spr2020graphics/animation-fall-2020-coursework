@@ -183,7 +183,7 @@ a3i32 a3clipPoolRelease(a3_ClipPool* clipPool);
 a3i32 a3clipInit(a3_Clip* clip_out, const a3byte clipName[a3keyframeAnimation_nameLenMax], const a3_KeyframePool* keyframePool, const a3ui32 firstKeyframeIndex, const a3ui32 finalKeyframeIndex);
 
 // get clip index from pool (Scott Dagen)
-a3i32 a3clipGetIndexInPool(const a3_ClipPool* clipPool, const a3byte clipName[a3keyframeAnimation_nameLenMax]);
+a3ui32 a3clipGetIndexInPool(const a3_ClipPool* clipPool, const a3byte clipName[a3keyframeAnimation_nameLenMax]);
 
 // calculate clip duration as sum of keyframes' durations (Scott Dagen)
 a3i32 a3clipCalculateDuration(a3_Clip* clip);
