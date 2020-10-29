@@ -193,6 +193,54 @@ void a3hierarchyBlendExec16C5I(a3_HierarchyBlendNode* node_inout)
 		node_inout->state_out->hierarchy->numNodes);
 }
 
+/// <summary>
+/// Negate, Copy
+/// </summary>
+/// <param name="node_inout"></param>
+void a3hierarchyClipExec1C(a3_HierarchyBlendNode* node_inout)
+{
+	node_inout->operation(node_inout->state_out->sampleHPose,
+		node_inout->poseGroup,
+		node_inout->clipControllers[0]);
+}
+
+/// <summary>
+/// Scale
+/// </summary>
+/// <param name="node_inout"></param>
+void a3hierarchyClipExec1C1I(a3_HierarchyBlendNode* node_inout)
+{
+	node_inout->operation(node_inout->state_out->sampleHPose,
+		node_inout->poseGroup,
+		node_inout->clipControllers[0],
+		node_inout->uVals[0]);
+}
+
+/// <summary>
+/// Add
+/// </summary>
+/// <param name="node_inout"></param>
+void a3hierarchyClipExec2C(a3_HierarchyBlendNode* node_inout)
+{
+	node_inout->operation(node_inout->state_out->sampleHPose,
+		node_inout->poseGroup,
+		node_inout->clipControllers[0],
+		node_inout->clipControllers[1]);
+}
+
+/// <summary>
+/// Lerp
+/// </summary>
+/// <param name="node_inout"></param>
+void a3hierarchyClipExec2C1I(a3_HierarchyBlendNode* node_inout)
+{
+	node_inout->operation(node_inout->state_out->sampleHPose,
+		node_inout->poseGroup,
+		node_inout->clipControllers[0],
+		node_inout->clipControllers[1],
+		node_inout->uVals[0]);
+}
+
 a3i32 a3hierarchyBlendNodeCreate(a3_HierarchyBlendTree* refTree, a3_HierarchyBlendNode* blendNode_out, NodeType type,
 	a3ui32 clipCount, a3byte** clipNames,
 	a3ui32 controlNodeCount, a3ui32* controlNodes,
@@ -220,24 +268,24 @@ a3i32 a3hierarchyBlendNodeCreate(a3_HierarchyBlendTree* refTree, a3_HierarchyBle
 	switch (type)
 	{
 	case addClip:
-		blendNode_out->exec = &a3hierarchyBlendExec2C;
-		blendNode_out->operation = NULL;
+		blendNode_out->exec = &a3hierarchyClipExec2C;
+		blendNode_out->operation = &a3clipOpAdd;
 		break;
 	case lerpClip:
-		blendNode_out->exec = &a3hierarchyBlendExec2C1I;
-		blendNode_out->operation = NULL;
+		blendNode_out->exec = &a3hierarchyClipExec2C1I;
+		blendNode_out->operation = &a3clipOpLerp;
 		break;
 	case scaleClip:
-		blendNode_out->exec = &a3hierarchyBlendExec1C1I;
-		blendNode_out->operation = NULL;
+		blendNode_out->exec = &a3hierarchyClipExec1C1I;
+		blendNode_out->operation = &a3clipOpScale;
 		break;
 	case negateClip:
-		blendNode_out->exec = &a3hierarchyBlendExec1C;
-		blendNode_out->operation = NULL;
+		blendNode_out->exec = &a3hierarchyClipExec1C;
+		blendNode_out->operation = &a3clipOpNegate;
 		break;
 	case copyClip:
-		blendNode_out->exec = &a3hierarchyBlendExec1C;
-		blendNode_out->operation = NULL;
+		blendNode_out->exec = &a3hierarchyClipExec1C;
+		blendNode_out->operation = &a3clipOpSampleClip;
 		break;
 	case identity:
 	case init: //too hard
@@ -309,11 +357,11 @@ a3i32 a3hierarchyBlendNodeCreate(a3_HierarchyBlendTree* refTree, a3_HierarchyBle
 		blendNode_out->operation = &a3hierarchyPoseOpBiCubic;
 		break;
 	case fk:
-		blendNode_out->exec = &a3hierarchyBlendExec0C;
+		blendNode_out->exec = &a3hierarchyBlendExec1C;
 		blendNode_out->operation = NULL;
 		break;
 	case ik:
-		blendNode_out->exec = &a3hierarchyBlendExec0C;
+		blendNode_out->exec = &a3hierarchyBlendExec1C;
 		blendNode_out->operation = NULL; //this operation needs to call copy before doing anything
 		break;
 	}
@@ -482,7 +530,7 @@ a3i32 a3hierarchyBlendTreeLoad(a3_HierarchyBlendTree* blendTree_out, a3_Hierarch
 					text = strchr(text, ' ') + 1;
 					a3byte* terminator = strchr(text, ' ');
 					*terminator = '\0';
-					clipNames[clipNameIndex] = malloc((strlen(text)+1) * sizeof(a3byte));
+					clipNames[clipNameIndex] = malloc((strlen(text) + 1) * sizeof(a3byte));
 					clipNames[clipNameIndex][strlen(text)] = '\0';
 					strncpy(clipNames[clipNameIndex], text, strlen(text));
 					text = terminator + 1;
@@ -587,7 +635,7 @@ a3i32 a3hierarchyblendTreeUpdate(a3_HierarchyBlendTree* blendTree_out)
 	a3ui32 parentCountWrite = blendTree_out->leafCount;
 
 	//I tried abstracting this but it became too messy.
-	
+
 	//initial leaf iteration
 	for (a3ui32 leaf = 0; leaf < parentCountRead; leaf++)
 	{

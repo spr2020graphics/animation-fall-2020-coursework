@@ -80,6 +80,11 @@ void a3hierarchyBlendExec4C1I(a3_HierarchyBlendNode* node_inout);
 void a3hierarchyBlendExec4C3I(a3_HierarchyBlendNode* node_inout);
 void a3hierarchyBlendExec16C5I(a3_HierarchyBlendNode* node_inout);
 
+void a3hierarchyClipExec1C(a3_HierarchyBlendNode* node_inout);
+void a3hierarchyClipExec1C1I(a3_HierarchyBlendNode* node_inout);
+void a3hierarchyClipExec2C(a3_HierarchyBlendNode* node_inout);
+void a3hierarchyClipExec2C1I(a3_HierarchyBlendNode* node_inout);
+
 struct a3_HierarchyBlendNode
 {
 	a3f32* uVals[8];
