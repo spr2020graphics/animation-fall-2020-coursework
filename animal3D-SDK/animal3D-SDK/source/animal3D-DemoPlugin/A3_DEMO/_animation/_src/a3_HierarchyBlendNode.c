@@ -199,6 +199,7 @@ void a3hierarchyBlendExec16C5I(a3_HierarchyBlendNode* node_inout)
 /// <param name="node_inout"></param>
 void a3hierarchyClipExec1C(a3_HierarchyBlendNode* node_inout)
 {
+	a3clipOpSampleClip(node_inout->controlStates[0]->sampleHPose, node_inout->poseGroup, node_inout->clipControllers[0]);
 	node_inout->operation(node_inout->state_out->sampleHPose,
 		node_inout->poseGroup,
 		node_inout->clipControllers[0]);
@@ -210,6 +211,7 @@ void a3hierarchyClipExec1C(a3_HierarchyBlendNode* node_inout)
 /// <param name="node_inout"></param>
 void a3hierarchyClipExec1C1I(a3_HierarchyBlendNode* node_inout)
 {
+	a3clipOpSampleClip(node_inout->controlStates[0]->sampleHPose, node_inout->poseGroup, node_inout->clipControllers[0]);
 	node_inout->operation(node_inout->state_out->sampleHPose,
 		node_inout->poseGroup,
 		node_inout->clipControllers[0],
@@ -222,6 +224,8 @@ void a3hierarchyClipExec1C1I(a3_HierarchyBlendNode* node_inout)
 /// <param name="node_inout"></param>
 void a3hierarchyClipExec2C(a3_HierarchyBlendNode* node_inout)
 {
+	a3clipOpSampleClip(node_inout->controlStates[0]->sampleHPose, node_inout->poseGroup, node_inout->clipControllers[0]);
+	a3clipOpSampleClip(node_inout->controlStates[1]->sampleHPose, node_inout->poseGroup, node_inout->clipControllers[1]);
 	node_inout->operation(node_inout->state_out->sampleHPose,
 		node_inout->poseGroup,
 		node_inout->clipControllers[0],
@@ -234,6 +238,8 @@ void a3hierarchyClipExec2C(a3_HierarchyBlendNode* node_inout)
 /// <param name="node_inout"></param>
 void a3hierarchyClipExec2C1I(a3_HierarchyBlendNode* node_inout)
 {
+	a3clipOpSampleClip(node_inout->controlStates[0]->sampleHPose, node_inout->poseGroup, node_inout->clipControllers[0]);
+	a3clipOpSampleClip(node_inout->controlStates[1]->sampleHPose, node_inout->poseGroup, node_inout->clipControllers[1]);
 	node_inout->operation(node_inout->state_out->sampleHPose,
 		node_inout->poseGroup,
 		node_inout->clipControllers[0],
