@@ -1014,6 +1014,47 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 		}
 		*/
 
+		offset = a3mat4_identity;
+		offset.m30 += 6.0f;
+
+		for (a3i32 i = 0; i < demoMode->bTreeHStateCount; i++)
+		{
+			offset.m30 += 8.5f;
+
+			for (a3ui32 j = 0; j < demoMode->bTreeHStates[i].hierarchy->numNodes; j++)
+			{
+				a3mat4* selectedBaseMat;
+
+				posMat = &demoMode->bTreeHStates[i].objectHPose->spatialPose[j].transform;
+
+				// Scale down the matrix so the spheres aren't huge
+				a3mat4 newPosMat = a3mat4_identity;
+				a3mat4 tempPosMat = a3mat4_identity;
+				a3real4x4Product(tempPosMat.m, posMat->m, scale.m);
+				a3real4x4Product(newPosMat.m, offset.m, tempPosMat.m);
+
+				// If this is the node that's currently selected, draw it green, and also draw the corresponding node in the base pose as magenta
+				if (demoMode->currentExamineNode == j)
+				{
+					// This is the currently selected node in the current hierarchy pose (key/delta)
+					a3demo_drawModelSolidColor(modelViewProjectionMat.m, viewProjectionMat.m, newPosMat.m, currentDemoProgram, currentDrawable, green);
+					a3vertexDrawableActivateAndRender(currentDrawable);
+
+					// Scale down this matrix as well (this is the corresponding base pose node)
+					selectedBaseMat = &demoMode->hierarchyState_skel_base->objectHPose->spatialPose[j].transform;
+					a3real4x4Product(newPosMat.m, selectedBaseMat->m, scale.m);
+					a3demo_drawModelSolidColor(modelViewProjectionMat.m, viewProjectionMat.m, newPosMat.m, currentDemoProgram, currentDrawable, magenta);
+					a3vertexDrawableActivateAndRender(currentDrawable);
+				}
+				else
+				{
+					// Draw all other nodes in white
+					a3demo_drawModelSolidColor(modelViewProjectionMat.m, viewProjectionMat.m, newPosMat.m, currentDemoProgram, currentDrawable, white);
+					a3vertexDrawableActivateAndRender(currentDrawable);
+				}
+			}
+		}
+
 		//Draw output state, drawn at center
 		for (a3ui32 k = 0; k < demoMode->hierarchy_skel->numNodes; ++k) //hierarchy_bvh
 		{
@@ -1046,6 +1087,7 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 			}
 		}
 
+		/*
 		offset = a3mat4_identity;
 		offset.m30 -= 8.0f;
 		//Draw skel clip state, drawn at center - 8
@@ -1081,7 +1123,7 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 				a3vertexDrawableActivateAndRender(currentDrawable);
 			}
 		}
-
+		*/
 		/*
 		for (a3ui32 k = 0; k < demoMode->hierarchy_skel->numNodes; ++k) //hierarchy_bvh
 		{
