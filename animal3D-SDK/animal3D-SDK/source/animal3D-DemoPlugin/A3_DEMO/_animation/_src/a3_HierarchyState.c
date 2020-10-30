@@ -613,6 +613,7 @@ a3i32 a3BVHParseJoint(a3byte** currentTextPtr, const a3byte* source, a3_Hierarch
 		}
 		*currentTextPtr = strtok(NULL, "\n");
 	}
+	free(endName);
 	return 1;
 }
 
@@ -932,6 +933,8 @@ a3i32 a3hierarchyPoseGroupLoadBVH(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 
 			currentFrame++;
 			token = strtok(NULL, "\n");
+
+			free(result);
 		}
 
 		// create the clip definition line
@@ -965,6 +968,11 @@ a3i32 a3hierarchyPoseGroupLoadBVH(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 		//multiply the seconds per measure by 4.5 measures and we get 10.485
 		//backsolving reveals that the actual measures per verse is ~4.577 (repeating 7) seconds, so the BVH data is at approximately real time, potentially with an extra pause at the end.
 		//note: this was calculated before we did any parsing.
+
+		free(channelsPerJoint);
+		free(clipLine);
+		free(strFloat);
+		free(tmpIndex);
 		return 1;
 	}
 	return -1;

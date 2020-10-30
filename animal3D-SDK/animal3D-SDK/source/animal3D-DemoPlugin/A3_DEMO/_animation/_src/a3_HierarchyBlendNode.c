@@ -569,8 +569,10 @@ a3i32 a3hierarchyBlendTreeLoad(a3_HierarchyBlendTree* blendTree_out, a3_Hierarch
 			token = strtok(NULL, "\n");
 			a3hierarchyBlendNodeCreate(blendTree_out, &blendTree_out->blendNodes[index],
 				clipType, clipNameIndex, clipNames, sourceNodeCount, sourceNodeIndices, paramCount, inputParams);
-		}
 
+		}
+		free(str);
+		free(contentsCopy);
 		///Bind outputs after everything's parsed
 		return 1;
 	}
@@ -587,88 +589,17 @@ a3i32 a3hierarchyBlendTreeLoad(a3_HierarchyBlendTree* blendTree_out, a3_Hierarch
 //need to entirely rewrite FK/IK because that only operates on a single pose and doesn't work with this system since it returns mat4
 //probably need a different exec for the clipOps because those require timing information
 
-
-a3i32 copyUniqueArray(a3ui32** arr_out, a3ui32* size_out, a3ui32** arr_in, a3ui32 maxSize_in)
-{
-	if (arr_out && arr_in)
-	{
-		a3ui32 initVal = 0;
-		a3ui32* arrInLoc = *arr_in;
-		a3ui32* arrOutLoc = *arr_out;
-		for (a3ui32 i = 0; i < maxSize_in; i++)
-		{
-			initVal += arrInLoc[i];
-		}
-		initVal++;
-		///sample: [0,0,0,0,0,0], [0,1,3,2,1,5]
-		for (a3ui32 i = 0; i < maxSize_in; i++)
-		{
-			arrOutLoc[i] = initVal; //[13,13,13,13,13,13]
-		}
-		//how many indices we've filled
-		int outIndex = 0;
-		for (a3ui32 inIndex = 0; inIndex < maxSize_in; inIndex++)
-		{
-			a3ui32 val = arrInLoc[inIndex];
-
-			a3boolean shouldAdd = true;
-
-			//check if contains, among the indices that have been added to.
-			for (int tmp = 0; tmp < outIndex; tmp++)  //first loop checks out[0] = 1. False, so should add.
-			{
-				if (val == arrOutLoc[tmp])
-				{
-					shouldAdd = false;
-					break;
-				}
-			}
-			if (shouldAdd)	//out[0] = 0
-			{
-				arrOutLoc[outIndex] = val;
-				outIndex++;
-			}
-		}
-		*size_out = outIndex;
-		return 1;
-	}
-	return -1;
-}
-
 a3i32 a3hierarchyblendTreeUpdate(a3_HierarchyBlendTree* blendTree_out)
 {
 	if (!blendTree_out)
 	{
 		return -1;
 	}
-	//we always read from A and write to B, then copy b into a.
-	a3ui32* parentArrayRead = calloc(blendTree_out->leafCount * 2, sizeof(a3ui32));
-	a3ui32 parentCountRead = blendTree_out->leafCount;
-	a3ui32* parentArrayWrite = parentArrayRead + blendTree_out->leafCount;
-	a3ui32 parentCountWrite = blendTree_out->leafCount;
 
-	//I tried abstracting this but it became too messy.
-
-	//initial leaf iteration
-	for (a3ui32 leaf = 0; leaf < parentCountRead; leaf++)
+	for (a3ui32 nodeInd = 0; nodeInd < blendTree_out->bt_hierarchy->numNodes; nodeInd++)
 	{
-		a3_HierarchyBlendNode* node = &blendTree_out->blendNodes[leaf];
+		a3_HierarchyBlendNode* node = &blendTree_out->blendNodes[nodeInd];
 		node->exec(node);
-		parentArrayWrite[leaf] = blendTree_out->bt_hierarchy->nodes[leaf].parentIndex;
-	}
-	//initial parent check
-	copyUniqueArray(&parentArrayRead, &parentCountRead, &parentArrayWrite, parentCountWrite);
-
-	//loop till there are no parents to evaluate
-	while (parentCountRead > 0 && parentArrayRead[0] != -1 && parentArrayRead[0] != 4294967295u)
-	{
-		parentCountWrite = parentCountRead;
-		for (a3ui32 nodeIndex = 0; nodeIndex < parentCountRead; nodeIndex++)
-		{
-			a3_HierarchyBlendNode* node = &blendTree_out->blendNodes[parentArrayRead[nodeIndex]];
-			node->exec(node);
-			parentArrayWrite[nodeIndex] = blendTree_out->bt_hierarchy->nodes[parentArrayRead[nodeIndex]].parentIndex;
-		}
-		copyUniqueArray(&parentArrayRead, &parentCountRead, &parentArrayWrite, parentCountWrite);
 	}
 	return 1;
 }

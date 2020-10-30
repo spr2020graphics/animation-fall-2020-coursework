@@ -220,8 +220,6 @@ void a3demo_update(a3_DemoState* demoState, a3f64 const dt)
 		{
 			demoState->demoMode0_starter->object_scene[i + 2].position = demoState->waypoints[(int)val1];
 		}
-
-		
 	}
 }
 
