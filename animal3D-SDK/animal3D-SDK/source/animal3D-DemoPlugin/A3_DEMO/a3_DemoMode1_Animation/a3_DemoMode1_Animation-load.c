@@ -153,7 +153,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 
 	a3_FileStream fileStream[1] = { 0 };
 	const a3byte* const geometryStream = "./data/anim_data_gpro_base.dat";
-	const a3byte* const animationfilePath = "../../../../resource/animdata/mixamo/cocky.htr";
+	const a3byte* const animationfilePath = "../../../../resource/animdata/mixamo/multiclip.htr";
 	const a3byte* const blendfilePath = "../../../../resource/animdata/blend_input.txt";
 
 	// Assign hierarchyPoseGroup and hierarchy to new variables in demoState

@@ -398,7 +398,7 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 							scale);
 
 						// store channel data
-						pose = poseGroup_out->hierarchyPosePool[i + 1].spatialPose + n;
+						pose = poseGroup_out->hierarchyPosePool[i].spatialPose + n;
 						a3spatialPoseSetTranslation(pose, translation[0] * globalScale, translation[1] * globalScale, translation[2] * globalScale);
 						a3spatialPoseSetRotation(pose, angles[0] * angleConvert, angles[1] * angleConvert, angles[2] * angleConvert);
 						a3spatialPoseSetScale(pose, *scale, *scale, *scale);
