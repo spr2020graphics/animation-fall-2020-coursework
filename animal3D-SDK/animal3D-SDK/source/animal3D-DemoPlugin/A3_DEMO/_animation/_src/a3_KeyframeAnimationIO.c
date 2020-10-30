@@ -227,7 +227,7 @@ a3i32 a3keyframeParse(a3_DemoState* state, a3byte const* data)
 	// Initialize the keyframe
 	a3keyframeInit(state->keyPool->keyframeArray + index, duration, &sample);
 
-	free(parseDataCopy);
+	//free(parseDataCopy);
 	return 0;
 }
 

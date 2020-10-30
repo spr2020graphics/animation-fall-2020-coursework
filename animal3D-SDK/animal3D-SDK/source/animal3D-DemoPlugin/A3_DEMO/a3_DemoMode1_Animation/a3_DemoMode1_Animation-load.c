@@ -153,7 +153,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 
 	a3_FileStream fileStream[1] = { 0 };
 	const a3byte* const geometryStream = "./data/anim_data_gpro_base.dat";
-	const a3byte* const animationfilePath = "../../../../resource/animdata/moonwalk.bvh";
+	const a3byte* const animationfilePath = "../../../../resource/animdata/mixamo/cocky.htr";
 	const a3byte* const blendfilePath = "../../../../resource/animdata/blend_input.txt";
 
 	// Assign hierarchyPoseGroup and hierarchy to new variables in demoState
@@ -163,6 +163,8 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	//create BVH
 	a3_HierarchyBlendTree* blendTree = calloc(1, sizeof(a3_HierarchyBlendTree));
 	//a3hierarchyPoseGroupLoadBVH(hierarchyPoseGroup, hierarchy, animationfilePath);
+	hierarchyPoseGroup->hierarchy = 0;
+	a3hierarchyPoseGroupLoadHTR(hierarchyPoseGroup, hierarchy, animationfilePath);
 
 	// stream animation assets
 	if (demoState->streaming && a3fileStreamOpenRead(fileStream, geometryStream))

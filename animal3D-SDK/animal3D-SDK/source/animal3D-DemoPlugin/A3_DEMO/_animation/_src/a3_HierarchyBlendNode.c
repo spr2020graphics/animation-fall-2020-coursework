@@ -607,7 +607,9 @@ a3i32 a3hierarchyblendTreeUpdate(a3_HierarchyBlendTree* blendTree_out)
 	{
 		a3_HierarchyBlendNode* node = &blendTree_out->blendNodes[nodeInd];
 		node->exec(node);
-		a3hierarchyPoseOpConvert(node->state_out->sampleHPose, node->poseGroup->hierarchy->numNodes);
+		a3hierarchyPoseOpCopy(node->state_out->localHPose, node->state_out->sampleHPose, node->poseGroup->hierarchy->numNodes);
+		a3hierarchyPoseOpConvert(node->state_out->localHPose, node->poseGroup->hierarchy->numNodes);
+
 		a3kinematicsSolveForward(node->state_out);
 	}
 	return 1;
