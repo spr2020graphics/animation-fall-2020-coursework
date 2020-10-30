@@ -259,15 +259,15 @@ inline a3_SpatialPose* a3spatialPoseOpConvert(a3_SpatialPose* pose_inout)
 
 	//initialize rotation matrices
 	xRot = a3mat4_identity;
-	a3real4x4SetRotateX(xRot.m, pose_inout->orientation.x);
+	a3real4x4SetRotateX(xRot.m, (float)fmod(pose_inout->orientation.x, 360.0f));
 	yRot = a3mat4_identity;
-	a3real4x4SetRotateY(yRot.m, pose_inout->orientation.y);
+	a3real4x4SetRotateY(yRot.m, (float)fmod(pose_inout->orientation.y, 360.0f));
 	zRot = a3mat4_identity;
-	a3real4x4SetRotateZ(zRot.m, pose_inout->orientation.z);
+	a3real4x4SetRotateZ(zRot.m, (float)fmod(pose_inout->orientation.z, 360.0f));
 	tmp = a3mat4_identity;
 
 	//concatenate rotation matrices using XYZ order
-	a3real4x4SetRotateZYX(rotate.m, pose_inout->orientation.x, pose_inout->orientation.y, pose_inout->orientation.z);
+	a3real4x4SetRotateZYX(rotate.m, (float)fmod(pose_inout->orientation.x, 360.0f), (float)fmod(pose_inout->orientation.y, 360.0f), (float)fmod(pose_inout->orientation.z, 360.0f));
 
 	//create scale matrix
 	a3mat4 scale = a3mat4_identity;
