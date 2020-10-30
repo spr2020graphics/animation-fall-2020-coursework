@@ -164,6 +164,7 @@ a3i32 a3clipParse(a3_DemoState* state, a3byte const* data, const a3ui32 clipInde
 	// If the keypool has nothing in it yet, add arbitrary
 	if (state->keyPool->count == 0 && useClipDuration)
 	{
+		a3keyframePoolCreate(state->keyPool, lastFrame);
 		for (a3ui32 i = firstFrame, j = 0; i < lastFrame; i++, j++)
 		{
 			a3_Sample sample;
