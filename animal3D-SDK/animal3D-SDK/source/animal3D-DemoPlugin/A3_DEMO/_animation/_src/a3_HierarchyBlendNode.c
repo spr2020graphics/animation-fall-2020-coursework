@@ -36,7 +36,7 @@ void a3spatialBlendExec1C1I(a3_SpatialBlendNode* node_inout)
 {
 	node_inout->operation(node_inout->pose,
 		node_inout->controls[0],
-		&node_inout->uVals[0]);
+		*node_inout->uVals[0]);
 }
 
 /// <summary>
@@ -59,7 +59,7 @@ void a3spatialBlendExec2C1I(a3_SpatialBlendNode* node_inout)
 	node_inout->operation(node_inout->pose,
 		node_inout->controls[0],
 		node_inout->controls[1],
-		&node_inout->uVals[0]);
+		*node_inout->uVals[0]);
 }
 
 /// <summary>
@@ -72,7 +72,7 @@ void a3spatialBlendExec3C2I(a3_SpatialBlendNode* node_inout)
 		node_inout->controls[0],
 		node_inout->controls[1],
 		node_inout->controls[2],
-		&node_inout->uVals[0], &node_inout->uVals[1]);
+		*node_inout->uVals[0], *node_inout->uVals[1]);
 }
 
 /// <summary>
@@ -129,7 +129,7 @@ void a3hierarchyBlendExec1C1I(a3_HierarchyBlendNode* node_inout)
 {
 	node_inout->operation(node_inout->state_out->sampleHPose,
 		node_inout->controlStates[0],
-		&node_inout->uVals[0],
+		*node_inout->uVals[0],
 		node_inout->state_out->hierarchy->numNodes);
 }
 
@@ -146,7 +146,7 @@ void a3hierarchyBlendExec2C1I(a3_HierarchyBlendNode* node_inout)
 	node_inout->operation(node_inout->state_out->sampleHPose,
 		node_inout->controlStates[0],
 		node_inout->controlStates[1],
-		&node_inout->uVals[0],
+		*node_inout->uVals[0],
 		node_inout->state_out->hierarchy->numNodes);
 }
 
@@ -156,7 +156,7 @@ void a3hierarchyBlendExec3C2I(a3_HierarchyBlendNode* node_inout)
 		node_inout->controlStates[0],
 		node_inout->controlStates[1],
 		node_inout->controlStates[2],
-		&node_inout->uVals[0], &node_inout->uVals[1],
+		*node_inout->uVals[0], *node_inout->uVals[1],
 		node_inout->state_out->hierarchy->numNodes);
 }
 
@@ -167,7 +167,7 @@ void a3hierarchyBlendExec4C1I(a3_HierarchyBlendNode* node_inout)
 		node_inout->controlStates[1],
 		node_inout->controlStates[2],
 		node_inout->controlStates[3],
-		&node_inout->uVals[0],
+		*node_inout->uVals[0],
 		node_inout->state_out->hierarchy->numNodes);
 }
 
@@ -178,7 +178,7 @@ void a3hierarchyBlendExec4C3I(a3_HierarchyBlendNode* node_inout)
 		node_inout->controlStates[1],
 		node_inout->controlStates[2],
 		node_inout->controlStates[3],
-		&node_inout->uVals[0], &node_inout->uVals[1], &node_inout->uVals[2],
+		*node_inout->uVals[0], *node_inout->uVals[1], *node_inout->uVals[2],
 		node_inout->state_out->hierarchy->numNodes);
 }
 
@@ -189,7 +189,7 @@ void a3hierarchyBlendExec16C5I(a3_HierarchyBlendNode* node_inout)
 		node_inout->controlStates[1 * 4 + 0], node_inout->controlStates[1 * 4 + 1], node_inout->controlStates[1 * 4 + 2], node_inout->controlStates[1 * 4 + 3],
 		node_inout->controlStates[2 * 4 + 0], node_inout->controlStates[2 * 4 + 1], node_inout->controlStates[2 * 4 + 2], node_inout->controlStates[2 * 4 + 3],
 		node_inout->controlStates[3 * 4 + 0], node_inout->controlStates[3 * 4 + 1], node_inout->controlStates[3 * 4 + 2], node_inout->controlStates[3 * 4 + 3],
-		&node_inout->uVals[0], &node_inout->uVals[1], &node_inout->uVals[2], &node_inout->uVals[3], &node_inout->uVals[4],
+		*node_inout->uVals[0], *node_inout->uVals[1], *node_inout->uVals[2], *node_inout->uVals[3], *node_inout->uVals[4],
 		node_inout->state_out->hierarchy->numNodes);
 }
 
@@ -215,7 +215,7 @@ void a3hierarchyClipExec1C1I(a3_HierarchyBlendNode* node_inout)
 	node_inout->operation(node_inout->state_out->sampleHPose,
 		node_inout->poseGroup,
 		node_inout->clipControllers[0],
-		node_inout->uVals[0]);
+		*node_inout->uVals[0]);
 }
 
 /// <summary>
@@ -244,7 +244,7 @@ void a3hierarchyClipExec2C1I(a3_HierarchyBlendNode* node_inout)
 		node_inout->poseGroup,
 		node_inout->clipControllers[0],
 		node_inout->clipControllers[1],
-		node_inout->uVals[0]);
+		*node_inout->uVals[0]);
 }
 
 a3i32 a3hierarchyBlendNodeCreate(a3_HierarchyBlendTree* refTree, a3_HierarchyBlendNode* blendNode_out, NodeType type,
