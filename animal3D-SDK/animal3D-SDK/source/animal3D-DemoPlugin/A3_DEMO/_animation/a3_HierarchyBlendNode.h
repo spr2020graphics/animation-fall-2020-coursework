@@ -10,6 +10,9 @@
 #include "a3_Hierarchy.h"
 #include "a3_KeyframeAnimationController.h"
 
+/// <summary>
+/// Enum for node operations
+/// </summary>
 enum NodeType {
 	addClip, lerpClip, scaleClip, negateClip, copyClip,
 	identity, init, fk, ik,
@@ -26,8 +29,8 @@ typedef enum NodeType NodeType;
 
 typedef struct a3_SpatialBlendNode a3_SpatialBlendNode;
 typedef struct a3_SpatialBlendTree a3_SpatialBlendTree;
-typedef void (*a3_SpatialBlendOp)(a3_SpatialPose* pose, ...);
-typedef void (*a3_SpatialBlendExec)(a3_SpatialBlendNode* node_in);
+typedef void (*a3_SpatialBlendOp)(a3_SpatialPose* pose, ...); //function pointer to a node op
+typedef void (*a3_SpatialBlendExec)(a3_SpatialBlendNode* node_in); //function pointer to something that calls that node op and passes the right data in
 
 void a3spatialBlendExec0C(a3_SpatialBlendNode* node_inout);
 void a3spatialBlendExec1C(a3_SpatialBlendNode* node_inout);
@@ -67,8 +70,8 @@ struct a3_SpatialBlendTree
 
 typedef struct a3_HierarchyBlendNode a3_HierarchyBlendNode;
 typedef struct a3_HierarchyBlendTree a3_HierarchyBlendTree;
-typedef a3_HierarchyPose* (*a3_HierarchyBlendOp)(a3_HierarchyPose* pose, ...);
-typedef void (*a3_HierarchyBlendExec)(a3_HierarchyBlendNode* node_in);
+typedef a3_HierarchyPose* (*a3_HierarchyBlendOp)(a3_HierarchyPose* pose, ...);//function pointer to a hierarchy pose op
+typedef void (*a3_HierarchyBlendExec)(a3_HierarchyBlendNode* node_in);//function pointer to something that calls that hierarchy pose op and passes the right data in
 
 void a3hierarchyBlendExec0C(a3_HierarchyBlendNode* node_inout);
 void a3hierarchyBlendExec1C(a3_HierarchyBlendNode* node_inout);
@@ -93,7 +96,7 @@ struct a3_HierarchyBlendNode
 	a3_HierarchyState* state_out;
 	a3_HierarchyState* controlStates[16];
 	a3byte* clipNames[16]; //array of 16 cstrings. Load these clips into clip controllers
-	a3_ClipController* clipControllers[16]; //array of 16 pointers to clip controllers. How do I bind these????
+	a3_ClipController* clipControllers[16]; //array of 16 pointers to clip controllers.
 
 	//binding information
 	NodeType nodeType; //reference for binding
@@ -103,7 +106,7 @@ struct a3_HierarchyBlendNode
 	a3ui32 uValCount;
 
 
-	a3_HierarchyPoseGroup* poseGroup; //needed for clip nodes only
+	a3_HierarchyPoseGroup* poseGroup;
 };
 
 struct a3_HierarchyBlendTree

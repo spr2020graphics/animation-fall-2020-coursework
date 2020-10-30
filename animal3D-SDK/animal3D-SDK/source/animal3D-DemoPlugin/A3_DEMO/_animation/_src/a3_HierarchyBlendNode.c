@@ -102,6 +102,10 @@ void a3spatialBlendExec4C3I(a3_SpatialBlendNode* node_inout)
 		&node_inout->uVals[0], &node_inout->uVals[1], &node_inout->uVals[2]);
 }
 
+/// <summary>
+/// Bicubic
+/// </summary>
+/// <param name="node_inout"></param>
 void a3spatialBlendExec16C5I(a3_SpatialBlendNode* node_inout)
 {
 	node_inout->operation(node_inout->pose,
@@ -112,12 +116,20 @@ void a3spatialBlendExec16C5I(a3_SpatialBlendNode* node_inout)
 		&node_inout->uVals[0], &node_inout->uVals[1], &node_inout->uVals[2], &node_inout->uVals[3], &node_inout->uVals[4]);
 }
 
+/// <summary>
+/// Identity
+/// </summary>
+/// <param name="node_inout"></param>
 void a3hierarchyBlendExec0C(a3_HierarchyBlendNode* node_inout)
 {
 	node_inout->operation(node_inout->state_out->sampleHPose,
 		node_inout->state_out->hierarchy->numNodes);
 }
 
+/// <summary>
+/// Copy, Const, Negate, Concat, Convert, Revert
+/// </summary>
+/// <param name="node_inout"></param>
 void a3hierarchyBlendExec1C(a3_HierarchyBlendNode* node_inout)
 {
 	node_inout->operation(node_inout->state_out->sampleHPose,
@@ -125,6 +137,10 @@ void a3hierarchyBlendExec1C(a3_HierarchyBlendNode* node_inout)
 		node_inout->state_out->hierarchy->numNodes);
 }
 
+/// <summary>
+/// Scale, Bidirectional scale
+/// </summary>
+/// <param name="node_inout"></param>
 void a3hierarchyBlendExec1C1I(a3_HierarchyBlendNode* node_inout)
 {
 	node_inout->operation(node_inout->state_out->sampleHPose,
@@ -133,6 +149,10 @@ void a3hierarchyBlendExec1C1I(a3_HierarchyBlendNode* node_inout)
 		node_inout->state_out->hierarchy->numNodes);
 }
 
+/// <summary>
+/// Deconcat
+/// </summary>
+/// <param name="node_inout"></param>
 void a3hierarchyBlendExec2C(a3_HierarchyBlendNode* node_inout)
 {
 	node_inout->operation(node_inout->state_out->sampleHPose,
@@ -141,6 +161,10 @@ void a3hierarchyBlendExec2C(a3_HierarchyBlendNode* node_inout)
 		node_inout->state_out->hierarchy->numNodes);
 }
 
+/// <summary>
+/// Nearest, LERP, EaseInOut
+/// </summary>
+/// <param name="node_inout"></param>
 void a3hierarchyBlendExec2C1I(a3_HierarchyBlendNode* node_inout)
 {
 	node_inout->operation(node_inout->state_out->sampleHPose,
@@ -150,6 +174,10 @@ void a3hierarchyBlendExec2C1I(a3_HierarchyBlendNode* node_inout)
 		node_inout->state_out->hierarchy->numNodes);
 }
 
+/// <summary>
+/// Triangular
+/// </summary>
+/// <param name="node_inout"></param>
 void a3hierarchyBlendExec3C2I(a3_HierarchyBlendNode* node_inout)
 {
 	node_inout->operation(node_inout->state_out->sampleHPose,
@@ -160,6 +188,10 @@ void a3hierarchyBlendExec3C2I(a3_HierarchyBlendNode* node_inout)
 		node_inout->state_out->hierarchy->numNodes);
 }
 
+/// <summary>
+/// Cubic
+/// </summary>
+/// <param name="node_inout"></param>
 void a3hierarchyBlendExec4C1I(a3_HierarchyBlendNode* node_inout)
 {
 	node_inout->operation(node_inout->state_out->sampleHPose,
@@ -171,6 +203,10 @@ void a3hierarchyBlendExec4C1I(a3_HierarchyBlendNode* node_inout)
 		node_inout->state_out->hierarchy->numNodes);
 }
 
+/// <summary>
+/// Binearest, Bilinear
+/// </summary>
+/// <param name="node_inout"></param>
 void a3hierarchyBlendExec4C3I(a3_HierarchyBlendNode* node_inout)
 {
 	node_inout->operation(node_inout->state_out->sampleHPose,
@@ -182,6 +218,10 @@ void a3hierarchyBlendExec4C3I(a3_HierarchyBlendNode* node_inout)
 		node_inout->state_out->hierarchy->numNodes);
 }
 
+/// <summary>
+/// Bicubic
+/// </summary>
+/// <param name="node_inout"></param>
 void a3hierarchyBlendExec16C5I(a3_HierarchyBlendNode* node_inout)
 {
 	node_inout->operation(node_inout->state_out->sampleHPose,
@@ -247,19 +287,33 @@ void a3hierarchyClipExec2C1I(a3_HierarchyBlendNode* node_inout)
 		*node_inout->uVals[0]);
 }
 
+/// <summary>
+/// Create blend node given a LOT of data
+/// </summary>
+/// <param name="refTree"></param>
+/// <param name="blendNode_out"></param>
+/// <param name="type"></param>
+/// <param name="clipCount"></param>
+/// <param name="clipNames"></param>
+/// <param name="controlNodeCount"></param>
+/// <param name="controlNodes"></param>
+/// <param name="inputCount"></param>
+/// <param name="uValPtrs"></param>
+/// <returns></returns>
 a3i32 a3hierarchyBlendNodeCreate(a3_HierarchyBlendTree* refTree, a3_HierarchyBlendNode* blendNode_out, NodeType type,
 	a3ui32 clipCount, a3byte** clipNames,
 	a3ui32 controlNodeCount, a3ui32* controlNodes,
 	a3ui32 inputCount, a3f32** uValPtrs)
 {
 	blendNode_out->nodeType = type;
-	//how do I bind the hPose????
+
+	//names of source clips
 	for (a3ui32 i = 0; i < clipCount; i++)
 	{
 		blendNode_out->clipNames[i] = clipNames[i];
 	}
 	blendNode_out->clipCount = clipCount;
-	for (a3ui32 i = 0; i < inputCount; i++)
+	for (a3ui32 i = 0; i < inputCount; i++) //pointers to u vals. Useful for character control
 	{
 		blendNode_out->uVals[i] = uValPtrs[i];
 	}
@@ -379,7 +433,7 @@ a3i32 a3hierarchyBlendNodeCreate(a3_HierarchyBlendTree* refTree, a3_HierarchyBle
 }
 
 /// <summary>
-/// Last index is not parsing. Why?
+/// Loads a blend tree from a file
 /// </summary>
 /// <param name="blendTree_out"></param>
 /// <param name="skeletal_hierarchy"></param>
@@ -442,12 +496,11 @@ a3i32 a3hierarchyBlendTreeLoad(a3_HierarchyBlendTree* blendTree_out, a3_Hierarch
 			text[len - 1] = '\0';
 		}
 		text = text + 6;
-		text = strchr(text, ' ') + 1; //advance past the number of channels
-		//need to advance past the channel count
-		for (int i = 0; i < leafCount; i++) //loop through all channels and store the data both as a combined mask and as an array
+		text = strchr(text, ' ') + 1;
+		for (int i = 0; i < leafCount; i++) //loop through all leaf indices and store them in array
 		{
 			blendTree_out->leafIndices[i] = atoi(text);
-			text = strchr(text, ' ') + 1; //advance past the number of channels. parsePos will be 1 at the end of the loop, but that's fine
+			text = strchr(text, ' ') + 1;
 		}
 
 		//parse each node
@@ -462,6 +515,7 @@ a3i32 a3hierarchyBlendTreeLoad(a3_HierarchyBlendTree* blendTree_out, a3_Hierarch
 		}
 		token = strtok(NULL, "\n"); //go to line after "NODES"
 
+		//parse nodes themselves
 		while (token != NULL)
 		{
 			text = token;
@@ -482,6 +536,7 @@ a3i32 a3hierarchyBlendTreeLoad(a3_HierarchyBlendTree* blendTree_out, a3_Hierarch
 			a3f32* inputParams[8];
 			a3ui32 paramCount = 0;
 
+			//node types, clip first
 			if (isClipNode)
 			{
 				if (strncmp(text, "ADD", 3) == 0)
@@ -596,6 +651,11 @@ a3i32 a3hierarchyBlendTreeLoad(a3_HierarchyBlendTree* blendTree_out, a3_Hierarch
 //need to entirely rewrite FK/IK because that only operates on a single pose and doesn't work with this system since it returns mat4
 //probably need a different exec for the clipOps because those require timing information
 
+/// <summary>
+/// Update tree
+/// </summary>
+/// <param name="blendTree_out"></param>
+/// <returns></returns>
 a3i32 a3hierarchyblendTreeUpdate(a3_HierarchyBlendTree* blendTree_out)
 {
 	if (!blendTree_out)
@@ -603,13 +663,16 @@ a3i32 a3hierarchyblendTreeUpdate(a3_HierarchyBlendTree* blendTree_out)
 		return -1;
 	}
 
+	//Rules for the tree are that all prereqs for a node must be earlier than the node, thus this order works.
 	for (a3ui32 nodeInd = 0; nodeInd < blendTree_out->bt_hierarchy->numNodes; nodeInd++)
 	{
 		a3_HierarchyBlendNode* node = &blendTree_out->blendNodes[nodeInd];
 		node->exec(node);
+		//the HTR nodes currently are pre-concated, so no concat call here.
 		a3hierarchyPoseOpCopy(node->state_out->localHPose, node->state_out->sampleHPose, node->poseGroup->hierarchy->numNodes);
 		a3hierarchyPoseOpConvert(node->state_out->localHPose, node->poseGroup->hierarchy->numNodes);
 
+		//outputs from local to object
 		a3kinematicsSolveForward(node->state_out);
 	}
 	return 1;

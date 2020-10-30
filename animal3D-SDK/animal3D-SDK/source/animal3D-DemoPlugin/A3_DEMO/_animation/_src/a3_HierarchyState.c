@@ -153,6 +153,7 @@ a3i32 a3hierarchyStateRelease(a3_HierarchyState* state)
 //-----------------------------------------------------------------------------
 
 // load HTR file, read and store complete pose group and hierarchy
+// Courtesy of Dan (brought in from a different branch and _slightly_ modified to fit our naming conventions
 a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hierarchy* hierarchy_out, const a3byte* resourceFilePath)
 {
 	if (poseGroup_out && !poseGroup_out->hierarchy && hierarchy_out && !hierarchy_out->nodes && resourceFilePath && *resourceFilePath)

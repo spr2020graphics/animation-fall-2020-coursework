@@ -1016,6 +1016,7 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 
 		offset = a3mat4_identity;
 
+		//render all bTree nodes!
 		for (a3i32 i = 0; i < demoMode->bTreeHStateCount; i++)
 		{
 			offset.m30 += 40.0f;
@@ -1024,6 +1025,7 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 			{
 				a3mat4* selectedBaseMat;
 
+				//grab a node from the tree
 				posMat = &demoMode->bTreeHStates[i].objectHPose->spatialPose[j].transform;
 
 				// Scale down the matrix so the spheres aren't huge
