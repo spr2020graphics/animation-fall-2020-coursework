@@ -160,6 +160,18 @@ a3i32 a3clipParse(a3_DemoState* state, a3byte const* data, const a3ui32 clipInde
 	}
 
 	// Initialize the clip and its transitions
+
+	// If the keypool has nothing in it yet, add arbitrary
+	if (state->keyPool->count == 0 && useClipDuration)
+	{
+		for (a3ui32 i = firstFrame, j = 0; i < lastFrame; i++, j++)
+		{
+			a3_Sample sample;
+			sample.value = (a3real)i;
+			a3keyframeInit(state->keyPool->keyframeArray + j , 1.0, &sample);
+		}
+	}
+
 	a3clipInit(state->clipPool->clipArray + clipIndex, clipName, state->keyPool, firstFrame, lastFrame);	//Need to override this with transition setup
 	forwardTrans.targetClipPool = state->clipPool; //these can be changed to a specific pool but we only have one right now.
 	reverseTrans.targetClipPool = state->clipPool;

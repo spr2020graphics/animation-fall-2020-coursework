@@ -21,18 +21,14 @@
 
 # $ keyframe_dur keyframe_index keyframe_value
 
-# First clip
-$ 1.5 0 0
-$ 1.5 1 1
-$ 1.5 2 2
-$ 1.5 3 3
+#No keyframe data
 
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------#
 
 # @ clip_name use_clip_duration first_frame last_frame forward_trans reverse_trans clip_duration
 
-@ skel false 0 3 > skel > skel
-@ skel2 false 0 3 > skel2 > skel2
+@ skel true 1 88 > skel > skel
+@ skel2 true 89 155 > skel2 > skel2
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------#
