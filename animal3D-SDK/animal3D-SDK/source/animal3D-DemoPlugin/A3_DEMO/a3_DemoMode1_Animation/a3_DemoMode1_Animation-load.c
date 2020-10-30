@@ -705,7 +705,7 @@ void a3animation_load(a3_DemoState const* demoState, a3_DemoMode1_Animation* dem
 	projector->fovy = a3real_fortyfive;
 	projector->znear = 1.0f;
 	projector->zfar = 1024.0f;
-	projector->ctrlMoveSpeed = 10.0f;
+	projector->ctrlMoveSpeed = 100.0f;
 	projector->ctrlRotateSpeed = 5.0f;
 	projector->ctrlZoomSpeed = 5.0f;
 	projector->sceneObject->position = sceneCameraStartPos;

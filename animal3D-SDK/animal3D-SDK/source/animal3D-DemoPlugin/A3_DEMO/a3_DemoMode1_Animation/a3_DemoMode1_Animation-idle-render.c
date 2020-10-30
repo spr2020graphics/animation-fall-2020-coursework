@@ -1015,11 +1015,10 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 		*/
 
 		offset = a3mat4_identity;
-		offset.m30 += 6.0f;
 
 		for (a3i32 i = 0; i < demoMode->bTreeHStateCount; i++)
 		{
-			offset.m30 += 8.5f;
+			offset.m30 += 40.0f;
 
 			for (a3ui32 j = 0; j < demoMode->bTreeHStates[i].hierarchy->numNodes; j++)
 			{
