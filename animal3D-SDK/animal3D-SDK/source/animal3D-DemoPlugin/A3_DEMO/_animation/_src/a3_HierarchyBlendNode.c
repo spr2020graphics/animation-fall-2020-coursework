@@ -356,13 +356,17 @@ a3i32 a3hierarchyBlendNodeCreate(a3_HierarchyBlendTree* refTree, a3_HierarchyBle
 		blendNode_out->exec = &a3hierarchyBlendExec16C5I;
 		blendNode_out->operation = &a3hierarchyPoseOpBiCubic;
 		break;
-	case fk:
-		blendNode_out->exec = &a3hierarchyBlendExec1C;
-		blendNode_out->operation = NULL;
-		break;
-	case ik:
-		blendNode_out->exec = &a3hierarchyBlendExec1C;
-		blendNode_out->operation = NULL; //this operation needs to call copy before doing anything
+	//case fk:
+	//	blendNode_out->exec = &a3hierarchyBlendExec1C;
+	//	blendNode_out->operation = NULL;
+	//	break;
+	//case ik:
+	//	blendNode_out->exec = &a3hierarchyBlendExec1C;
+	//	blendNode_out->operation = NULL; //this operation needs to call copy before doing anything
+	//	break;
+	default:
+		blendNode_out->exec = &a3hierarchyBlendExec0C;
+		blendNode_out->operation = &a3hierarchyPoseOpIdentity;
 		break;
 	}
 	return 1;
