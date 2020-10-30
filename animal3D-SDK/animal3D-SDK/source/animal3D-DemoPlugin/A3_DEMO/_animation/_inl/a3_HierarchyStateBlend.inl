@@ -267,7 +267,7 @@ inline a3_SpatialPose* a3spatialPoseOpConvert(a3_SpatialPose* pose_inout)
 	tmp = a3mat4_identity;
 
 	//concatenate rotation matrices using XYZ order
-	a3real4x4SetRotateXYZ(rotate.m, pose_inout->orientation.x, pose_inout->orientation.y, pose_inout->orientation.z);
+	a3real4x4SetRotateZYX(rotate.m, pose_inout->orientation.x, pose_inout->orientation.y, pose_inout->orientation.z);
 
 	//create scale matrix
 	a3mat4 scale = a3mat4_identity;
