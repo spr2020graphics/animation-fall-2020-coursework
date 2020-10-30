@@ -770,6 +770,31 @@ inline a3_HierarchyPose* a3clipOpAdd(a3_HierarchyPose* pose_out, a3_HierarchyPos
 	return pose_out;
 }
 
+inline a3_HierarchyPose* a3hierarchyPoseOpFK(a3_HierarchyPose* pose_out, a3_HierarchyPose* pose_in, a3_Hierarchy* hierarchy, const a3ui32 nodeCount)
+{
+	if (pose_out && hierarchy && nodeCount)
+	{
+		const a3_Hierarchy* hierarchy = hierarchy;
+
+		//loop from part of the way through the hierarchy (or from the beginning), till the end.
+		for (a3ui32 i = 0; i < hierarchy->numNodes; i++)
+		{
+			a3_HierarchyNode* currentNode = hierarchy->nodes + i;
+
+			if (currentNode->parentIndex != -1)
+			{
+				// if we aren't the root node, our object space transform = parent object space * our local space
+				a3real4x4Product(pose_out->spatialPose[currentNode->index].transform.m, pose_out->spatialPose[currentNode->parentIndex].transform.m, pose_in->spatialPose[currentNode->index].transform.m);
+			}
+			else
+			{
+				// If we ARE the root, our object space transform is the same as our local space
+				a3real4x4SetReal4x4(pose_out->spatialPose[currentNode->index].transform.m, pose_in->spatialPose[currentNode->index].transform.m);
+			}
+		}
+	}
+}
+
 inline a3_HierarchyPose* a3clipOpLerp(a3_HierarchyPose* pose_out, a3_HierarchyPoseGroup* const poseGroup, a3_ClipController* const controller1, a3_ClipController* const controller2, const a3real u)
 {
 	a3_HierarchyPose controller1Result[1], controller2Result[1];
