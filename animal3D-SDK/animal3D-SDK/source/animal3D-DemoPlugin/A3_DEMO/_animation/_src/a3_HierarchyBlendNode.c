@@ -255,7 +255,7 @@ void a3hierarchyClipExec1C1I(a3_HierarchyBlendNode* node_inout)
 	node_inout->operation(node_inout->state_out->sampleHPose,
 		node_inout->poseGroup,
 		node_inout->clipControllers[0],
-		*node_inout->uVals[0]);
+		*(node_inout->uVals[0]));
 }
 
 /// <summary>
