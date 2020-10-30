@@ -105,9 +105,9 @@ a3i32 a3hierarchyBlendTreeBind(a3_HierarchyBlendTree* tree_in, a3_DemoMode1_Anim
 		{
 			//clip nodes have to also load data into their input states
 			a3_HierarchyBlendNode* node = &tree_in->blendNodes[nodeIndex];
+			node->poseGroup = poseGroup;
 			if (node->nodeType < identity) //clip node
 			{
-				node->poseGroup = poseGroup;
 				for (a3ui32 clipIndex = 0; clipIndex < node->clipCount; clipIndex++) //all clip counts combined = clipCtrlCount, then we add in one per node
 				{
 					node->controlStates[clipIndex] = &demoMode->bTreeHStates[hStateBindIndex];
