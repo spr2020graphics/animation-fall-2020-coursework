@@ -451,8 +451,6 @@ a3i32 a3hierarchyBlendTreeLoad(a3_HierarchyBlendTree* blendTree_out, a3_Hierarch
 		}
 
 		//parse each node
-		a3byte* str = malloc(sizeof(a3byte));
-		str[0] = 'N';
 		for (a3ui32 i = 0; i < blendTree_out->bt_hierarchy->numNodes; i++)
 		{
 			a3hierarchySetNode(blendTree_out->bt_hierarchy, i, -1, "Node"); //pre-assign them
@@ -581,7 +579,6 @@ a3i32 a3hierarchyBlendTreeLoad(a3_HierarchyBlendTree* blendTree_out, a3_Hierarch
 				clipType, clipNameIndex, clipNames, sourceNodeCount, sourceNodeIndices, paramCount, inputParams);
 
 		}
-		free(str);
 		free(contentsCopy);
 		///Bind outputs after everything's parsed
 		return 1;
