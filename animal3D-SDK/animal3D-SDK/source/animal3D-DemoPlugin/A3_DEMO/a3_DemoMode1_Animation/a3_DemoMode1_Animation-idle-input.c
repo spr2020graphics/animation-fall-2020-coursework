@@ -125,9 +125,10 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 		// capture axes
 		if (a3XboxControlIsConnected(demoState->xcontrol))
 		{
+			//a3demo_input_controlObject(demoState, demoState->demoMode1_animation->obj_skeleton_ctrl,
+			//	dt, projector->ctrlMoveSpeed, projector->ctrlRotateSpeed);
 			// ****TO-DO:
 			// get directly from joysticks
-		
 		}
 		else
 		{

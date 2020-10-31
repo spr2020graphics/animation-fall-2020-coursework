@@ -77,9 +77,9 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		a3hierarchySetNode(demoMode->sceneGraph, 0, -1, "scene_world_root");
 		a3hierarchySetNode(demoMode->sceneGraph, 1, 0, "scene_camera_main");
 		a3hierarchySetNode(demoMode->sceneGraph, 2, 0, "scene_light_main");
-		a3hierarchySetNode(demoMode->sceneGraph, 3, 0, "scene_skeleton_ctrl");
+		a3hierarchySetNode(demoMode->sceneGraph, 3, 0, "scene_skeleton_ctrl");	//parent OF scene_skeleton. Modify this.
 		a3hierarchySetNode(demoMode->sceneGraph, 4, 0, "scene_skybox");
-		a3hierarchySetNode(demoMode->sceneGraph, 5, 3, "scene_skeleton");
+		a3hierarchySetNode(demoMode->sceneGraph, 5, 3, "scene_skeleton");		//parented to skeleton_ctrl
 
 	/*
 		// manually set up a skeleton
@@ -386,6 +386,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	// map relevant objects to scene graph
 	demoMode->obj_camera_main->sceneGraphIndex = a3hierarchyGetNodeIndex(demoMode->sceneGraph, "scene_camera_main");
 	demoMode->obj_skeleton->sceneGraphIndex = a3hierarchyGetNodeIndex(demoMode->sceneGraph, "scene_skeleton");
+	demoMode->obj_skeleton_ctrl->sceneGraphIndex = a3hierarchyGetNodeIndex(demoMode->sceneGraph, "scene_skeleton_ctrl");
 	demoMode->obj_skybox->sceneGraphIndex = a3hierarchyGetNodeIndex(demoMode->sceneGraph, "scene_skybox");
 
 	// scene graph state
