@@ -92,6 +92,18 @@ void a3demo_input_controlProjector(
 //	a3_DemoState* demoState, a3_DemoSceneObject* object,
 //	a3f64 const dt, a3real ctrlMoveSpeed, a3real ctrlRotateSpeed);
 
+
+
+a3real a3animation_kinematic(a3real x, a3real v, a3real a, a3real dt)
+{
+	return x + (v * dt) + (a * a * dt * 0.5f);
+}
+
+a3real a3animation_interp2(a3real v0, a3real v1, a3real u)
+{
+	return a3lerp(v0, v1, u);
+}
+
 void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode, a3f64 const dt)
 {
 	a3_DemoProjector* projector = demoMode->projector + demoMode->activeCamera;
