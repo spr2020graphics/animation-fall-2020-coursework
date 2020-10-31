@@ -92,6 +92,22 @@ void a3demo_input_controlProjector(
 //	a3_DemoState* demoState, a3_DemoSceneObject* object,
 //	a3f64 const dt, a3real ctrlMoveSpeed, a3real ctrlRotateSpeed);
 
+a3vec3* a3EulerIntegration(a3vec3* vec_out, a3vec3* x, a3vec3* dx_dt, const a3real dt)
+{
+	a3vec3 temp;
+
+	a3real3ProductS(temp.v, dx_dt->v, dt);
+	a3real3Sum(vec_out->v, x->v, temp.v);
+
+	return vec_out;
+}
+
+a3vec3* a3Interp_euler(a3vec3* vec_out, a3vec3* x, a3vec3* x_target, a3real const u)
+{
+	a3real3Lerp(vec_out->v, x->v, x_target->v, u);
+
+	return vec_out;
+}
 
 
 a3real a3animation_kinematic(a3real x, a3real v, a3real a, a3real dt)
@@ -103,6 +119,7 @@ a3real a3animation_interp2(a3real v0, a3real v1, a3real u)
 {
 	return a3lerp(v0, v1, u);
 }
+
 
 void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode, a3f64 const dt)
 {
