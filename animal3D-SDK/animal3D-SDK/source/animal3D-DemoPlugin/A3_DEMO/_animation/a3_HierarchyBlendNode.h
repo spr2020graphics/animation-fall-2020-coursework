@@ -105,7 +105,6 @@ struct a3_HierarchyBlendNode
 	a3ui32 controlNodeCount; //node equivalent of clipCount
 	a3ui32 uValCount;
 
-
 	a3_HierarchyPoseGroup* poseGroup;
 };
 
