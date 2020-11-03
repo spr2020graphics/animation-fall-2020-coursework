@@ -92,30 +92,36 @@ void a3demo_input_controlProjector(
 //	a3_DemoState* demoState, a3_DemoSceneObject* object,
 //	a3f64 const dt, a3real ctrlMoveSpeed, a3real ctrlRotateSpeed);
 
-a3vec3* a3EulerIntegration(a3vec3* vec_out, a3vec3* x, a3vec3* dx_dt, const a3real dt)
+a3real3r a3EulerIntegration(a3real3 vec_out, a3real3 x, a3real3 dx_dt, const a3real dt)
 {
 	a3vec3 temp;
 
-	a3real3ProductS(temp.v, dx_dt->v, dt);
-	a3real3Sum(vec_out->v, x->v, temp.v);
+	a3real3ProductS(temp.v, dx_dt, dt);
+	a3real3Sum(vec_out, x, temp.v);
 
 	return vec_out;
 }
 
-a3vec3* a3Interp_euler(a3vec3* vec_out, a3vec3* x, a3vec3* x_target, a3real const u)
+a3real3r a3EulerInterp(a3real3 vec_out, a3real3 x, a3real3 x_target, const a3real u)
 {
-	a3real3Lerp(vec_out->v, x->v, x_target->v, u);
+	a3real3Lerp(vec_out, x, x_target, u);
 
 	return vec_out;
 }
 
 
-a3real a3animation_kinematic(a3real x, a3real v, a3real a, a3real dt)
+a3real3r a3KinematicIntegration(a3real3 vec_out, a3real3 x, a3real3 v, a3real3 a, const a3real dt)
 {
-	return x + (v * dt) + (a * a * dt * 0.5f);
+	a3vec3 tempV, tempA;
+	a3real3ProductS(tempV.v, v, dt); //vt
+	a3real3ProductS(tempA.v, a, dt * dt * 0.5f); //1/2at^2
+	a3vec3 tempSum;
+	a3real3Sum(tempSum.v, tempV.v, tempA.v);
+	a3real3Sum(vec_out, x, tempSum.v); //add tempSum (vt + 1/2at^2) to x
+	return vec_out;
 }
 
-a3real a3animation_interp2(a3real v0, a3real v1, a3real u)
+a3real a3KinematicInterp(a3real v0, a3real v1, const a3real u)
 {
 	return a3lerp(v0, v1, u);
 }
