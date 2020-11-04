@@ -186,10 +186,10 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		switch (demoMode->ctrl_position)
 		{
 		case animation_input_direct:
-			demoMode->pos.x += (a3real)demoMode->axis_l[0];
-			demoMode->pos.y += (a3real)demoMode->axis_l[1];
+			demoMode->pos.x = 4.0f * (a3real)demoMode->axis_l[0];
+			demoMode->pos.y = 4.0f * (a3real)demoMode->axis_l[1];
 
-			demoMode->rot += (a3real)a3clamp(-180.0f, 180.0f, demoMode->axis_r[0]);	//Clamp between -180 and +180 degrees
+			demoMode->rot = (a3real)a3clamp(-180.0f, 180.0f, demoMode->axis_r[0]);	//Clamp between -180 and +180 degrees
 
 			break;
 		case animation_input_euler:
