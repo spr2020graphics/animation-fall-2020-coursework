@@ -100,11 +100,11 @@ void a3demo_input_controlObject(
 /// <param name="dx_dt"></param>
 /// <param name="dt"></param>
 /// <returns></returns>
-a3real3r a3EulerIntegration(a3real3 x_out, a3real3 x, a3real3 dx_dt, const a3real dt)
+a3real3r a3EulerIntegration(a3real3 x_out, a3real3 x, a3real3 v, const a3real dt)
 {
 	a3vec3 temp;
 
-	a3real3ProductS(temp.v, dx_dt, dt);
+	a3real3ProductS(temp.v, v, dt);
 	a3real3Sum(x_out, x, temp.v);
 
 	return x_out;

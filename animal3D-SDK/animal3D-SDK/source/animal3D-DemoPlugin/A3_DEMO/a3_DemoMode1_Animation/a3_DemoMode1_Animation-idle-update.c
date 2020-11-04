@@ -86,8 +86,8 @@ void a3demo_applyScale_internal(a3_DemoSceneObject* sceneObject, a3real4x4p s);
 a3real3r a3EulerIntegration(a3real3 vec_out, a3real3 x, a3real3 dx_dt, const a3real dt);
 a3real3r a3EulerInterp(a3real3 vec_out, a3real3 x, a3real3 x_target, const a3real u);
 
-a3real3r a3KinematicIntegration(a3real3 vec_out, a3real3 x, a3real3 v, a3real3 a, const a3real dt);
-a3real a3KinematicInterp(a3real v0, a3real v1, const a3real u);
+a3real3r a3KinematicIntegration(a3real3 x_out, a3real3 v_out, a3real3 x, a3real3 v, a3real3 a, const a3real dt);
+a3real a3KinematicInterp(a3real3 x_out, a3real3 v_out, a3real3 x, a3real3 v0, a3real3 v1, const a3real u, const a3real dt);
 
 void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode, a3f64 const dt)
 {
