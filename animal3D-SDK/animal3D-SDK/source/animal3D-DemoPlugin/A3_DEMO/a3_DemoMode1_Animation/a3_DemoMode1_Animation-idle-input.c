@@ -88,9 +88,9 @@ void a3demo_input_controlProjector(
 	a3_DemoState* demoState, a3_DemoProjector* projector,
 	a3f64 const dt, a3real ctrlMoveSpeed, a3real ctrlRotateSpeed, a3real ctrlZoomSpeed);
 
-//void a3demo_input_controlObject(
-//	a3_DemoState* demoState, a3_DemoSceneObject* object,
-//	a3f64 const dt, a3real ctrlMoveSpeed, a3real ctrlRotateSpeed);
+void a3demo_input_controlObject(
+	a3_DemoState* demoState, a3_DemoSceneObject* object,
+	a3f64 const dt, a3real ctrlMoveSpeed, a3real ctrlRotateSpeed);
 
 a3real3r a3EulerIntegration(a3real3 vec_out, a3real3 x, a3real3 dx_dt, const a3real dt)
 {
@@ -168,9 +168,16 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 			//	dt, projector->ctrlMoveSpeed, projector->ctrlRotateSpeed);
 			// ****TO-DO:
 			// get directly from joysticks
+			a3XboxControlGetJoysticks(demoState->xcontrol, demoMode->axis_l, demoMode->axis_r);
+
 			switch (demoMode->ctrl_position)
 			{
 			case animation_input_direct:
+				demoMode->pos.x += (a3real)demoMode->axis_l[0];
+				demoMode->pos.y += (a3real)demoMode->axis_l[1];
+
+				demoMode->rot += (a3real)a3clamp(-180.0f, 180.0f, demoMode->axis_r[0]);	//Clamp between -180 and +180 degrees
+
 				break;
 			case animation_input_euler:
 				break;
