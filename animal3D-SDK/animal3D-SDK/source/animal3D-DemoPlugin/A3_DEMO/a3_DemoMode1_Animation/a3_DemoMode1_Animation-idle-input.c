@@ -136,13 +136,15 @@ a3real3r a3EulerInterp(a3real3 x_out, a3real3 x, a3real3 x_target, const a3real 
 /// <returns></returns>
 a3real3r a3KinematicIntegration(a3real3 x_out, a3real3 v_out, a3real3 x, a3real3 v, a3real3 a, const a3real dt)
 {
-	a3vec3 tempV, tempA;
-	a3real3ProductS(tempV.v, v, dt); //vt
-	a3real3ProductS(tempA.v, a, dt * dt * 0.5f); //1/2at^2
-	a3vec3 tempSum;
-	a3real3Sum(tempSum.v, tempV.v, tempA.v);
-	a3real3Sum(x_out, x, tempSum.v); //add tempSum (vt + 1/2at^2) to x
-	a3real3ProductS(v_out, a, dt); //secondary output for velocity
+	a3vec3 vdt, adt2;
+	a3real3ProductS(vdt.v, v, dt); //vt
+	a3real3ProductS(adt2.v, a, dt * dt * 0.5f); //1/2at^2
+	a3vec3 vdtPlusAdt2;
+	a3real3Sum(vdtPlusAdt2.v, vdt.v, adt2.v);
+	a3real3Sum(x_out, x, vdtPlusAdt2.v); //add tempSum (vt + 1/2at^2) to x
+	a3vec3 adt; //calculate new velocity
+	a3real3ProductS(adt.v, a, dt); //secondary output for velocity
+	a3real3Sum(v_out, v, adt.v);
 	return x_out;
 }
 
