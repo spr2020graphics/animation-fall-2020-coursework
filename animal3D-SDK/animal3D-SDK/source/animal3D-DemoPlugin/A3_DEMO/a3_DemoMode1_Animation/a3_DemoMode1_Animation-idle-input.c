@@ -211,7 +211,15 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 		{
 			// ****TO-DO:
 			// calculate normalized vectors given keyboard state
+			a3i32 posUpDown = (demoState->keyboard->key.key[a3key_W] != 0) - (demoState->keyboard->key.key[a3key_S] != 0);
+			a3i32 posLeftRight = (demoState->keyboard->key.key[a3key_D] != 0) - (demoState->keyboard->key.key[a3key_A] != 0);
 
+			a3vec2 tempPos = { (a3real)posLeftRight, (a3real)posUpDown };
+			a3real2Normalize(tempPos.v);
+			demoMode->axis_l[0] = tempPos.x;
+			demoMode->axis_l[1] = tempPos.y;
+			a3i32 rotLeftRight = (demoState->keyboard->key.key[a3key_L] != 0) - (demoState->keyboard->key.key[a3key_J] != 0);
+			demoMode->axis_r[0] = (a3real)rotLeftRight;
 
 		}
 		break;
