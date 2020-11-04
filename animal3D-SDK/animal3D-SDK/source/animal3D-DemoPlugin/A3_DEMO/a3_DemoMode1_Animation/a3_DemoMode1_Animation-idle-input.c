@@ -222,7 +222,7 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 			demoMode->axis_l[0] = tempPos.x;
 			demoMode->axis_l[1] = tempPos.y;
 			a3i32 rotLeftRight = (demoState->keyboard->key.key[a3key_L] != 0) - (demoState->keyboard->key.key[a3key_J] != 0);
-			demoMode->axis_r[0] = 180.0f * (a3real)rotLeftRight;
+			demoMode->axis_r[0] = (a3real)rotLeftRight;
 
 		}
 		break;
