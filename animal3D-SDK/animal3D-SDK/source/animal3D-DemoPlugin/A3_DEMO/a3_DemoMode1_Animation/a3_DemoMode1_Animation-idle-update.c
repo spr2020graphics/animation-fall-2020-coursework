@@ -87,7 +87,7 @@ a3real3r a3EulerIntegration(a3real3 vec_out, a3real3 x, a3real3 dx_dt, const a3r
 a3real3r a3EulerInterp(a3real3 vec_out, a3real3 x, a3real3 x_target, const a3real u);
 
 a3real3r a3KinematicIntegration(a3real3 x_out, a3real3 v_out, a3real3 x, a3real3 v, a3real3 a, const a3real dt);
-a3real3r a3KinematicInterp(a3real3 x_out, a3real3 v_out, a3real3 x, a3real3 v0, a3real3 v1, const a3real u, const a3real dt);
+a3real a3KinematicInterp(a3real3 x_out, a3real3 v_out, a3real3 x, a3real3 v0, a3real3 v1, const a3real u, const a3real dt);
 
 void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode, a3f64 const dt)
 {
@@ -186,10 +186,10 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		switch (demoMode->ctrl_position)
 		{
 		case animation_input_direct:
-			demoMode->pos.x += (a3real)demoMode->axis_l[0];
-			demoMode->pos.y += (a3real)demoMode->axis_l[1];
+			demoMode->pos.x = 4.0f * (a3real)demoMode->axis_l[0];
+			demoMode->pos.y = 4.0f * (a3real)demoMode->axis_l[1];
 
-			demoMode->rot += (a3real)a3clamp(-180.0f, 180.0f, demoMode->axis_r[0]);	//Clamp between -180 and +180 degrees
+			demoMode->rot = (a3real)a3clamp(-180.0f, 180.0f, demoMode->axis_r[0]);	//Clamp between -180 and +180 degrees
 
 			break;
 		case animation_input_euler:
