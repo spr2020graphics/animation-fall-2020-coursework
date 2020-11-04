@@ -218,6 +218,13 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		}
 			break;
 		case animation_input_kinematic:
+			demoMode->acc.x = (a3real)demoMode->axis_l[0] * 4.0f;
+			demoMode->acc.y = (a3real)demoMode->axis_l[1] * 4.0f;
+			demoMode->accr = (a3real)demoMode->axis_r[0] * 180.0f;
+
+			a3KinematicIntegration(demoMode->pos.v, demoMode->vel.v, demoMode->pos.v, demoMode->vel.v, demoMode->acc.v, (a3real)dt);
+			a3KinematicIntegration(&demoMode->rot, &demoMode->velr, &demoMode->rot, &demoMode->velr, &demoMode->accr, (a3real)dt);
+
 			break;
 		case animation_input_interpolate1:
 			break;
