@@ -92,38 +92,74 @@ void a3demo_input_controlProjector(
 //	a3_DemoState* demoState, a3_DemoSceneObject* object,
 //	a3f64 const dt, a3real ctrlMoveSpeed, a3real ctrlRotateSpeed);
 
-a3real3r a3EulerIntegration(a3real3 vec_out, a3real3 x, a3real3 dx_dt, const a3real dt)
+/// <summary>
+/// We input a velocity and it moves around
+/// </summary>
+/// <param name="vec_out"></param>
+/// <param name="x"></param>
+/// <param name="dx_dt"></param>
+/// <param name="dt"></param>
+/// <returns></returns>
+a3real3r a3EulerIntegration(a3real3 x_out, a3real3 x, a3real3 dx_dt, const a3real dt)
 {
 	a3vec3 temp;
 
 	a3real3ProductS(temp.v, dx_dt, dt);
-	a3real3Sum(vec_out, x, temp.v);
+	a3real3Sum(x_out, x, temp.v);
 
-	return vec_out;
+	return x_out;
 }
 
-a3real3r a3EulerInterp(a3real3 vec_out, a3real3 x, a3real3 x_target, const a3real u)
+/// <summary>
+/// We pass in a position and we linearly interpolate to it, as though a velocity was being imparted
+/// </summary>
+/// <param name="vec_out"></param>
+/// <param name="x"></param>
+/// <param name="x_target"></param>
+/// <param name="u"></param>
+/// <returns></returns>
+a3real3r a3EulerInterp(a3real3 x_out, a3real3 x, a3real3 x_target, const a3real u)
 {
-	a3real3Lerp(vec_out, x, x_target, u);
+	a3real3Lerp(x_out, x, x_target, u);
 
-	return vec_out;
+	return x_out;
 }
 
-
-a3real3r a3KinematicIntegration(a3real3 vec_out, a3real3 x, a3real3 v, a3real3 a, const a3real dt)
+/// <summary>
+/// We input an acceleration and output the new position and velocity.
+/// </summary>
+/// <param name="vec_out"></param>
+/// <param name="x"></param>
+/// <param name="v"></param>
+/// <param name="a"></param>
+/// <param name="dt"></param>
+/// <returns></returns>
+a3real3r a3KinematicIntegration(a3real3 x_out, a3real3 v_out, a3real3 x, a3real3 v, a3real3 a, const a3real dt)
 {
 	a3vec3 tempV, tempA;
 	a3real3ProductS(tempV.v, v, dt); //vt
 	a3real3ProductS(tempA.v, a, dt * dt * 0.5f); //1/2at^2
 	a3vec3 tempSum;
 	a3real3Sum(tempSum.v, tempV.v, tempA.v);
-	a3real3Sum(vec_out, x, tempSum.v); //add tempSum (vt + 1/2at^2) to x
-	return vec_out;
+	a3real3Sum(x_out, x, tempSum.v); //add tempSum (vt + 1/2at^2) to x
+	a3real3ProductS(v_out, a, dt); //secondary output for velocity
+	return x_out;
 }
 
-a3real a3KinematicInterp(a3real v0, a3real v1, const a3real u)
+/// <summary>
+/// We input a velocity
+/// </summary>
+/// <param name="v0"></param>
+/// <param name="v1"></param>
+/// <param name="u"></param>
+/// <returns></returns>
+a3real3r a3KinematicInterp(a3real3 x_out, a3real3 v_out, a3real3 x, a3real3 v0, a3real3 v1, const a3real u, const a3real dt)
 {
-	return a3lerp(v0, v1, u);
+	a3real3Lerp(v_out, v0, v1, u);
+	a3vec3 temp;
+	a3real3ProductS(temp.v, v_out, dt); //the vdt part of x + vdt
+	a3real3Sum(x_out, x, temp.v); //output old X + vdt into new x
+	return x_out;
 }
 
 
