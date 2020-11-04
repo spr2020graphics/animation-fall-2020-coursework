@@ -86,8 +86,8 @@ void a3demo_applyScale_internal(a3_DemoSceneObject* sceneObject, a3real4x4p s);
 a3real3r a3EulerIntegration(a3real3 vec_out, a3real3 x, a3real3 dx_dt, const a3real dt);
 a3real3r a3EulerInterp(a3real3 vec_out, a3real3 x, a3real3 x_target, const a3real u);
 
-a3real3r a3KinematicIntegration(a3real3 vec_out, a3real3 x, a3real3 v, a3real3 a, const a3real dt);
-a3real a3KinematicInterp(a3real v0, a3real v1, const a3real u);
+a3real3r a3KinematicIntegration(a3real3 x_out, a3real3 v_out, a3real3 x, a3real3 v, a3real3 a, const a3real dt);
+a3real3r a3KinematicInterp(a3real3 x_out, a3real3 v_out, a3real3 x, a3real3 v0, a3real3 v1, const a3real u, const a3real dt);
 
 void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode, a3f64 const dt)
 {
@@ -195,14 +195,13 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		case animation_input_euler:
 		{
 			//Put raw values into container variables (a3real3 because that's what our integration functions run on)
-			a3real3 tempVel, tempVelR;
-			tempVel[0] = (a3real)demoMode->axis_l[0];
-			tempVel[1] = (a3real)demoMode->axis_l[1];
-			tempVel[2] = 0.0f;
-			tempVelR[0] = (a3real)demoMode->axis_r[0];
-			tempVelR[1] = 0.0f;
-			tempVelR[2] = 0.0f;
 
+			demoMode->vel.x = (a3real)demoMode->axis_l[0];
+			demoMode->vel.y = (a3real)demoMode->axis_l[1];
+			demoMode->velr = (a3real)demoMode->axis_r[0];
+
+			/* let it be known, cameron, when left on autopilot, will manually calculate completely uncesessary values
+			* yes, this calculates acceleration from temp variables.
 			a3real3 dxdt, dxrdt;
 			dxdt[0] = (tempVel[0] - demoMode->vel.x) / (a3real)dt;
 			dxdt[1] = (tempVel[1] - demoMode->vel.y) / (a3real)dt;
@@ -211,13 +210,10 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 			dxrdt[0] = (tempVelR[0] - demoMode->velr) / (a3real)dt;
 			dxrdt[1] = 0.0f;
 			dxrdt[2] = 0.0f;
+			*/
 
-			a3EulerIntegration(demoMode->pos.v, demoMode->vel.v, dxdt, (a3real)dt);
-			a3EulerIntegration(&demoMode->rot, &demoMode->velr, dxrdt, (a3real)dt);
-
-			demoMode->vel.x = tempVel[0];
-			demoMode->vel.y = tempVel[1];
-			demoMode->velr = tempVelR[0];
+			a3EulerIntegration(demoMode->pos.v, demoMode->pos.v, demoMode->vel.v, (a3real)dt);
+			a3EulerIntegration(&demoMode->rot, &demoMode->rot, &demoMode->velr, (a3real)dt);
 
 		}
 			break;
