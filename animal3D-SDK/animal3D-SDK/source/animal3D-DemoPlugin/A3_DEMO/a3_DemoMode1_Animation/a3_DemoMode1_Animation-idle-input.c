@@ -167,45 +167,15 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 			//a3demo_input_controlObject(demoState, demoState->demoMode1_animation->obj_skeleton_ctrl,
 			//	dt, projector->ctrlMoveSpeed, projector->ctrlRotateSpeed);
 			// ****TO-DO:
-			// get directly from joysticks
+
+			// get directly from joysticks, put into left/right axis variables
 			a3XboxControlGetJoysticks(demoState->xcontrol, demoMode->axis_l, demoMode->axis_r);
-
-			switch (demoMode->ctrl_position)
-			{
-			case animation_input_direct:
-				demoMode->pos.x += (a3real)demoMode->axis_l[0];
-				demoMode->pos.y += (a3real)demoMode->axis_l[1];
-
-				demoMode->rot += (a3real)a3clamp(-180.0f, 180.0f, demoMode->axis_r[0]);	//Clamp between -180 and +180 degrees
-
-				break;
-			case animation_input_euler:
-				break;
-			case animation_input_kinematic:
-				break;
-			case animation_input_interpolate1:
-				break;
-			case animation_input_interpolate2:
-				break;
-			}
 		}
 		else
 		{
 			// ****TO-DO:
 			// calculate normalized vectors given keyboard state
-			switch (demoMode->ctrl_position)
-			{
-			case animation_input_direct:
-				break;
-			case animation_input_euler:
-				break;
-			case animation_input_kinematic:
-				break;
-			case animation_input_interpolate1:
-				break;
-			case animation_input_interpolate2:
-				break;
-			}
+
 
 		}
 		break;
