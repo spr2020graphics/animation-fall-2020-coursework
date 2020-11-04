@@ -177,6 +177,24 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 
 		// ****TO-DO: 
 		// process input
+		switch (demoMode->ctrl_position)
+		{
+		case animation_input_direct:
+			demoMode->pos.x += (a3real)demoMode->axis_l[0];
+			demoMode->pos.y += (a3real)demoMode->axis_l[1];
+
+			demoMode->rot += (a3real)a3clamp(-180.0f, 180.0f, demoMode->axis_r[0]);	//Clamp between -180 and +180 degrees
+
+			break;
+		case animation_input_euler:
+			break;
+		case animation_input_kinematic:
+			break;
+		case animation_input_interpolate1:
+			break;
+		case animation_input_interpolate2:
+			break;
+		}
 
 		// apply input
 		demoMode->obj_skeleton_ctrl->position.x = +(demoMode->pos.x);

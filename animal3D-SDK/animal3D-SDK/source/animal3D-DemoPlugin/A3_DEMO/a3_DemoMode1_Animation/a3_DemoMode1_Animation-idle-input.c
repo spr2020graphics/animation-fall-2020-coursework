@@ -88,9 +88,9 @@ void a3demo_input_controlProjector(
 	a3_DemoState* demoState, a3_DemoProjector* projector,
 	a3f64 const dt, a3real ctrlMoveSpeed, a3real ctrlRotateSpeed, a3real ctrlZoomSpeed);
 
-//void a3demo_input_controlObject(
-//	a3_DemoState* demoState, a3_DemoSceneObject* object,
-//	a3f64 const dt, a3real ctrlMoveSpeed, a3real ctrlRotateSpeed);
+void a3demo_input_controlObject(
+	a3_DemoState* demoState, a3_DemoSceneObject* object,
+	a3f64 const dt, a3real ctrlMoveSpeed, a3real ctrlRotateSpeed);
 
 /// <summary>
 /// We input a velocity and it moves around
@@ -203,38 +203,15 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 			//a3demo_input_controlObject(demoState, demoState->demoMode1_animation->obj_skeleton_ctrl,
 			//	dt, projector->ctrlMoveSpeed, projector->ctrlRotateSpeed);
 			// ****TO-DO:
-			// get directly from joysticks
-			switch (demoMode->ctrl_position)
-			{
-			case animation_input_direct:
-				break;
-			case animation_input_euler:
-				break;
-			case animation_input_kinematic:
-				break;
-			case animation_input_interpolate1:
-				break;
-			case animation_input_interpolate2:
-				break;
-			}
+
+			// get directly from joysticks, put into left/right axis variables
+			a3XboxControlGetJoysticks(demoState->xcontrol, demoMode->axis_l, demoMode->axis_r);
 		}
 		else
 		{
 			// ****TO-DO:
 			// calculate normalized vectors given keyboard state
-			switch (demoMode->ctrl_position)
-			{
-			case animation_input_direct:
-				break;
-			case animation_input_euler:
-				break;
-			case animation_input_kinematic:
-				break;
-			case animation_input_interpolate1:
-				break;
-			case animation_input_interpolate2:
-				break;
-			}
+
 
 		}
 		break;
