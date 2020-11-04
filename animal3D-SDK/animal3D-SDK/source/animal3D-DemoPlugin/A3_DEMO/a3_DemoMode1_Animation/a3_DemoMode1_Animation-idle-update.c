@@ -226,8 +226,14 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 			demoMode->acc.y = (a3real)demoMode->axis_l[1] * 4.0f;
 			demoMode->accr = (a3real)demoMode->axis_r[0] * 180.0f;
 
-			a3KinematicIntegration(demoMode->pos.v, demoMode->vel.v, demoMode->pos.v, demoMode->vel.v, demoMode->acc.v, (a3real)dt);
-			a3KinematicIntegration(&demoMode->rot, &demoMode->velr, &demoMode->rot, &demoMode->velr, &demoMode->accr, (a3real)dt);
+			a3real2 tempPos, tempVel, tempRot, tempVelR;
+			a3real2SetReal2(tempPos, demoMode->pos.v);
+			a3real2SetReal2(tempVel, demoMode->vel.v);
+			a3real2Set(tempVelR, demoMode->velr, 0.0f);
+			a3real2Set(tempRot, demoMode->rot, 0.0f);
+
+			a3KinematicIntegration(demoMode->pos.v, demoMode->vel.v, tempPos, tempVel, demoMode->acc.v, (a3real)dt);
+			a3KinematicIntegration(&demoMode->rot, &demoMode->velr, tempRot, tempVelR, &demoMode->accr, (a3real)dt);
 
 			break;
 		case animation_input_interpolate1:
