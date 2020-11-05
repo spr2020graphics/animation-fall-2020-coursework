@@ -242,14 +242,29 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 			targetPos[0] = demoMode->pos.x + (a3real)demoMode->axis_l[0];
 			targetPos[1] = demoMode->pos.y + (a3real)demoMode->axis_l[1];
 
-			targetRot[0] = demoMode->rot + ((a3real)demoMode->axis_r[0]) / 9.0f;
+			targetRot[0] = demoMode->rot + ((a3real)demoMode->axis_r[0]);
 			targetRot[1] = 0.0f;
 
-			a3real2Lerp(demoMode->pos.v, demoMode->pos.v, targetPos, 0.6f);
-			a3real2Lerp(&demoMode->rot, &demoMode->rot, targetRot, 0.6f);
+			a3real2Lerp(demoMode->pos.v, demoMode->pos.v, targetPos, 0.4f);
+			a3real2Lerp(&demoMode->rot, &demoMode->rot, targetRot, 0.2f);
 		}
 			break;
 		case animation_input_interpolate2:
+		{
+			a3real2 tempVel, tempVelR;
+			tempVel[0] = (a3real)demoMode->axis_l[0];
+			tempVel[1] = (a3real)demoMode->axis_l[1];
+			tempVelR[0] = (a3real)demoMode->axis_r[0];
+			tempVelR[1] = 0.0f;
+
+			// Euler integration of current velocity first...
+			a3EulerIntegration(demoMode->pos.v, demoMode->pos.v, demoMode->vel.v, (a3real)dt);
+			a3EulerIntegration(&demoMode->rot, &demoMode->rot, &demoMode->velr, (a3real)dt);
+
+			// interpolation of velocities next
+			a3real2Lerp(demoMode->vel.v, demoMode->vel.v, tempVel, 0.4f);
+			a3real2Lerp(&demoMode->velr, &demoMode->velr, tempVelR, 0.2f);
+		}
 			break;
 		}
 
