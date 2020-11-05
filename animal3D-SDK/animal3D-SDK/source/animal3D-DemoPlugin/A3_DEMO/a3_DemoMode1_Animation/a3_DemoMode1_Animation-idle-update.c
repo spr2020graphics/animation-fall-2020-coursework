@@ -34,6 +34,7 @@
 #include "../a3_DemoState.h"
 
 #include "../_a3_demo_utilities/a3_DemoMacros.h"
+#include <math.h>
 
 
 //-----------------------------------------------------------------------------
@@ -203,6 +204,8 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 			demoMode->vel.x = (a3real)demoMode->axis_l[0];
 			demoMode->vel.y = (a3real)demoMode->axis_l[1];
 			demoMode->velr = (a3real)demoMode->axis_r[0];
+			demoMode->acc = a3vec2_zero;
+			demoMode->accr = 0;
 
 			/* let it be known, cameron, when left on autopilot, will manually calculate completely uncesessary values
 			* yes, this calculates acceleration from temp variables.
@@ -228,7 +231,7 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 
 			demoMode->pos.x = posOut.x;
 			demoMode->pos.y = posOut.y;
-			demoMode->rot = (a3real)a3clamp(-180.0f, 180.0f, rotOut.x);	//Clamp between -180 and +180 degrees
+			demoMode->rot = (float)fmod(rotOut.x, 360.0f);
 		}
 			break;
 		case animation_input_kinematic:
@@ -236,16 +239,33 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 			demoMode->acc.y = (a3real)demoMode->axis_l[1] * 4.0f;
 			demoMode->accr = (a3real)demoMode->axis_r[0];
 
-			a3real3 tempPos, tempVelIn, tempVelOut, tempRotIn, tempRotOut, tempVelR;
-			a3real2SetReal2(tempPos, demoMode->pos.v);
-			a3real2SetReal2(tempVelIn, demoMode->vel.v);
-			a3real2Set(tempVelR, demoMode->velr, 0.0f);
-			a3real2Set(tempRotIn, demoMode->rot, 0.0f);
-			a3KinematicIntegration(demoMode->pos.v, demoMode->vel.v, tempPos, tempVelIn, demoMode->acc.v, (a3real)dt);
-			a3KinematicIntegration(tempRotOut, tempVelOut, tempRotIn, tempVelR, &demoMode->accr, (a3real)dt);
-			demoMode->rot = tempRotOut[0];
-			demoMode->velr = tempVelOut[0];
+			a3vec3 accIn = { demoMode->acc.x, demoMode->acc.y, 0 };
 
+			a3vec3 velIn = { demoMode->vel.x, demoMode->vel.y, 0 };
+			a3vec3 posIn = { demoMode->pos.x, demoMode->pos.y, 0 };
+
+			a3vec3 velOut = a3vec3_zero;
+			a3vec3 posOut = a3vec3_zero;
+
+			a3vec3 rAccIn = { demoMode->accr, 0, 0 };
+
+			a3vec3 rVelIn = { demoMode->velr, 0, 0 };
+			a3vec3 rotIn = { demoMode->rot, 0, 0 };
+
+			a3vec3 rVelOut = a3vec3_zero;
+			a3vec3 rotOut = a3vec3_zero;
+
+
+			a3KinematicIntegration(posOut.v, velOut.v, posIn.v, velIn.v, accIn.v, (a3real)dt);
+			a3KinematicIntegration(rotOut.v, rVelOut.v, rotIn.v, rVelIn.v, rAccIn.v, (a3real)dt);
+
+			demoMode->pos.x = posOut.x;
+			demoMode->pos.y = posOut.y;
+			demoMode->vel.x = velOut.x;
+			demoMode->vel.y = velOut.y;
+
+			demoMode->rot = (float)fmod(rotOut.x, 360.0f);
+			demoMode->velr = rVelOut.x;
 			break;
 		case animation_input_interpolate1:
 		{
