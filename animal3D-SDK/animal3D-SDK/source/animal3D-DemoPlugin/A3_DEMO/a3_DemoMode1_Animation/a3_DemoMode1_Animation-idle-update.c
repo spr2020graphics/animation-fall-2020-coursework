@@ -216,24 +216,35 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 			dxrdt[2] = 0.0f;
 			*/
 
-			a3EulerIntegration(demoMode->pos.v, demoMode->pos.v, demoMode->vel.v, (a3real)dt);
-			a3EulerIntegration(&demoMode->rot, &demoMode->rot, &demoMode->velr, (a3real)dt);
+			a3vec3 velIn = { demoMode->vel.x, demoMode->vel.y, 0 };
+			a3vec3 posIn = { demoMode->pos.x, demoMode->pos.y, 0 };
+			a3vec3 posOut = a3vec3_zero;
 
+			a3vec3 rVelIn = { demoMode->velr, 0, 0 };
+			a3vec3 rotIn = { demoMode->rot, 0, 0 };
+			a3vec3 rotOut = a3vec3_zero;
+			a3EulerIntegration(posOut.v, posIn.v, velIn.v, (a3real)dt);
+			a3EulerIntegration(rotOut.v, rotIn.v, rVelIn.v, (a3real)dt);
+
+			demoMode->pos.x = posOut.x;
+			demoMode->pos.y = posOut.y;
+			demoMode->rot = (a3real)a3clamp(-180.0f, 180.0f, rotOut.x);	//Clamp between -180 and +180 degrees
 		}
 			break;
 		case animation_input_kinematic:
 			demoMode->acc.x = (a3real)demoMode->axis_l[0] * 4.0f;
 			demoMode->acc.y = (a3real)demoMode->axis_l[1] * 4.0f;
-			demoMode->accr = (a3real)demoMode->axis_r[0] * 180.0f;
+			demoMode->accr = (a3real)demoMode->axis_r[0];
 
-			a3real2 tempPos, tempVel, tempRot, tempVelR;
+			a3real3 tempPos, tempVelIn, tempVelOut, tempRotIn, tempRotOut, tempVelR;
 			a3real2SetReal2(tempPos, demoMode->pos.v);
-			a3real2SetReal2(tempVel, demoMode->vel.v);
+			a3real2SetReal2(tempVelIn, demoMode->vel.v);
 			a3real2Set(tempVelR, demoMode->velr, 0.0f);
-			a3real2Set(tempRot, demoMode->rot, 0.0f);
-
-			a3KinematicIntegration(demoMode->pos.v, demoMode->vel.v, tempPos, tempVel, demoMode->acc.v, (a3real)dt);
-			a3KinematicIntegration(&demoMode->rot, &demoMode->velr, tempRot, tempVelR, &demoMode->accr, (a3real)dt);
+			a3real2Set(tempRotIn, demoMode->rot, 0.0f);
+			a3KinematicIntegration(demoMode->pos.v, demoMode->vel.v, tempPos, tempVelIn, demoMode->acc.v, (a3real)dt);
+			a3KinematicIntegration(tempRotOut, tempVelOut, tempRotIn, tempVelR, &demoMode->accr, (a3real)dt);
+			demoMode->rot = tempRotOut[0];
+			demoMode->velr = tempVelOut[0];
 
 			break;
 		case animation_input_interpolate1:
