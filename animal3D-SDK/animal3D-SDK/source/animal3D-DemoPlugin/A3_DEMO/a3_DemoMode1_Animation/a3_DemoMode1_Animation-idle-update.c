@@ -237,6 +237,17 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 
 			break;
 		case animation_input_interpolate1:
+		{
+			a3real2 targetPos, targetRot;
+			targetPos[0] = demoMode->pos.x + (a3real)demoMode->axis_l[0];
+			targetPos[1] = demoMode->pos.y + (a3real)demoMode->axis_l[1];
+
+			targetRot[0] = demoMode->rot + ((a3real)demoMode->axis_r[0]) / 9.0f;
+			targetRot[1] = 0.0f;
+
+			a3real2Lerp(demoMode->pos.v, demoMode->pos.v, targetPos, 0.6f);
+			a3real2Lerp(&demoMode->rot, &demoMode->rot, targetRot, 0.6f);
+		}
 			break;
 		case animation_input_interpolate2:
 			break;
