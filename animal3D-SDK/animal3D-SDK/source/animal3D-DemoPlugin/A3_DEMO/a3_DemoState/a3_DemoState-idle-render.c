@@ -202,7 +202,7 @@ void a3demo_render_clipController(a3_DemoState const* demoState,
 		"CLIP: %s (%d), TRANSITION THRESHOLD ('p'/ltrigger): %d",
 		clip->name,
 		a3clipGetIndexInPool(ctrl->clipPool, clip->name),
-		(a3i32) demoState->demoMode1_animation->branchTrigger);  //this is here so it gets used at all. We don't need it
+		(a3i32) (demoState->demoMode1_animation->branchTrigger != 0));  //this is here so it gets used at all. We don't need it
 
 	//TL line 2: Clip Time/Parameter
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
