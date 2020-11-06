@@ -449,7 +449,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		a3ui32 const sampleIndexFinal[] = {
 			2084,24,133,166,221,518,1091,1232,1433,1474,1498,1516,1539,1556,1585,1608,1625,1654,1855,1908,1934,1952,1978,1995,2018,2044,2061,2084,
 		};
-		a3uvec2 const clipIndexForward[] = {
+		a3ivec2 clipIndexForward[] = {
 			{0, 0},
 			{1, 1},
 			{2, 2},
@@ -479,7 +479,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 			{26,26},
 			{27,27}
 		};
-		a3uvec2 const clipIndexBack[] = {
+		a3ivec2 clipIndexBack[] = {
 			{0, 0},
 			{1, 1},
 			{2, 2},
