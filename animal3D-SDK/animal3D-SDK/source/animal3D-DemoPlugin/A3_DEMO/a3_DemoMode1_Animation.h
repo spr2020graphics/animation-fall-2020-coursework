@@ -136,6 +136,7 @@ typedef enum a3_DemoMode1_Animation_InputMode				a3_DemoMode1_Animation_InputMod
 		animation_input_kinematic,
 		animation_input_interpolate1,
 		animation_input_interpolate2,
+		animation_input_interpolate3,
 
 		animation_inputmode_max
 	};
