@@ -222,10 +222,15 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 			{
 				a3real2Normalize(tempPos.v);
 			}
+			// set axis data
 			demoMode->axis_l[0] = tempPos.x;
 			demoMode->axis_l[1] = tempPos.y;
+
+			// Use J and L to get rotation input
 			a3i32 rotLeftRight = (demoState->keyboard->key.key[a3key_L] != 0) - (demoState->keyboard->key.key[a3key_J] != 0);
 			demoMode->axis_r[0] = (a3real)rotLeftRight;
+
+			// Used to trigger the branching transition for lab 4
 			demoMode->branchTrigger = (a3f32)(demoState->keyboard->key.key[a3key_P] != 0 && demoState->keyboard->key.key[a3key_shift] == 0);
 		}
 		demoMode->mag_l = a3sqrt((a3f32)((demoMode->axis_l[0] * demoMode->axis_l[0]) + (demoMode->axis_l[1] * demoMode->axis_l[1])));
