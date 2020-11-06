@@ -276,6 +276,30 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 
 		}
 			break;
+		case animation_input_interpolate3:
+		{
+			a3vec3 accIn = { demoMode->acc.x, demoMode->acc.y, 0 };
+
+			a3vec3 velIn = { demoMode->vel.x, demoMode->vel.y, 0 };
+			a3vec3 posIn = { demoMode->pos.x, demoMode->pos.y, 0 };
+			a3vec3 posOut = a3vec3_zero;
+			a3vec3 velOut = a3vec3_zero;
+			a3KinematicIntegration(posOut.v, velOut.v, posIn.v, velIn.v, accIn.v, (a3real)dt);
+			
+			demoMode->pos.x = posOut.x;
+			demoMode->pos.y = posOut.y;
+
+			demoMode->vel.x = velOut.x;
+			demoMode->vel.y = velOut.y;
+
+			a3real2 targetAcc = { (a3real)demoMode->axis_l[0], (a3real)demoMode->axis_l[1] };
+			a3vec3 accOut = a3vec3_zero;
+			a3real2Lerp(accOut.v, accIn.v, targetAcc, 0.6f);
+
+			demoMode->acc.x = accOut.x;
+			demoMode->acc.y = accOut.y;
+		}
+			break;
 		}
 
 		switch (demoMode->ctrl_rotation)
@@ -340,7 +364,27 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 			demoMode->velr = rVelOut;
 
 			demoMode->rot = (float)fmod(rotOut.x, 360.0f);
+		}
+		break;
+		case animation_input_interpolate3:
+		{
+			a3vec3 rAccIn = { demoMode->accr, 0, 0 };
 
+			a3vec3 rVelIn = { demoMode->velr, 0, 0 };
+			a3vec3 rotIn = { demoMode->rot, 0, 0 };
+			a3vec3 rotOut = a3vec3_zero;
+			a3vec3 rVelOut = a3vec3_zero;
+			a3KinematicIntegration(rotOut.v, rVelOut.v, rotIn.v, rVelIn.v, rAccIn.v, (a3real)dt);
+
+			demoMode->rot = rotOut.x;
+
+			demoMode->velr = rVelOut.x;
+
+			a3real targetRAcc = (a3real)demoMode->axis_r[0];
+
+			a3real rAccOut = a3lerp(demoMode->accr, targetRAcc, 0.6f);
+
+			demoMode->accr = rAccOut;
 		}
 		break;
 		}

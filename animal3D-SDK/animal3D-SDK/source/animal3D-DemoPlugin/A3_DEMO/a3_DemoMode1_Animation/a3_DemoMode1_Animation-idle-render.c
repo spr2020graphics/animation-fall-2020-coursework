@@ -108,6 +108,7 @@ void a3animation_render_controls(a3_DemoState const* demoState, a3_DemoMode1_Ani
 		"Kinematic integration",
 		"Interpolate to target value (fake velocity)",
 		"Interpolate to target velocity (fake acceleration)",
+		"Interpolate to target acceleration (fake d^3x/dt^3)"
 	};
 
 	// pipeline and target
