@@ -106,7 +106,7 @@ a3i32 a3clipPoolRelease(a3_ClipPool* clipPool)
 }
 
 // initialize clip transition
-a3i32 a3clipTransitionInit(a3_ClipTransition* transition, a3_ClipTransitionFlag const transitionFlag, const a3i32 offset, a3_Clip const* clip, a3boolean branch, a3i32* options)
+a3i32 a3clipTransitionInit(a3_ClipTransition* transition, a3_ClipTransitionFlag const transitionFlag, const a3i32 offset, a3_Clip const* clip, a3boolean branch, a3i32* options, a3f32* transitionInput)
 {
 	if (transition && clip)
 	{
@@ -118,7 +118,7 @@ a3i32 a3clipTransitionInit(a3_ClipTransition* transition, a3_ClipTransitionFlag 
 			transition->flag = a3clip_branchFlag;
 			transition->branch.outClipOption1 = options[0];
 			transition->branch.outClipOption2 = options[1];
-			transition->branch.input = 0;
+			transition->branch.input = transitionInput;
 		}
 		return transitionFlag;
 	}
@@ -126,7 +126,7 @@ a3i32 a3clipTransitionInit(a3_ClipTransition* transition, a3_ClipTransitionFlag 
 }
 
 // initialize clip with first and last indices
-a3i32 a3clipInit(a3_Clip* clip_out, const a3byte clipName[a3keyframeAnimation_nameLenMax], a3_Keyframe const* keyframe_first, a3_Keyframe const* keyframe_final, a3i32* forwardT, a3i32* backT)
+a3i32 a3clipInit(a3_Clip* clip_out, const a3byte clipName[a3keyframeAnimation_nameLenMax], a3_Keyframe const* keyframe_first, a3_Keyframe const* keyframe_final, a3i32* forwardT, a3i32* backT, a3f32* transitionInput)
 {
 	if (clip_out && clip_out->index >= 0 && keyframe_first && keyframe_first->index >= 0 && keyframe_final && keyframe_final->index >= 0)
 	{
@@ -136,8 +136,8 @@ a3i32 a3clipInit(a3_Clip* clip_out, const a3byte clipName[a3keyframeAnimation_na
 		clip_out->keyframeCount = clip_out->keyframeIndex_final - clip_out->keyframeIndex_first;
 		clip_out->keyframeDirection = a3sgn(clip_out->keyframeCount);
 		clip_out->keyframeCount = 1 + clip_out->keyframeCount * clip_out->keyframeDirection;
-		a3clipTransitionInit(clip_out->transitionForward, a3clip_stopFlag, 0, clip_out, true, forwardT);
-		a3clipTransitionInit(clip_out->transitionReverse, a3clip_stopFlag, 0, clip_out, true, backT);
+		a3clipTransitionInit(clip_out->transitionForward, a3clip_stopFlag, 0, clip_out, true, forwardT, transitionInput);
+		a3clipTransitionInit(clip_out->transitionReverse, a3clip_stopFlag, 0, clip_out, true, backT, transitionInput);
 		return clip_out->index;
 	}
 	return -1;
@@ -158,7 +158,7 @@ a3i32 a3clipGetIndexInPool(const a3_ClipPool* clipPool, const a3byte clipName[a3
 
 a3ui32 a3BranchTransitionEvaluate(const a3_BranchTransition* transition)
 {
-	if (transition)
+	if (transition && transition->input)
 	{
 		if (*(transition->input) < 0.5f)
 		{

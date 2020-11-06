@@ -227,6 +227,8 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 			demoMode->axis_r[0] = (a3real)rotLeftRight;
 
 		}
+		demoMode->mag_l = a3sqrt((a3f32)((demoMode->axis_l[0] * demoMode->axis_l[0]) + (demoMode->axis_l[1] * demoMode->axis_l[1])));
+		demoMode->mag_r = a3sqrt((a3f32)((demoMode->axis_r[0] * demoMode->axis_r[0]) + (demoMode->axis_r[1] * demoMode->axis_r[1])));
 		break;
 	}
 

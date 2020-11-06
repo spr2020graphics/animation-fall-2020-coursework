@@ -380,8 +380,8 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	demoMode->obj_skeleton->euler.y = a3real_oneeighty;
 
 	// control node
-	demoMode->obj_skeleton_ctrl->position.y = +a3real_four;
-	demoMode->obj_skeleton_ctrl->euler.z = a3real_oneeighty;
+	demoMode->obj_skeleton_ctrl->position.y = a3real_zero;
+	demoMode->obj_skeleton_ctrl->euler.z = a3real_zero;
 
 	// map relevant objects to scene graph
 	demoMode->obj_camera_main->sceneGraphIndex = a3hierarchyGetNodeIndex(demoMode->sceneGraph, "scene_camera_main");
@@ -526,7 +526,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 				demoMode->clipPool->keyframe + sampleIndexFirst[j],
 				demoMode->clipPool->keyframe + sampleIndexFinal[j] - 1,
 				(clipIndexForward + j)->v,
-				(clipIndexBack + j)->v);
+				(clipIndexBack + j)->v, &demoMode->mag_l);
 			a3clipCalculateDuration(demoMode->clipPool, j, fps);
 		}
 
