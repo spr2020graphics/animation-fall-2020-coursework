@@ -195,13 +195,14 @@ void a3demo_render_clipController(a3_DemoState const* demoState,
 		demoState->demoMode1_animation->clipPool->keyframeCount);
 
 	const a3_ClipController* ctrl = demoState->demoMode1_animation->clipCtrlA;
-	const a3_Clip* clip = &ctrl->clip;
+	const a3_Clip* clip = ctrl->clip;
 
-	//TL line 1: Controller + Clip name
+	//TL line 1: Clip name/index and ~~"party mode"~~ transition meter
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"CLIP: %s (%d)",
+		"CLIP: %s (%d), TRANSITION THRESHOLD ('p'/ltrigger): %d",
 		clip->name,
-		a3clipGetIndexInPool(ctrl->clipPool, clip->name));  //this is here so it gets used at all. We don't need it
+		a3clipGetIndexInPool(ctrl->clipPool, clip->name),
+		(a3i32) demoState->demoMode1_animation->branchTrigger);  //this is here so it gets used at all. We don't need it
 
 	//TL line 2: Clip Time/Parameter
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
@@ -222,6 +223,18 @@ void a3demo_render_clipController(a3_DemoState const* demoState,
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
 		"CURRENT FRAME: %d | VALUE: %.3f",
 		ctrl->keyframeIndex, a3lerp(ctrl->keyframe->sampleIndex0, ctrl->keyframe->sampleIndex1, ctrl->keyframeParam));
+
+	//TL line 6: forward branch
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"FORWARD BRANCH: %s (< 0.5) / %s (>= 0.5)",
+		(ctrl->clipPool->clip + clip->transitionForward->branch.outClipOption1)->name,
+		(ctrl->clipPool->clip + clip->transitionForward->branch.outClipOption2)->name);
+
+	//TL line 7: back branch
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"REVERSE BRANCH: %s (< 0.5) / %s (>= 0.5)",
+		(ctrl->clipPool->clip + clip->transitionReverse->branch.outClipOption1)->name,
+		(ctrl->clipPool->clip + clip->transitionReverse->branch.outClipOption2)->name);
 
 	// global controls
 	textOffset = -0.8f;
@@ -325,6 +338,10 @@ void a3demo_render(a3_DemoState const* demoState, a3f64 const dt)
 				// general data
 			case demoState_textData:
 				a3demo_render_data(demoState, text, col, textAlign + x, textDepth, textOffsetDelta, textOffset + y);
+				break;
+
+			case demoState_textClipController: //render animation debug
+				a3demo_render_clipController(demoState, text, col, textAlign + x, textDepth, textOffsetDelta, textOffset + y);
 				break;
 			}
 		}

@@ -116,8 +116,8 @@ struct a3_BranchTransition
 	a3real* input;
 
 	// branching transitions only support 2 possible output clip indices for now
-	a3ui32 outClipOption1;
-	a3ui32 outClipOption2;
+	a3i32 outClipOption1;
+	a3i32 outClipOption2;
 };
 
 // clip transition
