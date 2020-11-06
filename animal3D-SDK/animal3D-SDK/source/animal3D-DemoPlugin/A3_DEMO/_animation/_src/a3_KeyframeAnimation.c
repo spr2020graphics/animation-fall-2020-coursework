@@ -115,6 +115,7 @@ a3i32 a3clipTransitionInit(a3_ClipTransition* transition, a3_ClipTransitionFlag 
 		transition->clipIndex = clip->index;
 		if (branch || transitionFlag == a3clip_branchFlag) //two ways to get here, would be written with overloading in C++/C#
 		{
+			// init to desired values
 			transition->flag = a3clip_branchFlag;
 			transition->branch.outClipOption1 = options[0];
 			transition->branch.outClipOption2 = options[1];

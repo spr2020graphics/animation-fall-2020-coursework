@@ -180,7 +180,7 @@ a3i32 a3clipPoolRelease(a3_ClipPool* clipPool);
 // initialize clip transition
 a3i32 a3clipTransitionInit(a3_ClipTransition* transition, a3_ClipTransitionFlag const transitionFlag, const a3i32 offset, a3_Clip const* clip, a3boolean branch, a3i32* const options, a3f32* transitionInput);
 
-// initialize clip with first and last indices
+// initialize clip with first and last indices, as well as transition information
 a3i32 a3clipInit(a3_Clip* clip_out, const a3byte clipName[a3keyframeAnimation_nameLenMax], a3_Keyframe const* keyframe_first, a3_Keyframe const* keyframe_final, a3i32* const forwardT, a3i32* const backT, a3f32* transitionInput);
 
 // get clip index from pool
