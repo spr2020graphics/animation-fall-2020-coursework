@@ -26,6 +26,10 @@
 	********************************************
 */
 
+/*
+	Animation Framework Addons by Cameron Schneider and Scott Dagen
+*/
+
 #ifndef __ANIMAL3D_DEMOMODE1_ANIMATION_H
 #define __ANIMAL3D_DEMOMODE1_ANIMATION_H
 

@@ -22,6 +22,10 @@
 	inline definitions for keyframe animation controller.
 */
 
+/*
+	Animation Framework Addons by Cameron Schneider and Scott Dagen
+*/
+
 #ifdef __ANIMAL3D_KEYFRAMEANIMATIONCONTROLLER_H
 #ifndef __ANIMAL3D_KEYFRAMEANIMATIONCONTROLLER_INL
 #define __ANIMAL3D_KEYFRAMEANIMATIONCONTROLLER_INL

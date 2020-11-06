@@ -22,6 +22,10 @@
 	Data structures for fundamental keyframe animation.
 */
 
+/*
+	Animation Framework Addons by Cameron Schneider and Scott Dagen
+*/
+
 #ifndef __ANIMAL3D_KEYFRAMEANIMATION_H
 #define __ANIMAL3D_KEYFRAMEANIMATION_H
 

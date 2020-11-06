@@ -22,6 +22,10 @@
 	Implementation of keyframe animation interfaces.
 */
 
+/*
+	Animation Framework Addons by Cameron Schneider and Scott Dagen
+*/
+
 #include "../a3_KeyframeAnimation.h"
 
 #include <stdlib.h>
