@@ -213,6 +213,7 @@ typedef enum a3_DemoMode1_Animation_InputMode				a3_DemoMode1_Animation_InputMod
 		};
 	};
 
+	// integer vector2 used for our temporary non-parsed lists of branch transitions
 	union a3ivec2
 	{
 		struct {
