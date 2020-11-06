@@ -176,6 +176,78 @@ void a3demo_render_data(const a3_DemoState* demoState,
 		textAlign, textDepth, textOffsetDelta, textOffset);
 }
 
+// render hud for test interface
+void a3demo_render_clipController(a3_DemoState const* demoState,
+	a3_TextRenderer const* text, a3vec4 const col,
+	a3f32 const textAlign, a3f32 const textDepth, a3f32 const textOffsetDelta, a3f32 textOffset)
+{
+	// boolean text
+	a3byte const boolText[2][4] = {
+		"OFF",
+		"ON ",
+	};
+
+	// toggle controller
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"SELECTED CONTROLLER: %s | CLIP COUNT: %d | KEYFRAME COUNT: %d",
+		demoState->demoMode1_animation->clipCtrlA->name,
+		demoState->demoMode1_animation->clipPool->clipCount,
+		demoState->demoMode1_animation->clipPool->keyframeCount);
+
+	const a3_ClipController* ctrl = demoState->demoMode1_animation->clipCtrlA;
+	const a3_Clip* clip = &ctrl->clip;
+
+	//TL line 1: Controller + Clip name
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"CLIP: %s (%d)",
+		clip->name,
+		a3clipGetIndexInPool(ctrl->clipPool, clip->name));  //this is here so it gets used at all. We don't need it
+
+	//TL line 2: Clip Time/Parameter
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"CLIP TIME: %.3f | PARAMETER: %.3f",
+		ctrl->clipTime_sec, ctrl->clipParam);
+
+	//TL line 3: Keyframe Time/Parameter
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"KEYFRAME TIME: %.3f | PARAMETER: %.3f",
+		ctrl->keyframeTime_sec, ctrl->keyframeParam);
+
+	//TL line 4: start/end frames
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"START FRAME: %d | LAST FRAME: %d",
+		clip->keyframeIndex_first, clip->keyframeIndex_final);
+
+	//TL line 5: current frame and value
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"CURRENT FRAME: %d | VALUE: %.3f",
+		ctrl->keyframeIndex, a3lerp(ctrl->keyframe->sampleIndex0, ctrl->keyframe->sampleIndex1, ctrl->keyframeParam));
+
+	// global controls
+	textOffset = -0.8f;
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"Toggle text display:        't' (toggle) | 'T' (alloc/dealloc) ");
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"Reload all shader programs: 'P' ****CHECK CONSOLE FOR ERRORS!**** ");
+
+	// input-dependent controls
+	textOffset = -0.6f;
+	if (a3XboxControlIsConnected(demoState->xcontrol))
+	{
+		a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+			"Xbox controller camera control: ");
+		a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+			"    Left joystick = rotate | Right joystick, triggers = move");
+	}
+	else
+	{
+		a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+			"Keyboard/mouse camera control: ");
+		a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+			"    Left click & drag = rotate | WASDEQ = move | wheel = zoom");
+	}
+}
+
 /*
 // bloom iteration
 void a3demo_render_bloomIteration(a3_DemoState const* demoState, a3real2 pixelSize, a3_Framebuffer const* fbo_prev,
