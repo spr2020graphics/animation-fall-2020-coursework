@@ -110,15 +110,6 @@ enum a3_ClipTransitionFlag
 	a3clip_branchFlag = 0x80,	// there is a branch/condition
 };
 
-// clip transition
-struct a3_ClipTransition
-{
-	a3_ClipTransitionFlag flag;
-	a3i32 offset;
-	a3i32 clipIndex;
-};
-
-
 struct a3_BranchTransition
 {
 	a3real* input;
@@ -126,6 +117,17 @@ struct a3_BranchTransition
 	a3ui32 outClipOption1;
 	a3ui32 outClipOption2;
 };
+
+// clip transition
+struct a3_ClipTransition
+{
+	a3_ClipTransitionFlag flag;
+	a3i32 offset;
+	a3i32 clipIndex;
+
+	a3_BranchTransition branch;
+};
+
 
 // description of single clip
 // metaphor: timeline
@@ -193,7 +195,7 @@ a3i32 a3clipDistributeDuration(a3_ClipPool const* clipPool, const a3ui32 clipInd
 /// evaluate a given branching transition (if the transition input < 0.5, return option 1, else return option 2)
 /// NOTE: transition->index is a POINTER to a value stored elsewhere
 /// 
-a3ui32 a3BranchTransitionEvaluate(a3_BranchTransition* transition);
+a3ui32 a3BranchTransitionEvaluate(const a3_BranchTransition* transition);
 //-----------------------------------------------------------------------------
 
 
