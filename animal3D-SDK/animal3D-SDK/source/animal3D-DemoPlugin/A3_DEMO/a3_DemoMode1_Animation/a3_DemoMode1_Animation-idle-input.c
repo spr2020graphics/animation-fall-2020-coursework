@@ -208,6 +208,7 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 
 			// get directly from joysticks, put into left/right axis variables
 			a3XboxControlGetJoysticks(demoState->xcontrol, demoMode->axis_l, demoMode->axis_r);
+			demoMode->branchTrigger = (a3f32)demoState->xcontrol->ctrl.lTrigger;
 		}
 		else
 		{
@@ -225,7 +226,7 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 			demoMode->axis_l[1] = tempPos.y;
 			a3i32 rotLeftRight = (demoState->keyboard->key.key[a3key_L] != 0) - (demoState->keyboard->key.key[a3key_J] != 0);
 			demoMode->axis_r[0] = (a3real)rotLeftRight;
-
+			demoMode->branchTrigger = (a3f32)(demoState->keyboard->key.key[a3key_P] != 0 && demoState->keyboard->key.key[a3key_shift] == 0);
 		}
 		demoMode->mag_l = a3sqrt((a3f32)((demoMode->axis_l[0] * demoMode->axis_l[0]) + (demoMode->axis_l[1] * demoMode->axis_l[1])));
 		demoMode->mag_r = a3sqrt((a3f32)((demoMode->axis_r[0] * demoMode->axis_r[0]) + (demoMode->axis_r[1] * demoMode->axis_r[1])));

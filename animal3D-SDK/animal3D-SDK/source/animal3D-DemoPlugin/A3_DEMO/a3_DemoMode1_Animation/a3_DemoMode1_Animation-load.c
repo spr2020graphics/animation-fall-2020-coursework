@@ -456,7 +456,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 			{2, 2},
 			{3, 3},
 			{4, 4},
-			{5, 5},
+			{18,5},
 			{6, 6},
 			{7, 7},
 			{8, 8},
@@ -469,7 +469,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 			{15,15},
 			{16,16},
 			{17,17},
-			{18,18},
+			{18,5},
 			{19,19},
 			{20,20},
 			{21,21},
@@ -488,7 +488,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 			{2, 2},
 			{3, 3},
 			{4, 4},
-			{5, 5},
+			{18,5},
 			{6, 6},
 			{7, 7},
 			{8, 8},
@@ -501,7 +501,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 			{15,15},
 			{16,16},
 			{17,17},
-			{18,18},
+			{18,5},
 			{19,19},
 			{20,20},
 			{21,21},
@@ -529,13 +529,13 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 				demoMode->clipPool->keyframe + sampleIndexFirst[j],
 				demoMode->clipPool->keyframe + sampleIndexFinal[j] - 1,
 				(clipIndexForward + j)->v,
-				(clipIndexBack + j)->v, &demoMode->mag_l);
+				(clipIndexBack + j)->v, &demoMode->branchTrigger);
 			a3clipCalculateDuration(demoMode->clipPool, j, fps);
 		}
 
 		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot");
 		a3clipControllerInit(demoMode->clipCtrl, "xbot_ctrl", demoMode->clipPool, j, rate, fps);
-		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_idle_pistol");
+		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_idle_m");
 		a3clipControllerInit(demoMode->clipCtrlA, "xbot_ctrlA", demoMode->clipPool, j, rate, fps);
 		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_skintest");
 		a3clipControllerInit(demoMode->clipCtrlB, "xbot_ctrlB", demoMode->clipPool, j, rate, fps);
