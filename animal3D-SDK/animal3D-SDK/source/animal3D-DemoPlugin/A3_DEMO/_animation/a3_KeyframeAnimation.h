@@ -112,8 +112,10 @@ enum a3_ClipTransitionFlag
 
 struct a3_BranchTransition
 {
+	// the value to compare, pointer to somewhere else
 	a3real* input;
 
+	// branching transitions only support 2 possible output clip indices for now
 	a3ui32 outClipOption1;
 	a3ui32 outClipOption2;
 };
@@ -125,7 +127,7 @@ struct a3_ClipTransition
 	a3i32 offset;
 	a3i32 clipIndex;
 
-	a3_BranchTransition branch;
+	a3_BranchTransition branch;	// This will only be used if this transition is, in fact, a branching one
 };
 
 
@@ -197,6 +199,7 @@ a3i32 a3clipDistributeDuration(a3_ClipPool const* clipPool, const a3ui32 clipInd
 /// 
 a3ui32 a3BranchTransitionEvaluate(const a3_BranchTransition* transition);
 
+// Bing the input field of the given transition to the target address
 a3ui32 a3BranchTransitionBindInput(a3_BranchTransition* transition, a3real* target);
 //-----------------------------------------------------------------------------
 

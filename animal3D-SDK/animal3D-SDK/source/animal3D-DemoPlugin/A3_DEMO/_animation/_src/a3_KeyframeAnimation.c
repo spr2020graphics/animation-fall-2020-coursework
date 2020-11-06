@@ -170,6 +170,7 @@ a3ui32 a3BranchTransitionEvaluate(const a3_BranchTransition* transition)
 		}
 	}
 
+	// This function technically returns a clip index, so return something dumb here
 	return 999;
 }
 
