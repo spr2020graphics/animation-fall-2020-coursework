@@ -93,7 +93,7 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, a3f64 dt)
 				switch (clipCtrl->clip->transitionForward->flag)
 				{
 				case a3clip_branchFlag:
-					 a3BranchTransitionEvaluate(&clipCtrl->clip->transitionForward->branch);
+					a3clipControllerSetClip(clipCtrl, clipCtrl->clipPool, a3BranchTransitionEvaluate(&clipCtrl->clip->transitionForward->branch), clipCtrl->playback_step, clipCtrl->playback_stepPerSec);
 					break;
 				default:
 					break;

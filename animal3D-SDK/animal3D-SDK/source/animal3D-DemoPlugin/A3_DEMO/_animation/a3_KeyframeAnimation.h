@@ -196,6 +196,8 @@ a3i32 a3clipDistributeDuration(a3_ClipPool const* clipPool, const a3ui32 clipInd
 /// NOTE: transition->index is a POINTER to a value stored elsewhere
 /// 
 a3ui32 a3BranchTransitionEvaluate(const a3_BranchTransition* transition);
+
+a3ui32 a3BranchTransitionBindInput(a3_BranchTransition* transition, a3real* target);
 //-----------------------------------------------------------------------------
 
 
