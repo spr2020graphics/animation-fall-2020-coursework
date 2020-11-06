@@ -333,7 +333,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		a3spatialPoseSetTranslation(spatialPose, +3.0f, +4.0f, +5.0f);	// shift whole figure by some vector
 	*/
 
-		// load skeletal data from file
+	// load skeletal data from file
 		hierarchyPoseGroup->hierarchy = 0;
 		a3hierarchyPoseGroupLoadHTR(hierarchyPoseGroup, hierarchy,
 			//"../../../../resource/animdata/egnaro/egnaro_skel_anim.htr");
@@ -449,6 +449,66 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		a3ui32 const sampleIndexFinal[] = {
 			2084,24,133,166,221,518,1091,1232,1433,1474,1498,1516,1539,1556,1585,1608,1625,1654,1855,1908,1934,1952,1978,1995,2018,2044,2061,2084,
 		};
+		a3uvec2 const clipIndexForward[] = {
+			{0, 0},
+			{1, 1},
+			{2, 2},
+			{3, 3},
+			{4, 4},
+			{5, 5},
+			{6, 6},
+			{7, 7},
+			{8, 8},
+			{9, 9},
+			{10,10},
+			{11,11},
+			{12,12},
+			{13,13},
+			{14,14},
+			{15,15},
+			{16,16},
+			{17,17},
+			{18,18},
+			{19,19},
+			{20,20},
+			{21,21},
+			{22,22},
+			{23,23},
+			{24,24},
+			{25,25},
+			{26,26},
+			{27,27}
+		};
+		a3uvec2 const clipIndexBack[] = {
+			{0, 0},
+			{1, 1},
+			{2, 2},
+			{3, 3},
+			{4, 4},
+			{5, 5},
+			{6, 6},
+			{7, 7},
+			{8, 8},
+			{9, 9},
+			{10,10},
+			{11,11},
+			{12,12},
+			{13,13},
+			{14,14},
+			{15,15},
+			{16,16},
+			{17,17},
+			{18,18},
+			{19,19},
+			{20,20},
+			{21,21},
+			{22,22},
+			{23,23},
+			{24,24},
+			{25,25},
+			{26,26},
+			{27,27}
+		};
 		a3ui32 const rate = 24;
 		a3f64 const fps = (a3f64)rate;
 
@@ -456,14 +516,17 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		a3clipPoolCreate(demoMode->clipPool, clipCount, p - 1, p);
 		for (j = 0; j < p; ++j)
 			a3sampleInit(demoMode->clipPool->sample + j, j, fps);
-		for (j = 0; j < p - 1; ++j)
+		for (j = 0; j < p - 1; ++j) //I don't understand this yet
 			a3keyframeInit(demoMode->clipPool->keyframe + j,
 				demoMode->clipPool->sample + j, demoMode->clipPool->sample + j + 1, fps);
+		//intercept parsing here
 		for (j = 0; j < clipCount; ++j)
 		{
 			a3clipInit(demoMode->clipPool->clip + j, clipName[j],
 				demoMode->clipPool->keyframe + sampleIndexFirst[j],
-				demoMode->clipPool->keyframe + sampleIndexFinal[j] - 1);
+				demoMode->clipPool->keyframe + sampleIndexFinal[j] - 1,
+				(clipIndexForward + j)->v,
+				(clipIndexBack + j)->v);
 			a3clipCalculateDuration(demoMode->clipPool, j, fps);
 		}
 
@@ -490,11 +553,11 @@ void a3animation_loadValidate(a3_DemoState* demoState, a3_DemoMode1_Animation* d
 	// initialize callbacks
 	a3_DemoModeCallbacks* const callbacks = demoState->demoModeCallbacks + demoState_modeAnimation;
 	callbacks->demoMode = demoMode;
-	callbacks->handleInput =	(a3_DemoMode_EventCallback)		a3animation_input;
-	callbacks->handleUpdate =	(a3_DemoMode_EventCallback)		a3animation_update;
-	callbacks->handleRender =	(a3_DemoMode_EventCallbackConst)a3animation_render;
-	callbacks->handleKeyPress = (a3_DemoMode_InputCallback)		a3animation_input_keyCharPress;
-	callbacks->handleKeyHold =	(a3_DemoMode_InputCallback)		a3animation_input_keyCharHold;
+	callbacks->handleInput = (a3_DemoMode_EventCallback)a3animation_input;
+	callbacks->handleUpdate = (a3_DemoMode_EventCallback)a3animation_update;
+	callbacks->handleRender = (a3_DemoMode_EventCallbackConst)a3animation_render;
+	callbacks->handleKeyPress = (a3_DemoMode_InputCallback)a3animation_input_keyCharPress;
+	callbacks->handleKeyHold = (a3_DemoMode_InputCallback)a3animation_input_keyCharHold;
 
 	// initialize cameras dependent on viewport
 	demoMode->proj_camera_main->aspect = demoState->frameAspect;
