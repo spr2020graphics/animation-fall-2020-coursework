@@ -154,9 +154,9 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		a3_ClipController* clipCtrl = demoMode->clipCtrlA;
 
 		// update controllers
-		a3clipControllerUpdate(demoMode->clipCtrl, dt);
-		a3clipControllerUpdate(demoMode->clipCtrlA, dt);
-		a3clipControllerUpdate(demoMode->clipCtrlB, dt);
+		a3clipControllerUpdate(demoMode->clipCtrl, dt); //loop through everything
+		a3clipControllerUpdate(demoMode->clipCtrlA, dt); //loop through one thing
+		a3clipControllerUpdate(demoMode->clipCtrlB, dt); //loop through attack anim?
 
 		// STEP
 	//	a3hierarchyPoseCopy(activeHS->animPose,

@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-
+/*
 // Parse a clip line, denoted by the '@' symbol in the file. clipIndex must be passed in, since it can't be included in the file
 a3i32 a3clipParse(a3_DemoState* state, a3byte const* data, const a3ui32 clipIndex)
 {
@@ -305,3 +305,4 @@ a3i32 a3animationParseFile(a3_DemoState* state, a3byte const* data)
 
 	return 0;
 }
+*/
