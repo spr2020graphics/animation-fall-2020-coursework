@@ -106,13 +106,20 @@ a3i32 a3clipPoolRelease(a3_ClipPool* clipPool)
 }
 
 // initialize clip transition
-a3i32 a3clipTransitionInit(a3_ClipTransition* transition, a3_ClipTransitionFlag const transitionFlag, const a3i32 offset, a3_Clip const* clip)
+a3i32 a3clipTransitionInit(a3_ClipTransition* transition, a3_ClipTransitionFlag const transitionFlag, const a3i32 offset, a3_Clip const* clip, a3boolean branch, a3i32* options)
 {
 	if (transition && clip)
 	{
 		transition->flag = transitionFlag;
 		transition->offset = offset;
 		transition->clipIndex = clip->index;
+		if (branch || transitionFlag == a3clip_branchFlag) //two ways to get here, would be written with overloading in C++/C#
+		{
+			transition->flag = a3clip_branchFlag;
+			transition->branch.outClipOption1 = options[0];
+			transition->branch.outClipOption2 = options[1];
+			transition->branch.input = 0;
+		}
 		return transitionFlag;
 	}
 	return -1;
@@ -129,8 +136,8 @@ a3i32 a3clipInit(a3_Clip* clip_out, const a3byte clipName[a3keyframeAnimation_na
 		clip_out->keyframeCount = clip_out->keyframeIndex_final - clip_out->keyframeIndex_first;
 		clip_out->keyframeDirection = a3sgn(clip_out->keyframeCount);
 		clip_out->keyframeCount = 1 + clip_out->keyframeCount * clip_out->keyframeDirection;
-		a3clipTransitionInit(clip_out->transitionForward, a3clip_stopFlag, 0, clip_out);
-		a3clipTransitionInit(clip_out->transitionReverse, a3clip_stopFlag, 0, clip_out);
+		a3clipTransitionInit(clip_out->transitionForward, a3clip_stopFlag, 0, clip_out, true, forwardT);
+		a3clipTransitionInit(clip_out->transitionReverse, a3clip_stopFlag, 0, clip_out, true, backT);
 		return clip_out->index;
 	}
 	return -1;

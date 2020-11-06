@@ -216,7 +216,7 @@ typedef enum a3_DemoMode1_Animation_InputMode				a3_DemoMode1_Animation_InputMod
 		struct {
 			a3i32 x, y;
 		};
-		a3i32* v;
+		a3i32 v[2];
 	};
 	typedef union a3ivec2 a3ivec2;
 
