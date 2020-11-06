@@ -526,7 +526,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 				demoMode->clipPool->keyframe + sampleIndexFirst[j],
 				demoMode->clipPool->keyframe + sampleIndexFinal[j] - 1,
 				(clipIndexForward + j)->v,
-				(clipIndexBack + j)->v, &demoMode->mag_l);
+				(clipIndexBack + j)->v, &demoMode->branchTrigger);
 			a3clipCalculateDuration(demoMode->clipPool, j, fps);
 		}
 
