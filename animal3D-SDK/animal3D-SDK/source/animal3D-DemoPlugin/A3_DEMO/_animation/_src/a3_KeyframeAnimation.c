@@ -149,5 +149,14 @@ a3i32 a3clipGetIndexInPool(const a3_ClipPool* clipPool, const a3byte clipName[a3
 	return -1;
 }
 
-
+a3ui32 a3BranchTransitionEvaluate(a3_BranchTransition* transition)
+{
+	if (*(transition->input) < 0.5f)
+	{
+		return transition->outClipOption1;
+	}
+	{
+		return transition->outClipOption2;
+	}
+}
 //-----------------------------------------------------------------------------

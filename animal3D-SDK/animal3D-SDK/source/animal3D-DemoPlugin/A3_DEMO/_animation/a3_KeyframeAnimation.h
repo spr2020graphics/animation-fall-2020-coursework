@@ -42,6 +42,7 @@ typedef enum a3_ClipTransitionFlag			a3_ClipTransitionFlag;
 typedef struct a3_ClipTransition			a3_ClipTransition;
 typedef struct a3_Clip						a3_Clip;
 typedef struct a3_ClipPool					a3_ClipPool;
+typedef struct a3_BranchTransition			a3_BranchTransition;
 #endif	// __cplusplus
 
 
@@ -117,6 +118,15 @@ struct a3_ClipTransition
 	a3i32 clipIndex;
 };
 
+
+struct a3_BranchTransition
+{
+	a3real* input;
+
+	a3ui32 outClipOption1;
+	a3ui32 outClipOption2;
+};
+
 // description of single clip
 // metaphor: timeline
 struct a3_Clip
@@ -179,6 +189,11 @@ a3i32 a3clipCalculateDuration(a3_ClipPool const* clipPool, const a3ui32 clipInde
 a3i32 a3clipDistributeDuration(a3_ClipPool const* clipPool, const a3ui32 clipIndex, const a3f64 playback_stepPerSec);
 
 
+///
+/// evaluate a given branching transition (if the transition input < 0.5, return option 1, else return option 2)
+/// NOTE: transition->index is a POINTER to a value stored elsewhere
+/// 
+a3ui32 a3BranchTransitionEvaluate(a3_BranchTransition* transition);
 //-----------------------------------------------------------------------------
 
 
