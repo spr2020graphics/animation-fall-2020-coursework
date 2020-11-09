@@ -15,7 +15,9 @@
 /// <param name="node_inout"></param>
 void a3spatialBlendExec0C(a3_SpatialBlendNode* node_inout)
 {
-	node_inout->operation(node_inout->pose);
+	typedef void (*a3_SpatialBlendOp0C)(a3_SpatialPose* pose); //function pointer to a node op
+	a3_SpatialBlendOp0C op = (a3_SpatialBlendOp0C)node_inout->operation;
+	op(node_inout->pose);
 }
 
 /// <summary>
@@ -24,7 +26,9 @@ void a3spatialBlendExec0C(a3_SpatialBlendNode* node_inout)
 /// <param name="node_inout"></param>
 void a3spatialBlendExec1C(a3_SpatialBlendNode* node_inout)
 {
-	node_inout->operation(node_inout->pose,
+	typedef void (*a3_SpatialBlendOp1C)(a3_SpatialPose* pose, a3_SpatialPose* control); //function pointer to a node op
+	a3_SpatialBlendOp1C op = (a3_SpatialBlendOp1C)node_inout->operation;
+	op(node_inout->pose,
 		node_inout->controls[0]);
 }
 
@@ -34,9 +38,12 @@ void a3spatialBlendExec1C(a3_SpatialBlendNode* node_inout)
 /// <param name="node_inout"></param>
 void a3spatialBlendExec1C1I(a3_SpatialBlendNode* node_inout)
 {
-	node_inout->operation(node_inout->pose,
+	typedef void (*a3_SpatialBlendOp1C1I)(a3_SpatialPose* pose, a3_SpatialPose* control, a3f32 uVal); //function pointer to a node op
+	a3_SpatialBlendOp1C1I op = (a3_SpatialBlendOp1C1I)node_inout->operation;
+	float* uVal = node_inout->uVals[0];
+	op(node_inout->pose,
 		node_inout->controls[0],
-		*node_inout->uVals[0]);
+		*uVal);
 }
 
 /// <summary>
@@ -45,7 +52,9 @@ void a3spatialBlendExec1C1I(a3_SpatialBlendNode* node_inout)
 /// <param name="node_inout"></param>
 void a3spatialBlendExec2C(a3_SpatialBlendNode* node_inout)
 {
-	node_inout->operation(node_inout->pose,
+	typedef void (*a3_SpatialBlendOp2C)(a3_SpatialPose* pose, a3_SpatialPose* control0, a3_SpatialPose* control1); //function pointer to a node op
+	a3_SpatialBlendOp2C op = (a3_SpatialBlendOp2C)node_inout->operation;
+	op(node_inout->pose,
 		node_inout->controls[0],
 		node_inout->controls[1]);
 }
@@ -56,10 +65,13 @@ void a3spatialBlendExec2C(a3_SpatialBlendNode* node_inout)
 /// <param name="node_inout"></param>
 void a3spatialBlendExec2C1I(a3_SpatialBlendNode* node_inout)
 {
-	node_inout->operation(node_inout->pose,
+	typedef void (*a3_SpatialBlendOp2C1I)(a3_SpatialPose* pose, a3_SpatialPose* control0, a3_SpatialPose* control1, a3f32 uVal); //function pointer to a node op
+	a3_SpatialBlendOp2C1I op = (a3_SpatialBlendOp2C1I)node_inout->operation;
+	float* uVal = node_inout->uVals[0];
+	op(node_inout->pose,
 		node_inout->controls[0],
 		node_inout->controls[1],
-		*node_inout->uVals[0]);
+		*uVal);
 }
 
 /// <summary>
@@ -68,11 +80,15 @@ void a3spatialBlendExec2C1I(a3_SpatialBlendNode* node_inout)
 /// <param name="node_inout"></param>
 void a3spatialBlendExec3C2I(a3_SpatialBlendNode* node_inout)
 {
-	node_inout->operation(node_inout->pose,
+	typedef void (*a3_SpatialBlendOp3C2I)(a3_SpatialPose* pose, a3_SpatialPose* control0, a3_SpatialPose* control1, a3_SpatialPose* control2, a3f32 uVal0, a3f32 uval1); //function pointer to a node op
+	a3_SpatialBlendOp3C2I op = (a3_SpatialBlendOp3C2I)node_inout->operation;
+	float* uVal0 = node_inout->uVals[0];
+	float* uVal1 = node_inout->uVals[1];
+	op(node_inout->pose,
 		node_inout->controls[0],
 		node_inout->controls[1],
 		node_inout->controls[2],
-		*node_inout->uVals[0], *node_inout->uVals[1]);
+		*uVal0, *uVal1);
 }
 
 /// <summary>
@@ -81,11 +97,17 @@ void a3spatialBlendExec3C2I(a3_SpatialBlendNode* node_inout)
 /// <param name="node_inout"></param>
 void a3spatialBlendExec4C1I(a3_SpatialBlendNode* node_inout)
 {
-	node_inout->operation(node_inout->pose,
+	typedef void (*a3_SpatialBlendOp4C1I)(a3_SpatialPose* pose,
+		a3_SpatialPose* control0, a3_SpatialPose* control1, a3_SpatialPose* control2, a3_SpatialPose* control3,
+		a3f32 uVal0); //function pointer to a node op
+
+	a3_SpatialBlendOp4C1I op = (a3_SpatialBlendOp4C1I)node_inout->operation;
+	float* uVal0 = node_inout->uVals[0];
+	op(node_inout->pose,
 		node_inout->controls[0],
 		node_inout->controls[1],
 		node_inout->controls[2],
-		node_inout->controls[3], &node_inout->uVals[0]);
+		node_inout->controls[3], *uVal0);
 }
 
 /// <summary>
@@ -94,12 +116,21 @@ void a3spatialBlendExec4C1I(a3_SpatialBlendNode* node_inout)
 /// <param name="node_inout"></param>
 void a3spatialBlendExec4C3I(a3_SpatialBlendNode* node_inout)
 {
-	node_inout->operation(node_inout->pose,
+	typedef void (*a3_SpatialBlendOp4C3I)(a3_SpatialPose* pose,
+		a3_SpatialPose* control0, a3_SpatialPose* control1, a3_SpatialPose* control2, a3_SpatialPose* control3,
+		a3f32 uVal0, a3f32 uVal1, a3f32 uVal2); //function pointer to a node op
+
+	a3_SpatialBlendOp4C3I op = (a3_SpatialBlendOp4C3I)node_inout->operation;
+
+	float* uVal0 = node_inout->uVals[0];
+	float* uVal1 = node_inout->uVals[1];
+	float* uVal2 = node_inout->uVals[2];
+	op(node_inout->pose,
 		node_inout->controls[0],
 		node_inout->controls[1],
 		node_inout->controls[2],
 		node_inout->controls[3],
-		&node_inout->uVals[0], &node_inout->uVals[1], &node_inout->uVals[2]);
+		*uVal0, *uVal1, *uVal2);
 }
 
 /// <summary>
@@ -108,12 +139,27 @@ void a3spatialBlendExec4C3I(a3_SpatialBlendNode* node_inout)
 /// <param name="node_inout"></param>
 void a3spatialBlendExec16C5I(a3_SpatialBlendNode* node_inout)
 {
-	node_inout->operation(node_inout->pose,
+	typedef void (*a3_SpatialBlendOp16C5I)(a3_SpatialPose* pose,
+		a3_SpatialPose* control00, a3_SpatialPose* control01, a3_SpatialPose* control02, a3_SpatialPose* control03,
+		a3_SpatialPose* control10, a3_SpatialPose* control11, a3_SpatialPose* control12, a3_SpatialPose* control13,
+		a3_SpatialPose* control20, a3_SpatialPose* control21, a3_SpatialPose* control22, a3_SpatialPose* control23,
+		a3_SpatialPose* control30, a3_SpatialPose* control31, a3_SpatialPose* control32, a3_SpatialPose* control33,
+		a3f32 uVal0, a3f32 uVal1, a3f32 uVal2, a3f32 uVal3, a3f32 uVal4); //function pointer to a node op
+
+	float* uVal0 = node_inout->uVals[0];
+	float* uVal1 = node_inout->uVals[1];
+	float* uVal2 = node_inout->uVals[2];
+	float* uVal3 = node_inout->uVals[3];
+	float* uVal4 = node_inout->uVals[4];
+
+	a3_SpatialBlendOp16C5I op = (a3_SpatialBlendOp16C5I)node_inout->operation;
+
+	op(node_inout->pose,
 		node_inout->controls[0 * 4 + 0], node_inout->controls[0 * 4 + 1], node_inout->controls[0 * 4 + 2], node_inout->controls[0 * 4 + 3],
 		node_inout->controls[1 * 4 + 0], node_inout->controls[1 * 4 + 1], node_inout->controls[1 * 4 + 2], node_inout->controls[1 * 4 + 3],
 		node_inout->controls[2 * 4 + 0], node_inout->controls[2 * 4 + 1], node_inout->controls[2 * 4 + 2], node_inout->controls[2 * 4 + 3],
 		node_inout->controls[3 * 4 + 0], node_inout->controls[3 * 4 + 1], node_inout->controls[3 * 4 + 2], node_inout->controls[3 * 4 + 3],
-		&node_inout->uVals[0], &node_inout->uVals[1], &node_inout->uVals[2], &node_inout->uVals[3], &node_inout->uVals[4]);
+		*uVal0, *uVal1, *uVal2, *uVal3, *uVal4);
 }
 
 /// <summary>
@@ -122,7 +168,9 @@ void a3spatialBlendExec16C5I(a3_SpatialBlendNode* node_inout)
 /// <param name="node_inout"></param>
 void a3hierarchyBlendExec0C(a3_HierarchyBlendNode* node_inout)
 {
-	node_inout->operation(node_inout->state_out->sampleHPose,
+	typedef void (*a3_HierarchyBlendOp0C)(a3_HierarchyPose* pose, a3ui32 numNodes); //function pointer to a node op
+	a3_HierarchyBlendOp0C op = (a3_HierarchyBlendOp0C)node_inout->operation;
+	op(node_inout->state_out->sampleHPose,
 		node_inout->state_out->hierarchy->numNodes);
 }
 
@@ -132,8 +180,10 @@ void a3hierarchyBlendExec0C(a3_HierarchyBlendNode* node_inout)
 /// <param name="node_inout"></param>
 void a3hierarchyBlendExec1C(a3_HierarchyBlendNode* node_inout)
 {
-	node_inout->operation(node_inout->state_out->sampleHPose,
-		node_inout->controlStates[0],
+	typedef void (*a3_HierarchyBlendOp1C)(a3_HierarchyPose* pose, a3_HierarchyPose* control0, a3ui32 numNodes); //function pointer to a node op
+	a3_HierarchyBlendOp1C op = (a3_HierarchyBlendOp1C)node_inout->operation;
+	op(node_inout->state_out->sampleHPose,
+		node_inout->controlStates[0]->sampleHPose,
 		node_inout->state_out->hierarchy->numNodes);
 }
 
@@ -143,11 +193,11 @@ void a3hierarchyBlendExec1C(a3_HierarchyBlendNode* node_inout)
 /// <param name="node_inout"></param>
 void a3hierarchyBlendExec1C1I(a3_HierarchyBlendNode* node_inout)
 {
-	typedef void (*a3_HierarchyBlendOp1C1I)(a3_HierarchyPose* pose, a3_HierarchyState* state, a3f32 uVal, a3ui32 numNodes); //function pointer to a node op
+	typedef void (*a3_HierarchyBlendOp1C1I)(a3_HierarchyPose* pose, a3_HierarchyPose* control0, a3f32 uVal0, a3ui32 numNodes); //function pointer to a node op
 	a3_HierarchyBlendOp1C1I op = (a3_HierarchyBlendOp1C1I)node_inout->operation;
 	float* uVal = node_inout->uVals[0];
 	op(node_inout->state_out->sampleHPose,
-		node_inout->controlStates[0],
+		node_inout->controlStates[0]->sampleHPose,
 		*uVal,
 		node_inout->state_out->hierarchy->numNodes);
 }
@@ -158,9 +208,11 @@ void a3hierarchyBlendExec1C1I(a3_HierarchyBlendNode* node_inout)
 /// <param name="node_inout"></param>
 void a3hierarchyBlendExec2C(a3_HierarchyBlendNode* node_inout)
 {
-	node_inout->operation(node_inout->state_out->sampleHPose,
-		node_inout->controlStates[0],
-		node_inout->controlStates[1],
+	typedef void (*a3_HierarchyBlendOp2C)(a3_HierarchyPose* pose, a3_HierarchyPose* control0, a3_HierarchyPose* control1, a3ui32 numNodes); //function pointer to a node op
+	a3_HierarchyBlendOp2C op = (a3_HierarchyBlendOp2C)node_inout->operation;
+	op(node_inout->state_out->sampleHPose,
+		node_inout->controlStates[0]->sampleHPose,
+		node_inout->controlStates[1]->sampleHPose,
 		node_inout->state_out->hierarchy->numNodes);
 }
 
@@ -170,10 +222,14 @@ void a3hierarchyBlendExec2C(a3_HierarchyBlendNode* node_inout)
 /// <param name="node_inout"></param>
 void a3hierarchyBlendExec2C1I(a3_HierarchyBlendNode* node_inout)
 {
-	node_inout->operation(node_inout->state_out->sampleHPose,
-		node_inout->controlStates[0],
-		node_inout->controlStates[1],
-		*node_inout->uVals[0],
+	typedef void (*a3_HierarchyBlendOp2C1I)(a3_HierarchyPose* pose,
+		a3_HierarchyPose* control0, a3_HierarchyPose* control1, a3f32 uVal0, a3ui32 numNodes); //function pointer to a node op
+	a3_HierarchyBlendOp2C1I op = (a3_HierarchyBlendOp2C1I)node_inout->operation;
+	float* uVal0 = node_inout->uVals[0];
+	op(node_inout->state_out->sampleHPose,
+		node_inout->controlStates[0]->sampleHPose,
+		node_inout->controlStates[1]->sampleHPose,
+		*uVal0,
 		node_inout->state_out->hierarchy->numNodes);
 }
 
@@ -183,11 +239,18 @@ void a3hierarchyBlendExec2C1I(a3_HierarchyBlendNode* node_inout)
 /// <param name="node_inout"></param>
 void a3hierarchyBlendExec3C2I(a3_HierarchyBlendNode* node_inout)
 {
-	node_inout->operation(node_inout->state_out->sampleHPose,
-		node_inout->controlStates[0],
-		node_inout->controlStates[1],
-		node_inout->controlStates[2],
-		*node_inout->uVals[0], *node_inout->uVals[1],
+	typedef void (*a3_HierarchyBlendOp3C2I)(a3_HierarchyPose* pose,
+		a3_HierarchyPose* control0, a3_HierarchyPose* control1, a3_HierarchyPose* control2,
+		a3f32 uVal0, a3f32 uVal1,
+		a3ui32 numNodes); //function pointer to a node op
+	a3_HierarchyBlendOp3C2I op = (a3_HierarchyBlendOp3C2I)node_inout->operation;
+	float* uVal0 = node_inout->uVals[0];
+	float* uVal1 = node_inout->uVals[1];
+	op(node_inout->state_out->sampleHPose,
+		node_inout->controlStates[0]->sampleHPose,
+		node_inout->controlStates[1]->sampleHPose,
+		node_inout->controlStates[2]->sampleHPose,
+		*uVal0, *uVal1,
 		node_inout->state_out->hierarchy->numNodes);
 }
 
@@ -197,12 +260,20 @@ void a3hierarchyBlendExec3C2I(a3_HierarchyBlendNode* node_inout)
 /// <param name="node_inout"></param>
 void a3hierarchyBlendExec4C1I(a3_HierarchyBlendNode* node_inout)
 {
-	node_inout->operation(node_inout->state_out->sampleHPose,
-		node_inout->controlStates[0],
-		node_inout->controlStates[1],
-		node_inout->controlStates[2],
-		node_inout->controlStates[3],
-		*node_inout->uVals[0],
+	typedef void (*a3_HierarchyBlendOp4C1I)(a3_HierarchyPose* pose,
+		a3_HierarchyPose* control0, a3_HierarchyPose* control1, a3_HierarchyPose* control2, a3_HierarchyPose* control3,
+		a3f32 uVal0,
+		a3ui32 numNodes); //function pointer to a node op
+
+	a3_HierarchyBlendOp4C1I op = (a3_HierarchyBlendOp4C1I)node_inout->operation;
+	float* uVal0 = node_inout->uVals[0];
+
+	op(node_inout->state_out->sampleHPose,
+		node_inout->controlStates[0]->sampleHPose,
+		node_inout->controlStates[1]->sampleHPose,
+		node_inout->controlStates[2]->sampleHPose,
+		node_inout->controlStates[3]->sampleHPose,
+		*uVal0,
 		node_inout->state_out->hierarchy->numNodes);
 }
 
@@ -212,12 +283,21 @@ void a3hierarchyBlendExec4C1I(a3_HierarchyBlendNode* node_inout)
 /// <param name="node_inout"></param>
 void a3hierarchyBlendExec4C3I(a3_HierarchyBlendNode* node_inout)
 {
-	node_inout->operation(node_inout->state_out->sampleHPose,
-		node_inout->controlStates[0],
-		node_inout->controlStates[1],
-		node_inout->controlStates[2],
-		node_inout->controlStates[3],
-		*node_inout->uVals[0], *node_inout->uVals[1], *node_inout->uVals[2],
+	typedef void (*a3_HierarchyBlendOp4C3I)(a3_HierarchyPose* pose,
+		a3_HierarchyPose* control0, a3_HierarchyPose* control1, a3_HierarchyPose* control2, a3_HierarchyPose* control3,
+		a3f32 uVal0, a3f32 uVal1, a3f32 uVal2,
+		a3ui32 numNodes); //function pointer to a node op
+
+	a3_HierarchyBlendOp4C3I op = (a3_HierarchyBlendOp4C3I)node_inout->operation;
+	float* uVal0 = node_inout->uVals[0];
+	float* uVal1 = node_inout->uVals[1];
+	float* uVal2 = node_inout->uVals[2];
+	op(node_inout->state_out->sampleHPose,
+		node_inout->controlStates[0]->sampleHPose,
+		node_inout->controlStates[1]->sampleHPose,
+		node_inout->controlStates[2]->sampleHPose,
+		node_inout->controlStates[3]->sampleHPose,
+		*uVal0, *uVal1, *uVal2,
 		node_inout->state_out->hierarchy->numNodes);
 }
 
@@ -227,12 +307,26 @@ void a3hierarchyBlendExec4C3I(a3_HierarchyBlendNode* node_inout)
 /// <param name="node_inout"></param>
 void a3hierarchyBlendExec16C5I(a3_HierarchyBlendNode* node_inout)
 {
-	node_inout->operation(node_inout->state_out->sampleHPose,
-		node_inout->controlStates[0 * 4 + 0], node_inout->controlStates[0 * 4 + 1], node_inout->controlStates[0 * 4 + 2], node_inout->controlStates[0 * 4 + 3],
-		node_inout->controlStates[1 * 4 + 0], node_inout->controlStates[1 * 4 + 1], node_inout->controlStates[1 * 4 + 2], node_inout->controlStates[1 * 4 + 3],
-		node_inout->controlStates[2 * 4 + 0], node_inout->controlStates[2 * 4 + 1], node_inout->controlStates[2 * 4 + 2], node_inout->controlStates[2 * 4 + 3],
-		node_inout->controlStates[3 * 4 + 0], node_inout->controlStates[3 * 4 + 1], node_inout->controlStates[3 * 4 + 2], node_inout->controlStates[3 * 4 + 3],
-		*node_inout->uVals[0], *node_inout->uVals[1], *node_inout->uVals[2], *node_inout->uVals[3], *node_inout->uVals[4],
+	typedef void (*a3_HierarchyBlendOp16C5I)(a3_HierarchyPose* pose,
+		a3_HierarchyPose* control00, a3_HierarchyPose* control01, a3_HierarchyPose* control02, a3_HierarchyPose* control03,
+		a3_HierarchyPose* control10, a3_HierarchyPose* control11, a3_HierarchyPose* control12, a3_HierarchyPose* control13,
+		a3_HierarchyPose* control20, a3_HierarchyPose* control21, a3_HierarchyPose* control22, a3_HierarchyPose* control23,
+		a3_HierarchyPose* control30, a3_HierarchyPose* control31, a3_HierarchyPose* control32, a3_HierarchyPose* control33,
+		a3f32 uVal0, a3f32 uVal1, a3f32 uVal2, a3f32 uVal3, a3f32 uVal4, a3ui32 numNodes); //function pointer to a node op
+
+	float* uVal0 = node_inout->uVals[0];
+	float* uVal1 = node_inout->uVals[1];
+	float* uVal2 = node_inout->uVals[2];
+	float* uVal3 = node_inout->uVals[3];
+	float* uVal4 = node_inout->uVals[4];
+
+	a3_HierarchyBlendOp16C5I op = (a3_HierarchyBlendOp16C5I)node_inout->operation;
+	op(node_inout->state_out->sampleHPose,
+		node_inout->controlStates[0 * 4 + 0]->sampleHPose, node_inout->controlStates[0 * 4 + 1]->sampleHPose, node_inout->controlStates[0 * 4 + 2]->sampleHPose, node_inout->controlStates[0 * 4 + 3]->sampleHPose,
+		node_inout->controlStates[1 * 4 + 0]->sampleHPose, node_inout->controlStates[1 * 4 + 1]->sampleHPose, node_inout->controlStates[1 * 4 + 2]->sampleHPose, node_inout->controlStates[1 * 4 + 3]->sampleHPose,
+		node_inout->controlStates[2 * 4 + 0]->sampleHPose, node_inout->controlStates[2 * 4 + 1]->sampleHPose, node_inout->controlStates[2 * 4 + 2]->sampleHPose, node_inout->controlStates[2 * 4 + 3]->sampleHPose,
+		node_inout->controlStates[3 * 4 + 0]->sampleHPose, node_inout->controlStates[3 * 4 + 1]->sampleHPose, node_inout->controlStates[3 * 4 + 2]->sampleHPose, node_inout->controlStates[3 * 4 + 3]->sampleHPose,
+		*uVal0, *uVal1, *uVal2, *uVal3, *uVal4,
 		node_inout->state_out->hierarchy->numNodes);
 }
 
@@ -242,8 +336,10 @@ void a3hierarchyBlendExec16C5I(a3_HierarchyBlendNode* node_inout)
 /// <param name="node_inout"></param>
 void a3hierarchyClipExec1C(a3_HierarchyBlendNode* node_inout)
 {
+	typedef void (*a3_ClipOp1C)(a3_HierarchyPose* pose, a3_HierarchyPoseGroup* poseGroup, a3_ClipController* c0); //function pointer to a node op
+	a3_ClipOp1C op = (a3_ClipOp1C)node_inout->operation;
 	a3clipOpSampleClip(node_inout->controlStates[0]->sampleHPose, node_inout->poseGroup, node_inout->clipControllers[0]);
-	node_inout->operation(node_inout->state_out->sampleHPose,
+	op(node_inout->state_out->sampleHPose,
 		node_inout->poseGroup,
 		node_inout->clipControllers[0]);
 }
@@ -270,9 +366,11 @@ void a3hierarchyClipExec1C1I(a3_HierarchyBlendNode* node_inout)
 /// <param name="node_inout"></param>
 void a3hierarchyClipExec2C(a3_HierarchyBlendNode* node_inout)
 {
+	typedef void (*a3_ClipOp2C)(a3_HierarchyPose* pose, a3_HierarchyPoseGroup* poseGroup, a3_ClipController* c0, a3_ClipController* c1); //function pointer to a node op
+	a3_ClipOp2C op = (a3_ClipOp2C)node_inout->operation;
 	a3clipOpSampleClip(node_inout->controlStates[0]->sampleHPose, node_inout->poseGroup, node_inout->clipControllers[0]);
 	a3clipOpSampleClip(node_inout->controlStates[1]->sampleHPose, node_inout->poseGroup, node_inout->clipControllers[1]);
-	node_inout->operation(node_inout->state_out->sampleHPose,
+	op(node_inout->state_out->sampleHPose,
 		node_inout->poseGroup,
 		node_inout->clipControllers[0],
 		node_inout->clipControllers[1]);
@@ -284,13 +382,16 @@ void a3hierarchyClipExec2C(a3_HierarchyBlendNode* node_inout)
 /// <param name="node_inout"></param>
 void a3hierarchyClipExec2C1I(a3_HierarchyBlendNode* node_inout)
 {
+	typedef void (*a3_ClipOp2C1I)(a3_HierarchyPose* pose, a3_HierarchyPoseGroup* poseGroup, a3_ClipController* c0, a3_ClipController* c1, a3f32 uVal); //function pointer to a node op
+	a3_ClipOp2C1I op = (a3_ClipOp2C1I)node_inout->operation;
+	float* uVal0 = node_inout->uVals[0];
 	a3clipOpSampleClip(node_inout->controlStates[0]->sampleHPose, node_inout->poseGroup, node_inout->clipControllers[0]);
 	a3clipOpSampleClip(node_inout->controlStates[1]->sampleHPose, node_inout->poseGroup, node_inout->clipControllers[1]);
-	node_inout->operation(node_inout->state_out->sampleHPose,
+	op(node_inout->state_out->sampleHPose,
 		node_inout->poseGroup,
 		node_inout->clipControllers[0],
 		node_inout->clipControllers[1],
-		*node_inout->uVals[0]);
+		*uVal0);
 }
 
 /// <summary>
