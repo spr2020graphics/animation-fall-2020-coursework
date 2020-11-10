@@ -183,7 +183,27 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 			demoMode->hierarchyPoseGroup_skel->channel,
 			demoMode->hierarchyPoseGroup_skel->order);
 		a3kinematicsSolveForward(activeHS);
+
+
+		// IK SOLVER - gives object-space matrix
 		a3hierarchyStateUpdateObjectInverse(activeHS);
+		a3kinematicsSolveInverse(activeHS);
+
+		// convert to pose (restore/revert, inverse of convert)
+		a3hierarchyPoseRestore(activeHS->localSpace, demoMode->hierarchy_skel->numNodes,
+			demoMode->hierarchyPoseGroup_skel->channel,
+			demoMode->hierarchyPoseGroup_skel->order);
+
+		// "concat" except it's the opposite, so subtract
+		a3hierarchyPoseDeconcat(activeHS->animPose, activeHS->localSpace, baseHS->localSpace, demoMode->hierarchy_skel->numNodes);
+
+		// TODO: Blend with FK result
+
+
+		// TODO: FK pipeline again, to get to the final pose
+
+
+		// skinning
 		a3hierarchyStateUpdateObjectBindToCurrent(activeHS, baseHS);
 
 		// ****TO-DO: 
