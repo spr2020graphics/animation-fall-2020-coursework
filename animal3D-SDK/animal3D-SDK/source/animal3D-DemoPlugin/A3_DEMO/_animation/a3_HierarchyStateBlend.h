@@ -49,7 +49,7 @@ extern "C"
 a3_SpatialPose* a3spatialPoseOpIdentity(a3_SpatialPose* pose_out);
 
 // init with values
-a3_SpatialPose* a3spatialPoseOpInit(a3_SpatialPose* pose_out, a3vec3 scale, a3vec3 orientation, a3vec3 translation);
+a3_SpatialPose* a3spatialPoseOpInit(a3_SpatialPose* pose_out, a3vec4 scale, a3vec4 rotate, a3vec4 translation);
 
 // pointer-based nearest
 a3_SpatialPose* a3spatialPoseOpNearest(a3_SpatialPose* spatialPose_out, a3_SpatialPose* const spatialPose_0, a3_SpatialPose* const spatialPose_1, const a3real u);
@@ -119,7 +119,7 @@ a3_SpatialPose* a3spatialPoseOpRevert(a3_SpatialPose* pose_inout);
 a3_SpatialPose a3spatialPoseDOpIdentity();
 
 // data-based constructor
-a3_SpatialPose a3spatialPoseDOpInit(const a3vec3 scale, const a3vec3 orientation, const a3vec3 translation);
+a3_SpatialPose a3spatialPoseDOpInit(const a3vec4 scale, const a3vec4 rotate, const a3vec4 translation);
 
 // data-based nearest
 a3_SpatialPose a3spatialPoseDOpNearest(a3_SpatialPose spatialPose_0, a3_SpatialPose spatialPose_1, const a3real u);
@@ -173,7 +173,7 @@ a3_SpatialPose a3spatialPoseDOpDeconcat(a3_SpatialPose pose0, a3_SpatialPose pos
 a3_HierarchyPose* a3hierarchyPoseOpIdentity(a3_HierarchyPose* pose_out, const a3ui32 nodeCount);
 
 // pointer-based constructor operation for hierarchical pose
-a3_HierarchyPose* a3hierarchyPoseOpInit(a3_HierarchyPose* pose_out, a3vec3 const* orientations, a3vec3 const* scales, a3vec3 const* translations, const a3ui32 nodeCount);
+a3_HierarchyPose* a3hierarchyPoseOpInit(a3_HierarchyPose* pose_out, a3vec3 const* rotates, a3vec3 const* scales, a3vec3 const* translations, const a3ui32 nodeCount);
 
 a3_HierarchyPose* a3hierarchyPoseOpNearest(a3_HierarchyPose* pose_out, a3_HierarchyPose* const pose_0, a3_HierarchyPose* const pose_1, const a3real u, const a3ui32 nodeCount);
 

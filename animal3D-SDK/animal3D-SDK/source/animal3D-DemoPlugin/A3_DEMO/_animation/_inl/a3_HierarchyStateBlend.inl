@@ -43,29 +43,29 @@
 inline a3_SpatialPose* a3spatialPoseOpIdentity(a3_SpatialPose* pose_out)
 {
 	// ...
-	pose_out->transform = a3mat4_identity;
-	pose_out->orientation = a3vec3_zero;
-	pose_out->scale = a3vec3_one;
-	pose_out->position = a3vec3_zero;
-	pose_out->rotation = a3quat_identity;
-	pose_out->rotation.w = 1.0f;
+	pose_out->transformMat = a3mat4_identity;
+	pose_out->rotate = a3vec4_zero;
+	pose_out->scale = a3vec4_one;
+	pose_out->translate = a3vec4_zero;
+	pose_out->rotate = a3vec4_zero;
+	pose_out->rotate.w = 1.0f;
 	// done
 	return pose_out;
 }
 
 // pointer-based initialization with specified values
-inline a3_SpatialPose* a3spatialPoseOpInit(a3_SpatialPose* pose_out, a3vec3 scale, a3vec3 orientation, a3vec3 translation)
+inline a3_SpatialPose* a3spatialPoseOpInit(a3_SpatialPose* pose_out, a3vec4 scale, a3vec4 rotate, a3vec4 translation)
 {
-	pose_out->transform = a3mat4_identity;
+	pose_out->transformMat = a3mat4_identity;
 	pose_out->scale = scale;
-	orientation.x = (a3real) fmod(orientation.x, 360.0f);
-	orientation.y = (a3real) fmod(orientation.y, 360.0f);
-	orientation.z = (a3real) fmod(orientation.z, 360.0f);
-	pose_out->orientation = orientation;
-	pose_out->position = translation;
-	a3quatSetEulerXYZ(pose_out->rotation.q, orientation.x, orientation.y, orientation.z);
+	rotate.x = (a3real) fmod(rotate.x, 360.0f);
+	rotate.y = (a3real) fmod(rotate.y, 360.0f);
+	rotate.z = (a3real) fmod(rotate.z, 360.0f);
+	pose_out->rotate = rotate;
+	pose_out->translate = translation;
+	a3quatSetEulerXYZ(&pose_out->rotate.q, rotate.x, rotate.y, rotate.z);
 
-	//a3spatialPoseConvert(pose_out->transform.m, pose_out, a3poseChannel_translate_xyz | a3poseChannel_orient_xyz | a3poseChannel_scale_xyz, 0); //how to handle different euler orders?
+	//a3spatialPoseConvert(pose_out->transformMat.m, pose_out, a3poseChannel_translate_xyz | a3poseChannel_orient_xyz | a3poseChannel_scale_xyz, 0); //how to handle different euler orders?
 	return pose_out;
 }
 
@@ -74,17 +74,17 @@ inline a3_SpatialPose* a3spatialPoseOpNearest(a3_SpatialPose* spatialPose_out, a
 {
 	if (u < 0.5f)
 	{
-		spatialPose_out->orientation = spatialPose_0->orientation;
+		spatialPose_out->rotate = spatialPose_0->rotate;
 		spatialPose_out->scale = spatialPose_0->scale;
-		spatialPose_out->position = spatialPose_0->position;
-		spatialPose_out->rotation = spatialPose_0->rotation;
+		spatialPose_out->translate = spatialPose_0->translate;
+		spatialPose_out->rotate = spatialPose_0->rotate;
 	}
 	else
 	{
-		spatialPose_out->orientation = spatialPose_1->orientation;
+		spatialPose_out->rotate = spatialPose_1->rotate;
 		spatialPose_out->scale = spatialPose_1->scale;
-		spatialPose_out->position = spatialPose_1->position;
-		spatialPose_out->rotation = spatialPose_1->rotation;
+		spatialPose_out->translate = spatialPose_1->translate;
+		spatialPose_out->rotate = spatialPose_1->rotate;
 	}
 
 	return spatialPose_out;
@@ -106,12 +106,11 @@ inline a3_SpatialPose* a3spatialPoseOpConst(a3_SpatialPose* pose_inout)
 // pointer-based LERP operation for single spatial pose
 inline a3_SpatialPose* a3spatialPoseOpLERP(a3_SpatialPose* pose_out, a3_SpatialPose* const pose0, a3_SpatialPose* const pose1, a3real const u)
 {
-	pose_out->transform = a3mat4_identity;
-	// ...
-	a3real3Lerp(pose_out->orientation.v, pose0->orientation.v, pose1->orientation.v, u);
+	pose_out->transformMat = a3mat4_identity;
+
+	a3real3Lerp(pose_out->rotate.v, pose0->rotate.v, pose1->rotate.v, u);
 	a3real3Lerp(pose_out->scale.v, pose0->scale.v, pose1->scale.v, u);
-	a3real3Lerp(pose_out->position.v, pose0->position.v, pose1->position.v, u);
-	a3quatSlerp(pose_out->rotation.q, pose0->rotation.q, pose1->rotation.q, u);
+	a3real3Lerp(pose_out->translate.v, pose0->translate.v, pose1->translate.v, u);
 
 	return pose_out;
 }
@@ -120,10 +119,9 @@ inline a3_SpatialPose* a3spatialPoseOpLERP(a3_SpatialPose* pose_out, a3_SpatialP
 inline a3_SpatialPose* a3spatialPoseOpCubic(a3_SpatialPose* spatialPose_out, a3_SpatialPose* const spatialPose_Prev, a3_SpatialPose* const spatialPose_0, a3_SpatialPose* const spatialPose_1, a3_SpatialPose* const spatialPose_Next, const a3real u)
 {
 	// still need to account for quaternion lerping
-	a3real3CatmullRom(spatialPose_out->orientation.v, spatialPose_Prev->orientation.v, spatialPose_0->orientation.v, spatialPose_1->orientation.v, spatialPose_Next->orientation.v, u);
+	a3real3CatmullRom(spatialPose_out->rotate.v, spatialPose_Prev->rotate.v, spatialPose_0->rotate.v, spatialPose_1->rotate.v, spatialPose_Next->rotate.v, u);
 	a3real3CatmullRom(spatialPose_out->scale.v, spatialPose_Prev->scale.v, spatialPose_0->scale.v, spatialPose_1->scale.v, spatialPose_Next->scale.v, u);
-	a3real3CatmullRom(spatialPose_out->position.v, spatialPose_Prev->position.v, spatialPose_0->position.v, spatialPose_1->position.v, spatialPose_Next->position.v, u);
-	a3real4CatmullRom(spatialPose_out->rotation.qv, spatialPose_Prev->rotation.qv, spatialPose_0->rotation.qv, spatialPose_1->rotation.qv, spatialPose_Next->rotation.qv, u);	//Sketchy, but there's no quaternion catmull rom (qv is the vector portion of a quat)
+	a3real3CatmullRom(spatialPose_out->translate.v, spatialPose_Prev->translate.v, spatialPose_0->translate.v, spatialPose_1->translate.v, spatialPose_Next->translate.v, u);
 
 	return spatialPose_out;
 }
@@ -201,12 +199,11 @@ inline a3_SpatialPose* a3spatialPoseOpScale(a3_SpatialPose* pose_out, a3_Spatial
 // pointer-based negate
 inline a3_SpatialPose* a3spatialPoseOpNegate(a3_SpatialPose* pose_out, a3_SpatialPose* const pose_in)
 {
-	a3real3GetNegative(pose_out->orientation.v, pose_in->orientation.v);
-	a3real3GetNegative(pose_out->position.v,	pose_in->position.v);
+	a3real3GetNegative(pose_out->rotate.v, pose_in->rotate.v);
+	a3real3GetNegative(pose_out->translate.v,	pose_in->translate.v);
 	pose_out->scale.x = 1.0f / pose_in->scale.x;
 	pose_out->scale.y = 1.0f / pose_in->scale.y;
 	pose_out->scale.z = 1.0f / pose_in->scale.z;
-	a3quatGetConjugated(pose_out->rotation.q, pose_in->rotation.q);	// the conjugate is the inverse
 
 	return pose_out;
 }
@@ -214,10 +211,9 @@ inline a3_SpatialPose* a3spatialPoseOpNegate(a3_SpatialPose* pose_out, a3_Spatia
 //pointer-based concat
 inline a3_SpatialPose* a3spatialPoseOpConcat(a3_SpatialPose* pose_out, a3_SpatialPose* const pose0, a3_SpatialPose* const pose1)
 {
-	a3real3Sum(pose_out->position.v, pose0->position.v, pose1->position.v);
-	a3real3Sum(pose_out->orientation.v, pose0->orientation.v, pose1->orientation.v);
+	a3real3Sum(pose_out->translate.v, pose0->translate.v, pose1->translate.v);
+	a3real3Sum(pose_out->rotate.v, pose0->rotate.v, pose1->rotate.v);
 	a3real3ProductComp(pose_out->scale.v, pose0->scale.v, pose1->scale.v);
-	a3quatProduct(pose_out->rotation.q, pose0->rotation.q, pose1->rotation.q);
 
 	return pose_out;
 }
@@ -225,18 +221,17 @@ inline a3_SpatialPose* a3spatialPoseOpConcat(a3_SpatialPose* pose_out, a3_Spatia
 //pointer-based deconcat (subtract/divide)
 inline a3_SpatialPose* a3spatialPoseOpDeconcat(a3_SpatialPose* pose_out, a3_SpatialPose* const pose0, a3_SpatialPose* const pose1)
 {
-	a3real3Diff(pose_out->position.v, pose0->position.v, pose1->position.v);
-	a3real3Diff(pose_out->orientation.v, pose0->orientation.v, pose1->orientation.v);
+	a3real3Diff(pose_out->translate.v, pose0->translate.v, pose1->translate.v);
+	a3real3Diff(pose_out->rotate.v, pose0->rotate.v, pose1->rotate.v);
 	a3real3QuotientComp(pose_out->scale.v, pose0->scale.v, pose1->scale.v);
-	a3real4QuotientComp(pose_out->rotation.qv, pose0->rotation.qv, pose1->rotation.qv); // This is sketchy, but I don't see any sort of a3quat division or reversal
 
 	return pose_out;
 }
 
 inline a3_SpatialPose* a3spatialPoseOpEaseInOut(a3_SpatialPose* pose_out, a3_SpatialPose* const pose0, a3_SpatialPose* const pose1, const a3real u)
 {
-	a3real3Bezier1(pose_out->position.v, pose0->position.v, pose1->position.v, u);
-	a3real3Bezier1(pose_out->orientation.v, pose0->orientation.v, pose1->orientation.v, u);
+	a3real3Bezier1(pose_out->translate.v, pose0->translate.v, pose1->translate.v, u);
+	a3real3Bezier1(pose_out->rotate.v, pose0->rotate.v, pose1->rotate.v, u);
 	a3real3Bezier1(pose_out->scale.v, pose0->scale.v, pose1->scale.v, u);
 
 	return pose_out;
@@ -249,25 +244,25 @@ inline a3_SpatialPose* a3spatialPoseOpConvert(a3_SpatialPose* pose_inout)
 
 	a3mat4 translate = a3mat4_identity;
 	a3vec4 spatial_translate;
-	spatial_translate.xyz = pose_inout->position;
+	spatial_translate = pose_inout->translate;
 	spatial_translate.w = 1;
 	translate.v3 = spatial_translate;
 
-	//create rotation matrix
+	//create rotate matrix
 	a3mat4 rotate = a3mat4_identity;
 	a3mat4 xRot, yRot, zRot, tmp;
 
-	//initialize rotation matrices
+	//initialize rotate matrices
 	xRot = a3mat4_identity;
-	a3real4x4SetRotateX(xRot.m, (float)fmod(pose_inout->orientation.x, 360.0f));
+	a3real4x4SetRotateX(xRot.m, (float)fmod(pose_inout->rotate.x, 360.0f));
 	yRot = a3mat4_identity;
-	a3real4x4SetRotateY(yRot.m, (float)fmod(pose_inout->orientation.y, 360.0f));
+	a3real4x4SetRotateY(yRot.m, (float)fmod(pose_inout->rotate.y, 360.0f));
 	zRot = a3mat4_identity;
-	a3real4x4SetRotateZ(zRot.m, (float)fmod(pose_inout->orientation.z, 360.0f));
+	a3real4x4SetRotateZ(zRot.m, (float)fmod(pose_inout->rotate.z, 360.0f));
 	tmp = a3mat4_identity;
 
-	//concatenate rotation matrices using XYZ order
-	a3real4x4SetRotateZYX(rotate.m, (float)fmod(pose_inout->orientation.x, 360.0f), (float)fmod(pose_inout->orientation.y, 360.0f), (float)fmod(pose_inout->orientation.z, 360.0f));
+	//concatenate rotate matrices using XYZ order
+	a3real4x4SetRotateZYX(rotate.m, (float)fmod(pose_inout->rotate.x, 360.0f), (float)fmod(pose_inout->rotate.y, 360.0f), (float)fmod(pose_inout->rotate.z, 360.0f));
 
 	//create scale matrix
 	a3mat4 scale = a3mat4_identity;
@@ -281,7 +276,7 @@ inline a3_SpatialPose* a3spatialPoseOpConvert(a3_SpatialPose* pose_inout)
 	a3real4x4Product(rs.m, rotate.m, scale.m);
 	a3real4x4Product(mat_out.m, translate.m, rs.m);
 
-	a3real4x4SetReal4x4(pose_inout->transform.m, mat_out.m);
+	a3real4x4SetReal4x4(pose_inout->transformMat.m, mat_out.m);
 
 	return pose_inout;
 }
@@ -329,13 +324,13 @@ inline a3_SpatialPose* a3spatialPoseOpBiDirectionalScale(a3_SpatialPose* pose_ou
 
 inline a3_SpatialPose* a3spatialPoseOpRevert(a3_SpatialPose* pose_inout)
 {
-	a3mat4* TRS = &pose_inout->transform;
-	a3vec3 position, scale, orientation;
+	a3mat4* TRS = &pose_inout->transformMat;
+	a3vec4 translate, scale, rotate;
 
-	// Extract position
-	position.x = TRS->m30;
-	position.y = TRS->m31;
-	position.z = TRS->m32;
+	// Extract translate
+	translate.x = TRS->m30;
+	translate.y = TRS->m31;
+	translate.z = TRS->m32;
 	
 	// Reset transform matrix translation
 	TRS->m30 = 0;
@@ -359,7 +354,7 @@ inline a3_SpatialPose* a3spatialPoseOpRevert(a3_SpatialPose* pose_inout)
 	col.z = TRS->m22;
 	scale.z = a3real3Length(col.v);
 
-	// Extract rotation (these 3 blocks essentially turn the TRS into just a rotation matrix)
+	// Extract rotate (these 3 blocks essentially turn the TRS into just a rotate matrix)
 	TRS->m00 /= scale.x;
 	TRS->m01 /= scale.x;
 	TRS->m02 /= scale.x;
@@ -372,13 +367,13 @@ inline a3_SpatialPose* a3spatialPoseOpRevert(a3_SpatialPose* pose_inout)
 	TRS->m21 /= scale.z;
 	TRS->m22 /= scale.z;
 
-	a3real4x4GetEulerXYZIgnoreScale(TRS->m, &orientation.x, &orientation.y, &orientation.z);
+	a3real4x4GetEulerXYZIgnoreScale(TRS->m, &rotate.x, &rotate.y, &rotate.z);
 
-	pose_inout->orientation = orientation;
-	pose_inout->position = position;
+	pose_inout->rotate = rotate;
+	pose_inout->translate = translate;
 	pose_inout->scale = scale;
 
-	pose_inout->transform = a3mat4_identity;
+	pose_inout->transformMat = a3mat4_identity;
 
 	return pose_inout;
 }
@@ -388,18 +383,18 @@ inline a3_SpatialPose* a3spatialPoseOpRevert(a3_SpatialPose* pose_inout)
 // data-based reset/identity
 inline a3_SpatialPose a3spatialPoseDOpIdentity()
 {
-	a3_SpatialPose result = { a3mat4_identity, a3vec3_zero, a3vec3_one, a3vec3_zero, a3quat_identity };
-	result.rotation.w = 1.0f;	//ensuring this is 1, always
+	a3_SpatialPose result = { a3mat4_identity, a3dualquat_identity, a3vec4_zero, a3vec4_one, a3vec4_zero, a3vec4_zero };
+	result.rotate.w = 1.0f;	//ensuring this is 1, always
 
 	return result;
 }
 
 // data-based init
-inline a3_SpatialPose a3spatialPoseDOpInit(const a3vec3 scale, const a3vec3 orientation, const a3vec3 translation)
+inline a3_SpatialPose a3spatialPoseDOpInit(const a3vec4 scale, const a3vec4 rotate, const a3vec4 translation)
 {
 	a3_SpatialPose result[1];
 
-	a3spatialPoseOpInit(result, scale, orientation, translation);
+	a3spatialPoseOpInit(result, scale, rotate, translation);
 
 	return *result;
 }
@@ -537,7 +532,7 @@ inline a3_HierarchyPose* a3hierarchyPoseOpIdentity(a3_HierarchyPose* pose_out, c
 {
 	for (a3ui32 i = 0; i < nodeCount; i++)
 	{
-		a3spatialPoseOpIdentity(&pose_out->spatialPose[i]);
+		a3spatialPoseOpIdentity(&pose_out->pose[i]);
 	}
 
 	// done
@@ -545,13 +540,13 @@ inline a3_HierarchyPose* a3hierarchyPoseOpIdentity(a3_HierarchyPose* pose_out, c
 }
 
 // pointer-based init operation for hierarchical pose
-inline a3_HierarchyPose* a3hierarchyPoseOpInit(a3_HierarchyPose* pose_out, a3vec3 const* orientations, a3vec3 const* scales, a3vec3 const* translations, const a3ui32 nodeCount)
+inline a3_HierarchyPose* a3hierarchyPoseOpInit(a3_HierarchyPose* pose_out, a3vec4 const* rotates, a3vec4 const* scales, a3vec4 const* translations, const a3ui32 nodeCount)
 {
 	if (pose_out)
 	{
 		for (a3ui32 i = 0; i < nodeCount; i++)
 		{
-			a3spatialPoseOpInit(&pose_out->spatialPose[i], scales[i], orientations[i], translations[i]);
+			a3spatialPoseOpInit(&pose_out->pose[i], scales[i], rotates[i], translations[i]);
 		}
 
 		return pose_out;
@@ -564,7 +559,7 @@ inline a3_HierarchyPose* a3hierarchyPoseOpNearest(a3_HierarchyPose* pose_out, a3
 {
 	for (a3ui32 i = 0; i < nodeCount; i++)
 	{
-		a3spatialPoseOpNearest(&pose_out->spatialPose[i], &pose_0->spatialPose[i], &pose_1->spatialPose[i], u);
+		a3spatialPoseOpNearest(&pose_out->pose[i], &pose_0->pose[i], &pose_1->pose[i], u);
 	}
 
 	return pose_out;
@@ -575,7 +570,7 @@ inline a3_HierarchyPose* a3hierarchyPoseOpLERP(a3_HierarchyPose* pose_out, a3_Hi
 {
 	for (a3ui32 i = 0; i < nodeCount; i++)
 	{
-		a3spatialPoseOpLERP(&pose_out->spatialPose[i], &pose0->spatialPose[i], &pose1->spatialPose[i], u);
+		a3spatialPoseOpLERP(&pose_out->pose[i], &pose0->pose[i], &pose1->pose[i], u);
 	}
 
 	// done
@@ -587,7 +582,7 @@ inline a3_HierarchyPose* a3hierarchyPoseOpNegate(a3_HierarchyPose* pose_out, a3_
 {
 	for (a3ui32 i = 0; i < nodeCount; i++)
 	{
-		a3spatialPoseOpNegate(&pose_out->spatialPose[i], &pose_in->spatialPose[i]);
+		a3spatialPoseOpNegate(&pose_out->pose[i], &pose_in->pose[i]);
 	}
 
 	// done
@@ -599,7 +594,7 @@ inline a3_HierarchyPose* a3hierarchyPoseOpConcat(a3_HierarchyPose* pose_out, a3_
 {
 	for (a3ui32 i = 0; i < nodeCount; i++)
 	{
-		a3spatialPoseOpConcat(&pose_out->spatialPose[i], &pose0->spatialPose[i], &pose1->spatialPose[i]);
+		a3spatialPoseOpConcat(&pose_out->pose[i], &pose0->pose[i], &pose1->pose[i]);
 	}
 
 	// done
@@ -611,7 +606,7 @@ inline a3_HierarchyPose* a3hierarchyPoseOpDeconcat(a3_HierarchyPose* pose_out, a
 {
 	for (a3ui32 i = 0; i < nodeCount; i++)
 	{
-		a3spatialPoseOpDeconcat(&pose_out->spatialPose[i], &pose0->spatialPose[i], &pose1->spatialPose[i]);
+		a3spatialPoseOpDeconcat(&pose_out->pose[i], &pose0->pose[i], &pose1->pose[i]);
 	}
 
 	return pose_out;
@@ -622,7 +617,7 @@ inline a3_HierarchyPose* a3hierarchyPoseOpCubic(a3_HierarchyPose* pose_out, a3_H
 {
 	for (a3ui32 i = 0; i < nodeCount; i++)
 	{
-		a3spatialPoseOpCubic(&pose_out->spatialPose[i], &pose_Prev->spatialPose[i], &pose_0->spatialPose[i], &pose_1->spatialPose[i], &pose_Next->spatialPose[i], u);
+		a3spatialPoseOpCubic(&pose_out->pose[i], &pose_Prev->pose[i], &pose_0->pose[i], &pose_1->pose[i], &pose_Next->pose[i], u);
 	}
 
 	// done
@@ -634,7 +629,7 @@ inline a3_HierarchyPose* a3hierarchyPoseOpCopy(a3_HierarchyPose* pose_out, a3_Hi
 {
 	for (a3ui32 i = 0; i < nodeCount; i++)
 	{
-		a3spatialPoseOpCopy(&pose_out->spatialPose[i], &pose_in->spatialPose[i]);
+		a3spatialPoseOpCopy(&pose_out->pose[i], &pose_in->pose[i]);
 	}
 
 	return pose_out;
@@ -645,7 +640,7 @@ inline a3_HierarchyPose* a3hierarchyPoseOpTriangularLERP(a3_HierarchyPose* pose_
 {
 	for (a3ui32 i = 0; i < nodeCount; i++)
 	{
-		a3spatialPoseOpTriangularLERP(&pose_out->spatialPose[i], &pose0->spatialPose[i], &pose1->spatialPose[i], &pose2->spatialPose[i], u1, u2);
+		a3spatialPoseOpTriangularLERP(&pose_out->pose[i], &pose0->pose[i], &pose1->pose[i], &pose2->pose[i], u1, u2);
 	}
 
 	return pose_out;
@@ -656,7 +651,7 @@ inline a3_HierarchyPose* a3hierarchyPoseOpBiNearest(a3_HierarchyPose* pose_out, 
 {
 	for (a3ui32 i = 0; i < nodeCount; i++)
 	{
-		a3spatialPoseOpBiNearest(&pose_out->spatialPose[i], &pose00->spatialPose[i], &pose01->spatialPose[i], &pose10->spatialPose[i], &pose11->spatialPose[i], u0, u1, u);
+		a3spatialPoseOpBiNearest(&pose_out->pose[i], &pose00->pose[i], &pose01->pose[i], &pose10->pose[i], &pose11->pose[i], u0, u1, u);
 	}
 
 	return pose_out;
@@ -667,7 +662,7 @@ inline a3_HierarchyPose* a3hierarchyPoseOpBiLerp(a3_HierarchyPose* pose_out, a3_
 {
 	for (a3ui32 i = 0; i < nodeCount; i++)
 	{
-		a3spatialPoseOpBiLerp(&pose_out->spatialPose[i], &pose00->spatialPose[i], &pose01->spatialPose[i], &pose10->spatialPose[i], &pose11->spatialPose[i], u0, u1, u);
+		a3spatialPoseOpBiLerp(&pose_out->pose[i], &pose00->pose[i], &pose01->pose[i], &pose10->pose[i], &pose11->pose[i], u0, u1, u);
 	}
 
 	return pose_out;
@@ -688,10 +683,10 @@ inline a3_HierarchyPose* a3hierarchyPoseOpBiCubic(a3_HierarchyPose* pose_out,
 
 	for (a3ui32 i = 0; i < nodeCount; i++)
 	{
-		a3spatialPoseOpBiCubic(&pose_out->spatialPose[i], &pose_prev00->spatialPose[i], &pose_prev01->spatialPose[i], &pose_prev10->spatialPose[i], &pose_prev11->spatialPose[i],
-			&pose00->spatialPose[i], &pose01->spatialPose[i], &pose10->spatialPose[i], &pose11->spatialPose[i],
-			&pose00_2->spatialPose[i], &pose20->spatialPose[i], &pose02->spatialPose[i], &pose22->spatialPose[i],
-			&pose_next00->spatialPose[i], &pose_next01->spatialPose[i], &pose_next10->spatialPose[i], &pose_next11->spatialPose[i],
+		a3spatialPoseOpBiCubic(&pose_out->pose[i], &pose_prev00->pose[i], &pose_prev01->pose[i], &pose_prev10->pose[i], &pose_prev11->pose[i],
+			&pose00->pose[i], &pose01->pose[i], &pose10->pose[i], &pose11->pose[i],
+			&pose00_2->pose[i], &pose20->pose[i], &pose02->pose[i], &pose22->pose[i],
+			&pose_next00->pose[i], &pose_next01->pose[i], &pose_next10->pose[i], &pose_next11->pose[i],
 			u_prev, u0, u1, u_next, u);
 	}
 
@@ -703,7 +698,7 @@ inline a3_HierarchyPose* a3hierarchyPoseOpScale(a3_HierarchyPose* pose_out, a3_H
 {
 	for (a3ui32 i = 0; i < nodeCount; i++)
 	{
-		a3spatialPoseOpScale(&pose_out->spatialPose[i], &pose_in->spatialPose[i], u);
+		a3spatialPoseOpScale(&pose_out->pose[i], &pose_in->pose[i], u);
 	}
 
 	return pose_out;
@@ -719,7 +714,7 @@ inline a3_HierarchyPose* a3hierarchyPoseOpEaseInOut(a3_HierarchyPose* pose_out, 
 {
 	for (a3ui32 i = 0; i < nodeCount; i++)
 	{
-		a3spatialPoseOpEaseInOut(&pose_out->spatialPose[i], &pose0->spatialPose[i], &pose1->spatialPose[i], u);
+		a3spatialPoseOpEaseInOut(&pose_out->pose[i], &pose0->pose[i], &pose1->pose[i], u);
 	}
 
 	return pose_out;
@@ -729,7 +724,7 @@ inline a3_HierarchyPose* a3hierarchyPoseOpConvert(a3_HierarchyPose* pose_inout, 
 {
 	for (a3ui32 i = 0; i < nodeCount; i++)
 	{
-		a3spatialPoseOpConvert(&pose_inout->spatialPose[i]);
+		a3spatialPoseOpConvert(&pose_inout->pose[i]);
 	}
 
 	return pose_inout;
@@ -739,7 +734,7 @@ inline a3_HierarchyPose* a3hierarchyPoseOpBiDirectionalScale(a3_HierarchyPose* p
 {
 	for (a3ui32 i = 0; i < nodeCount; i++)
 	{
-		a3spatialPoseOpBiDirectionalScale(&pose_out->spatialPose[i], &pose_in->spatialPose[i], u);
+		a3spatialPoseOpBiDirectionalScale(&pose_out->pose[i], &pose_in->pose[i], u);
 	}
 
 	return pose_out;
@@ -749,7 +744,7 @@ inline a3_HierarchyPose* a3hierarchyPoseOpRevert(a3_HierarchyPose* pose_inout, c
 {
 	for (a3ui32 i = 0; i < nodeCount; i++)
 	{
-		a3spatialPoseOpRevert(&pose_inout->spatialPose[i]);
+		a3spatialPoseOpRevert(&pose_inout->pose[i]);
 	}
 
 	return pose_inout;
@@ -784,12 +779,12 @@ inline a3_HierarchyPose* a3hierarchyPoseOpFK(a3_HierarchyPose* pose_out, a3_Hier
 			if (currentNode->parentIndex != -1)
 			{
 				// if we aren't the root node, our object space transform = parent object space * our local space
-				a3real4x4Product(pose_out->spatialPose[currentNode->index].transform.m, pose_out->spatialPose[currentNode->parentIndex].transform.m, pose_in->spatialPose[currentNode->index].transform.m);
+				a3real4x4Product(pose_out->pose[currentNode->index].transformMat.m, pose_out->pose[currentNode->parentIndex].transformMat.m, pose_in->pose[currentNode->index].transformMat.m);
 			}
 			else
 			{
 				// If we ARE the root, our object space transform is the same as our local space
-				a3real4x4SetReal4x4(pose_out->spatialPose[currentNode->index].transform.m, pose_in->spatialPose[currentNode->index].transform.m);
+				a3real4x4SetReal4x4(pose_out->pose[currentNode->index].transformMat.m, pose_in->pose[currentNode->index].transformMat.m);
 			}
 		}
 	}
@@ -836,13 +831,13 @@ inline a3_HierarchyPose* a3clipOpNegate(a3_HierarchyPose* pose_out, a3_Hierarchy
 
 inline a3_HierarchyPose* a3clipOpSampleClip(a3_HierarchyPose* pose_out, a3_HierarchyPoseGroup* const poseGroup, a3_ClipController* const controller1)
 {
-	a3ui32 currentKeyValue = (a3ui32)(controller1->clipPool->clipArray[controller1->clipIndex].keyframes->keyframeArray[controller1->keyframeIndex].sample.value);
+	a3ui32 currentKeyValue = controller1->clipPool->sample[controller1->keyframe->sampleIndex0];
 	a3ui32 deltaPoses = poseGroup->poseCount - 1;
 	a3_HierarchyPose* currentPose;
 	a3_HierarchyPose* nextPose;
 
-	currentPose = &poseGroup->hierarchyPosePool[((currentKeyValue + deltaPoses) % deltaPoses) + 1];
-	nextPose = &poseGroup->hierarchyPosePool[((currentKeyValue + deltaPoses + 1) % deltaPoses) + 1];
+	currentPose = &poseGroup->hpose[((currentKeyValue + deltaPoses) % deltaPoses) + 1];
+	nextPose = &poseGroup->hpose[((currentKeyValue + deltaPoses + 1) % deltaPoses) + 1];
 
 	a3hierarchyPoseOpLERP(pose_out, currentPose, nextPose, controller1->keyframeParameter, poseGroup->hierarchy->numNodes);
 
