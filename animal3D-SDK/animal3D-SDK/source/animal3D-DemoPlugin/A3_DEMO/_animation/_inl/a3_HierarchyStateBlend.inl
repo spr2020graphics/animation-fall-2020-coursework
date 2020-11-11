@@ -831,7 +831,7 @@ inline a3_HierarchyPose* a3clipOpNegate(a3_HierarchyPose* pose_out, a3_Hierarchy
 
 inline a3_HierarchyPose* a3clipOpSampleClip(a3_HierarchyPose* pose_out, a3_HierarchyPoseGroup* const poseGroup, a3_ClipController* const controller1)
 {
-	a3_ClipPool* pool = controller1->clipPool;
+	const a3_ClipPool* pool = controller1->clipPool;
 
 	a3hierarchyPoseOpLERP(pose_out,
 		poseGroup->hpose + pool->keyframe[controller1->keyframeIndex].sampleIndex0,
