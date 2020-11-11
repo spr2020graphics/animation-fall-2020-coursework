@@ -831,15 +831,12 @@ inline a3_HierarchyPose* a3clipOpNegate(a3_HierarchyPose* pose_out, a3_Hierarchy
 
 inline a3_HierarchyPose* a3clipOpSampleClip(a3_HierarchyPose* pose_out, a3_HierarchyPoseGroup* const poseGroup, a3_ClipController* const controller1)
 {
-	a3ui32 currentKeyValue = controller1->clipPool->sample[controller1->keyframe->sampleIndex0];
-	a3ui32 deltaPoses = poseGroup->poseCount - 1;
-	a3_HierarchyPose* currentPose;
-	a3_HierarchyPose* nextPose;
+	a3_ClipPool* pool = controller1->clipPool;
 
-	currentPose = &poseGroup->hpose[((currentKeyValue + deltaPoses) % deltaPoses) + 1];
-	nextPose = &poseGroup->hpose[((currentKeyValue + deltaPoses + 1) % deltaPoses) + 1];
-
-	a3hierarchyPoseOpLERP(pose_out, currentPose, nextPose, controller1->keyframeParameter, poseGroup->hierarchy->numNodes);
+	a3hierarchyPoseOpLERP(pose_out,
+		poseGroup->hpose + pool->keyframe[controller1->keyframeIndex].sampleIndex0,
+		poseGroup->hpose + pool->keyframe[controller1->keyframeIndex].sampleIndex1,
+		(a3f32)controller1->keyframeParam, poseGroup->hierarchy->numNodes);
 
 	return pose_out;
 }
