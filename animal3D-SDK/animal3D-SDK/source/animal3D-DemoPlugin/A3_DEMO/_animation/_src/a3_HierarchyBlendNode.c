@@ -170,7 +170,7 @@ void a3hierarchyBlendExec0C(a3_HierarchyBlendNode* node_inout)
 {
 	typedef void (*a3_HierarchyBlendOp0C)(a3_HierarchyPose* pose, a3ui32 numNodes); //function pointer to a node op
 	a3_HierarchyBlendOp0C op = (a3_HierarchyBlendOp0C)node_inout->operation;
-	op(node_inout->state_out->sampleHPose,
+	op(node_inout->state_out->animPose,
 		node_inout->state_out->hierarchy->numNodes);
 }
 
@@ -182,8 +182,8 @@ void a3hierarchyBlendExec1C(a3_HierarchyBlendNode* node_inout)
 {
 	typedef void (*a3_HierarchyBlendOp1C)(a3_HierarchyPose* pose, a3_HierarchyPose* control0, a3ui32 numNodes); //function pointer to a node op
 	a3_HierarchyBlendOp1C op = (a3_HierarchyBlendOp1C)node_inout->operation;
-	op(node_inout->state_out->sampleHPose,
-		node_inout->controlStates[0]->sampleHPose,
+	op(node_inout->state_out->animPose,
+		node_inout->controlStates[0]->animPose,
 		node_inout->state_out->hierarchy->numNodes);
 }
 
@@ -196,8 +196,8 @@ void a3hierarchyBlendExec1C1I(a3_HierarchyBlendNode* node_inout)
 	typedef void (*a3_HierarchyBlendOp1C1I)(a3_HierarchyPose* pose, a3_HierarchyPose* control0, a3f32 uVal0, a3ui32 numNodes); //function pointer to a node op
 	a3_HierarchyBlendOp1C1I op = (a3_HierarchyBlendOp1C1I)node_inout->operation;
 	float* uVal = node_inout->uVals[0];
-	op(node_inout->state_out->sampleHPose,
-		node_inout->controlStates[0]->sampleHPose,
+	op(node_inout->state_out->animPose,
+		node_inout->controlStates[0]->animPose,
 		*uVal,
 		node_inout->state_out->hierarchy->numNodes);
 }
@@ -210,9 +210,9 @@ void a3hierarchyBlendExec2C(a3_HierarchyBlendNode* node_inout)
 {
 	typedef void (*a3_HierarchyBlendOp2C)(a3_HierarchyPose* pose, a3_HierarchyPose* control0, a3_HierarchyPose* control1, a3ui32 numNodes); //function pointer to a node op
 	a3_HierarchyBlendOp2C op = (a3_HierarchyBlendOp2C)node_inout->operation;
-	op(node_inout->state_out->sampleHPose,
-		node_inout->controlStates[0]->sampleHPose,
-		node_inout->controlStates[1]->sampleHPose,
+	op(node_inout->state_out->animPose,
+		node_inout->controlStates[0]->animPose,
+		node_inout->controlStates[1]->animPose,
 		node_inout->state_out->hierarchy->numNodes);
 }
 
@@ -226,9 +226,9 @@ void a3hierarchyBlendExec2C1I(a3_HierarchyBlendNode* node_inout)
 		a3_HierarchyPose* control0, a3_HierarchyPose* control1, a3f32 uVal0, a3ui32 numNodes); //function pointer to a node op
 	a3_HierarchyBlendOp2C1I op = (a3_HierarchyBlendOp2C1I)node_inout->operation;
 	float* uVal0 = node_inout->uVals[0];
-	op(node_inout->state_out->sampleHPose,
-		node_inout->controlStates[0]->sampleHPose,
-		node_inout->controlStates[1]->sampleHPose,
+	op(node_inout->state_out->animPose,
+		node_inout->controlStates[0]->animPose,
+		node_inout->controlStates[1]->animPose,
 		*uVal0,
 		node_inout->state_out->hierarchy->numNodes);
 }
@@ -246,10 +246,10 @@ void a3hierarchyBlendExec3C2I(a3_HierarchyBlendNode* node_inout)
 	a3_HierarchyBlendOp3C2I op = (a3_HierarchyBlendOp3C2I)node_inout->operation;
 	float* uVal0 = node_inout->uVals[0];
 	float* uVal1 = node_inout->uVals[1];
-	op(node_inout->state_out->sampleHPose,
-		node_inout->controlStates[0]->sampleHPose,
-		node_inout->controlStates[1]->sampleHPose,
-		node_inout->controlStates[2]->sampleHPose,
+	op(node_inout->state_out->animPose,
+		node_inout->controlStates[0]->animPose,
+		node_inout->controlStates[1]->animPose,
+		node_inout->controlStates[2]->animPose,
 		*uVal0, *uVal1,
 		node_inout->state_out->hierarchy->numNodes);
 }
@@ -268,11 +268,11 @@ void a3hierarchyBlendExec4C1I(a3_HierarchyBlendNode* node_inout)
 	a3_HierarchyBlendOp4C1I op = (a3_HierarchyBlendOp4C1I)node_inout->operation;
 	float* uVal0 = node_inout->uVals[0];
 
-	op(node_inout->state_out->sampleHPose,
-		node_inout->controlStates[0]->sampleHPose,
-		node_inout->controlStates[1]->sampleHPose,
-		node_inout->controlStates[2]->sampleHPose,
-		node_inout->controlStates[3]->sampleHPose,
+	op(node_inout->state_out->animPose,
+		node_inout->controlStates[0]->animPose,
+		node_inout->controlStates[1]->animPose,
+		node_inout->controlStates[2]->animPose,
+		node_inout->controlStates[3]->animPose,
 		*uVal0,
 		node_inout->state_out->hierarchy->numNodes);
 }
@@ -292,11 +292,11 @@ void a3hierarchyBlendExec4C3I(a3_HierarchyBlendNode* node_inout)
 	float* uVal0 = node_inout->uVals[0];
 	float* uVal1 = node_inout->uVals[1];
 	float* uVal2 = node_inout->uVals[2];
-	op(node_inout->state_out->sampleHPose,
-		node_inout->controlStates[0]->sampleHPose,
-		node_inout->controlStates[1]->sampleHPose,
-		node_inout->controlStates[2]->sampleHPose,
-		node_inout->controlStates[3]->sampleHPose,
+	op(node_inout->state_out->animPose,
+		node_inout->controlStates[0]->animPose,
+		node_inout->controlStates[1]->animPose,
+		node_inout->controlStates[2]->animPose,
+		node_inout->controlStates[3]->animPose,
 		*uVal0, *uVal1, *uVal2,
 		node_inout->state_out->hierarchy->numNodes);
 }
@@ -321,11 +321,11 @@ void a3hierarchyBlendExec16C5I(a3_HierarchyBlendNode* node_inout)
 	float* uVal4 = node_inout->uVals[4];
 
 	a3_HierarchyBlendOp16C5I op = (a3_HierarchyBlendOp16C5I)node_inout->operation;
-	op(node_inout->state_out->sampleHPose,
-		node_inout->controlStates[0 * 4 + 0]->sampleHPose, node_inout->controlStates[0 * 4 + 1]->sampleHPose, node_inout->controlStates[0 * 4 + 2]->sampleHPose, node_inout->controlStates[0 * 4 + 3]->sampleHPose,
-		node_inout->controlStates[1 * 4 + 0]->sampleHPose, node_inout->controlStates[1 * 4 + 1]->sampleHPose, node_inout->controlStates[1 * 4 + 2]->sampleHPose, node_inout->controlStates[1 * 4 + 3]->sampleHPose,
-		node_inout->controlStates[2 * 4 + 0]->sampleHPose, node_inout->controlStates[2 * 4 + 1]->sampleHPose, node_inout->controlStates[2 * 4 + 2]->sampleHPose, node_inout->controlStates[2 * 4 + 3]->sampleHPose,
-		node_inout->controlStates[3 * 4 + 0]->sampleHPose, node_inout->controlStates[3 * 4 + 1]->sampleHPose, node_inout->controlStates[3 * 4 + 2]->sampleHPose, node_inout->controlStates[3 * 4 + 3]->sampleHPose,
+	op(node_inout->state_out->animPose,
+		node_inout->controlStates[0 * 4 + 0]->animPose, node_inout->controlStates[0 * 4 + 1]->animPose, node_inout->controlStates[0 * 4 + 2]->animPose, node_inout->controlStates[0 * 4 + 3]->animPose,
+		node_inout->controlStates[1 * 4 + 0]->animPose, node_inout->controlStates[1 * 4 + 1]->animPose, node_inout->controlStates[1 * 4 + 2]->animPose, node_inout->controlStates[1 * 4 + 3]->animPose,
+		node_inout->controlStates[2 * 4 + 0]->animPose, node_inout->controlStates[2 * 4 + 1]->animPose, node_inout->controlStates[2 * 4 + 2]->animPose, node_inout->controlStates[2 * 4 + 3]->animPose,
+		node_inout->controlStates[3 * 4 + 0]->animPose, node_inout->controlStates[3 * 4 + 1]->animPose, node_inout->controlStates[3 * 4 + 2]->animPose, node_inout->controlStates[3 * 4 + 3]->animPose,
 		*uVal0, *uVal1, *uVal2, *uVal3, *uVal4,
 		node_inout->state_out->hierarchy->numNodes);
 }
@@ -338,8 +338,8 @@ void a3hierarchyClipExec1C(a3_HierarchyBlendNode* node_inout)
 {
 	typedef void (*a3_ClipOp1C)(a3_HierarchyPose* pose, a3_HierarchyPoseGroup* poseGroup, a3_ClipController* c0); //function pointer to a node op
 	a3_ClipOp1C op = (a3_ClipOp1C)node_inout->operation;
-	a3clipOpSampleClip(node_inout->controlStates[0]->sampleHPose, node_inout->poseGroup, node_inout->clipControllers[0]);
-	op(node_inout->state_out->sampleHPose,
+	a3clipOpSampleClip(node_inout->controlStates[0]->animPose, node_inout->poseGroup, node_inout->clipControllers[0]);
+	op(node_inout->state_out->animPose,
 		node_inout->poseGroup,
 		node_inout->clipControllers[0]);
 }
@@ -353,8 +353,8 @@ void a3hierarchyClipExec1C1I(a3_HierarchyBlendNode* node_inout)
 	typedef void (*a3_ClipOp1C1I)(a3_HierarchyPose* pose, a3_HierarchyPoseGroup* poseGroup, a3_ClipController* c0, a3f32 uVal); //function pointer to a node op
 	a3_ClipOp1C1I op = (a3_ClipOp1C1I)node_inout->operation;
 	float* uVal = node_inout->uVals[0];
-	a3clipOpSampleClip(node_inout->controlStates[0]->sampleHPose, node_inout->poseGroup, node_inout->clipControllers[0]);
-	op(node_inout->state_out->sampleHPose,
+	a3clipOpSampleClip(node_inout->controlStates[0]->animPose, node_inout->poseGroup, node_inout->clipControllers[0]);
+	op(node_inout->state_out->animPose,
 		node_inout->poseGroup,
 		node_inout->clipControllers[0],
 		*uVal);
@@ -368,9 +368,9 @@ void a3hierarchyClipExec2C(a3_HierarchyBlendNode* node_inout)
 {
 	typedef void (*a3_ClipOp2C)(a3_HierarchyPose* pose, a3_HierarchyPoseGroup* poseGroup, a3_ClipController* c0, a3_ClipController* c1); //function pointer to a node op
 	a3_ClipOp2C op = (a3_ClipOp2C)node_inout->operation;
-	a3clipOpSampleClip(node_inout->controlStates[0]->sampleHPose, node_inout->poseGroup, node_inout->clipControllers[0]);
-	a3clipOpSampleClip(node_inout->controlStates[1]->sampleHPose, node_inout->poseGroup, node_inout->clipControllers[1]);
-	op(node_inout->state_out->sampleHPose,
+	a3clipOpSampleClip(node_inout->controlStates[0]->animPose, node_inout->poseGroup, node_inout->clipControllers[0]);
+	a3clipOpSampleClip(node_inout->controlStates[1]->animPose, node_inout->poseGroup, node_inout->clipControllers[1]);
+	op(node_inout->state_out->animPose,
 		node_inout->poseGroup,
 		node_inout->clipControllers[0],
 		node_inout->clipControllers[1]);
@@ -385,9 +385,9 @@ void a3hierarchyClipExec2C1I(a3_HierarchyBlendNode* node_inout)
 	typedef void (*a3_ClipOp2C1I)(a3_HierarchyPose* pose, a3_HierarchyPoseGroup* poseGroup, a3_ClipController* c0, a3_ClipController* c1, a3f32 uVal); //function pointer to a node op
 	a3_ClipOp2C1I op = (a3_ClipOp2C1I)node_inout->operation;
 	float* uVal0 = node_inout->uVals[0];
-	a3clipOpSampleClip(node_inout->controlStates[0]->sampleHPose, node_inout->poseGroup, node_inout->clipControllers[0]);
-	a3clipOpSampleClip(node_inout->controlStates[1]->sampleHPose, node_inout->poseGroup, node_inout->clipControllers[1]);
-	op(node_inout->state_out->sampleHPose,
+	a3clipOpSampleClip(node_inout->controlStates[0]->animPose, node_inout->poseGroup, node_inout->clipControllers[0]);
+	a3clipOpSampleClip(node_inout->controlStates[1]->animPose, node_inout->poseGroup, node_inout->clipControllers[1]);
+	op(node_inout->state_out->animPose,
 		node_inout->poseGroup,
 		node_inout->clipControllers[0],
 		node_inout->clipControllers[1],
@@ -769,15 +769,16 @@ a3i32 a3hierarchyblendTreeUpdate(a3_HierarchyBlendTree* blendTree_out)
 	{
 		return -1;
 	}
-
+	//a3_HierarchyState const* baseHS = demoMode->hierarchyState_skel_base;
 	//Rules for the tree are that all prereqs for a node must be earlier than the node, thus this order works.
 	for (a3ui32 nodeInd = 0; nodeInd < blendTree_out->bt_hierarchy->numNodes; nodeInd++)
 	{
 		a3_HierarchyBlendNode* node = &blendTree_out->blendNodes[nodeInd];
 		node->exec(node);
 		//the HTR nodes currently are pre-concated, so no concat call here.
-		a3hierarchyPoseOpCopy(node->state_out->localHPose, node->state_out->sampleHPose, node->poseGroup->hierarchy->numNodes);
-		a3hierarchyPoseOpConvert(node->state_out->localHPose, node->poseGroup->hierarchy->numNodes);
+		//a3hierarchyPoseOpCopy(node->state_out->localHPose, node->state_out->animPose, node->poseGroup->hierarchy->numNodes);
+		//TODO switch to a concat with the animPose and baseHS, then run convert
+		a3hierarchyPoseOpConvert(node->state_out->localSpace, node->poseGroup->hierarchy->numNodes);
 
 		//outputs from local to object
 		a3kinematicsSolveForward(node->state_out);
