@@ -30,6 +30,9 @@ struct a3_CharacterController
 
 	// this is an input threshold to trigger the run cycle (greater than the walkThreshold)
 	a3f32 maxRunThreshold;
+
+	// so we can easily access these clips in the controller
+	a3ui32 walkClipIndex, runClipIndex, jumpClipIndex, idleClipIndex;
 };
 
 // init a character controller

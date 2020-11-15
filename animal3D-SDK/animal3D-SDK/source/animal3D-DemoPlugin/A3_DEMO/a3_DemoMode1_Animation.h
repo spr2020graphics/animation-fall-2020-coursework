@@ -192,6 +192,12 @@ typedef enum a3_DemoMode1_Animation_InputMode				a3_DemoMode1_Animation_InputMod
 		a3vec2 pos, vel, acc;
 		a3real rot, velr, accr;
 
+		// character controller
+		a3_CharacterController character[1];
+		a3f32 jumpTrigger;
+		a3f32 walkThreshold;
+		a3f32 runThreshold;
+
 		// objects
 		union {
 			a3_DemoSceneObject object_scene[animationMaxCount_sceneObject];
@@ -222,6 +228,15 @@ typedef enum a3_DemoMode1_Animation_InputMode				a3_DemoMode1_Animation_InputMod
 		};
 	};
 
+	// integer vector2 used for our temporary non-parsed lists of branch transitions
+	union a3ivec2
+	{
+		struct {
+			a3i32 x, y;
+		};
+		a3i32 v[2];
+	};
+	typedef union a3ivec2 a3ivec2;
 
 //-----------------------------------------------------------------------------
 

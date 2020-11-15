@@ -470,6 +470,70 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 			"xbot_strafe_r_m",
 			"xbot_turn_r_m",
 		};
+		// forward branch transition list
+		a3ivec2 clipIndexForward[] = {
+			{0, 0},
+			{1, 1},
+			{2, 2},
+			{3, 3},
+			{4, 4},
+			{18,5},
+			{6, 6},
+			{7, 7},
+			{8, 8},
+			{9, 9},
+			{10,10},
+			{11,11},
+			{12,12},
+			{13,13},
+			{14,14},
+			{15,15},
+			{16,16},
+			{17,17},
+			{18,5},
+			{19,19},
+			{20,20},
+			{21,21},
+			{22,22},
+			{23,23},
+			{24,24},
+			{25,25},
+			{26,26},
+			{27,27}
+		};
+
+		// reverse branch transition list
+		a3ivec2 clipIndexBack[] = {
+			{0, 0},
+			{1, 1},
+			{2, 2},
+			{3, 3},
+			{4, 4},
+			{18,5},
+			{6, 6},
+			{7, 7},
+			{8, 8},
+			{9, 9},
+			{10,10},
+			{11,11},
+			{12,12},
+			{13,13},
+			{14,14},
+			{15,15},
+			{16,16},
+			{17,17},
+			{18,5},
+			{19,19},
+			{20,20},
+			{21,21},
+			{22,22},
+			{23,23},
+			{24,24},
+			{25,25},
+			{26,26},
+			{27,27}
+		};
+
 		a3ui32 const clipCount = sizeof(clipName) / sizeof(*clipName);
 		a3ui32 const sampleIndexFirst[] = {
 			1,1,25,134,167,222,519,1092,1233,1434,1475,1499,1517,1540,1557,1586,1609,1626,1655,1856,1909,1935,1953,1979,1996,2019,2045,2062,
@@ -491,7 +555,9 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		{
 			a3clipInit(demoMode->clipPool->clip + j, clipName[j],
 				demoMode->clipPool->keyframe + sampleIndexFirst[j],
-				demoMode->clipPool->keyframe + sampleIndexFinal[j] - 1);
+				demoMode->clipPool->keyframe + sampleIndexFinal[j] - 1,
+				(clipIndexForward + j)->v,
+				(clipIndexBack + j)->v, &demoMode->character->jumpTrigger);
 			a3clipCalculateDuration(demoMode->clipPool, j, fps);
 		}
 
@@ -501,6 +567,18 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		a3clipControllerInit(demoMode->clipCtrlA, "xbot_ctrlA", demoMode->clipPool, j, rate, fps);
 		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_skintest");
 		a3clipControllerInit(demoMode->clipCtrlB, "xbot_ctrlB", demoMode->clipPool, j, rate, fps);
+
+		// set up the character controller's target idle, jump, walk, and run indices
+		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_idle_f");
+		demoMode->character->idleClipIndex = j;
+		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_jump_f");
+		demoMode->character->jumpClipIndex = j;
+		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_walk_f");
+		demoMode->character->walkClipIndex = j;
+		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_run_f");
+		demoMode->character->runClipIndex = j;
+
+		a3characterControllerInit(demoMode->character, demoMode->clipCtrlA, demoMode->jumpTrigger, demoMode->walkThreshold, demoMode->runThreshold);
 	}
 
 	// finally set up hierarchy states
