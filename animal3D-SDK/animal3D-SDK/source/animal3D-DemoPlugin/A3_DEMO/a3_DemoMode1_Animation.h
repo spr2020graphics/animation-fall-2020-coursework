@@ -36,7 +36,7 @@
 
 #include "_animation/a3_KeyframeAnimationController.h"
 #include "_animation/a3_HierarchyStateBlend.h"
-
+#include "_animation/a3_CharacterController.h"
 
 //-----------------------------------------------------------------------------
 

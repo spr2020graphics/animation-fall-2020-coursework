@@ -226,6 +226,7 @@
     <ClInclude Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\_a3_demo_utilities\a3_DemoRenderUtils.h" />
     <ClInclude Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\_a3_demo_utilities\a3_DemoSceneObject.h" />
     <ClInclude Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\_a3_demo_utilities\a3_DemoShaderProgram.h" />
+    <ClInclude Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\_animation\a3_CharacterController.h" />
     <ClInclude Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\_animation\a3_Hierarchy.h" />
     <ClInclude Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\_animation\a3_HierarchyBlendNode.h" />
     <ClInclude Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\_animation\a3_HierarchyState.h" />
@@ -260,6 +261,7 @@
     <None Include="..\..\..\resource\glsl\4x\vs\passthru_transform_vs4x.glsl" />
     <None Include="..\..\..\resource\glsl\4x\vs\passthru_vs4x.glsl" />
     <None Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\_a3_demo_utilities\_inl\a3_DemoRenderUtils.inl" />
+    <None Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\_animation\_inl\a3_CharacterController.inl" />
     <None Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\_animation\_inl\a3_Hierarchy.inl" />
     <None Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\_animation\_inl\a3_HierarchyState.inl" />
     <None Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\_animation\_inl\a3_HierarchyStateBlend.inl" />
