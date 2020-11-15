@@ -84,6 +84,78 @@ void a3animation_input_keyCharHold(a3_DemoState const* demoState, a3_DemoMode1_A
 
 //-----------------------------------------------------------------------------
 
+/// <summary>
+/// We input a velocity and it moves around
+/// </summary>
+/// <param name="vec_out"></param>
+/// <param name="x"></param>
+/// <param name="dx_dt"></param>
+/// <param name="dt"></param>
+/// <returns></returns>
+a3real3r a3EulerIntegration(a3real3 x_out, a3real3 x, a3real3 v, const a3real dt)
+{
+	a3vec3 temp;
+
+	a3real3ProductS(temp.v, v, dt);
+	a3real3Sum(x_out, x, temp.v);
+
+	return x_out;
+}
+
+/// <summary>
+/// We pass in a position and we linearly interpolate to it, as though a velocity was being imparted
+/// </summary>
+/// <param name="vec_out"></param>
+/// <param name="x"></param>
+/// <param name="x_target"></param>
+/// <param name="u"></param>
+/// <returns></returns>
+a3real3r a3EulerInterp(a3real3 x_out, a3real3 x, a3real3 x_target, const a3real u)
+{
+	a3real3Lerp(x_out, x, x_target, u);
+
+	return x_out;
+}
+
+/// <summary>
+/// We input an acceleration and output the new position and velocity.
+/// </summary>
+/// <param name="vec_out"></param>
+/// <param name="x"></param>
+/// <param name="v"></param>
+/// <param name="a"></param>
+/// <param name="dt"></param>
+/// <returns></returns>
+a3real3r a3KinematicIntegration(a3real3 x_out, a3real3 v_out, a3real3 x, a3real3 v, a3real3 a, const a3real dt)
+{
+	a3vec3 vdt, adt2;
+	a3real3ProductS(vdt.v, v, dt); //vt
+	a3real3ProductS(adt2.v, a, dt * dt * 0.5f); //1/2at^2
+	a3vec3 vdtPlusAdt2;
+	a3real3Sum(vdtPlusAdt2.v, vdt.v, adt2.v);
+	a3real3Sum(x_out, x, vdtPlusAdt2.v); //add tempSum (vt + 1/2at^2) to x
+	a3vec3 adt; //calculate new velocity
+	a3real3ProductS(adt.v, a, dt); //secondary output for velocity
+	a3real3Sum(v_out, v, adt.v);
+	return x_out;
+}
+
+/// <summary>
+/// We input a velocity
+/// </summary>
+/// <param name="v0"></param>
+/// <param name="v1"></param>
+/// <param name="u"></param>
+/// <returns></returns>
+a3real3r a3KinematicInterp(a3real3 x_out, a3real3 v_out, a3real3 x, a3real3 v0, a3real3 v1, const a3real u, const a3real dt)
+{
+	a3real3Lerp(v_out, v0, v1, u);
+	a3vec3 temp;
+	a3real3ProductS(temp.v, v_out, dt); //the vdt part of x + vdt
+	a3real3Sum(x_out, x, temp.v); //output old X + vdt into new x
+	return x_out;
+}
+
 void a3demo_input_controlObject(
 	a3_DemoState* demoState, a3_DemoSceneObject* object,
 	a3f64 const dt, a3real ctrlMoveSpeed, a3real ctrlRotateSpeed);
@@ -125,27 +197,43 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 		a3demo_input_controlProjector(demoState, projector,
 			dt, projector->ctrlMoveSpeed, projector->ctrlRotateSpeed, projector->ctrlZoomSpeed);
 		break;
-	case animation_ctrl_character:
 	case animation_ctrl_neckLookat:
 	case animation_ctrl_wristEffector_r:
 	case animation_ctrl_wristConstraint_r:
 		sceneObject = demoMode->obj_skeleton_ctrl + demoMode->ctrl_target - animation_ctrl_character;
 		a3demo_input_controlObject(demoState, sceneObject, dt, a3real_one, a3real_zero);
-		
-	/*	// capture axes
+	case animation_ctrl_character:
+		// capture axes
 		if (a3XboxControlIsConnected(demoState->xcontrol))
 		{
-			// ****TO-DO:
-			// get directly from joysticks
-		
+			// get directly from joysticks, put into left/right axis variables
+			a3XboxControlGetJoysticks(demoState->xcontrol, demoMode->axis_l, demoMode->axis_r);
+			demoMode->branchTrigger = (a3f32)demoState->xcontrol->ctrl.lTrigger;
 		}
 		else
 		{
-			// ****TO-DO:
 			// calculate normalized vectors given keyboard state
+			a3i32 posUpDown = (demoState->keyboard->key.key[a3key_W] != 0) - (demoState->keyboard->key.key[a3key_S] != 0);
+			a3i32 posLeftRight = (demoState->keyboard->key.key[a3key_D] != 0) - (demoState->keyboard->key.key[a3key_A] != 0);
 
+			a3vec2 tempPos = { (a3real)posLeftRight, (a3real)posUpDown };
+			if (tempPos.x != 0 || tempPos.y != 0)
+			{
+				a3real2Normalize(tempPos.v);
+			}
+			// set axis data
+			demoMode->axis_l[0] = tempPos.x;
+			demoMode->axis_l[1] = tempPos.y;
+
+			// Use J and L to get rotation input
+			a3i32 rotLeftRight = (demoState->keyboard->key.key[a3key_L] != 0) - (demoState->keyboard->key.key[a3key_J] != 0);
+			demoMode->axis_r[0] = (a3real)rotLeftRight;
+			// Used to trigger the branching transition for lab 4
+			demoMode->branchTrigger = (a3f32)(demoState->keyboard->key.key[a3key_P] != 0 && demoState->keyboard->key.key[a3key_shift] == 0);
 		}
-	*/	break;
+		demoMode->mag_l = a3sqrt((a3f32)((demoMode->axis_l[0] * demoMode->axis_l[0]) + (demoMode->axis_l[1] * demoMode->axis_l[1])));
+		demoMode->mag_r = a3sqrt((a3f32)((demoMode->axis_r[0] * demoMode->axis_r[0]) + (demoMode->axis_r[1] * demoMode->axis_r[1])));
+		break;
 	}
 
 	// allow the controller, if connected, to change control targets
