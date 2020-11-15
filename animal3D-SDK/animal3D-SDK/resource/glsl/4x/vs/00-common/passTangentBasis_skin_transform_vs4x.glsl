@@ -29,7 +29,10 @@ layout (location = 2) in vec4 aNormal;
 layout (location = 8) in vec4 aTexcoord;
 layout (location = 10) in vec4 aTangent;
 layout (location = 11) in vec4 aBitangent;
-
+//skinning
+//layout (location = 7) in int aSkinIndex;
+layout (location = 7) in ivec4 aSkinIndex;
+layout (location = 1) in vec4 aSkinWeight;
 uniform mat4 uP;
 uniform mat4 uMV, uMV_nrm;
 uniform mat4 uAtlas;
@@ -39,16 +42,42 @@ out vbVertexData {
 	vec4 vTexcoord_atlas;
 };
 
+#define MAX_NODES 128
+uniform ubTransformBlend {
+	mat4 uSkinMat[MAX_NODES];
+};
+
 flat out int vVertexID;
 flat out int vInstanceID;
+
+vec4 skinRigid(in vec4 v, in int index)
+{
+	return (uSkinMat[index] * v);
+}
+
+vec4 skinSmooth(in vec4 v, in ivec4 index, in vec4 weight)
+{
+	vec4 result = vec4(0.0);
+	result += weight[0] * skinRigid(v, index[0]);
+	result += weight[1] * skinRigid(v, index[1]);
+	result += weight[2] * skinRigid(v, index[2]);
+	result += weight[3] * skinRigid(v, index[3]);
+	return result;
+}
 
 void main()
 {
 	// DUMMY OUTPUT: directly assign input position to output position
 //	gl_Position = aPosition;
 
-	vTangentBasis_view = uMV_nrm * mat4(aTangent, aBitangent, aNormal, vec4(0.0));
-	vTangentBasis_view[3] = uMV * aPosition;
+	//vTangentBasis_view = uMV_nrm * mat4(aTangent, aBitangent, aNormal, vec4(0.0));
+	//vTangentBasis_view[3] = uMV * aPosition;
+	vTangentBasis_view = uMV_nrm * mat4(
+		skinSmooth(vec4(aTangent.xyz, 0.0), aSkinIndex, aSkinWeight),
+		skinSmooth(vec4(aBitangent.xyz, 0.0), aSkinIndex, aSkinWeight),
+		skinSmooth(vec4(aNormal.xyz, 0.0), aSkinIndex, aSkinWeight),
+		vec4(0.0));
+	vTangentBasis_view[3] = uMV * skinSmooth(aPosition, aSkinIndex, aSkinWeight);
 	gl_Position = uP * vTangentBasis_view[3];
 	
 	vTexcoord_atlas = uAtlas * aTexcoord;
