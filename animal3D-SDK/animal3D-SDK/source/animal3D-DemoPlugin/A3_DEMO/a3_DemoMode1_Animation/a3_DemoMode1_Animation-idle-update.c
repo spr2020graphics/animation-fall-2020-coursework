@@ -600,9 +600,11 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 	break;
 	}
 	// apply input
-	demoMode->obj_skeleton_ctrl->position.x = +(demoMode->pos.x);
-	demoMode->obj_skeleton_ctrl->position.y = +(demoMode->pos.y);
-	demoMode->obj_skeleton_ctrl->euler.z = -a3trigValid_sind(demoMode->rot);
+	a3characterControllerApplyInput(demoMode->obj_skeleton_ctrl, &demoMode->pos, demoMode->rot);
+
+	//demoMode->obj_skeleton_ctrl->position.x = +(demoMode->pos.x);
+	//demoMode->obj_skeleton_ctrl->position.y = +(demoMode->pos.y);
+	//demoMode->obj_skeleton_ctrl->euler.z = -a3trigValid_sind(demoMode->rot);
 }
 
 

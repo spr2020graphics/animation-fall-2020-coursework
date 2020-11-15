@@ -33,7 +33,7 @@ struct a3_CharacterController
 };
 
 // init a character controller
-a3ui32 a3characterControllerInit(a3_CharacterController* controller_out, a3_ClipController* controller, a3f32 jumpTrigger, a3f32 walkThreshold, a3f32 runThreshold);
+a3ui32 a3characterControllerInit(a3_CharacterController* controller_out, a3_ClipController* controller, a3f32 jump, a3f32 walkThreshold, a3f32 runThreshold);
 
 // apply position and rotation input to an object
 a3ui32 a3characterControllerApplyInput(a3_DemoSceneObject* object, a3vec2* position, a3real rotation);

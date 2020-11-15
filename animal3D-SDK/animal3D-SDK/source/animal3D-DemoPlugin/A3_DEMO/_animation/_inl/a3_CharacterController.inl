@@ -22,6 +22,8 @@ inline a3ui32 a3characterControllerApplyInput(a3_DemoSceneObject* object, a3vec2
 	object->position.y = +(position->y);
 
 	object->euler.z = -a3trigValid_sind(rotation);
+
+	return 1;
 }
 
 //-----------------------------------------------------------------------------
