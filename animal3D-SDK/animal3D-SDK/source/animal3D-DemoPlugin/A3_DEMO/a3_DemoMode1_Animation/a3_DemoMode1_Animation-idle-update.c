@@ -266,6 +266,20 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 			//	-> get vector between base and end effector; if it extends max length, straighten limb
 			//	-> position of end effector's target is at the minimum possible distance along this vector
 			
+			a3vec4 baseToEffector = a3vec4_zero;
+			a3real4Diff(baseToEffector.v, controlLocator_wristEffector.v, controlLocator_wristBase.v);
+			a3vec4 shoulderToElbow = a3vec4_zero;
+			a3real4Diff(shoulderToElbow.v, jointTransform_elbow.v3.v, controlLocator_wristBase.v);
+			a3vec4 elbowToWrist = a3vec4_zero;
+			a3real4Diff(elbowToWrist.v, jointTransform_wrist.v3.v, jointTransform_elbow.v3.v);
+			a3real shoulderToWristLen = a3real4LengthSquared(shoulderToElbow.v) + a3real4LengthSquared(elbowToWrist.v);
+			a3real baseToEffectorLen = a3real4LengthSquared(baseToEffector.v);
+
+			if (baseToEffectorLen > shoulderToWristLen) //no solution exists, straighten arm. Not sure what to do about rotation
+			{
+
+			}
+
 			// ****TO-DO: 
 			// reassign resolved transforms to OBJECT-SPACE matrices
 			// work from root to leaf too get correct transformations
