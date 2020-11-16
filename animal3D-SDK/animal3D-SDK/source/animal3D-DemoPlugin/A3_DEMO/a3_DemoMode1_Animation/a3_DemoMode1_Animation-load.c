@@ -578,7 +578,14 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_run_f");
 		demoMode->character->runClipIndex = j;
 
-		a3characterControllerInit(demoMode->character, demoMode->clipCtrlA, demoMode->jumpTrigger, demoMode->walkThreshold, demoMode->runThreshold);
+		demoMode->walkThreshold = 0.5f;
+		demoMode->runThreshold = 1.0f;
+
+		a3characterControllerInit(demoMode->character, demoMode->clipCtrlA, demoMode->obj_skeleton_ctrl, demoMode->jumpTrigger, demoMode->walkThreshold, demoMode->runThreshold);
+
+		// set up jump transition action
+		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_jump_f");
+		//a3clipTransitionBindAction(demoMode->clipCtrlA->clipPool->clip[j].transitionForward, &a3characterToggleIsJumping);
 	}
 
 	// finally set up hierarchy states

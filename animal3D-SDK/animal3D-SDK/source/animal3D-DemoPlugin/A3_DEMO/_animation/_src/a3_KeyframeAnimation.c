@@ -106,15 +106,37 @@ a3i32 a3clipPoolRelease(a3_ClipPool* clipPool)
 }
 
 // initialize clip transition
-a3i32 a3clipTransitionInit(a3_ClipTransition* transition, a3_ClipTransitionFlag const transitionFlag, const a3i32 offset, a3_Clip const* clip)
+a3i32 a3clipTransitionInit(a3_ClipTransition* transition, a3_ClipTransitionFlag const transitionFlag, const a3i32 offset, a3_Clip const* clip, a3boolean branch, a3i32* options, a3f32* transitionInput)
 {
 	if (transition && clip)
 	{
 		transition->flag = transitionFlag;
 		transition->offset = offset;
 		transition->clipIndex = clip->index;
+		transition->actionExists = false;
+		if (branch || transitionFlag == a3clip_branchFlag) //two ways to get here, would be written with overloading in C++/C#
+		{
+			// init to desired values
+			transition->flag = a3clip_branchFlag;
+			transition->branch.outClipOption1 = options[0];
+			transition->branch.outClipOption2 = options[1];
+			transition->branch.input = transitionInput;
+		}
 		return transitionFlag;
 	}
+	return -1;
+}
+
+a3i32 a3clipTransitionBindAction(a3_ClipTransition* transition, void* func)
+{
+	if (transition && func)
+	{
+		transition->action = func;
+		transition->actionExists = true;
+
+		return 1;
+	}
+
 	return -1;
 }
 
@@ -149,5 +171,36 @@ a3i32 a3clipGetIndexInPool(const a3_ClipPool* clipPool, const a3byte clipName[a3
 	return -1;
 }
 
+a3ui32 a3BranchTransitionEvaluate(const a3_BranchTransition* transition)
+{
+	if (transition && transition->input)
+	{
+		if (*(transition->input) < 0.5f)
+		{
+			return transition->outClipOption1;
+		}
+		else
+		{
+			return transition->outClipOption2;
+		}
+	}
+
+	// This function technically returns a clip index, so return something dumb here
+	return 999;
+}
+
+a3ui32 a3BranchTransitionBindInput(a3_BranchTransition* transition, a3real* target)
+{
+	if (target && transition)
+	{
+		transition->input = target;
+
+		return 1;
+	}
+	else
+	{
+		return 0;
+	}
+}
 
 //-----------------------------------------------------------------------------

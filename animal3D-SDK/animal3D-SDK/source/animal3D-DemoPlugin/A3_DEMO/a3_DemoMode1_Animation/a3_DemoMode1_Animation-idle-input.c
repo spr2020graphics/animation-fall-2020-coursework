@@ -202,13 +202,14 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 	case animation_ctrl_wristConstraint_r:
 		sceneObject = demoMode->obj_skeleton_ctrl + demoMode->ctrl_target - animation_ctrl_character;
 		a3demo_input_controlObject(demoState, sceneObject, dt, a3real_one, a3real_zero);
+		break;
 	case animation_ctrl_character:
 		// capture axes
 		if (a3XboxControlIsConnected(demoState->xcontrol))
 		{
 			// get directly from joysticks, put into left/right axis variables
 			a3XboxControlGetJoysticks(demoState->xcontrol, demoMode->axis_l, demoMode->axis_r);
-			demoMode->branchTrigger = (a3f32)demoState->xcontrol->ctrl.lTrigger;
+			demoMode->jumpTrigger = (a3f32)a3XboxControlGetState(demoState->xcontrol, a3xbox_A);
 		}
 		else
 		{
@@ -228,8 +229,10 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 			// Use J and L to get rotation input
 			a3i32 rotLeftRight = (demoState->keyboard->key.key[a3key_L] != 0) - (demoState->keyboard->key.key[a3key_J] != 0);
 			demoMode->axis_r[0] = (a3real)rotLeftRight;
-			// Used to trigger the branching transition for lab 4
-			demoMode->branchTrigger = (a3f32)(demoState->keyboard->key.key[a3key_P] != 0 && demoState->keyboard->key.key[a3key_shift] == 0);
+
+			// Used to trigger the branching transition for lab 4 (now use to trigger jumping)
+			//demoMode->jumpTrigger = (a3f32)(demoState->keyboard->key.key[a3key_P] != 0 && demoState->keyboard->key.key[a3key_shift] == 0);
+			demoMode->jumpTrigger = (a3f32)demoState->keyboard->key.key[a3key_space];
 		}
 		demoMode->mag_l = a3sqrt((a3f32)((demoMode->axis_l[0] * demoMode->axis_l[0]) + (demoMode->axis_l[1] * demoMode->axis_l[1])));
 		demoMode->mag_r = a3sqrt((a3f32)((demoMode->axis_r[0] * demoMode->axis_r[0]) + (demoMode->axis_r[1] * demoMode->axis_r[1])));

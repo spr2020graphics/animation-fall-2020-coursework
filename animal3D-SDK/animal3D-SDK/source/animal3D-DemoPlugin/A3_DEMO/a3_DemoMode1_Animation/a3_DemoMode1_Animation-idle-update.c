@@ -302,6 +302,27 @@ void a3animation_update_animation(a3_DemoMode1_Animation* demoMode, a3f64 const 
 	a3_ClipController* clipCtrl_fk = demoMode->clipCtrlA;
 	a3ui32 sampleIndex0, sampleIndex1;
 
+	if (demoMode->jumpTrigger == 1.0f)
+	{
+		// jump
+		a3characterControllerJump(demoMode->character, demoMode->jumpTrigger);
+	}
+	else if(/*!demoMode->character->isJumping && */demoMode->mag_l > 0.0f && demoMode->mag_l <= demoMode->character->maxWalkThreshold)
+	{
+		// walk
+		a3characterControllerWalk(demoMode->character, demoMode->mag_l);
+	}
+	else if (/*!demoMode->character->isJumping && */demoMode->mag_l > demoMode->character->maxWalkThreshold && demoMode->mag_l <= demoMode->character->maxRunThreshold)
+	{
+		// run
+		a3characterControllerRun(demoMode->character, demoMode->mag_l);
+	}
+	else /*if(!demoMode->character->isJumping)*/
+	{
+		// idle
+		//a3characterControllerIdle(demoMode->character, demoMode->mag_l);
+	}
+
 	// resolve FK state
 	// update clip controller, keyframe lerp
 	a3clipControllerUpdate(clipCtrl_fk, dt);
@@ -614,7 +635,7 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 	break;
 	}
 	// apply input
-	a3characterControllerApplyInput(demoMode->obj_skeleton_ctrl, &demoMode->pos, demoMode->rot);
+	a3characterControllerApplyInput(demoMode->character, &demoMode->pos, demoMode->rot);
 
 	//demoMode->obj_skeleton_ctrl->position.x = +(demoMode->pos.x);
 	//demoMode->obj_skeleton_ctrl->position.y = +(demoMode->pos.y);

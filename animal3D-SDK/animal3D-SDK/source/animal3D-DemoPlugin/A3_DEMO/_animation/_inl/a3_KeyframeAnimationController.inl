@@ -90,6 +90,19 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, a3f64 dt)
 			if (clipCtrl->keyframeIndex == clipCtrl->clip->keyframeIndex_final)
 			{
 				// handle forward transition
+				switch (clipCtrl->clip->transitionForward->flag)
+				{
+				case a3clip_branchFlag:
+					a3clipControllerSetClip(clipCtrl, clipCtrl->clipPool, a3BranchTransitionEvaluate(&clipCtrl->clip->transitionForward->branch), clipCtrl->playback_step, clipCtrl->playback_stepPerSec);
+					break;
+				default:
+					break;
+				}
+
+				if (clipCtrl->clip->transitionForward->actionExists)
+				{
+					clipCtrl->clip->transitionForward->action();
+				}
 
 				// default testing behavior: loop with overstep
 				clipCtrl->keyframeIndex = clipCtrl->clip->keyframeIndex_first;
@@ -117,7 +130,14 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, a3f64 dt)
 			if (clipCtrl->keyframeIndex == clipCtrl->clip->keyframeIndex_first)
 			{
 				// handle reverse transition
-
+				switch (clipCtrl->clip->transitionReverse->flag)
+				{
+				case a3clip_branchFlag:
+					a3clipControllerSetClip(clipCtrl, clipCtrl->clipPool, a3BranchTransitionEvaluate(&clipCtrl->clip->transitionForward->branch), clipCtrl->playback_step, clipCtrl->playback_stepPerSec);
+					break;
+				default:
+					break;
+				}
 				// default testing behavior: loop with overstep
 				clipCtrl->keyframeIndex = clipCtrl->clip->keyframeIndex_final;
 				clipCtrl->keyframe = clipCtrl->clipPool->keyframe + clipCtrl->keyframeIndex;

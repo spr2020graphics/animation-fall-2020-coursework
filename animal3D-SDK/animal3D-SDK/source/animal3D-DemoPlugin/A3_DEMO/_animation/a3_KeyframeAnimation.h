@@ -29,7 +29,6 @@
 #include "animal3D-A3DM/a3math/a3vector.h"
 #include "animal3D-A3DM/a3math/a3interpolation.h"
 
-
 //-----------------------------------------------------------------------------
 
 #ifdef __cplusplus
@@ -42,10 +41,12 @@ typedef enum a3_ClipTransitionFlag			a3_ClipTransitionFlag;
 typedef struct a3_ClipTransition			a3_ClipTransition;
 typedef struct a3_Clip						a3_Clip;
 typedef struct a3_ClipPool					a3_ClipPool;
+typedef struct a3_BranchTransition			a3_BranchTransition;
 #endif	// __cplusplus
 
-
 //-----------------------------------------------------------------------------
+
+typedef void (*a3_ClipTransitionAction)();
 
 // constant values
 enum
@@ -109,12 +110,27 @@ enum a3_ClipTransitionFlag
 	a3clip_branchFlag = 0x80,	// there is a branch/condition
 };
 
+struct a3_BranchTransition
+{
+	// the value to compare, pointer to somewhere else
+	a3real* input;
+
+	// branching transitions only support 2 possible output clip indices for now
+	a3i32 outClipOption1;
+	a3i32 outClipOption2;
+};
+
 // clip transition
 struct a3_ClipTransition
 {
 	a3_ClipTransitionFlag flag;
 	a3i32 offset;
 	a3i32 clipIndex;
+
+	a3boolean actionExists;
+	a3_ClipTransitionAction action;
+
+	a3_BranchTransition branch;
 };
 
 // description of single clip
@@ -164,7 +180,9 @@ a3i32 a3clipPoolCreate(a3_ClipPool* clipPool_out, const a3ui32 clipCount, const 
 a3i32 a3clipPoolRelease(a3_ClipPool* clipPool);
 
 // initialize clip transition
-a3i32 a3clipTransitionInit(a3_ClipTransition* transition, a3_ClipTransitionFlag const transitionFlag, const a3i32 offset, a3_Clip const* clip);
+a3i32 a3clipTransitionInit(a3_ClipTransition* transition, a3_ClipTransitionFlag const transitionFlag, const a3i32 offset, a3_Clip const* clip, a3boolean branch, a3i32* options, a3f32* transitionInput);
+
+a3i32 a3clipTransitionBindAction(a3_ClipTransition* transition, void* func);
 
 // initialize clip with first and last indices
 a3i32 a3clipInit(a3_Clip* clip_out, const a3byte clipName[a3keyframeAnimation_nameLenMax], a3_Keyframe const* keyframe_first, a3_Keyframe const* keyframe_final, a3i32* forwardT, a3i32* backT, a3f32* transitionInput);
@@ -179,6 +197,14 @@ a3i32 a3clipCalculateDuration(a3_ClipPool const* clipPool, const a3ui32 clipInde
 a3i32 a3clipDistributeDuration(a3_ClipPool const* clipPool, const a3ui32 clipIndex, const a3f64 playback_stepPerSec);
 
 
+///
+/// evaluate a given branching transition (if the transition input < 0.5, return option 1, else return option 2)
+/// NOTE: transition->index is a POINTER to a value stored elsewhere
+/// 
+a3ui32 a3BranchTransitionEvaluate(const a3_BranchTransition* transition);
+
+// Bing the input field of the given transition to the target address
+a3ui32 a3BranchTransitionBindInput(a3_BranchTransition* transition, a3real* target);
 //-----------------------------------------------------------------------------
 
 
