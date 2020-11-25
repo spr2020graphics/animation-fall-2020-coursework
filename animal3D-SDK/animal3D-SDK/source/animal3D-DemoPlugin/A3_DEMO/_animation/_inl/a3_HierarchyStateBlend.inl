@@ -750,6 +750,12 @@ inline a3_HierarchyPose* a3hierarchyPoseOpRevert(a3_HierarchyPose* pose_inout, c
 	return pose_inout;
 }
 
+inline a3_HierarchyPose* a3hierarchyPoseOpCreate(a3_HierarchyPose* pose_inout, const a3ui32 nodeCount)
+{
+	pose_inout->pose = malloc(sizeof(a3_SpatialPose) * nodeCount);
+	return pose_inout;
+}
+
 inline a3_HierarchyPose* a3clipOpAdd(a3_HierarchyPose* pose_out, a3_HierarchyPoseGroup* const poseGroup, a3_ClipController* const controller1, a3_ClipController* const controller2)
 {
 	a3_HierarchyPose controller1Result[1], controller2Result[1];

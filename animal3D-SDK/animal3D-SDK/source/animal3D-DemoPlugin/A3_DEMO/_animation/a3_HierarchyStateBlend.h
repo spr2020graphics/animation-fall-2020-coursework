@@ -232,6 +232,8 @@ a3_HierarchyPose* a3hierarchyPoseOpBiDirectionalScale(a3_HierarchyPose* pose_out
 
 a3_HierarchyPose* a3hierarchyPoseOpRevert(a3_HierarchyPose* pose_inout, const a3ui32 nodeCount);
 
+a3_HierarchyPose* a3hierarchyPoseOpCreate(a3_HierarchyPose* pose_inout, const a3ui32 nodeCount);
+
 a3_HierarchyPose* a3clipOpAdd(a3_HierarchyPose* pose_out, a3_HierarchyPoseGroup* const poseGroup, a3_ClipController* const controller1, a3_ClipController* const controller2);
 
 a3_HierarchyPose* a3hierarchyPoseOpFK(a3_HierarchyPose* pose_out, a3_HierarchyPose* pose_in, a3_Hierarchy* hierarchy, const a3ui32 nodeCount);
