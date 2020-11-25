@@ -266,17 +266,49 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 			//	-> get vector between base and end effector; if it extends max length, straighten limb
 			//	-> position of end effector's target is at the minimum possible distance along this vector
 			
-			a3vec4 baseToEffector = a3vec4_zero;
-			a3real4Diff(baseToEffector.v, controlLocator_wristEffector.v, controlLocator_wristBase.v);
-			a3vec4 shoulderToElbow = a3vec4_zero;
-			a3real4Diff(shoulderToElbow.v, jointTransform_elbow.v3.v, controlLocator_wristBase.v);
-			a3vec4 elbowToWrist = a3vec4_zero;
-			a3real4Diff(elbowToWrist.v, jointTransform_wrist.v3.v, jointTransform_elbow.v3.v);
+			a3vec3 baseToEffector = a3vec3_zero; //also known as D
+			a3real3Diff(baseToEffector.v, controlLocator_wristEffector.v, controlLocator_wristBase.v);
+			a3vec3 shoulderToElbow = a3vec3_zero;
+			a3real3Diff(shoulderToElbow.v, jointTransform_elbow.v3.v, controlLocator_wristBase.v);
+			a3vec3 elbowToWrist = a3vec3_zero;
+			a3real3Diff(elbowToWrist.v, jointTransform_wrist.v3.v, jointTransform_elbow.v3.v);
 			a3real shoulderToWristLen = a3real4LengthSquared(shoulderToElbow.v) + a3real4LengthSquared(elbowToWrist.v);
 			a3real baseToEffectorLen = a3real4LengthSquared(baseToEffector.v);
 
-			if (baseToEffectorLen > shoulderToWristLen) //no solution exists, straighten arm. Not sure what to do about rotation
+			if (baseToEffectorLen > shoulderToWristLen) //no solution exists, straighten arm.
 			{
+				//set direction from base to elbow to the baseToElbow length * baseToEffector
+				a3vec3 newElbowPos = baseToEffector;
+				a3real4MulS(newElbowPos.v, a3real4Length(shoulderToElbow.v)); //scale to appropriate length
+				a3real3Add(newElbowPos.v, jointTransform_shoulder.v3.v); //offset by shoulder pos
+				jointTransform_elbow.v3.xyz = newElbowPos;
+
+				//set direction from elbow to wrist to the elbowToWrist length * baseToEffector
+
+				a3vec3 newWristPos = baseToEffector;
+				a3real4MulS(newWristPos.v, a3real4Length(elbowToWrist.v));
+				a3real3Add(newWristPos.v, newElbowPos.v); //offset by elbow position
+				jointTransform_wrist.v3.xyz = newWristPos;
+			}
+			
+			else
+			{
+				a3vec3 baseToConstraint = a3vec3_zero;
+				a3real3Diff(baseToConstraint.v, controlLocator_wristConstraint.v, controlLocator_wristBase.v);
+
+				a3vec3 nVec = a3vec3_zero; //the non-normalized Normal Vector to the plane
+				a3real3Cross(nVec.v, baseToEffector.v, baseToConstraint.v);
+
+				a3vec3 nVecNormal = a3vec3_zero; //normalized version of nVec
+				a3real nVecLen = a3real3Length(nVec.v);
+				a3real3DivS(nVecNormal.v, nVecLen);
+
+				a3vec3 dNormal = baseToEffector;
+				a3real3DivS(dNormal.v, baseToEffectorLen);
+
+				a3vec3 hVecNormal = a3vec3_zero;
+				a3real3Cross(hVecNormal.v, nVecNormal.v, dNormal.v);
+
 
 			}
 
