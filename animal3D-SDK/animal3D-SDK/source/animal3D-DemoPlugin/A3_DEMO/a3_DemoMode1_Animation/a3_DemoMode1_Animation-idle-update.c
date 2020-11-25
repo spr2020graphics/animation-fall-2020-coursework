@@ -359,21 +359,7 @@ void a3animation_update_animation(a3_DemoMode1_Animation* demoMode, a3f64 const 
 	a3_ClipController* clipCtrl_fk = demoMode->clipCtrlA;
 	a3ui32 sampleIndex0, sampleIndex1;
 
-	if (demoMode->jumpTrigger == 1.0f)
-	{
-		// jump
-		a3characterControllerJump(demoMode->character, demoMode->jumpTrigger);
-	}
-	else if(demoMode->character->currentVelocity > 2.0f && demoMode->character->currentVelocity <= demoMode->character->maxWalkVelocity)
-	{
-		// walk
-		a3characterControllerWalk(demoMode->character, demoMode->mag_l);
-	}
-	else if (demoMode->character->currentVelocity > demoMode->character->maxWalkVelocity && demoMode->character->currentVelocity <= demoMode->character->maxRunVelocity)
-	{
-		// run
-		a3characterControllerRun(demoMode->character, demoMode->mag_l);
-	}
+	a3characterControllerUpdate(demoMode->character, activeHS_fk);
 
 	// resolve FK state
 	// update clip controller, keyframe lerp
