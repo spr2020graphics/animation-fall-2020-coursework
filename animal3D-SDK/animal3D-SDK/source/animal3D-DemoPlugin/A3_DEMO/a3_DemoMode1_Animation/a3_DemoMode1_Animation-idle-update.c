@@ -339,20 +339,15 @@ void a3animation_update_animation(a3_DemoMode1_Animation* demoMode, a3f64 const 
 		// jump
 		a3characterControllerJump(demoMode->character, demoMode->jumpTrigger);
 	}
-	else if(/*!demoMode->character->isJumping && */demoMode->mag_l > 0.0f && demoMode->mag_l <= demoMode->character->maxWalkThreshold)
+	else if(demoMode->character->currentVelocity > 2.0f && demoMode->character->currentVelocity <= demoMode->character->maxWalkVelocity)
 	{
 		// walk
 		a3characterControllerWalk(demoMode->character, demoMode->mag_l);
 	}
-	else if (/*!demoMode->character->isJumping && */demoMode->mag_l > demoMode->character->maxWalkThreshold && demoMode->mag_l <= demoMode->character->maxRunThreshold)
+	else if (demoMode->character->currentVelocity > demoMode->character->maxWalkVelocity && demoMode->character->currentVelocity <= demoMode->character->maxRunVelocity)
 	{
 		// run
 		a3characterControllerRun(demoMode->character, demoMode->mag_l);
-	}
-	else /*if(!demoMode->character->isJumping)*/
-	{
-		// idle
-		//a3characterControllerIdle(demoMode->character, demoMode->mag_l);
 	}
 
 	// resolve FK state
@@ -667,7 +662,7 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 	break;
 	}
 	// apply input
-	a3characterControllerApplyInput(demoMode->character, &demoMode->pos, demoMode->rot);
+	a3characterControllerApplyInput(demoMode->character, &demoMode->pos, demoMode->rot, (a3real)dt);
 
 	//demoMode->obj_skeleton_ctrl->position.x = +(demoMode->pos.x);
 	//demoMode->obj_skeleton_ctrl->position.y = +(demoMode->pos.y);

@@ -2,6 +2,7 @@
 #ifndef __ANIMAL3D_CHARACTER_CONTROLLER_INL
 #define __ANIMAL3D_CHARACTER_CONTROLLER_INL
 
+#include <stdio.h>
 
 //-----------------------------------------------------------------------------
 
@@ -10,16 +11,27 @@ inline a3ui32 a3characterControllerInit(a3_CharacterController* controller_out, 
 {
 	controller_out->animController = controller;
 	controller_out->jumpTrigger = jump;
-	controller_out->maxWalkThreshold = walkThreshold;
-	controller_out->maxRunThreshold = runThreshold;
+	controller_out->maxWalkVelocity = walkThreshold;
+	controller_out->maxRunVelocity = runThreshold;
+	controller_out->currentVelocity = 0.0f;
 	controller_out->object = obj;
 	controller_out->isJumping = false;
 
 	return 1;
 }
 
-inline a3ui32 a3characterControllerApplyInput(a3_CharacterController* controller, a3vec2* position, a3real rotation)
+inline a3ui32 a3characterControllerApplyInput(a3_CharacterController* controller, a3vec2* position, a3real rotation, a3real dt)
 {
+	a3vec3 tempPos;
+	tempPos.x = position->x;
+	tempPos.y = position->y;
+	tempPos.z = 0.0f;
+
+	a3vec3 tempVel;
+	a3real3QuotientS(tempVel.v, a3real3Diff(tempVel.v, tempPos.v, controller->object->position.v), dt);
+
+	controller->currentVelocity = a3real3Length(tempVel.v);
+
 	controller->object->position.x = +(position->x);
 	controller->object->position.y = +(position->y);
 

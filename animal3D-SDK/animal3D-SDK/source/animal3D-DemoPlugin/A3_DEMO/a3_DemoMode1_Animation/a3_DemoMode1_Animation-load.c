@@ -481,7 +481,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 			{6, 6},
 			{7, 7},
 			{8, 8},
-			{9, 9},
+			{8, 8},  // jump transitions backwards
 			{10,10},
 			{11,11},
 			{12,12},
@@ -513,7 +513,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 			{6, 6},
 			{7, 7},
 			{8, 8},
-			{9, 9},
+			{8, 8}, // jump transitions backwards
 			{10,10},
 			{11,11},
 			{12,12},

@@ -29,10 +29,12 @@ struct a3_CharacterController
 	a3boolean isJumping;
 
 	// this is an input threshold to trigger the walk cycle
-	a3f32 maxWalkThreshold;
+	a3f32 maxWalkVelocity;
 
 	// this is an input threshold to trigger the run cycle (greater than the walkThreshold)
-	a3f32 maxRunThreshold;
+	a3f32 maxRunVelocity;
+
+	a3f32 currentVelocity;
 
 	// so we can easily access these clips in the controller
 	a3ui32 walkClipIndex, runClipIndex, jumpClipIndex, idleClipIndex;
@@ -42,7 +44,7 @@ struct a3_CharacterController
 a3ui32 a3characterControllerInit(a3_CharacterController* controller_out, a3_ClipController* controller, a3_DemoSceneObject* obj, a3f32 jump, a3f32 walkThreshold, a3f32 runThreshold);
 
 // apply position and rotation input to an object
-a3ui32 a3characterControllerApplyInput(a3_CharacterController* controller, a3vec2* position, a3real rotation);
+a3ui32 a3characterControllerApplyInput(a3_CharacterController* controller, a3vec2* position, a3real rotation, a3real dt);
 
 // play jump anim + modify vertical position
 a3ui32 a3characterControllerJump(a3_CharacterController* controller, a3f32 blendVal);
