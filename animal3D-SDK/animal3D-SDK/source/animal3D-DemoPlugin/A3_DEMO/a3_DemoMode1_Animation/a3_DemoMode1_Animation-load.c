@@ -557,7 +557,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 				demoMode->clipPool->keyframe + sampleIndexFirst[j],
 				demoMode->clipPool->keyframe + sampleIndexFinal[j] - 1,
 				(clipIndexForward + j)->v,
-				(clipIndexBack + j)->v, &demoMode->character->jumpTrigger);
+				(clipIndexBack + j)->v, demoMode->character->jumpTrigger);
 			a3clipCalculateDuration(demoMode->clipPool, j, fps);
 		}
 
@@ -568,20 +568,29 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_skintest");
 		a3clipControllerInit(demoMode->clipCtrlB, "xbot_ctrlB", demoMode->clipPool, j, rate, fps);
 
+		a3ui32 temp[3];
+
 		// set up the character controller's target idle, jump, walk, and run indices
 		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_idle_f");
 		demoMode->character->idleClipIndex = j;
+		temp[0] = j;
 		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_jump_f");
 		demoMode->character->jumpClipIndex = j;
 		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_walk_f");
 		demoMode->character->walkClipIndex = j;
+		temp[1] = j;
 		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_run_f");
 		demoMode->character->runClipIndex = j;
+		temp[2] = j;
 
-		demoMode->walkThreshold = 0.5f;
-		demoMode->runThreshold = 1.0f;
+		demoMode->walkThreshold = 4.0f;
 
-		a3characterControllerInit(demoMode->character, demoMode->clipCtrlA, demoMode->obj_skeleton_ctrl, demoMode->jumpTrigger, demoMode->walkThreshold, demoMode->runThreshold);
+		for (a3ui32 i = 0; i < 3; i++)
+		{
+			a3clipControllerInit(&demoMode->characterAnimControllers[i], "character\0", demoMode->clipPool, temp[i], rate, fps);
+		}
+
+		a3characterControllerInit(demoMode->character, demoMode->characterAnimControllers, demoMode->obj_skeleton_ctrl, hierarchyPoseGroup, &demoMode->jumpTrigger, demoMode->walkThreshold);
 
 		// set up jump transition action
 		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_jump_f");
@@ -622,7 +631,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	demoMode->obj_skeleton->euler.y = a3real_oneeighty;
 
 	// control node
-	demoMode->obj_skeleton_ctrl->position.y = +a3real_four;
+	//demoMode->obj_skeleton_ctrl->position.y = +a3real_four;
 	demoMode->obj_skeleton_ctrl->euler.z = a3real_oneeighty;
 
 	// effectors

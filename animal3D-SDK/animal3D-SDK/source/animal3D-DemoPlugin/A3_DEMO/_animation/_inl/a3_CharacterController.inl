@@ -7,12 +7,12 @@
 //-----------------------------------------------------------------------------
 
 
-inline a3ui32 a3characterControllerInit(a3_CharacterController* controller_out, a3_ClipController* controller, a3_DemoSceneObject* obj, a3f32 jump, a3f32 walkThreshold, a3f32 runThreshold)
+inline a3ui32 a3characterControllerInit(a3_CharacterController* controller_out, a3_ClipController* controllers, a3_DemoSceneObject* obj, a3_HierarchyPoseGroup* poses, a3f32* jump, a3f32 walkThreshold)
 {
-	controller_out->animController = controller;
+	controller_out->animController = controllers;
 	controller_out->jumpTrigger = jump;
+	controller_out->poseGroup = poses;
 	controller_out->maxWalkVelocity = walkThreshold;
-	controller_out->maxRunVelocity = runThreshold;
 	controller_out->currentVelocity = 0.0f;
 	controller_out->object = obj;
 	controller_out->isJumping = false;
@@ -37,7 +37,31 @@ inline a3ui32 a3characterControllerApplyInput(a3_CharacterController* controller
 
 	controller->object->euler.z = -a3trigValid_sind(rotation);
 
+	printf("%f \n", controller->currentVelocity);
+
 	return 1;
+}
+
+inline a3ui32 a3characterControllerUpdate(a3_CharacterController* controller, a3_HierarchyState* output)
+{
+	if (controller)
+	{
+		if (*controller->jumpTrigger == 1.0f)
+		{
+			// jump
+			a3characterControllerJump(controller);
+			*controller->jumpTrigger = 0.0f;
+		}
+		else if (controller->currentVelocity > 0.0f)
+		{
+			// walk
+			a3characterControllerWalk(controller, output);
+		}
+
+		return 1;
+	}
+
+	return 0;
 }
 
 inline void a3characterToggleIsJumping()
@@ -45,32 +69,29 @@ inline void a3characterToggleIsJumping()
 	// this is just a stub from experimenting with "events"
 }
 
-inline a3ui32 a3characterControllerJump(a3_CharacterController* controller, a3f32 blendVal)
+inline a3ui32 a3characterControllerJump(a3_CharacterController* controller)
 {
 	// just trigger animation for now, still need to actually modify the position
-	a3clipControllerSetClip(controller->animController, controller->animController->clipPool, controller->jumpClipIndex, controller->animController->playback_step, controller->animController->playback_stepPerSec);
+	
 	controller->isJumping = true;
 
 	return 1;
 }
 
-inline a3ui32 a3characterControllerWalk(a3_CharacterController* controller, a3f32 blendVal)
+inline a3ui32 a3characterControllerWalk(a3_CharacterController* controller, a3_HierarchyState* output)
 {
-	a3clipControllerSetClip(controller->animController, controller->animController->clipPool, controller->walkClipIndex, controller->animController->playback_step, controller->animController->playback_stepPerSec);
+	//a3hierarchyPoseOpIdentity(output->animPose, controller->poseGroup->hierarchy->numNodes);
+
+	a3real u = controller->currentVelocity / controller->maxWalkVelocity;
+
+	a3clipOpLerp(output->animPose, controller->poseGroup, &controller->animController[1], &controller->animController[2], u);
 
 	return 1;
 }
 
-inline a3ui32 a3characterControllerRun(a3_CharacterController* controller, a3f32 blendVal)
+inline a3ui32 a3characterControllerIdle(a3_CharacterController* controller)
 {
-	a3clipControllerSetClip(controller->animController, controller->animController->clipPool, controller->runClipIndex, controller->animController->playback_step, controller->animController->playback_stepPerSec);
-
-	return 1;
-}
-
-inline a3ui32 a3characterControllerIdle(a3_CharacterController* controller, a3f32 blendVal)
-{
-	a3clipControllerSetClip(controller->animController, controller->animController->clipPool, controller->idleClipIndex, controller->animController->playback_step, controller->animController->playback_stepPerSec);
+	
 
 	return 1;
 }
