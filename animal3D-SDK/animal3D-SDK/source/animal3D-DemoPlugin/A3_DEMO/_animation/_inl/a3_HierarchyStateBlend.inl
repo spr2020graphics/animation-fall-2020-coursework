@@ -760,6 +760,9 @@ inline a3_HierarchyPose* a3clipOpAdd(a3_HierarchyPose* pose_out, a3_HierarchyPos
 {
 	a3_HierarchyPose controller1Result[1], controller2Result[1];
 
+	a3hierarchyPoseOpCreate(controller1Result, poseGroup->hierarchy->numNodes);
+	a3hierarchyPoseOpCreate(controller2Result, poseGroup->hierarchy->numNodes);
+
 	a3hierarchyPoseOpIdentity(controller1Result, poseGroup->hierarchy->numNodes);
 	a3hierarchyPoseOpIdentity(controller2Result, poseGroup->hierarchy->numNodes);
 
@@ -800,6 +803,9 @@ inline a3_HierarchyPose* a3clipOpLerp(a3_HierarchyPose* pose_out, a3_HierarchyPo
 {
 	a3_HierarchyPose controller1Result[1], controller2Result[1];
 
+	a3hierarchyPoseOpCreate(controller1Result, poseGroup->hierarchy->numNodes);
+	a3hierarchyPoseOpCreate(controller2Result, poseGroup->hierarchy->numNodes);
+
 	a3hierarchyPoseOpIdentity(controller1Result, poseGroup->hierarchy->numNodes);
 	a3hierarchyPoseOpIdentity(controller2Result, poseGroup->hierarchy->numNodes);
 
@@ -814,6 +820,8 @@ inline a3_HierarchyPose* a3clipOpLerp(a3_HierarchyPose* pose_out, a3_HierarchyPo
 inline a3_HierarchyPose* a3clipOpScale(a3_HierarchyPose* pose_out, a3_HierarchyPoseGroup* const poseGroup, a3_ClipController* const controller1, const a3real u)
 {
 	a3_HierarchyPose clipAResult[1];
+
+	a3hierarchyPoseOpCreate(clipAResult, poseGroup->hierarchy->numNodes);
 	a3hierarchyPoseOpIdentity(clipAResult, poseGroup->hierarchy->numNodes);
 
 	a3clipOpSampleClip(clipAResult, poseGroup, controller1);
@@ -826,6 +834,7 @@ inline a3_HierarchyPose* a3clipOpScale(a3_HierarchyPose* pose_out, a3_HierarchyP
 inline a3_HierarchyPose* a3clipOpNegate(a3_HierarchyPose* pose_out, a3_HierarchyPoseGroup* const poseGroup, a3_ClipController* const controller1)
 {
 	a3_HierarchyPose clipAResult[1];
+	a3hierarchyPoseOpCreate(clipAResult, poseGroup->hierarchy->numNodes);
 	a3hierarchyPoseOpIdentity(clipAResult, poseGroup->hierarchy->numNodes);
 
 	a3clipOpSampleClip(clipAResult, poseGroup, controller1);
