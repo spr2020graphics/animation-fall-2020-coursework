@@ -185,6 +185,8 @@ void a3animation_update_ik(a3_HierarchyState* activeHS,
 	if (activeHS->hierarchy == baseHS->hierarchy &&
 		activeHS->hierarchy == poseGroup->hierarchy)
 	{
+		a3kinematicsSolveInverse(activeHS);
+		a3kinematicsSolveForward(activeHS);
 		// IK pipeline
 		// ****TO-DO: direct opposite of FK
 
@@ -289,9 +291,34 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 				//set direction from elbow to wrist to the elbowToWrist length * baseToEffector
 			
 				a3vec3 newWristPos = shoulderToEffector;
-				a3real3MulS(newWristPos.v, a3real4Length(elbowToWrist.v));
+				a3real3MulS(newWristPos.v, a3real3Length(elbowToWrist.v));
 				a3real3Add(newWristPos.v, newElbowPos.v); //offset by elbow position
 				jointTransform_wrist.v3.xyz = newWristPos;
+
+				a3vec3 shoulderToConstraint = a3vec3_zero;
+				a3real3Diff(shoulderToConstraint.v, controlLocator_wristConstraint.v, jointTransform_shoulder.v3.v);
+
+				//apply rotations?
+				a3vec3 nVec = a3vec3_zero; //the non-normalized Normal Vector to the plane
+				a3real3Cross(nVec.v, shoulderToEffector.v, shoulderToConstraint.v);
+
+				a3vec3 nVecNormal = a3vec3_zero; //normalized version of nVec
+				a3real nVecLen = a3real3Length(nVec.v);
+				a3real3QuotientS(nVecNormal.v, nVec.v, nVecLen);
+
+				a3real3Diff(shoulderToElbow.v, jointTransform_elbow.v3.v, jointTransform_shoulder.v3.v);
+				a3real3Normalize(shoulderToElbow.v);
+				jointTransform_shoulder.v0.xyz = shoulderToElbow;
+
+				jointTransform_shoulder.v2.xyz = nVecNormal;
+				a3real3Cross(jointTransform_shoulder.v1.xyz.v, nVecNormal.v, shoulderToElbow.v);
+
+				a3real3Diff(elbowToWrist.v, jointTransform_wrist.v3.v, jointTransform_elbow.v3.v);
+				a3real3Normalize(elbowToWrist.v);
+				jointTransform_elbow.v0.xyz = elbowToWrist;
+
+				jointTransform_elbow.v2.xyz = nVecNormal;
+				a3real3Cross(jointTransform_elbow.v1.xyz.v, nVecNormal.v, elbowToWrist.v);
 			}
 			
 			else
@@ -304,7 +331,7 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 			
 				a3vec3 nVecNormal = a3vec3_zero; //normalized version of nVec
 				a3real nVecLen = a3real3Length(nVec.v);
-				a3real3DivS(nVecNormal.v, nVecLen);
+				a3real3QuotientS(nVecNormal.v, nVec.v, nVecLen);
 			
 				a3vec3 dNormal = shoulderToEffector;
 				a3real3DivS(dNormal.v, shoulderEffectorLen);
@@ -335,11 +362,34 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 				jointTransform_elbow.v3.xyz = newElbowPos;
 			
 				jointTransform_wrist.v3.xyz = controlLocator_wristEffector.xyz;
+
+
+				//Set rotations
+				a3real3Diff(shoulderToElbow.v, jointTransform_elbow.v3.v, jointTransform_shoulder.v3.v);
+				a3real3Normalize(shoulderToElbow.v);
+				jointTransform_shoulder.v0.xyz = shoulderToElbow;
+
+				jointTransform_shoulder.v2.xyz = nVecNormal;
+				a3real3Cross(jointTransform_shoulder.v1.xyz.v, nVecNormal.v, shoulderToElbow.v);
+
+				a3real3Diff(elbowToWrist.v, jointTransform_wrist.v3.v, jointTransform_elbow.v3.v);
+				a3real3Normalize(elbowToWrist.v);
+				jointTransform_elbow.v0.xyz = elbowToWrist;
+
+				jointTransform_elbow.v2.xyz = nVecNormal;
+				a3real3Cross(jointTransform_elbow.v1.xyz.v, nVecNormal.v, elbowToWrist.v);
 			}
 			//
 			// ****TO-DO: 
 			// reassign resolved transforms to OBJECT-SPACE matrices
 			// work from root to leaf too get correct transformations
+
+			activeHS->objectSpace->pose[j_shoulder].transformMat = jointTransform_shoulder;
+			activeHS->objectSpace->pose[j_elbow].transformMat = jointTransform_elbow;
+			activeHS->objectSpace->pose[j_wrist].transformMat = jointTransform_wrist;
+
+			a3animation_update_ik(activeHS, baseHS, poseGroup);
+
 
 		}
 	}
