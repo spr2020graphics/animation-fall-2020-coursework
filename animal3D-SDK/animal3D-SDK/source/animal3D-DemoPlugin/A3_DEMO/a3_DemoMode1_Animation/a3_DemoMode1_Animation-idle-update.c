@@ -428,6 +428,10 @@ void a3animation_update_animation(a3_DemoMode1_Animation* demoMode, a3f64 const 
 	sampleIndex1 = demoMode->clipPool->keyframe[clipCtrl_fk->keyframeIndex].sampleIndex1;
 	a3ui32 idleIndex = demoMode->clipPool->keyframe[demoMode->characterAnimControllers[0].keyframeIndex].sampleIndex0;
 
+	tempPose->pose[0].translate.x = demoMode->sceneGraphState->objectSpace->pose[demoMode->character->object->sceneGraphIndex].translate.x;
+	tempPose->pose[0].translate.y = demoMode->sceneGraphState->objectSpace->pose[demoMode->character->object->sceneGraphIndex].translate.y;
+	tempPose->pose[0].translate.z = demoMode->sceneGraphState->objectSpace->pose[demoMode->character->object->sceneGraphIndex].translate.z;
+
 	a3hierarchyPoseLerp(activeHS_fk->animPose,
 		poseGroup->hpose + sampleIndex0, tempPose,
 		demoMode->character->currentVelocity / demoMode->character->maxWalkVelocity, activeHS_fk->hierarchy->numNodes);
