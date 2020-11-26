@@ -482,8 +482,8 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 			{7, 7},
 			{8, 8},
 			{8, 8},  // jump transitions backwards
-			{10,10},
-			{11,11},
+			{8,8},
+			{8,8},
 			{12,12},
 			{13,13},
 			{14,14},
@@ -514,8 +514,8 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 			{7, 7},
 			{8, 8},
 			{8, 8}, // jump transitions backwards
-			{10,10},
-			{11,11},
+			{8,8},
+			{8,8},
 			{12,12},
 			{13,13},
 			{14,14},
@@ -568,24 +568,25 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_skintest");
 		a3clipControllerInit(demoMode->clipCtrlB, "xbot_ctrlB", demoMode->clipPool, j, rate, fps);
 
-		a3ui32 temp[3];
+		a3ui32 temp[4];
 
 		// set up the character controller's target idle, jump, walk, and run indices
 		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_idle_f");
 		demoMode->character->idleClipIndex = j;
 		temp[0] = j;
-		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_jump_f");
-		demoMode->character->jumpClipIndex = j;
 		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_walk_f");
 		demoMode->character->walkClipIndex = j;
 		temp[1] = j;
 		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_run_f");
 		demoMode->character->runClipIndex = j;
 		temp[2] = j;
+		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_jump_f");
+		demoMode->character->jumpClipIndex = j;
+		temp[3] = j;
 
 		demoMode->walkThreshold = 4.0f;
 
-		for (a3ui32 i = 0; i < 3; i++)
+		for (a3ui32 i = 0; i < 4; i++)
 		{
 			a3clipControllerInit(&demoMode->characterAnimControllers[i], "character\0", demoMode->clipPool, temp[i], rate, fps);
 		}

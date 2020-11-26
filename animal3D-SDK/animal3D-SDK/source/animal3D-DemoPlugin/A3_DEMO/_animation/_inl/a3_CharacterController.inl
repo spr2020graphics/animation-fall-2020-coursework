@@ -37,22 +37,22 @@ inline a3ui32 a3characterControllerApplyInput(a3_CharacterController* controller
 
 	controller->object->euler.z = -a3trigValid_sind(rotation);
 
-	printf("%f \n", controller->currentVelocity);
+	//printf("%f \n", controller->currentVelocity);
 
 	return 1;
 }
 
-inline a3ui32 a3characterControllerUpdate(a3_CharacterController* controller, a3_HierarchyState* output)
+inline a3ui32 a3characterControllerUpdate(a3_CharacterController* controller, a3_HierarchyPose* output)
 {
 	if (controller)
 	{
 		if (*controller->jumpTrigger == 1.0f)
 		{
 			// jump
-			a3characterControllerJump(controller);
+			a3characterControllerJump(controller, output);
 			*controller->jumpTrigger = 0.0f;
 		}
-		else if (controller->currentVelocity > 0.0f)
+		else if (controller->currentVelocity > 0.0f && !controller->isJumping)
 		{
 			// walk
 			a3characterControllerWalk(controller, output);
@@ -69,22 +69,22 @@ inline void a3characterToggleIsJumping()
 	// this is just a stub from experimenting with "events"
 }
 
-inline a3ui32 a3characterControllerJump(a3_CharacterController* controller)
+inline a3ui32 a3characterControllerJump(a3_CharacterController* controller, a3_HierarchyPose* output)
 {
 	// just trigger animation for now, still need to actually modify the position
-	
+
+	a3clipOpSampleClip(output, controller->poseGroup, &controller->animController[4]);
+
 	controller->isJumping = true;
 
 	return 1;
 }
 
-inline a3ui32 a3characterControllerWalk(a3_CharacterController* controller, a3_HierarchyState* output)
+inline a3ui32 a3characterControllerWalk(a3_CharacterController* controller, a3_HierarchyPose* output)
 {
-	//a3hierarchyPoseOpIdentity(output->animPose, controller->poseGroup->hierarchy->numNodes);
-
 	a3real u = controller->currentVelocity / controller->maxWalkVelocity;
 
-	a3clipOpLerp(output->animPose, controller->poseGroup, &controller->animController[1], &controller->animController[2], u);
+	a3clipOpLerp(output, controller->poseGroup, &controller->animController[1], &controller->animController[2], u);
 
 	return 1;
 }

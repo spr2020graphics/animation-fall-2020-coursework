@@ -47,15 +47,15 @@ a3ui32 a3characterControllerInit(a3_CharacterController* controller_out, a3_Clip
 // apply position and rotation input to an object
 a3ui32 a3characterControllerApplyInput(a3_CharacterController* controller, a3vec2* position, a3real rotation, a3real dt);
 
-a3ui32 a3characterControllerUpdate(a3_CharacterController* controller, a3_HierarchyState* output);
+a3ui32 a3characterControllerUpdate(a3_CharacterController* controller, a3_HierarchyPose* output);
 
 // play jump anim + modify vertical position
-a3ui32 a3characterControllerJump(a3_CharacterController* controller);
+a3ui32 a3characterControllerJump(a3_CharacterController* controller, a3_HierarchyPose* output);
 
 // utility to set the isJumping field of a character
 void a3characterToggleIsJumping();
 
-a3ui32 a3characterControllerWalk(a3_CharacterController* controller, a3_HierarchyState* output);
+a3ui32 a3characterControllerWalk(a3_CharacterController* controller, a3_HierarchyPose* output);
 
 a3ui32 a3characterControllerIdle(a3_CharacterController* controller);
 

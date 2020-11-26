@@ -359,16 +359,31 @@ void a3animation_update_animation(a3_DemoMode1_Animation* demoMode, a3f64 const 
 	a3_ClipController* clipCtrl_fk = demoMode->clipCtrlA;
 	a3ui32 sampleIndex0, sampleIndex1;
 
-	a3characterControllerUpdate(demoMode->character, activeHS_fk);
+	a3_HierarchyPose tempPose[1];
+	a3hierarchyPoseOpCreate(tempPose, activeHS_fk->hierarchy->numNodes);
+	a3hierarchyPoseOpIdentity(tempPose, activeHS_fk->hierarchy->numNodes);
+
+	a3characterControllerUpdate(demoMode->character, tempPose);
 
 	// resolve FK state
 	// update clip controller, keyframe lerp
 	a3clipControllerUpdate(clipCtrl_fk, dt);
+	
+	for (a3ui32 i = 0; i < 4; i++)
+	{
+		a3clipControllerUpdate(&demoMode->characterAnimControllers[i], dt);
+	}
+
 	sampleIndex0 = demoMode->clipPool->keyframe[clipCtrl_fk->keyframeIndex].sampleIndex0;
 	sampleIndex1 = demoMode->clipPool->keyframe[clipCtrl_fk->keyframeIndex].sampleIndex1;
+	a3ui32 idleIndex = demoMode->clipPool->keyframe[demoMode->characterAnimControllers[0].keyframeIndex].sampleIndex0;
+
 	a3hierarchyPoseLerp(activeHS_fk->animPose,
-		poseGroup->hpose + sampleIndex0, poseGroup->hpose + sampleIndex1,
-		(a3real)clipCtrl_fk->keyframeParam, activeHS_fk->hierarchy->numNodes);
+		poseGroup->hpose + sampleIndex0, tempPose,
+		demoMode->character->currentVelocity / demoMode->character->maxWalkVelocity, activeHS_fk->hierarchy->numNodes);
+
+	
+
 	// run FK pipeline
 	a3animation_update_fk(activeHS_fk, baseHS, poseGroup);
 
