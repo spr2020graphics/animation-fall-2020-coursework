@@ -73,7 +73,7 @@ inline a3ui32 a3characterControllerJump(a3_CharacterController* controller, a3_H
 {
 	// just trigger animation for now, still need to actually modify the position
 
-	a3clipOpSampleClip(output, controller->poseGroup, &controller->animController[4]);
+	
 
 	controller->isJumping = true;
 

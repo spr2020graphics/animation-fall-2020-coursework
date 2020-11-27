@@ -409,11 +409,13 @@ void a3animation_update_animation(a3_DemoMode1_Animation* demoMode, a3f64 const 
 	a3_ClipController* clipCtrl_fk = demoMode->clipCtrlA;
 	a3ui32 sampleIndex0, sampleIndex1;
 
-	a3_HierarchyPose tempPose[1];
-	a3hierarchyPoseOpCreate(tempPose, activeHS_fk->hierarchy->numNodes);
-	a3hierarchyPoseOpIdentity(tempPose, activeHS_fk->hierarchy->numNodes);
+	a3_HierarchyPose movingPose[1], idlePose[1];
+	a3hierarchyPoseOpCreate(movingPose, activeHS_fk->hierarchy->numNodes);
+	a3hierarchyPoseOpIdentity(movingPose, activeHS_fk->hierarchy->numNodes);
+	a3hierarchyPoseOpCreate(idlePose, activeHS_fk->hierarchy->numNodes);
+	a3hierarchyPoseOpIdentity(idlePose, activeHS_fk->hierarchy->numNodes);
 
-	a3characterControllerUpdate(demoMode->character, tempPose);
+	a3characterControllerUpdate(demoMode->character, movingPose);
 
 	// resolve FK state
 	// update clip controller, keyframe lerp
@@ -426,17 +428,16 @@ void a3animation_update_animation(a3_DemoMode1_Animation* demoMode, a3f64 const 
 
 	sampleIndex0 = demoMode->clipPool->keyframe[clipCtrl_fk->keyframeIndex].sampleIndex0;
 	sampleIndex1 = demoMode->clipPool->keyframe[clipCtrl_fk->keyframeIndex].sampleIndex1;
-	a3ui32 idleIndex = demoMode->clipPool->keyframe[demoMode->characterAnimControllers[0].keyframeIndex].sampleIndex0;
 
-	tempPose->pose[0].translate.x = demoMode->sceneGraphState->objectSpace->pose[demoMode->character->object->sceneGraphIndex].translate.x;
-	tempPose->pose[0].translate.y = demoMode->sceneGraphState->objectSpace->pose[demoMode->character->object->sceneGraphIndex].translate.y;
-	tempPose->pose[0].translate.z = demoMode->sceneGraphState->objectSpace->pose[demoMode->character->object->sceneGraphIndex].translate.z;
+	movingPose->pose[0].translate.x = demoMode->sceneGraphState->objectSpace->pose[demoMode->character->object->sceneGraphIndex].translate.x;
+	movingPose->pose[0].translate.y = demoMode->sceneGraphState->objectSpace->pose[demoMode->character->object->sceneGraphIndex].translate.y;
+	movingPose->pose[0].translate.z = demoMode->sceneGraphState->objectSpace->pose[demoMode->character->object->sceneGraphIndex].translate.z;
 
-	a3hierarchyPoseLerp(activeHS_fk->animPose,
-		poseGroup->hpose + sampleIndex0, tempPose,
-		demoMode->character->currentVelocity / demoMode->character->maxWalkVelocity, activeHS_fk->hierarchy->numNodes);
+	a3hierarchyPoseLerp(idlePose,
+		poseGroup->hpose + sampleIndex0, poseGroup->hpose + sampleIndex1,
+		(a3real)clipCtrl_fk->keyframeParam, activeHS_fk->hierarchy->numNodes);
 
-	
+	a3hierarchyPoseLerp(activeHS_fk->animPose, idlePose, movingPose, demoMode->character->currentVelocity / demoMode->character->maxWalkVelocity, activeHS_fk->hierarchy->numNodes);	// 1 for now, will always be moving pose
 
 	// run FK pipeline
 	a3animation_update_fk(activeHS_fk, baseHS, poseGroup);
