@@ -186,6 +186,7 @@ void a3animation_update_ik(a3_HierarchyState* activeHS,
 		activeHS->hierarchy == poseGroup->hierarchy)
 	{
 		a3kinematicsSolveInverse(activeHS);
+		a3hierarchyPoseRestore(activeHS, activeHS->hierarchy->numNodes, poseGroup->channel, poseGroup->order);
 		a3kinematicsSolveForward(activeHS);
 		// IK pipeline
 		// ****TO-DO: direct opposite of FK
@@ -457,7 +458,7 @@ void a3animation_update_animation(a3_DemoMode1_Animation* demoMode, a3f64 const 
 		// run solvers
 		a3animation_update_applyEffectors(demoMode, activeHS_ik, baseHS, poseGroup);
 		// run full IK pipeline (if not resolving with effectors)
-		//a3animation_update_ik(activeHS_ik, baseHS, poseGroup);
+		a3animation_update_ik(activeHS_ik, baseHS, poseGroup);
 	}
 
 	// blend FK/IK to final
