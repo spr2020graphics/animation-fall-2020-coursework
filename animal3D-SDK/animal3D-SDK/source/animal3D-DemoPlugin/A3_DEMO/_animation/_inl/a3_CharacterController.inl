@@ -73,7 +73,7 @@ inline a3ui32 a3characterControllerUpdate(a3_CharacterController* controller, a3
 		{
 			a3characterControllerJump(controller, output);
 		}
-		else if (controller->currentVelocity > 0.0f && !controller->isJumping)
+		if (controller->currentVelocity > 0.0f && !controller->isJumping)
 		{
 			// walk
 			a3characterControllerWalk(controller, output);
@@ -97,7 +97,11 @@ inline void a3characterToggleIsJumping(a3_CharacterController* controller)
 	{
 		controller->isJumping = true;
 		controller->jumpRemaining = JUMP_DURATION;
-
+		a3clipControllerSetClip(&controller->animControllers[3], controller->animControllers[3].clipPool, controller->jumpClipIndex, controller->animControllers[3].playback_step, controller->animControllers[3].playback_stepPerSec);
+		controller->animControllers[3].clipTime_sec = 0.0f;
+		controller->animControllers[3].clipParam = 0.0f;
+		controller->animControllers[3].keyframeTime_sec = 0.0f;
+		controller->animControllers[3].keyframeParam = 0.0f;
 		//set clip
 	}
 	// this is just a stub from experimenting with "events"
@@ -107,7 +111,9 @@ inline a3ui32 a3characterControllerJump(a3_CharacterController* controller, a3_H
 {
 	// just trigger animation for now, still need to actually modify the position
 
-	
+	a3real u = 1.0f;
+
+	a3clipOpLerp(output, controller->poseGroup, controller->activeAnimController, &controller->animControllers[3], u);
 
 	//controller->isJumping = true;
 
@@ -118,7 +124,7 @@ inline a3ui32 a3characterControllerWalk(a3_CharacterController* controller, a3_H
 {
 	a3real u = controller->currentVelocity / controller->maxWalkVelocity;
 
-	if (u > controller->maxWalkVelocity)
+	if (u > 1.0f)
 	{
 		u = 1.0f;
 	}

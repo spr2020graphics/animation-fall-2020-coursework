@@ -429,7 +429,7 @@ void a3animation_update_animation(a3_DemoMode1_Animation* demoMode, a3f64 const 
 	sampleIndex1 = demoMode->clipPool->keyframe[demoMode->character->animControllers[0].keyframeIndex].sampleIndex1;
 
 	movingPose->pose[0].translate.x = demoMode->sceneGraphState->objectSpace->pose[demoMode->character->object->sceneGraphIndex].translate.x;
-	movingPose->pose[0].translate.y = demoMode->sceneGraphState->objectSpace->pose[demoMode->character->object->sceneGraphIndex].translate.y;
+	//movingPose->pose[0].translate.y = demoMode->sceneGraphState->objectSpace->pose[demoMode->character->object->sceneGraphIndex].translate.y;
 	movingPose->pose[0].translate.z = demoMode->sceneGraphState->objectSpace->pose[demoMode->character->object->sceneGraphIndex].translate.z;
 
 	a3hierarchyPoseLerp(idlePose,
@@ -438,12 +438,19 @@ void a3animation_update_animation(a3_DemoMode1_Animation* demoMode, a3f64 const 
 
 	a3real u = demoMode->character->currentVelocity / demoMode->character->maxWalkVelocity;
 
-	if (u > demoMode->character->maxWalkVelocity)
+	if (u > 1.0f)
 	{
 		u = 1.0f;
 	}
-
-	a3hierarchyPoseLerp(activeHS_fk->animPose, idlePose, movingPose, u, activeHS_fk->hierarchy->numNodes);	// 1 for now, will always be moving pose
+	
+	if (demoMode->character->isJumping)
+	{
+		a3hierarchyPoseLerp(activeHS_fk->animPose, idlePose, movingPose, 1, activeHS_fk->hierarchy->numNodes);	// 1 for now, will always be moving pose
+	}
+	else
+	{
+		a3hierarchyPoseLerp(activeHS_fk->animPose, idlePose, movingPose, u, activeHS_fk->hierarchy->numNodes);	// 1 for now, will always be moving pose
+	}
 
 	// run FK pipeline
 	a3animation_update_fk(activeHS_fk, baseHS, poseGroup);
