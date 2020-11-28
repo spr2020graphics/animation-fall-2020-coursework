@@ -118,6 +118,11 @@ inline a3ui32 a3characterControllerWalk(a3_CharacterController* controller, a3_H
 {
 	a3real u = controller->currentVelocity / controller->maxWalkVelocity;
 
+	if (u > controller->maxWalkVelocity)
+	{
+		u = 1.0f;
+	}
+
 	a3clipOpLerp(output, controller->poseGroup, &controller->animControllers[1], &controller->animControllers[2], u);
 
 	return 1;

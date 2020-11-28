@@ -436,7 +436,14 @@ void a3animation_update_animation(a3_DemoMode1_Animation* demoMode, a3f64 const 
 		poseGroup->hpose + sampleIndex0, poseGroup->hpose + sampleIndex1,
 		(a3real)clipCtrl_fk->keyframeParam, activeHS_fk->hierarchy->numNodes);
 
-	a3hierarchyPoseLerp(activeHS_fk->animPose, idlePose, movingPose, demoMode->character->currentVelocity / demoMode->character->maxWalkVelocity, activeHS_fk->hierarchy->numNodes);	// 1 for now, will always be moving pose
+	a3real u = demoMode->character->currentVelocity / demoMode->character->maxWalkVelocity;
+
+	if (u > demoMode->character->maxWalkVelocity)
+	{
+		u = 1.0f;
+	}
+
+	a3hierarchyPoseLerp(activeHS_fk->animPose, idlePose, movingPose, u, activeHS_fk->hierarchy->numNodes);	// 1 for now, will always be moving pose
 
 	// run FK pipeline
 	a3animation_update_fk(activeHS_fk, baseHS, poseGroup);
