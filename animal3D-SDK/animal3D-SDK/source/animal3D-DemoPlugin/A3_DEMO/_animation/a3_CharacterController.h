@@ -21,6 +21,9 @@ struct a3_CharacterController
 	// reference to the set of animation controllers for this character (0 = idle, 1 = walk, 2 = run, 3 = jump)
 	a3_ClipController* animControllers;
 
+	// pointer to the active animation controller, used to blend between "any" state and jump
+	a3_ClipController* activeAnimController;
+
 	// a reference to the set of poses for this character
 	a3_HierarchyPoseGroup* poseGroup;
 

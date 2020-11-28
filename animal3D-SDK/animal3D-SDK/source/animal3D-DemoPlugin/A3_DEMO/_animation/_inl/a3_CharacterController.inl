@@ -17,6 +17,8 @@ inline a3ui32 a3characterControllerInit(a3_CharacterController* controller_out, 
 	controller_out->object = obj;
 	controller_out->isJumping = false;
 
+	controller_out->activeAnimController = &controller_out->animControllers[0];
+
 	return 1;
 }
 
@@ -56,6 +58,8 @@ inline a3ui32 a3characterControllerUpdate(a3_CharacterController* controller, a3
 			a3characterToggleIsJumping(controller);
 			// jump
 			*controller->jumpTrigger = 0.0f;
+
+			controller->activeAnimController = &controller->animControllers[3];
 		}
 		if (controller->jumpRemaining > 0.0f)
 		{
@@ -73,6 +77,12 @@ inline a3ui32 a3characterControllerUpdate(a3_CharacterController* controller, a3
 		{
 			// walk
 			a3characterControllerWalk(controller, output);
+			controller->activeAnimController = &controller->animControllers[1];
+		}
+		else
+		{
+			// idle
+			controller->activeAnimController = &controller->animControllers[0];
 		}
 
 		return 1;
