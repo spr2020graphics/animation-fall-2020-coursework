@@ -186,8 +186,10 @@ void a3animation_update_ik(a3_HierarchyState* activeHS,
 		activeHS->hierarchy == poseGroup->hierarchy)
 	{
 		a3kinematicsSolveInverse(activeHS);
-		a3hierarchyPoseRestore(activeHS, activeHS->hierarchy->numNodes, poseGroup->channel, poseGroup->order);
-		a3kinematicsSolveForward(activeHS);
+		a3hierarchyPoseOpRevert(activeHS->localSpace, activeHS->hierarchy->numNodes);
+		//a3hierarchyPoseOpRevert(activeHS->objectSpace, activeHS->hierarchy->numNodes);
+		a3hierarchyPoseDeconcat(activeHS->localSpace, activeHS->localSpace, baseHS->localSpace, activeHS->hierarchy->numNodes);
+		//a3kinematicsSolveForward(activeHS);
 		// IK pipeline
 		// ****TO-DO: direct opposite of FK
 
