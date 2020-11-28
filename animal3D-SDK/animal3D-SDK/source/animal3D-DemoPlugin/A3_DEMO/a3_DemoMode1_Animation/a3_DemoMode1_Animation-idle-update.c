@@ -418,7 +418,7 @@ void a3animation_update_animation(a3_DemoMode1_Animation* demoMode, a3f64 const 
 	a3hierarchyPoseOpCreate(idlePose, activeHS_fk->hierarchy->numNodes);
 	a3hierarchyPoseOpIdentity(idlePose, activeHS_fk->hierarchy->numNodes);
 
-	a3characterControllerUpdate(demoMode->character, movingPose, dt);
+	a3characterControllerUpdate(demoMode->character, movingPose, (a3real)dt);
 
 	// resolve FK state
 	// update clip controller, keyframe lerp
