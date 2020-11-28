@@ -13,7 +13,7 @@ extern "C"
 typedef struct a3_CharacterController		a3_CharacterController;
 #endif	// __cplusplus
 
-
+#define JUMP_DURATION 41.0f/30.0f;
 //-----------------------------------------------------------------------------
 
 struct a3_CharacterController
@@ -30,6 +30,7 @@ struct a3_CharacterController
 	// similar to the former "branchTrigger" from lab 4, this is the input container for the jump input value, and will also trigger a transition into the jump animation
 	a3f32* jumpTrigger;
 	a3boolean isJumping;
+	a3f32 jumpRemaining; //between 41/30 and 0
 
 	// this is an input threshold to trigger the walk cycle
 	a3f32 maxWalkVelocity;
@@ -53,7 +54,7 @@ a3ui32 a3characterControllerUpdate(a3_CharacterController* controller, a3_Hierar
 a3ui32 a3characterControllerJump(a3_CharacterController* controller, a3_HierarchyPose* output);
 
 // utility to set the isJumping field of a character
-void a3characterToggleIsJumping();
+void a3characterToggleIsJumping(a3_CharacterController* controller);
 
 a3ui32 a3characterControllerWalk(a3_CharacterController* controller, a3_HierarchyPose* output);
 

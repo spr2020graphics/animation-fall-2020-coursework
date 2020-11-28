@@ -53,9 +53,21 @@ inline a3ui32 a3characterControllerUpdate(a3_CharacterController* controller, a3
 
 		if (*controller->jumpTrigger == 1.0f)
 		{
+			a3characterToggleIsJumping(controller);
 			// jump
-			a3characterControllerJump(controller, output);
 			*controller->jumpTrigger = 0.0f;
+		}
+		if (controller->jumpRemaining > 0.0f)
+		{
+			controller->jumpRemaining -= dt;
+			if (controller->jumpRemaining <= 0.0f)
+			{
+				controller->isJumping = false;
+			}
+		}
+		if (controller->isJumping)
+		{
+			a3characterControllerJump(controller, output);
 		}
 		else if (controller->currentVelocity > 0.0f && !controller->isJumping)
 		{
@@ -69,8 +81,15 @@ inline a3ui32 a3characterControllerUpdate(a3_CharacterController* controller, a3
 	return 0;
 }
 
-inline void a3characterToggleIsJumping()
+inline void a3characterToggleIsJumping(a3_CharacterController* controller)
 {
+	if (!controller->isJumping)
+	{
+		controller->isJumping = true;
+		controller->jumpRemaining = JUMP_DURATION;
+
+		//set clip
+	}
 	// this is just a stub from experimenting with "events"
 }
 
@@ -80,7 +99,7 @@ inline a3ui32 a3characterControllerJump(a3_CharacterController* controller, a3_H
 
 	
 
-	controller->isJumping = true;
+	//controller->isJumping = true;
 
 	return 1;
 }
