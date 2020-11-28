@@ -416,19 +416,15 @@ void a3animation_update_animation(a3_DemoMode1_Animation* demoMode, a3f64 const 
 	a3hierarchyPoseOpCreate(idlePose, activeHS_fk->hierarchy->numNodes);
 	a3hierarchyPoseOpIdentity(idlePose, activeHS_fk->hierarchy->numNodes);
 
-	a3characterControllerUpdate(demoMode->character, movingPose);
+	a3characterControllerUpdate(demoMode->character, movingPose, dt);
 
 	// resolve FK state
 	// update clip controller, keyframe lerp
 	a3clipControllerUpdate(clipCtrl_fk, dt);
-	
-	for (a3ui32 i = 0; i < 4; i++)
-	{
-		a3clipControllerUpdate(&demoMode->characterAnimControllers[i], dt);
-	}
 
-	sampleIndex0 = demoMode->clipPool->keyframe[clipCtrl_fk->keyframeIndex].sampleIndex0;
-	sampleIndex1 = demoMode->clipPool->keyframe[clipCtrl_fk->keyframeIndex].sampleIndex1;
+	//characte->animControllers[0] is the idle controller for a Character Controller
+	sampleIndex0 = demoMode->clipPool->keyframe[demoMode->character->animControllers[0].keyframeIndex].sampleIndex0;
+	sampleIndex1 = demoMode->clipPool->keyframe[demoMode->character->animControllers[0].keyframeIndex].sampleIndex1;
 
 	movingPose->pose[0].translate.x = demoMode->sceneGraphState->objectSpace->pose[demoMode->character->object->sceneGraphIndex].translate.x;
 	movingPose->pose[0].translate.y = demoMode->sceneGraphState->objectSpace->pose[demoMode->character->object->sceneGraphIndex].translate.y;

@@ -9,7 +9,7 @@
 
 inline a3ui32 a3characterControllerInit(a3_CharacterController* controller_out, a3_ClipController* controllers, a3_DemoSceneObject* obj, a3_HierarchyPoseGroup* poses, a3f32* jump, a3f32 walkThreshold)
 {
-	controller_out->animController = controllers;
+	controller_out->animControllers = controllers;
 	controller_out->jumpTrigger = jump;
 	controller_out->poseGroup = poses;
 	controller_out->maxWalkVelocity = walkThreshold;
@@ -42,10 +42,15 @@ inline a3ui32 a3characterControllerApplyInput(a3_CharacterController* controller
 	return 1;
 }
 
-inline a3ui32 a3characterControllerUpdate(a3_CharacterController* controller, a3_HierarchyPose* output)
+inline a3ui32 a3characterControllerUpdate(a3_CharacterController* controller, a3_HierarchyPose* output, a3real dt)
 {
 	if (controller)
 	{
+		for (a3ui32 i = 0; i < 4; i++)
+		{
+			a3clipControllerUpdate(&controller->animControllers[i], dt);
+		}
+
 		if (*controller->jumpTrigger == 1.0f)
 		{
 			// jump
@@ -84,17 +89,11 @@ inline a3ui32 a3characterControllerWalk(a3_CharacterController* controller, a3_H
 {
 	a3real u = controller->currentVelocity / controller->maxWalkVelocity;
 
-	a3clipOpLerp(output, controller->poseGroup, &controller->animController[1], &controller->animController[2], u);
+	a3clipOpLerp(output, controller->poseGroup, &controller->animControllers[1], &controller->animControllers[2], u);
 
 	return 1;
 }
 
-inline a3ui32 a3characterControllerIdle(a3_CharacterController* controller)
-{
-	
-
-	return 1;
-}
 //-----------------------------------------------------------------------------
 
 

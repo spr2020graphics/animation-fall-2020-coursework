@@ -18,8 +18,8 @@ typedef struct a3_CharacterController		a3_CharacterController;
 
 struct a3_CharacterController
 {
-	// reference to the set of animation controllers for this character
-	a3_ClipController* animController;
+	// reference to the set of animation controllers for this character (0 = idle, 1 = walk, 2 = run, 3 = jump)
+	a3_ClipController* animControllers;
 
 	// a reference to the set of poses for this character
 	a3_HierarchyPoseGroup* poseGroup;
@@ -47,7 +47,7 @@ a3ui32 a3characterControllerInit(a3_CharacterController* controller_out, a3_Clip
 // apply position and rotation input to an object
 a3ui32 a3characterControllerApplyInput(a3_CharacterController* controller, a3vec2* position, a3real rotation, a3real dt);
 
-a3ui32 a3characterControllerUpdate(a3_CharacterController* controller, a3_HierarchyPose* output);
+a3ui32 a3characterControllerUpdate(a3_CharacterController* controller, a3_HierarchyPose* output, a3real dt);
 
 // play jump anim + modify vertical position
 a3ui32 a3characterControllerJump(a3_CharacterController* controller, a3_HierarchyPose* output);
@@ -57,7 +57,6 @@ void a3characterToggleIsJumping();
 
 a3ui32 a3characterControllerWalk(a3_CharacterController* controller, a3_HierarchyPose* output);
 
-a3ui32 a3characterControllerIdle(a3_CharacterController* controller);
 
 //-----------------------------------------------------------------------------
 
