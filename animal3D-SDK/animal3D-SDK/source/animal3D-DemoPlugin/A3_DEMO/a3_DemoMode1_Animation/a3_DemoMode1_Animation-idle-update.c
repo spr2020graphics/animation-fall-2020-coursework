@@ -186,8 +186,10 @@ void a3animation_update_ik(a3_HierarchyState* activeHS,
 		activeHS->hierarchy == poseGroup->hierarchy)
 	{
 		a3kinematicsSolveInverse(activeHS);
-		a3hierarchyPoseRestore(activeHS->localSpace, activeHS->hierarchy->numNodes, poseGroup->channel, poseGroup->order);
-		a3kinematicsSolveForward(activeHS);
+		a3hierarchyPoseOpRevert(activeHS->localSpace, activeHS->hierarchy->numNodes);
+		//a3hierarchyPoseOpRevert(activeHS->objectSpace, activeHS->hierarchy->numNodes);
+		a3hierarchyPoseDeconcat(activeHS->localSpace, activeHS->localSpace, baseHS->localSpace, activeHS->hierarchy->numNodes);
+		//a3kinematicsSolveForward(activeHS);
 		// IK pipeline
 		// ****TO-DO: direct opposite of FK
 
@@ -416,7 +418,7 @@ void a3animation_update_animation(a3_DemoMode1_Animation* demoMode, a3f64 const 
 	a3hierarchyPoseOpCreate(idlePose, activeHS_fk->hierarchy->numNodes);
 	a3hierarchyPoseOpIdentity(idlePose, activeHS_fk->hierarchy->numNodes);
 
-	a3characterControllerUpdate(demoMode->character, movingPose, (a3real)dt);
+	a3characterControllerUpdate(demoMode->character, movingPose, dt);
 
 	// resolve FK state
 	// update clip controller, keyframe lerp
