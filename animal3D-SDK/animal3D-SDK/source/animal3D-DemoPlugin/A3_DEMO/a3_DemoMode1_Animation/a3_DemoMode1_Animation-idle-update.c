@@ -450,7 +450,8 @@ void a3animation_update_animation(a3_DemoMode1_Animation* demoMode, a3f64 const 
 		activeHS_ik->hierarchy->numNodes);
 	// run FK
 	a3animation_update_fk(activeHS_ik, baseHS, poseGroup);
-	if (updateIK)
+	//if (updateIK)
+	if (false)
 	{
 		// invert object-space
 		a3hierarchyStateUpdateObjectInverse(activeHS_ik);
