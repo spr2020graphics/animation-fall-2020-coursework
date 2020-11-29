@@ -41,6 +41,9 @@ struct a3_CharacterController
 	// the character's current velocity
 	a3f32 currentVelocity;
 
+	// used to transition into a jump
+	a3f32 jumpTransitionVal;
+
 	// so we can easily access these clips in the controller
 	a3ui32 walkClipIndex, runClipIndex, jumpClipIndex, idleClipIndex;
 };
@@ -54,7 +57,7 @@ a3ui32 a3characterControllerApplyInput(a3_CharacterController* controller, a3vec
 a3ui32 a3characterControllerUpdate(a3_CharacterController* controller, a3_HierarchyPose* output, a3real dt);
 
 // play jump anim + modify vertical position
-a3ui32 a3characterControllerJump(a3_CharacterController* controller, a3_HierarchyPose* output);
+a3ui32 a3characterControllerJump(a3_CharacterController* controller, a3_HierarchyPose* output, a3real dt);
 
 // utility to set the isJumping field of a character
 void a3characterToggleIsJumping(a3_CharacterController* controller);

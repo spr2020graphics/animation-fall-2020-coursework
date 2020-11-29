@@ -236,6 +236,22 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 			// make "look-at" matrix
 			// in this example, +Z is towards locator, +Y is up
 
+			//tangent = normalized vector between effector and neck
+			a3vec3 z = a3vec3_zero;
+			a3real3Diff(z.v, controlLocator_neckLookat.xyz.v, jointTransform_neck.v3.xyz.v);
+			a3real3Normalize(z.v);
+			jointTransform_neck.v2.xyz = z;
+			//'x' = VecUp cross z
+			a3vec3 x = a3vec3_zero;
+			a3vec3 up = { 0, 1, 0 };
+			a3real3Cross(x.v, up.v, jointTransform_neck.v2.xyz.v);
+			a3real3Normalize(x.v);
+			jointTransform_neck.v0.xyz = x;
+
+			a3real3Cross(jointTransform_neck.v1.xyz.v, jointTransform_neck.v2.xyz.v, jointTransform_neck.v0.xyz.v);
+
+			activeHS->objectSpace->pose[j_neck].transformMat = jointTransform_neck;
+			//'y' = z cross x
 			// ****TO-DO: 
 			// reassign resolved transforms to OBJECT-SPACE matrices
 			// resolve local and animation pose for affected joint

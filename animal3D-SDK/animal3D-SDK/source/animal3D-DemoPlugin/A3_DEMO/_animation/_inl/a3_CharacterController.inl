@@ -69,7 +69,7 @@ inline a3ui32 a3characterControllerUpdate(a3_CharacterController* controller, a3
 			// jump
 			*controller->jumpTrigger = 0.0f;
 
-			controller->activeAnimController = &controller->animControllers[3];
+			//controller->activeAnimController = &controller->animControllers[3];
 		}
 		if (controller->jumpRemaining > 0.0f)
 		{
@@ -81,7 +81,7 @@ inline a3ui32 a3characterControllerUpdate(a3_CharacterController* controller, a3
 		}
 		if (controller->isJumping)
 		{
-			a3characterControllerJump(controller, output);
+			a3characterControllerJump(controller, output, dt);
 		}
 		if (controller->currentVelocity > 0.0f && !controller->isJumping)
 		{
@@ -89,7 +89,7 @@ inline a3ui32 a3characterControllerUpdate(a3_CharacterController* controller, a3
 			a3characterControllerWalk(controller, output);
 			controller->activeAnimController = &controller->animControllers[1];
 		}
-		else
+		else if (controller->currentVelocity <= 0.01f)
 		{
 			// idle
 			controller->activeAnimController = &controller->animControllers[0];
@@ -112,18 +112,25 @@ inline void a3characterToggleIsJumping(a3_CharacterController* controller)
 		controller->animControllers[3].clipParam = 0.0f;
 		controller->animControllers[3].keyframeTime_sec = 0.0f;
 		controller->animControllers[3].keyframeParam = 0.0f;
+		controller->jumpTransitionVal = 0.0f;
 		//set clip
 	}
 	// this is just a stub from experimenting with "events"
 }
 
-inline a3ui32 a3characterControllerJump(a3_CharacterController* controller, a3_HierarchyPose* output)
+inline a3ui32 a3characterControllerJump(a3_CharacterController* controller, a3_HierarchyPose* output, a3real dt)
 {
 	// just trigger animation for now, still need to actually modify the position
 
-	a3real u = 1.0f;
+	a3real transitionMultiplier = 1.5f;
+	controller->jumpTransitionVal += transitionMultiplier * dt;
+	if (controller->jumpTransitionVal > 1.0f)
+	{
+		controller->jumpTransitionVal = 1.0f;
+	}
 
-	a3clipOpLerp(output, controller->poseGroup, controller->activeAnimController, &controller->animControllers[3], u);
+	a3clipOpLerp(output, controller->poseGroup, controller->activeAnimController, &controller->animControllers[3], controller->jumpTransitionVal);
+
 
 	//controller->isJumping = true;
 
