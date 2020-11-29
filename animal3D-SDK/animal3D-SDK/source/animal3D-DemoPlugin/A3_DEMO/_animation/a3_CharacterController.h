@@ -61,6 +61,10 @@ void a3characterToggleIsJumping(a3_CharacterController* controller);
 
 a3ui32 a3characterControllerWalk(a3_CharacterController* controller, a3_HierarchyPose* output);
 
+float getWalkScale(float u);
+
+float getRunScale(float u);
+
 
 //-----------------------------------------------------------------------------
 

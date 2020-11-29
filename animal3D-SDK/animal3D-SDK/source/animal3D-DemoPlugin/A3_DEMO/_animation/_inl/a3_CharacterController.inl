@@ -3,6 +3,7 @@
 #define __ANIMAL3D_CHARACTER_CONTROLLER_INL
 
 #include <stdio.h>
+#include "..\a3_CharacterController.h"
 
 //-----------------------------------------------------------------------------
 
@@ -48,10 +49,19 @@ inline a3ui32 a3characterControllerUpdate(a3_CharacterController* controller, a3
 {
 	if (controller)
 	{
-		for (a3ui32 i = 0; i < 4; i++)
+		a3real u = controller->currentVelocity / controller->maxWalkVelocity;
+
+		if (u > 1.0f)
 		{
-			a3clipControllerUpdate(&controller->animControllers[i], dt);
+			u = 1.0f;
 		}
+		float walkDT = dt / getWalkScale(u); //dt is scaled to 1/0.75 at u = 1
+		float runDT = dt * getRunScale(u); //dt is scaled to 0.75 at u = 0
+
+		a3clipControllerUpdate(&controller->animControllers[0], dt);
+		a3clipControllerUpdate(&controller->animControllers[1], walkDT);
+		a3clipControllerUpdate(&controller->animControllers[2], runDT);
+		a3clipControllerUpdate(&controller->animControllers[3], dt);
 
 		if (*controller->jumpTrigger == 1.0f)
 		{
@@ -132,6 +142,16 @@ inline a3ui32 a3characterControllerWalk(a3_CharacterController* controller, a3_H
 	a3clipOpLerp(output, controller->poseGroup, &controller->animControllers[1], &controller->animControllers[2], u);
 
 	return 1;
+}
+
+inline float getWalkScale(float u)
+{
+	return (float)pow(0.75f, u);
+}
+
+inline float getRunScale(float u)
+{
+	return (float)pow(0.75f, 1.0f - u);
 }
 
 //-----------------------------------------------------------------------------
