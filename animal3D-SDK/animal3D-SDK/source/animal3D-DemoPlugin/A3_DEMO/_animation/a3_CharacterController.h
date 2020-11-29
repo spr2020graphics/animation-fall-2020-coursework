@@ -58,6 +58,7 @@ a3ui32 a3characterControllerUpdate(a3_CharacterController* controller, a3_Hierar
 
 // play jump anim + modify vertical position
 a3ui32 a3characterControllerJump(a3_CharacterController* controller, a3_HierarchyPose* output, a3real dt);
+a3ui32 a3characterControllerBlendJump(a3_CharacterController* controller, a3_HierarchyPose* output, a3_HierarchyPose* blendInput, a3real dt);
 
 // utility to set the isJumping field of a character
 void a3characterToggleIsJumping(a3_CharacterController* controller);

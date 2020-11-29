@@ -79,21 +79,36 @@ inline a3ui32 a3characterControllerUpdate(a3_CharacterController* controller, a3
 				controller->isJumping = false;
 			}
 		}
+
+		//we have a pose that's just the sampled idle pose
+		a3_HierarchyPose result[1];
+
+		a3hierarchyPoseOpCreate(result, controller->poseGroup->hierarchy->numNodes);
+		a3hierarchyPoseOpIdentity(result, controller->poseGroup->hierarchy->numNodes);
+		//a3clipOpSampleClip(result, controller->poseGroup, &controller->animControllers[0]);
+		//if we're walking, the pose is replaced with walking
+		//if (controller->currentVelocity > 0.01f)
+		{
+			a3characterControllerWalk(controller, result);
+		}
+		//if we're jumping, lerp between walk and jump
+
 		if (controller->isJumping)
 		{
-			a3characterControllerJump(controller, output, dt);
+			//a3characterControllerJump(controller, output, dt); //rewrite this function so we take _in_ walk run blend (as result) and output the final pose to the output variable
+			a3characterControllerBlendJump(controller, output, result, dt);
 		}
-		if (controller->currentVelocity > 0.0f && !controller->isJumping)
-		{
-			// walk
-			a3characterControllerWalk(controller, output);
-			controller->activeAnimController = &controller->animControllers[1];
-		}
-		else if (controller->currentVelocity <= 0.01f)
-		{
-			// idle
-			controller->activeAnimController = &controller->animControllers[0];
-		}
+		//if (controller->currentVelocity > 0.0f && !controller->isJumping)
+		//{
+		//	// walk
+		//	a3characterControllerWalk(controller, output);
+		//	controller->activeAnimController = &controller->animControllers[1];
+		//}
+		//else if (controller->currentVelocity <= 0.01f)
+		//{
+		//	// idle
+		//	controller->activeAnimController = &controller->animControllers[0];
+		//}
 
 		return 1;
 	}
@@ -123,13 +138,75 @@ inline a3ui32 a3characterControllerJump(a3_CharacterController* controller, a3_H
 	// just trigger animation for now, still need to actually modify the position
 
 	a3real transitionMultiplier = 1.5f;
-	controller->jumpTransitionVal += transitionMultiplier * dt;
-	if (controller->jumpTransitionVal > 1.0f)
+	//if we have more than the time it takes to transition left in the jump, we're transitioning into it.
+	if (controller->jumpRemaining >= 1.0f / transitionMultiplier)
 	{
-		controller->jumpTransitionVal = 1.0f;
+		controller->jumpTransitionVal += transitionMultiplier * dt;
+
+		if (controller->jumpTransitionVal > 1.0f)
+		{
+			controller->jumpTransitionVal = 1.0f;
+		}
+	}
+	else //if less than that time remains, we're exiting the jump so the u value decreases.
+	{
+		controller->jumpTransitionVal -= transitionMultiplier * dt;
+
+		if (controller->jumpTransitionVal <= 0.0f)
+		{
+			controller->jumpTransitionVal = 0.0f;
+		}
+	}
+	
+
+	a3_HierarchyPose jumpResult[1];
+
+	a3hierarchyPoseOpCreate(jumpResult, controller->poseGroup->hierarchy->numNodes);
+	a3hierarchyPoseOpIdentity(jumpResult, controller->poseGroup->hierarchy->numNodes);
+
+	//a3clipOpSampleClip(jumpResult, controller->poseGroup, &controller->animControllers[3]);
+	a3clipOpLerp(output, controller->poseGroup, controller->activeAnimController, &controller->animControllers[3], controller->jumpTransitionVal);
+
+
+	//controller->isJumping = true;
+
+	return 1;
+}
+
+inline a3ui32 a3characterControllerBlendJump(a3_CharacterController* controller, a3_HierarchyPose* output, a3_HierarchyPose* blendInput, a3real dt)
+{
+	// just trigger animation for now, still need to actually modify the position
+
+	a3real transitionMultiplier = 1.5f;
+	//if we have more than the time it takes to transition left in the jump, we're transitioning into it.
+	if (controller->jumpRemaining >= 1.0f / transitionMultiplier)
+	{
+		controller->jumpTransitionVal += transitionMultiplier * dt;
+
+		if (controller->jumpTransitionVal > 1.0f)
+		{
+			controller->jumpTransitionVal = 1.0f;
+		}
+	}
+	else //if less than that time remains, we're exiting the jump so the u value decreases.
+	{
+		controller->jumpTransitionVal -= transitionMultiplier * dt;
+
+		if (controller->jumpTransitionVal <= 0.0f)
+		{
+			controller->jumpTransitionVal = 0.0f;
+		}
 	}
 
-	a3clipOpLerp(output, controller->poseGroup, controller->activeAnimController, &controller->animControllers[3], controller->jumpTransitionVal);
+
+	a3_HierarchyPose jumpResult[1];
+
+	a3hierarchyPoseOpCreate(jumpResult, controller->poseGroup->hierarchy->numNodes);
+	a3hierarchyPoseOpIdentity(jumpResult, controller->poseGroup->hierarchy->numNodes);
+
+	a3clipOpSampleClip(jumpResult, controller->poseGroup, &controller->animControllers[3]);
+	a3hierarchyPoseOpLERP(output, blendInput, jumpResult, controller->jumpTransitionVal, controller->poseGroup->hierarchy->numNodes);
+	//a3clipOpLerp(output, controller->poseGroup, controller->activeAnimController, &controller->animControllers[3], controller->jumpTransitionVal);
 
 
 	//controller->isJumping = true;
