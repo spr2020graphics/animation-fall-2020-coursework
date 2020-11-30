@@ -367,11 +367,14 @@ inline a3_SpatialPose* a3spatialPoseOpRevert(a3_SpatialPose* pose_inout)
 	TRS->m21 /= scale.z;
 	TRS->m22 /= scale.z;
 
-	a3real4x4GetEulerXYZIgnoreScale(TRS->m, &rotate.x, &rotate.y, &rotate.z);
+	a3real4x4GetEulerZYXIgnoreScale(TRS->m, &rotate.x, &rotate.y, &rotate.z);
 
-	pose_inout->rotate = rotate;
-	pose_inout->translate = translate;
-	pose_inout->scale = scale;
+	pose_inout->rotate.xyz = rotate.xyz;
+	pose_inout->rotate.w = 0;
+	pose_inout->translate.xyz = translate.xyz;
+	pose_inout->translate.w = 1;
+	pose_inout->scale.xyz = scale.xyz;
+	pose_inout->scale.w = 1;
 
 	pose_inout->transformMat = a3mat4_identity;
 
