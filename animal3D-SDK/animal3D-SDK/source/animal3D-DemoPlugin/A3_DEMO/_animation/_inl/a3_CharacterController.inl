@@ -101,21 +101,10 @@ inline a3ui32 a3characterControllerUpdate(a3_CharacterController* controller, a3
 			//a3characterControllerJump(controller, output, dt); //rewrite this function so we take _in_ walk run blend (as result) and output the final pose to the output variable
 			a3characterControllerBlendJump(controller, postJumpResult, result, dt);
 
-			a3hierarchyPoseOpCopy(result, postJumpResult, controller->poseGroup->hierarchy->numNodes);
+			a3hierarchyPoseOpCopy(result, postJumpResult, controller->poseGroup->hierarchy->numNodes); //replace old result with new result
 		}
 
-		a3hierarchyPoseOpCopy(output, result, controller->poseGroup->hierarchy->numNodes);
-		//if (controller->currentVelocity > 0.0f && !controller->isJumping)
-		//{
-		//	// walk
-		//	a3characterControllerWalk(controller, output);
-		//	controller->activeAnimController = &controller->animControllers[1];
-		//}
-		//else if (controller->currentVelocity <= 0.01f)
-		//{
-		//	// idle
-		//	controller->activeAnimController = &controller->animControllers[0];
-		//}
+		a3hierarchyPoseOpCopy(output, result, controller->poseGroup->hierarchy->numNodes); //copy to output
 
 		return 1;
 	}

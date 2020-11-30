@@ -461,7 +461,15 @@ void a3animation_update_animation(a3_DemoMode1_Animation* demoMode, a3f64 const 
 	
 	if (demoMode->character->isJumping)
 	{
-		a3hierarchyPoseLerp(activeHS_fk->animPose, idlePose, movingPose, 1, activeHS_fk->hierarchy->numNodes);	// 1 for now, will always be moving pose
+		if (demoMode->character->currentVelocity <= 0.01f)
+		{
+			a3hierarchyPoseLerp(activeHS_fk->animPose, idlePose, movingPose, demoMode->character->jumpTransitionVal, activeHS_fk->hierarchy->numNodes);
+		}
+		else
+		{
+			a3hierarchyPoseLerp(activeHS_fk->animPose, idlePose, movingPose, 1, activeHS_fk->hierarchy->numNodes);	// 1 for now, will always be moving pose
+		}
+
 	}
 	else
 	{
