@@ -306,19 +306,19 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 				a3real3GetUnit(newElbowPos.v, shoulderToEffector.v);
 				a3real3MulS(newElbowPos.v, shoulderElbowLen); //scale to appropriate length
 				a3real3Add(newElbowPos.v, jointTransform_shoulder.v3.v); //offset by shoulder pos
-				//jointTransform_elbow.v3.xyz = newElbowPos;
-				a3vec3 tmp = a3vec3_zero;
-				tmp.y = 1.0f;
-				tmp.z = 1.0f;
-				a3real3Sum(jointTransform_elbow.v3.xyz.v, tmp.v, jointTransform_shoulder.v3.xyz.v);
+				jointTransform_elbow.v3.xyz = newElbowPos;
+				//a3vec3 tmp = a3vec3_zero;
+				//tmp.y = 0.0f;
+				//tmp.z = 0.0f;
+				//jointTransform_elbow.v3.xyz = tmp;
 				
 				//set direction from elbow to wrist to the elbowToWrist length * baseToEffector
 				
-				//a3vec3 newWristPos = a3vec3_zero;
-				//a3real3GetUnit(newWristPos.v, shoulderToEffector.v);
-				//a3real3MulS(newWristPos.v, a3real3Length(elbowToWrist.v));
-				//a3real3Add(newWristPos.v, newElbowPos.v); //offset by elbow position
-				//jointTransform_wrist.v3.xyz = newWristPos;
+				a3vec3 newWristPos = a3vec3_zero;
+				a3real3GetUnit(newWristPos.v, shoulderToEffector.v);
+				a3real3MulS(newWristPos.v, a3real3Length(elbowToWrist.v));
+				a3real3Add(newWristPos.v, newElbowPos.v); //offset by elbow position
+				jointTransform_wrist.v3.xyz = newWristPos;
 				//jointTransform_wrist.v0.xyz = a3vec3_x;
 				//jointTransform_wrist.v1.xyz = a3vec3_y;
 				//jointTransform_wrist.v2.xyz = a3vec3_z;
@@ -511,7 +511,7 @@ void a3animation_update_animation(a3_DemoMode1_Animation* demoMode, a3f64 const 
 		// run solvers
 		a3animation_update_applyEffectors(demoMode, activeHS_ik, baseHS, poseGroup);
 		// run full IK pipeline (if not resolving with effectors)
-		a3animation_update_ik(activeHS_ik, baseHS, poseGroup);
+		//a3animation_update_ik(activeHS_ik, baseHS, poseGroup);
 	}
 
 	// blend FK/IK to final
