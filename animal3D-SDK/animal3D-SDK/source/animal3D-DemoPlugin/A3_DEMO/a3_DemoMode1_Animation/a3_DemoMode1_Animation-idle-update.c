@@ -410,6 +410,7 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 				
 				a3vec3 hVecNormal = a3vec3_zero;
 				a3real3Cross(hVecNormal.v, nVecNormal.v, dNormal.v);
+				a3real3Normalize(hVecNormal.v);
 				
 				//heron's formula
 				a3real L1 = a3real3Length(shoulderToElbow.v);
@@ -433,9 +434,11 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 				a3real3Add(newElbowPos.v, elbowDVec.v);
 				a3real3Add(newElbowPos.v, hVec.v);
 
-				a3real3Diff(shoulderToElbow.v, newElbowPos.v, jointTransform_shoulder.v3.v);
+				jointTransform_elbow.v3.xyz = newElbowPos;
+				jointTransform_wrist.v3.xyz = controlLocator_wristEffector.xyz;
+
 				//Set rotations
-				//a3real3Diff(shoulderToElbow.v, jointTransform_elbow.v3.v, jointTransform_shoulder.v3.v);
+				a3real3Diff(shoulderToElbow.v, jointTransform_elbow.v3.v, jointTransform_shoulder.v3.v);
 				jointTransform_shoulder.v0.xyz = shoulderToElbow;
 				a3real3Normalize(jointTransform_shoulder.v0.xyz.v);
 				a3real3Negate(jointTransform_shoulder.v0.xyz.v);
@@ -443,9 +446,6 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 				a3real3Normalize(jointTransform_shoulder.v2.xyz.v);
 				a3real3Cross(jointTransform_shoulder.v1.xyz.v, jointTransform_shoulder.v2.xyz.v, jointTransform_shoulder.v0.xyz.v);
 
-
-				jointTransform_elbow.v3.xyz = newElbowPos;
-				
 				a3real3Diff(elbowToWrist.v, controlLocator_wristEffector.xyz.v, jointTransform_elbow.v3.v);
 				jointTransform_elbow.v0.xyz = elbowToWrist;
 				a3real3Normalize(jointTransform_elbow.v0.xyz.v);
@@ -453,8 +453,6 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 				a3real3Cross(jointTransform_elbow.v2.xyz.v, jointTransform_elbow.v0.xyz.v, nVecNormal.v);
 				a3real3Normalize(jointTransform_elbow.v2.xyz.v);
 				a3real3Cross(jointTransform_elbow.v1.xyz.v, jointTransform_elbow.v2.xyz.v, jointTransform_elbow.v0.xyz.v);
-
-				jointTransform_wrist.v3.xyz = controlLocator_wristEffector.xyz;
 			}
 			//
 			// ****TO-DO: 
