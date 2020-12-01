@@ -424,8 +424,18 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 				a3real L1Sq = L1 * L1;
 				a3real D = a3sqrt(L1Sq - (heronH * heronH));
 				
+				a3vec3 elbowDVec = shoulderToEffector;
+				a3real3Normalize(elbowDVec.v);
+				a3real3MulS(elbowDVec.v, D);
+
+				//calculate new elbow position
+				a3vec3 newElbowPos = jointTransform_shoulder.v3.xyz;
+				a3real3Add(newElbowPos.v, elbowDVec.v);
+				a3real3Add(newElbowPos.v, hVec.v);
+
+				a3real3Diff(shoulderToElbow.v, newElbowPos.v, jointTransform_shoulder.v3.v);
 				//Set rotations
-				a3real3Diff(shoulderToElbow.v, jointTransform_elbow.v3.v, jointTransform_shoulder.v3.v);
+				//a3real3Diff(shoulderToElbow.v, jointTransform_elbow.v3.v, jointTransform_shoulder.v3.v);
 				jointTransform_shoulder.v0.xyz = shoulderToElbow;
 				a3real3Normalize(jointTransform_shoulder.v0.xyz.v);
 				a3real3Negate(jointTransform_shoulder.v0.xyz.v);
@@ -433,22 +443,16 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 				a3real3Normalize(jointTransform_shoulder.v2.xyz.v);
 				a3real3Cross(jointTransform_shoulder.v1.xyz.v, jointTransform_shoulder.v2.xyz.v, jointTransform_shoulder.v0.xyz.v);
 
-				a3vec3 elbowDVec = jointTransform_shoulder.v0.xyz;
-				a3real3Normalize(elbowDVec.v);
-				a3real3MulS(elbowDVec.v, D);
-				
-				//calculate new elbow position
-				a3vec3 newElbowPos = jointTransform_shoulder.v3.xyz;
-				a3real3Add(newElbowPos.v, elbowDVec.v);
-				a3real3Add(newElbowPos.v, hVec.v);
+
 				jointTransform_elbow.v3.xyz = newElbowPos;
 				
-				a3real3Diff(elbowToWrist.v, jointTransform_wrist.v3.v, jointTransform_elbow.v3.v);
-				a3real3Normalize(elbowToWrist.v);
+				a3real3Diff(elbowToWrist.v, controlLocator_wristEffector.xyz.v, jointTransform_elbow.v3.v);
 				jointTransform_elbow.v0.xyz = elbowToWrist;
-
-				jointTransform_elbow.v2.xyz = nVecNormal;
-				a3real3Cross(jointTransform_elbow.v1.xyz.v, nVecNormal.v, elbowToWrist.v);
+				a3real3Normalize(jointTransform_elbow.v0.xyz.v);
+				a3real3Negate(jointTransform_elbow.v0.xyz.v);
+				a3real3Cross(jointTransform_elbow.v2.xyz.v, jointTransform_elbow.v0.xyz.v, nVecNormal.v);
+				a3real3Normalize(jointTransform_elbow.v2.xyz.v);
+				a3real3Cross(jointTransform_elbow.v1.xyz.v, jointTransform_elbow.v2.xyz.v, jointTransform_elbow.v0.xyz.v);
 
 				jointTransform_wrist.v3.xyz = controlLocator_wristEffector.xyz;
 			}
