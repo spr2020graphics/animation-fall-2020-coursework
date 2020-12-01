@@ -397,7 +397,7 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 			else
 			{
 				a3vec3 shoulderToConstraint = a3vec3_zero;
-				a3real3Diff(shoulderToConstraint.v, controlLocator_wristConstraint.v, jointTransform_shoulder.v3.v);
+				a3real3Diff(shoulderToConstraint.v, controlLocator_wristConstraint.xyz.v, jointTransform_shoulder.v3.v);
 				
 				a3vec3 nVec = a3vec3_zero; //the non-normalized Normal Vector to the plane
 				a3real3Cross(nVec.v, shoulderToEffector.v, shoulderToConstraint.v);
@@ -438,11 +438,11 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 				jointTransform_wrist.v3.xyz = controlLocator_wristEffector.xyz;
 
 				//Set rotations
-				a3real3Diff(shoulderToElbow.v, jointTransform_elbow.v3.v, jointTransform_shoulder.v3.v);
+				a3real3Diff(shoulderToElbow.v, jointTransform_elbow.v3.xyz.v, jointTransform_shoulder.v3.xyz.v);
 				jointTransform_shoulder.v0.xyz = shoulderToElbow;
 				a3real3Normalize(jointTransform_shoulder.v0.xyz.v);
 				a3real3Negate(jointTransform_shoulder.v0.xyz.v);
-				a3real3Cross(jointTransform_shoulder.v2.xyz.v, jointTransform_shoulder.v0.xyz.v, a3real3Negate(nVecNormal.v));
+				a3real3Cross(jointTransform_shoulder.v2.xyz.v, jointTransform_shoulder.v0.xyz.v, nVecNormal.v);
 				a3real3Normalize(jointTransform_shoulder.v2.xyz.v);
 				a3real3Cross(jointTransform_shoulder.v1.xyz.v, jointTransform_shoulder.v2.xyz.v, jointTransform_shoulder.v0.xyz.v);
 
@@ -453,6 +453,20 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 				a3real3Cross(jointTransform_elbow.v2.xyz.v, jointTransform_elbow.v0.xyz.v, nVecNormal.v);
 				a3real3Normalize(jointTransform_elbow.v2.xyz.v);
 				a3real3Cross(jointTransform_elbow.v1.xyz.v, jointTransform_elbow.v2.xyz.v, jointTransform_elbow.v0.xyz.v);
+				a3real3Cross(jointTransform_elbow.v2.xyz.v, jointTransform_elbow.v0.xyz.v, jointTransform_elbow.v1.xyz.v);
+
+
+				//a3vec3 greenCache = jointTransform_elbow.v1.xyz;
+				//a3vec3 blueCache = jointTransform_elbow.v2.xyz;
+				//jointTransform_elbow.v2.xyz = jointTransform_elbow.v0.xyz;
+				//jointTransform_elbow.v0.xyz = blueCache;
+				//a3real3Negate(jointTransform_elbow.v1.xyz.v);
+				//
+				//blueCache = jointTransform_elbow.v2.xyz;
+				//a3vec3 newRed = blueCache;
+				//a3real3Negate(newRed.v);
+				//jointTransform_elbow.v2.xyz = jointTransform_elbow.v0.xyz;
+				//jointTransform_elbow.v0.xyz = newRed;
 			}
 			//
 			// ****TO-DO: 
