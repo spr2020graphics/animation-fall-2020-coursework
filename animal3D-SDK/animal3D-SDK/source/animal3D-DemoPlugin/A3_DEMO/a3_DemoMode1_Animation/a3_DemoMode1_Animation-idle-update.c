@@ -405,8 +405,8 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 				a3vec3 nVecNormal = a3vec3_zero; //normalized version of nVec
 				a3real3GetUnit(nVecNormal.v, nVec.v);
 				
-				a3vec3 dNormal = shoulderToEffector;
-				a3real3DivS(dNormal.v, shoulderEffectorLen);
+				a3vec3 dNormal = a3vec3_zero;
+				a3real3GetUnit(dNormal.v, shoulderToEffector.v);
 				
 				a3vec3 hVecNormal = a3vec3_zero;
 				a3real3Cross(hVecNormal.v, nVecNormal.v, dNormal.v);
@@ -418,21 +418,22 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 				a3real heronASq = heronS * (heronS - shoulderEffectorLen) * (heronS - L1) * (heronS - L2);
 				a3real heronA = a3sqrt(heronASq);
 				a3real heronH = 2 * heronA / shoulderEffectorLen;
-				a3vec3 hVec = hVecNormal;
-				a3real3MulS(hVec.v, heronH);
+				a3vec3 hVec = a3vec3_zero;
+				a3real3ProductS(hVec.v, hVecNormal.v, heronH);
 				
 				a3real L1Sq = L1 * L1;
-				a3real D = a3sqrt(L1Sq - heronASq);
+				a3real D = a3sqrt(L1Sq - (heronH * heronH));
 				
 				//Set rotations
 				a3real3Diff(shoulderToElbow.v, jointTransform_elbow.v3.v, jointTransform_shoulder.v3.v);
-				a3real3Normalize(shoulderToElbow.v);
 				jointTransform_shoulder.v0.xyz = shoulderToElbow;
+				a3real3Normalize(jointTransform_shoulder.v0.xyz.v);
+				a3real3Negate(jointTransform_shoulder.v0.xyz.v);
+				a3real3Cross(jointTransform_shoulder.v2.xyz.v, jointTransform_shoulder.v0.xyz.v, a3real3Negate(nVecNormal.v));
+				a3real3Normalize(jointTransform_shoulder.v2.xyz.v);
+				a3real3Cross(jointTransform_shoulder.v1.xyz.v, jointTransform_shoulder.v2.xyz.v, jointTransform_shoulder.v0.xyz.v);
 
-				jointTransform_shoulder.v2.xyz = nVecNormal;
-				a3real3Cross(jointTransform_shoulder.v1.xyz.v, nVecNormal.v, shoulderToElbow.v);
-
-				a3vec3 elbowDVec = shoulderToElbow;
+				a3vec3 elbowDVec = jointTransform_shoulder.v0.xyz;
 				a3real3Normalize(elbowDVec.v);
 				a3real3MulS(elbowDVec.v, D);
 				
