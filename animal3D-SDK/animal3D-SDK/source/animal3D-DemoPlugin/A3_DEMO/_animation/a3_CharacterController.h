@@ -1,4 +1,7 @@
-
+/*
+	Animation Framework Addons by Scott Dagen and Cameron Schneider
+	a3_CharacterController.h: Handles input and translates that into animation. Has a pseudo-blend tree that will be swapped out later.
+*/
 
 #ifndef __ANIMAL3D_CHARACTER_CONTROLLER_H
 #define __ANIMAL3D_CHARACTER_CONTROLLER_H
@@ -58,6 +61,7 @@ a3ui32 a3characterControllerUpdate(a3_CharacterController* controller, a3_Hierar
 
 // play jump anim + modify vertical position
 a3ui32 a3characterControllerJump(a3_CharacterController* controller, a3_HierarchyPose* output, a3real dt);
+// version of controllerJump that blends with a given input.
 a3ui32 a3characterControllerBlendJump(a3_CharacterController* controller, a3_HierarchyPose* output, a3_HierarchyPose* blendInput, a3real dt);
 
 // utility to set the isJumping field of a character
@@ -65,8 +69,9 @@ void a3characterToggleIsJumping(a3_CharacterController* controller);
 
 a3ui32 a3characterControllerWalk(a3_CharacterController* controller, a3_HierarchyPose* output);
 
+// see https://www.desmos.com/calculator/kcge9sqa4u
 float getWalkScale(float u);
-
+// see https://www.desmos.com/calculator/kcge9sqa4u
 float getRunScale(float u);
 
 

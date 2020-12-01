@@ -26,6 +26,10 @@
 	********************************************
 */
 
+/*
+	Animation Framework Addons by Scott Dagen and Cameron Schneider
+*/
+
 //-----------------------------------------------------------------------------
 
 #include "../a3_DemoMode1_Animation.h"

@@ -5,6 +5,11 @@
 #include <stdio.h>
 #include "..\a3_CharacterController.h"
 
+/*
+	Animation Framework Addons by Scott Dagen and Cameron Schneider
+	A3_CharacterController.inl: handles translating between input and animation
+*/
+
 //-----------------------------------------------------------------------------
 
 

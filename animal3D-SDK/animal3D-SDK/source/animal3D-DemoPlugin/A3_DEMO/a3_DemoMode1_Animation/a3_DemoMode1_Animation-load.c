@@ -26,6 +26,10 @@
 	********************************************
 */
 
+/*
+	Animation Framework Addons by Scott Dagen and Cameron Schneider
+*/
+
 //-----------------------------------------------------------------------------
 
 #include "../a3_DemoMode1_Animation.h"
@@ -591,6 +595,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 			a3clipControllerInit(&demoMode->characterAnimControllers[i], "character\0", demoMode->clipPool, temp[i], rate, fps);
 		}
 
+		//init character controller once the clip controllers are initted.
 		a3characterControllerInit(demoMode->character, demoMode->characterAnimControllers, demoMode->obj_skeleton_ctrl, hierarchyPoseGroup, &demoMode->jumpTrigger, demoMode->walkThreshold);
 
 		// set up jump transition action

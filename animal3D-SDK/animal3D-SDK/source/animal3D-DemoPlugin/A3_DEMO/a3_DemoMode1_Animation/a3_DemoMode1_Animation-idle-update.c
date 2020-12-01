@@ -26,6 +26,10 @@
 	********************************************
 */
 
+/*
+	Animation Framework Addons by Scott Dagen and Cameron Schneider
+*/
+
 //-----------------------------------------------------------------------------
 
 #include "../a3_DemoMode1_Animation.h"
@@ -179,6 +183,7 @@ void a3animation_update_fk(a3_HierarchyState* activeHS,
 	}
 }
 
+//Reverse the FK pipeline shown above
 void a3animation_update_ik(a3_HierarchyState* activeHS,
 	a3_HierarchyState const* baseHS, a3_HierarchyPoseGroup const* poseGroup)
 {
@@ -187,11 +192,7 @@ void a3animation_update_ik(a3_HierarchyState* activeHS,
 	{
 		a3kinematicsSolveInverse(activeHS);
 		a3hierarchyPoseOpRevert(activeHS->localSpace, activeHS->hierarchy->numNodes);
-		//a3hierarchyPoseOpRevert(activeHS->objectSpace, activeHS->hierarchy->numNodes);
 		a3hierarchyPoseDeconcat(activeHS->animPose, activeHS->localSpace, baseHS->localSpace, activeHS->hierarchy->numNodes);
-		//a3kinematicsSolveForward(activeHS);
-		// IK pipeline
-		// ****TO-DO: direct opposite of FK
 
 	}
 }
@@ -248,14 +249,10 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 			a3real3Normalize(x.v);
 			jointTransform_neck.v0.xyz = x;
 
+			//'y' = z cross x
 			a3real3Cross(jointTransform_neck.v1.xyz.v, jointTransform_neck.v2.xyz.v, jointTransform_neck.v0.xyz.v);
 
 			activeHS->objectSpace->pose[j_neck].transformMat = jointTransform_neck;
-			//'y' = z cross x
-			// ****TO-DO: 
-			// reassign resolved transforms to OBJECT-SPACE matrices
-			// resolve local and animation pose for affected joint
-			//	(instead of doing IK for whole skeleton when only one joint has changed)
 
 		}
 
@@ -294,6 +291,7 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 			a3vec3 elbowToWrist = a3vec3_zero;
 			a3real3Diff(elbowToWrist.v, jointTransform_wrist.v3.v, jointTransform_elbow.v3.v);
 
+			//cache lengths between various joints
 			a3real shoulderElbowLen = a3real3Length(shoulderToElbow.v); //not squared because I think there's a chance of some distances failing this check when they shouldn't
 			a3real elbowWristLen = a3real3Length(elbowToWrist.v);
 			a3real shoulderToWristLen = shoulderElbowLen + elbowWristLen;
@@ -320,6 +318,7 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 				////set direction from elbow to wrist to the elbowToWrist length * baseToEffector
 				//
 
+				//find NVec from constraint. Not common in this algorithm, but it looks nicer and gives more control over rotation
 				a3vec3 shoulderToConstraint = a3vec3_zero;
 				a3real3Diff(shoulderToConstraint.v, controlLocator_wristConstraint.v, jointTransform_shoulder.v3.v);
 
@@ -329,17 +328,10 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 				a3vec3 nVecNormal = a3vec3_zero; //normalized version of nVec
 				a3real3GetUnit(nVecNormal.v, nVec.v);
 
-				a3vec3 newWristPos = a3vec3_zero;
-				/*a3real3GetUnit(newWristPos.v, shoulderToEffector.v);
-				a3real3MulS(newWristPos.v, shoulderToWristLen);
-				a3real3Add(newWristPos.v, jointTransform_shoulder.v3.v);
-				jointTransform_wrist.v3.xyz = newWristPos;*/
-
-				a3vec3 newElbowPos = a3vec3_zero;
-
 				a3real3Diff(elbowToWrist.v, jointTransform_wrist.v3.v, jointTransform_elbow.v3.v);
 				a3real3Diff(shoulderToElbow.v, jointTransform_elbow.v3.v, jointTransform_shoulder.v3.v);
 
+				//create shoulder rotation. We know the shoulder's x vector, so we solve for z and then y
 				jointTransform_shoulder.v0.xyz = shoulderToEffector;
 				a3real3Normalize(jointTransform_shoulder.v0.xyz.v);
 				a3real3Negate(jointTransform_shoulder.v0.xyz.v);
@@ -347,14 +339,14 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 				a3real3Normalize(jointTransform_shoulder.v2.xyz.v);
 				a3real3Cross(jointTransform_shoulder.v1.xyz.v, jointTransform_shoulder.v2.xyz.v, jointTransform_shoulder.v0.xyz.v);
 
-
-				newElbowPos = a3vec3_zero;
+				//resolve elbow position
+				a3vec3 newElbowPos = a3vec3_zero;
 				a3real3GetUnit(newElbowPos.v, shoulderToElbow.v);
 				a3real3MulS(newElbowPos.v, shoulderElbowLen);
 				a3real3Sum(newElbowPos.v, newElbowPos.v, jointTransform_shoulder.v3.v);
 				jointTransform_elbow.v3.xyz = newElbowPos;
 
-				//order is tnb. T is elbowToWrist, use nVecNormal to find B, then backsolve for N
+				//resolve elbow location
 				jointTransform_elbow.v0.xyz = elbowToWrist;
 				a3real3Normalize(jointTransform_elbow.v0.xyz.v);
 				a3real3Negate(jointTransform_elbow.v0.xyz.v);
@@ -362,16 +354,13 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 				a3real3Normalize(jointTransform_elbow.v1.xyz.v);
 				a3real3Cross(jointTransform_elbow.v2.xyz.v, jointTransform_elbow.v0.xyz.v, nVecNormal.v);
 
-
-				newWristPos = a3vec3_zero;
+				//get wrist as close to effector as possible
+				a3vec3 newWristPos = a3vec3_zero;
 				a3real3GetUnit(newWristPos.v, elbowToWrist.v);
 				a3real3MulS(newWristPos.v, elbowWristLen);
 				a3real3Add(newWristPos.v, jointTransform_elbow.v3.v);
 				jointTransform_wrist.v3.xyz = newWristPos;
-				
-
-
-				////apply rotations?
+			
 
 				//
 				//a3real3Diff(shoulderToElbow.v, jointTransform_elbow.v3.v, jointTransform_shoulder.v3.v);
@@ -396,6 +385,7 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 			
 			else
 			{
+				//find the length from shoulder to constraint
 				a3vec3 shoulderToConstraint = a3vec3_zero;
 				a3real3Diff(shoulderToConstraint.v, controlLocator_wristConstraint.xyz.v, jointTransform_shoulder.v3.v);
 				
@@ -405,9 +395,11 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 				a3vec3 nVecNormal = a3vec3_zero; //normalized version of nVec
 				a3real3GetUnit(nVecNormal.v, nVec.v);
 				
+				//unit vector from shoulder to effector
 				a3vec3 dNormal = a3vec3_zero;
 				a3real3GetUnit(dNormal.v, shoulderToEffector.v);
 				
+				//find vector perpendicular to normal and d vec
 				a3vec3 hVecNormal = a3vec3_zero;
 				a3real3Cross(hVecNormal.v, nVecNormal.v, dNormal.v);
 				a3real3Normalize(hVecNormal.v);
@@ -422,6 +414,7 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 				a3vec3 hVec = a3vec3_zero;
 				a3real3ProductS(hVec.v, hVecNormal.v, heronH);
 				
+				//pythagorean theorem
 				a3real L1Sq = L1 * L1;
 				a3real D = a3sqrt(L1Sq - (heronH * heronH));
 				
@@ -434,10 +427,11 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 				a3real3Add(newElbowPos.v, elbowDVec.v);
 				a3real3Add(newElbowPos.v, hVec.v);
 
+				//assign wrist and elbow positions. Wrist assignment doesn't work for unknown reason. We think they're in the same coord space? Manual variable inspection indicates it.
 				jointTransform_elbow.v3.xyz = newElbowPos;
 				jointTransform_wrist.v3.xyz = controlLocator_wristEffector.xyz;
 
-				//Set rotations
+				//Set rotations (shoulder first, then elbow)
 				a3real3Diff(shoulderToElbow.v, jointTransform_elbow.v3.xyz.v, jointTransform_shoulder.v3.xyz.v);
 				jointTransform_shoulder.v0.xyz = shoulderToElbow;
 				a3real3Normalize(jointTransform_shoulder.v0.xyz.v);
@@ -455,7 +449,7 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 				a3real3Cross(jointTransform_elbow.v1.xyz.v, jointTransform_elbow.v2.xyz.v, jointTransform_elbow.v0.xyz.v);
 				a3real3Cross(jointTransform_elbow.v2.xyz.v, jointTransform_elbow.v0.xyz.v, jointTransform_elbow.v1.xyz.v);
 
-
+				//attempts to correct errors
 				//a3vec3 greenCache = jointTransform_elbow.v1.xyz;
 				//a3vec3 blueCache = jointTransform_elbow.v2.xyz;
 				//jointTransform_elbow.v2.xyz = jointTransform_elbow.v0.xyz;
@@ -531,19 +525,19 @@ void a3animation_update_animation(a3_DemoMode1_Animation* demoMode, a3f64 const 
 	
 	if (demoMode->character->isJumping)
 	{
-		if (demoMode->character->currentVelocity <= 0.01f)
+		if (demoMode->character->currentVelocity <= 0.01f) //jumping while still, use the transition value to lerp between idle and jump
 		{
 			a3hierarchyPoseLerp(activeHS_fk->animPose, idlePose, movingPose, demoMode->character->jumpTransitionVal, activeHS_fk->hierarchy->numNodes);
 		}
-		else
+		else //jumping while moving, just rely on the "movingPose" (which is a lerp between walk/run AND jump)
 		{
 			a3hierarchyPoseLerp(activeHS_fk->animPose, idlePose, movingPose, 1, activeHS_fk->hierarchy->numNodes);	// 1 for now, will always be moving pose
 		}
 
 	}
-	else
+	else //lerp between idle and walk/run.
 	{
-		a3hierarchyPoseLerp(activeHS_fk->animPose, idlePose, movingPose, u, activeHS_fk->hierarchy->numNodes);	// 1 for now, will always be moving pose
+		a3hierarchyPoseLerp(activeHS_fk->animPose, idlePose, movingPose, u, activeHS_fk->hierarchy->numNodes);
 	}
 
 	// run FK pipeline
