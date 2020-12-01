@@ -330,39 +330,49 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 				a3real3GetUnit(nVecNormal.v, nVec.v);
 
 				a3vec3 newWristPos = a3vec3_zero;
-				a3real3GetUnit(newWristPos.v, shoulderToEffector.v);
+				/*a3real3GetUnit(newWristPos.v, shoulderToEffector.v);
 				a3real3MulS(newWristPos.v, shoulderToWristLen);
 				a3real3Add(newWristPos.v, jointTransform_shoulder.v3.v);
-				jointTransform_wrist.v3.xyz = newWristPos;
+				jointTransform_wrist.v3.xyz = newWristPos;*/
 
 				a3vec3 newElbowPos = a3vec3_zero;
-				a3real3GetUnit(newElbowPos.v, shoulderToEffector.v);
-				a3real3MulS(newElbowPos.v, shoulderElbowLen);
-				a3real3Sum(newElbowPos.v, newElbowPos.v, jointTransform_shoulder.v3.v);
-				jointTransform_elbow.v3.xyz = newElbowPos;
 
 				a3real3Diff(elbowToWrist.v, jointTransform_wrist.v3.v, jointTransform_elbow.v3.v);
 				a3real3Diff(shoulderToElbow.v, jointTransform_elbow.v3.v, jointTransform_shoulder.v3.v);
+
+				jointTransform_shoulder.v0.xyz = shoulderToElbow;
+				a3real3Normalize(jointTransform_shoulder.v0.xyz.v);
+				a3real3Negate(jointTransform_shoulder.v0.xyz.v);
+				a3real3Cross(jointTransform_shoulder.v1.xyz.v, jointTransform_shoulder.v2.xyz.v, jointTransform_shoulder.v0.xyz.v);
+				a3real3Normalize(jointTransform_shoulder.v1.xyz.v);
+				a3real3Cross(jointTransform_shoulder.v2.xyz.v, jointTransform_shoulder.v0.xyz.v, a3real3Negate(nVecNormal.v));
 
 				//order is tnb. T is elbowToWrist, use nVecNormal to find B, then backsolve for N
 				jointTransform_elbow.v0.xyz = elbowToWrist;
 				a3real3Normalize(jointTransform_elbow.v0.xyz.v);
 				a3real3Negate(jointTransform_elbow.v0.xyz.v);
-				a3real3Cross(jointTransform_elbow.v2.xyz.v, jointTransform_elbow.v0.xyz.v, nVecNormal.v);
-				a3real3Normalize(jointTransform_elbow.v2.xyz.v);
 				a3real3Cross(jointTransform_elbow.v1.xyz.v, jointTransform_elbow.v2.xyz.v, jointTransform_elbow.v0.xyz.v);
+				a3real3Normalize(jointTransform_elbow.v1.xyz.v);
+				a3real3Cross(jointTransform_elbow.v2.xyz.v, jointTransform_elbow.v0.xyz.v, nVecNormal.v);
 
-				jointTransform_shoulder.v0.xyz = shoulderToElbow;
-				a3real3Normalize(jointTransform_shoulder.v0.xyz.v);
-				a3real3Negate(jointTransform_shoulder.v0.xyz.v);
-				a3real3Cross(jointTransform_shoulder.v2.xyz.v, jointTransform_shoulder.v0.xyz.v, nVecNormal.v);
-				a3real3Normalize(jointTransform_shoulder.v2.xyz.v);
-				a3real3Cross(jointTransform_shoulder.v1.xyz.v, jointTransform_shoulder.v2.xyz.v, jointTransform_shoulder.v0.xyz.v);
+				newElbowPos = a3vec3_zero;
+				a3real3GetUnit(newElbowPos.v, shoulderToEffector.v);
+				a3real3MulS(newElbowPos.v, shoulderElbowLen);
+				a3real3Sum(newElbowPos.v, newElbowPos.v, jointTransform_shoulder.v3.v);
+				jointTransform_elbow.v3.xyz = newElbowPos;
+
+
+
+				//a3real3x3 shoulderRot, elbowRot;
+				//a3real3x3SetMajors(shoulderRot, jointTransform_shoulder.v0.xyz.v, jointTransform_shoulder.v1.xyz.v, jointTransform_shoulder.v2.xyz.v);
+				//a3real3x3SetMajors(elbowRot, jointTransform_elbow.v0.xyz.v, jointTransform_elbow.v1.xyz.v, jointTransform_elbow.v2.xyz.v);
+
+
 
 				newWristPos = a3vec3_zero;
-				a3real3GetUnit(newWristPos.v, shoulderToEffector.v);
-				a3real3MulS(newWristPos.v, shoulderToWristLen);
-				a3real3Add(newWristPos.v, jointTransform_shoulder.v3.v);
+				a3real3GetUnit(newWristPos.v, elbowToWrist.v);
+				a3real3MulS(newWristPos.v, elbowWristLen);
+				a3real3Add(newWristPos.v, jointTransform_elbow.v3.v);
 				jointTransform_wrist.v3.xyz = newWristPos;
 				////jointTransform_wrist.v0.xyz = a3vec3_x;
 				////jointTransform_wrist.v1.xyz = a3vec3_y;
@@ -373,7 +383,7 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 				//
 				////apply rotations?
 
-				////
+				//
 				//a3real3Diff(shoulderToElbow.v, jointTransform_elbow.v3.v, jointTransform_shoulder.v3.v);
 				//a3real3Normalize(shoulderToElbow.v);
 				//jointTransform_shoulder.v0.xyz = shoulderToElbow;
@@ -387,7 +397,7 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 				////order is tnb. T is elbowToWrist, use nVecNormal to find B, then backsolve for N
 				//jointTransform_elbow.v0.xyz = elbowToWrist;
 				//a3real3Normalize(jointTransform_elbow.v2.xyz.v);
-				////
+				//
 				//a3real3Cross(jointTransform_elbow.v2.xyz.v, elbowToWrist.v, nVecNormal.v);
 				//a3real3Normalize(jointTransform_elbow.v2.xyz.v);
 				////jointTransform_elbow.v2.xyz = nVecNormal;
@@ -434,7 +444,7 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 				//a3real3Add(newElbowPos.v, hVec.v);
 				//jointTransform_elbow.v3.xyz = newElbowPos;
 				
-				jointTransform_wrist.v3.xyz = controlLocator_wristEffector.xyz;
+				//jointTransform_wrist.v3.xyz = controlLocator_wristEffector.xyz;
 
 
 				//Set rotations
