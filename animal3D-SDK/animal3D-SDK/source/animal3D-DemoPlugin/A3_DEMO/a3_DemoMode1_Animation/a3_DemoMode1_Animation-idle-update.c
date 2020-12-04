@@ -383,8 +383,8 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 				a3real3CrossUnit(hVecNormal.v, nVecNormal.v, dNormal.v);
 				
 				//heron's formula
-				a3real L1 = a3real3Length(shoulderToElbow.v);
-				a3real L2 = a3real3Length(elbowToWrist.v);
+				a3real L1 = shoulderElbowLen;
+				a3real L2 = elbowWristLen;
 				a3real heronS = 0.5f * (shoulderEffectorLen + L1 + L2);
 				a3real heronASq = heronS * (heronS - shoulderEffectorLen) * (heronS - L1) * (heronS - L2);
 				a3real heronA = a3sqrt(heronASq);
@@ -417,7 +417,7 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 				jointTransform_shoulder.v1.xyz = nVecNormal;
 				a3real3Cross(jointTransform_shoulder.v2.xyz.v, jointTransform_shoulder.v0.xyz.v, jointTransform_shoulder.v1.xyz.v);
 
-				a3real3Diff(elbowToWrist.v, jointTransform_wrist.v3.xyz.v, jointTransform_elbow.v3.v);
+				a3real3Diff(elbowToWrist.v, jointTransform_wrist.v3.xyz.v, jointTransform_elbow.v3.xyz.v);
 				jointTransform_elbow.v0.xyz = elbowToWrist;
 				a3real3Normalize(jointTransform_elbow.v0.xyz.v);
 				a3real3Negate(jointTransform_elbow.v0.xyz.v);
