@@ -27,47 +27,6 @@ enum NodeType {
 };
 typedef enum NodeType NodeType;
 
-typedef struct a3_SpatialBlendNode a3_SpatialBlendNode;
-typedef struct a3_SpatialBlendTree a3_SpatialBlendTree;
-typedef void (*a3_SpatialBlendOp)(a3_SpatialPose* pose, ...); //function pointer to a node op
-typedef void (*a3_SpatialBlendExec)(a3_SpatialBlendNode* node_in); //function pointer to something that calls that node op and passes the right data in
-
-void a3spatialBlendExec0C(a3_SpatialBlendNode* node_inout);
-void a3spatialBlendExec1C(a3_SpatialBlendNode* node_inout);
-void a3spatialBlendExec1C1I(a3_SpatialBlendNode* node_inout);
-void a3spatialBlendExec2C(a3_SpatialBlendNode* node_inout);
-void a3spatialBlendExec2C1I(a3_SpatialBlendNode* node_inout);
-void a3spatialBlendExec3C2I(a3_SpatialBlendNode* node_inout);
-void a3spatialBlendExec4C1I(a3_SpatialBlendNode* node_inout);
-void a3spatialBlendExec4C3I(a3_SpatialBlendNode* node_inout);
-void a3spatialBlendExec16C5I(a3_SpatialBlendNode* node_inout);
-
-struct a3_SpatialBlendNode
-{
-	a3f32* uVals[8];
-	a3_SpatialBlendOp operation;
-	a3_SpatialBlendExec exec;
-	a3_SpatialPose* pose;
-	a3_SpatialPose* controls[16];
-	a3_Clip* controlClips[16];
-};
-
-struct a3_SpatialBlendTree
-{
-	a3_Hierarchy* hierarchy;
-	a3ui32* leafIndices;
-	a3_SpatialBlendNode* blendNodes;
-
-	/*
-	LEAVES 1 5 18 34
-
-	5 BLENDNODE LERP CLIP skel CLIP fish 0.5 END
-	6 BLENDNODE SCALE NODE 5 CONTROL 0.5
-	*/
-};
-
-///Hierarchy Version
-
 typedef struct a3_HierarchyBlendNode a3_HierarchyBlendNode;
 typedef struct a3_HierarchyBlendTree a3_HierarchyBlendTree;
 typedef a3_HierarchyPose* (*a3_HierarchyBlendOp)(a3_HierarchyPose* pose, ...);//function pointer to a hierarchy pose op
@@ -110,12 +69,15 @@ struct a3_HierarchyBlendNode
 
 struct a3_HierarchyBlendTree
 {
+	//this hierarchy is reversed
 	a3_Hierarchy bt_hierarchy[1];
 	a3i32* leafIndices;
 	a3ui32 leafCount;
+	//iterate forward through this
 	a3_HierarchyBlendNode* blendNodes;
 };
 
+a3i32 a3hierarchyBlendNodeCreate0C(a3_HierarchyBlendNode* node, NodeType nodeType);
 
 a3i32 a3hierarchyBlendTreeLoad(a3_HierarchyBlendTree* blendTree_out, a3_Hierarchy* hierarchy_out, const a3byte* resourceFilePath);
 a3i32 a3hierarchyblendTreeUpdate(a3_HierarchyBlendTree* blendTree_out);
