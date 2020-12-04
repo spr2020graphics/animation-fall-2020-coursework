@@ -299,9 +299,9 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 			a3real shoulderToWristLen = shoulderElbowLen + elbowWristLen;
 			a3real shoulderEffectorLen = a3real3Length(shoulderToEffector.v);
 
-			printf("S-El: %f %f %f (%f)\n", shoulderToElbow.x, shoulderToElbow.y, shoulderToElbow.z, shoulderElbowLen);
-			printf("El-W: %f %f %f (%f)\n", elbowToWrist.x, elbowToWrist.y, elbowToWrist.z, elbowWristLen);
-			printf("S-Ef: %f %f %f (%f)\n", shoulderToEffector.x, shoulderToEffector.y, shoulderToEffector.z, shoulderEffectorLen);
+			//printf("S-El: %f %f %f (%f)\n", shoulderToElbow.x, shoulderToElbow.y, shoulderToElbow.z, shoulderElbowLen);
+			//printf("El-W: %f %f %f (%f)\n", elbowToWrist.x, elbowToWrist.y, elbowToWrist.z, elbowWristLen);
+			//printf("S-Ef: %f %f %f (%f)\n", shoulderToEffector.x, shoulderToEffector.y, shoulderToEffector.z, shoulderEffectorLen);
 
 			if (shoulderEffectorLen > shoulderToWristLen) //no solution exists, straighten arm.
 			{
@@ -400,6 +400,7 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 				a3real3Normalize(elbowDVec.v);
 				a3real3MulS(elbowDVec.v, D);
 
+
 				//calculate new elbow position
 				a3vec3 newElbowPos = jointTransform_shoulder.v3.xyz;
 				a3real3Add(newElbowPos.v, elbowDVec.v);
@@ -410,19 +411,19 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 				jointTransform_wrist.v3.xyz = controlLocator_wristEffector.xyz;
 
 				//Set rotations (shoulder first, then elbow)
-				a3real3Diff(shoulderToElbow.v, jointTransform_elbow.v3.xyz.v, jointTransform_shoulder.v3.xyz.v);
-				jointTransform_shoulder.v0.xyz = shoulderToElbow;
-				a3real3Normalize(jointTransform_shoulder.v0.xyz.v);
-				a3real3Negate(jointTransform_shoulder.v0.xyz.v);
-				jointTransform_shoulder.v1.xyz = nVecNormal;
-				a3real3Cross(jointTransform_shoulder.v2.xyz.v, jointTransform_shoulder.v0.xyz.v, jointTransform_shoulder.v1.xyz.v);
+				//a3real3Diff(shoulderToElbow.v, jointTransform_elbow.v3.xyz.v, jointTransform_shoulder.v3.xyz.v);
+				//jointTransform_shoulder.v0.xyz = shoulderToElbow;
+				//a3real3Normalize(jointTransform_shoulder.v0.xyz.v);
+				//a3real3Negate(jointTransform_shoulder.v0.xyz.v);
+				//jointTransform_shoulder.v1.xyz = nVecNormal;
+				//a3real3Cross(jointTransform_shoulder.v2.xyz.v, jointTransform_shoulder.v0.xyz.v, jointTransform_shoulder.v1.xyz.v);
 
-				a3real3Diff(elbowToWrist.v, jointTransform_wrist.v3.xyz.v, jointTransform_elbow.v3.xyz.v);
-				jointTransform_elbow.v0.xyz = elbowToWrist;
-				a3real3Normalize(jointTransform_elbow.v0.xyz.v);
-				a3real3Negate(jointTransform_elbow.v0.xyz.v);
-				jointTransform_elbow.v1.xyz = nVecNormal;
-				a3real3Cross(jointTransform_elbow.v2.xyz.v, jointTransform_elbow.v0.xyz.v, jointTransform_elbow.v1.xyz.v);
+				//a3real3Diff(elbowToWrist.v, jointTransform_wrist.v3.xyz.v, jointTransform_elbow.v3.v);
+				//jointTransform_elbow.v0.xyz = elbowToWrist;
+				//a3real3Normalize(jointTransform_elbow.v0.xyz.v);
+				//a3real3Negate(jointTransform_elbow.v0.xyz.v);
+				//jointTransform_elbow.v1.xyz = nVecNormal;
+				//a3real3Cross(jointTransform_elbow.v2.xyz.v, jointTransform_elbow.v0.xyz.v, jointTransform_elbow.v1.xyz.v);
 
 				//attempts to correct errors
 				//a3vec3 greenCache = jointTransform_elbow.v1.xyz;
