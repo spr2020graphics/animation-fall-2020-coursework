@@ -411,32 +411,28 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 				jointTransform_wrist.v3.xyz = controlLocator_wristEffector.xyz;
 
 				//Set rotations (shoulder first, then elbow)
-				//a3real3Diff(shoulderToElbow.v, jointTransform_elbow.v3.xyz.v, jointTransform_shoulder.v3.xyz.v);
-				//jointTransform_shoulder.v0.xyz = shoulderToElbow;
-				//a3real3Normalize(jointTransform_shoulder.v0.xyz.v);
-				//a3real3Negate(jointTransform_shoulder.v0.xyz.v);
-				//jointTransform_shoulder.v1.xyz = nVecNormal;
-				//a3real3Cross(jointTransform_shoulder.v2.xyz.v, jointTransform_shoulder.v0.xyz.v, jointTransform_shoulder.v1.xyz.v);
+				a3real3Diff(shoulderToElbow.v, jointTransform_elbow.v3.xyz.v, jointTransform_shoulder.v3.xyz.v);
+				jointTransform_shoulder.v0.xyz = shoulderToElbow;
 
-				//a3real3Diff(elbowToWrist.v, jointTransform_wrist.v3.xyz.v, jointTransform_elbow.v3.v);
-				//jointTransform_elbow.v0.xyz = elbowToWrist;
-				//a3real3Normalize(jointTransform_elbow.v0.xyz.v);
-				//a3real3Negate(jointTransform_elbow.v0.xyz.v);
-				//jointTransform_elbow.v1.xyz = nVecNormal;
-				//a3real3Cross(jointTransform_elbow.v2.xyz.v, jointTransform_elbow.v0.xyz.v, jointTransform_elbow.v1.xyz.v);
+				a3real3Normalize(jointTransform_shoulder.v0.xyz.v);
+				a3real3Negate(jointTransform_shoulder.v0.xyz.v);
 
-				//attempts to correct errors
-				//a3vec3 greenCache = jointTransform_elbow.v1.xyz;
-				//a3vec3 blueCache = jointTransform_elbow.v2.xyz;
-				//jointTransform_elbow.v2.xyz = jointTransform_elbow.v0.xyz;
-				//jointTransform_elbow.v0.xyz = blueCache;
-				//a3real3Negate(jointTransform_elbow.v1.xyz.v);
-				//
-				//blueCache = jointTransform_elbow.v2.xyz;
-				//a3vec3 newRed = blueCache;
-				//a3real3Negate(newRed.v);
-				//jointTransform_elbow.v2.xyz = jointTransform_elbow.v0.xyz;
-				//jointTransform_elbow.v0.xyz = newRed;
+				jointTransform_shoulder.v1.xyz = nVecNormal;
+				a3real3Cross(jointTransform_shoulder.v2.xyz.v, jointTransform_shoulder.v0.xyz.v, jointTransform_shoulder.v1.xyz.v);
+
+
+
+
+				a3real3Diff(elbowToWrist.v, jointTransform_wrist.v3.xyz.v, jointTransform_elbow.v3.v);
+				jointTransform_elbow.v0.xyz = elbowToWrist;
+
+				a3real3Normalize(jointTransform_elbow.v0.xyz.v);
+				a3real3Negate(jointTransform_elbow.v0.xyz.v);
+
+				jointTransform_elbow.v1.xyz = nVecNormal;
+				a3real3Cross(jointTransform_elbow.v2.xyz.v, jointTransform_elbow.v0.xyz.v, jointTransform_elbow.v1.xyz.v);
+
+				
 			}
 			//
 			// ****TO-DO: 
@@ -447,9 +443,23 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 			activeHS->objectSpace->pose[j_elbow].transformMat = jointTransform_elbow;
 			activeHS->objectSpace->pose[j_wrist].transformMat = jointTransform_wrist;
 
-			a3animation_update_ik(activeHS, baseHS, poseGroup);
+			a3real4x4TransformInverseIgnoreScale(activeHS->objectSpaceInv->pose[j_shoulder].transformMat.m, jointTransform_shoulder.m);
+			a3real4x4TransformInverseIgnoreScale(activeHS->objectSpaceInv->pose[j_elbow].transformMat.m, jointTransform_elbow.m);
+			a3real4x4TransformInverseIgnoreScale(activeHS->objectSpaceInv->pose[j_wrist].transformMat.m, jointTransform_wrist.m);
 
+			a3kinematicsSolveInverseSingle(activeHS, j_shoulder, activeHS->hierarchy->nodes[j_shoulder].parentIndex);
+			a3spatialPoseOpRevert(activeHS->localSpace->pose + j_shoulder);
+			a3spatialPoseDeconcat(activeHS->animPose->pose + j_shoulder, activeHS->localSpace->pose + j_shoulder, baseHS->localSpace->pose + j_shoulder);
 
+			a3kinematicsSolveInverseSingle(activeHS, j_elbow, j_shoulder);
+			a3spatialPoseOpRevert(activeHS->localSpace->pose + j_elbow);
+			a3spatialPoseDeconcat(activeHS->animPose->pose + j_elbow, activeHS->localSpace->pose + j_elbow, baseHS->localSpace->pose + j_elbow);
+
+			a3kinematicsSolveInverseSingle(activeHS, j_wrist, j_elbow);
+			a3spatialPoseOpRevert(activeHS->localSpace->pose + j_wrist);
+			a3spatialPoseDeconcat(activeHS->animPose->pose + j_wrist, activeHS->localSpace->pose + j_wrist, baseHS->localSpace->pose + j_wrist);
+
+			//a3animation_update_ik(activeHS, baseHS, poseGroup);
 		}
 	}
 }
