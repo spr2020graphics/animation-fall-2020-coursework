@@ -442,6 +442,16 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	demoMode->sceneGraphState->hierarchy = 0;
 	a3hierarchyStateCreate(demoMode->sceneGraphState, demoMode->sceneGraph);
 
+	/*
+	* WOLF CLIPS
+	* 
+	* walk  - 49 frames  (0-48)
+	* run   - 21 frames  (49-70)
+	* idle  - 231 frames (71-302)
+	* creep - 49 frames  (303-352)
+	* 
+	*/
+
 	// clips and controllers
 	{
 		a3byte const* clipName[] = {
