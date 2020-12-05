@@ -197,6 +197,18 @@ void a3animation_update_ik(a3_HierarchyState* activeHS,
 	}
 }
 
+void a3_animation_updateIK_single(a3_HierarchyState* activeHS, const a3_HierarchyState* baseHS, a3ui32 jointIndex, a3mat4* jointTransform)
+{
+	if (activeHS->hierarchy == baseHS->hierarchy)
+	{
+		a3real4x4TransformInverseIgnoreScale(activeHS->objectSpaceInv->pose[jointIndex].transformMat.m, jointTransform->m);
+
+		a3kinematicsSolveInverseSingle(activeHS, jointIndex, activeHS->hierarchy->nodes[jointIndex].parentIndex);
+		a3spatialPoseOpRevert(activeHS->localSpace->pose + jointIndex);
+		a3spatialPoseDeconcat(activeHS->animPose->pose + jointIndex, activeHS->localSpace->pose + jointIndex, baseHS->localSpace->pose + jointIndex);
+	}
+}
+
 void a3animation_update_skin(a3_HierarchyState* activeHS,
 	a3_HierarchyState const* baseHS)
 {
@@ -343,13 +355,13 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 
 				//resolve elbow position
 				a3vec3 newElbowPos = a3vec3_zero;
-				a3real3GetUnit(newElbowPos.v, shoulderToElbow.v);
+				a3real3GetUnit(newElbowPos.v, shoulderToEffector.v);
 				a3real3MulS(newElbowPos.v, shoulderElbowLen);
 				a3real3Sum(newElbowPos.v, newElbowPos.v, jointTransform_shoulder.v3.v);
 				jointTransform_elbow.v3.xyz = newElbowPos;
 
 				//resolve elbow rotation
-				jointTransform_elbow.v0.xyz = elbowToWrist;
+				jointTransform_elbow.v0.xyz = shoulderToEffector;
 				a3real3Normalize(jointTransform_elbow.v0.xyz.v);
 				a3real3Negate(jointTransform_elbow.v0.xyz.v);
 				a3real3Cross(jointTransform_elbow.v2.xyz.v, jointTransform_elbow.v0.xyz.v, nVecNormal.v);
@@ -358,11 +370,14 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 
 				//get wrist as close to effector as possible
 				a3vec3 newWristPos = a3vec3_zero;
-				a3real3GetUnit(newWristPos.v, elbowToWrist.v);
+				a3real3GetUnit(newWristPos.v, shoulderToEffector.v);
 				a3real3MulS(newWristPos.v, elbowWristLen);
 				a3real3Add(newWristPos.v, jointTransform_elbow.v3.v);
 				jointTransform_wrist.v3.xyz = newWristPos;
-			
+
+				a3_animation_updateIK_single(activeHS, baseHS, j_shoulder, &jointTransform_shoulder);
+				a3_animation_updateIK_single(activeHS, baseHS, j_elbow, &jointTransform_elbow);
+				a3_animation_updateIK_single(activeHS, baseHS, j_wrist, &jointTransform_wrist);
 			}
 			
 			else
@@ -431,8 +446,6 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 
 				jointTransform_elbow.v1.xyz = nVecNormal;
 				a3real3Cross(jointTransform_elbow.v2.xyz.v, jointTransform_elbow.v0.xyz.v, jointTransform_elbow.v1.xyz.v);
-
-				
 			}
 			//
 			// ****TO-DO: 
@@ -443,7 +456,11 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 			activeHS->objectSpace->pose[j_elbow].transformMat = jointTransform_elbow;
 			activeHS->objectSpace->pose[j_wrist].transformMat = jointTransform_wrist;
 
-			a3real4x4TransformInverseIgnoreScale(activeHS->objectSpaceInv->pose[j_shoulder].transformMat.m, jointTransform_shoulder.m);
+			a3_animation_updateIK_single(activeHS, baseHS, j_shoulder, &jointTransform_shoulder);
+			a3_animation_updateIK_single(activeHS, baseHS, j_elbow, &jointTransform_elbow);
+			a3_animation_updateIK_single(activeHS, baseHS, j_wrist, &jointTransform_wrist);
+
+			/*a3real4x4TransformInverseIgnoreScale(activeHS->objectSpaceInv->pose[j_shoulder].transformMat.m, jointTransform_shoulder.m);
 			a3real4x4TransformInverseIgnoreScale(activeHS->objectSpaceInv->pose[j_elbow].transformMat.m, jointTransform_elbow.m);
 			a3real4x4TransformInverseIgnoreScale(activeHS->objectSpaceInv->pose[j_wrist].transformMat.m, jointTransform_wrist.m);
 
@@ -457,7 +474,7 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 
 			a3kinematicsSolveInverseSingle(activeHS, j_wrist, j_elbow);
 			a3spatialPoseOpRevert(activeHS->localSpace->pose + j_wrist);
-			a3spatialPoseDeconcat(activeHS->animPose->pose + j_wrist, activeHS->localSpace->pose + j_wrist, baseHS->localSpace->pose + j_wrist);
+			a3spatialPoseDeconcat(activeHS->animPose->pose + j_wrist, activeHS->localSpace->pose + j_wrist, baseHS->localSpace->pose + j_wrist);*/
 
 			//a3animation_update_ik(activeHS, baseHS, poseGroup);
 		}
