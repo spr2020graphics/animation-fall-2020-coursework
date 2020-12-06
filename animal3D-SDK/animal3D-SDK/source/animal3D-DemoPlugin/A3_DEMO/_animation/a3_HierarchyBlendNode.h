@@ -9,6 +9,7 @@
 #include "a3_HierarchyState.h"
 #include "a3_Hierarchy.h"
 #include "a3_KeyframeAnimationController.h"
+#include <A3_DEMO/_animation/a3_Tree.h>
 
 /// <summary>
 /// Enum for node operations
@@ -70,15 +71,31 @@ struct a3_HierarchyBlendNode
 struct a3_HierarchyBlendTree
 {
 	//this hierarchy is reversed
-	a3_Hierarchy bt_hierarchy[1];
-	a3i32* leafIndices;
-	a3ui32 leafCount;
+	//a3_Hierarchy bt_hierarchy[1];
+	a3_TreeNode* tree;
 	//iterate forward through this
-	a3_HierarchyBlendNode* blendNodes;
+	a3_HierarchyBlendNode** blendNodes;
+	a3i32 maxNodes;
+	a3i32 nodeCount;
 };
 
-a3i32 a3hierarchyBlendNodeCreate0C(a3_HierarchyBlendNode* node, NodeType nodeType);
+a3_HierarchyBlendExec a3hierarchyBlendNodeGetExec(NodeType nodeType);
 
-a3i32 a3hierarchyBlendTreeLoad(a3_HierarchyBlendTree* blendTree_out, a3_Hierarchy* hierarchy_out, const a3byte* resourceFilePath);
-a3i32 a3hierarchyblendTreeUpdate(a3_HierarchyBlendTree* blendTree_out);
+a3i32 a3hierarchyBlendNodeCreate(a3_HierarchyBlendNode* node, NodeType nodeType);
+
+a3i32 a3hierarchyBlendNodeGenControllersWithClipNames(a3_HierarchyBlendNode* node, a3i32 ctrlCount, char** ctrlNames, char** clipNames, a3_ClipPool* pool, const a3i32 playback_step, const a3f64 playback_stepPerSec);
+a3i32 a3hierarchyBlendNodeGenControllersWithClipIndices(a3_HierarchyBlendNode* node, a3i32 ctrlCount, char** ctrlNames, a3i32* clipIndices, a3_ClipPool* pool, const a3i32 playback_step, const a3f64 playback_stepPerSec);
+
+a3i32 a3hierarchyBlendNodeBindClipController(a3_HierarchyBlendNode* node, a3_ClipController* ctrl, a3ui32 index);
+a3i32 a3hierarchyBlendNodeAddControl(a3_HierarchyBlendNode* node, a3ui32 slot, a3f32* controlSource);
+
+a3i32 a3hierarchyBlendTreeCreate(a3_HierarchyBlendTree* blendTree_out, int size, a3boolean allocateNodes);
+
+a3i32 a3hierarchyBlendTreeStoreNode(a3_HierarchyBlendTree* tree, a3_HierarchyBlendNode* node);
+
+//adds a node in the BlendTree's array to the internal tree, creating a parent-child relationship. Currently needs to be done in root->leaf order and in input order.
+a3i32 a3hierarchyBlendTreeAddNodeToTree(a3_HierarchyBlendTree*blendTree, int node, int sourceNode);
+
+//a3i32 a3hierarchyBlendTreeLoad(a3_HierarchyBlendTree* blendTree_out, a3_Hierarchy* hierarchy_out, const a3byte* resourceFilePath);
+//a3i32 a3hierarchyblendTreeUpdate(a3_HierarchyBlendTree* blendTree_out);
 #endif // !A3_HIERARCHYBLENDNODE_H

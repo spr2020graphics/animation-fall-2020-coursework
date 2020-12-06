@@ -42,10 +42,23 @@ a3i32 a3TreeNodeAddChildValue(a3_TreeNode* node, a3i32 childValue)
 
 a3i32 a3TreeNodeRemoveChild(a3_TreeNode* node, a3i32 index)
 {
-	if (node && index >= 0 && node->childCount > index)
+	if (node && index >= 0 && node->childCount > index && node->children)
 	{
+		a3TreeNodeRelease(node->children[index]);
+		if (index == node->childCount - 1)
+		{
+			node->childCount--;
+		}
+		else
+		{
+			for (int i = index; i < node->childCount - 1; i++)
+			{
+				node->children[i] = node->children[i + 1]; //shift them to the left
+			}
+		}
+		return 1;
 	}
-	return 1;
+	return -1;
 }
 
 a3i32 a3TreeNodeResizeChildArray(a3_TreeNode* node, a3i32 newMax)
