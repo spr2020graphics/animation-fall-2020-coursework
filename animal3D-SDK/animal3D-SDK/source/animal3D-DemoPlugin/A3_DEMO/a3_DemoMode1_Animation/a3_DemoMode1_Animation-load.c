@@ -434,12 +434,13 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	
 	a3vec3 center = { 1, 2, 0 };
 	a3vec3 norm = { 1, 2, -2 };
+	a3vec3 bounds = { 3, 3, 1 }; // basically the "localScale" of the plane, a 3x3 square in this instance
 
 	a3createRay(ray, &origin, &dir);
-	a3createPlane(plane, &center, &norm);
+	a3createPlane(plane, &center, &norm, &bounds);
 
 	a3vec3 intersection = a3vec3_zero;
-	a3raycastGetCollision(ray, plane, &intersection);
+	a3raycastGetCollisionUnboundedPlane(ray, plane, &intersection);
 
 	// map relevant objects to scene graph
 	demoMode->obj_world_root->sceneGraphIndex = a3hierarchyGetNodeIndex(demoMode->sceneGraph, "scene_world_root");

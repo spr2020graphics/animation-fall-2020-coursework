@@ -33,15 +33,16 @@ a3_Ray* a3createRay(a3_Ray* out, a3vec3* orig, a3vec3* dir)
 	return out;
 }
 
-a3_Plane* a3createPlane(a3_Plane* out, a3vec3* cent, a3vec3* norm)
+a3_Plane* a3createPlane(a3_Plane* out, a3vec3* cent, a3vec3* norm, a3vec3* bounds)
 {
 	out->center = cent;
 	out->normal = norm;
+	out->boundSize = bounds;
 
 	return out;
 }
 
-a3boolean a3raycastGetCollision(const a3_Ray* ray, const a3_Plane* plane, a3vec3* out_point)
+a3boolean a3raycastGetCollisionUnboundedPlane(const a3_Ray* ray, const a3_Plane* plane, a3vec3* out_point)
 {
 	a3boolean result = false;
 
@@ -94,6 +95,23 @@ a3boolean a3raycastGetCollision(const a3_Ray* ray, const a3_Plane* plane, a3vec3
 
 	
 	return result;
+}
+
+a3boolean a3raycastGetCollisionBoundedPlane(const a3_Ray* ray, const a3_Plane* plane, a3vec3* out_point)
+{
+	a3vec3 intersection = a3vec3_zero;
+
+	if (a3raycastGetCollisionUnboundedPlane(ray, plane, &intersection))
+	{
+		a3boolean withinX = intersection.x >= (plane->center->x - plane->boundSize->x) && intersection.x <= (plane->center->x + plane->boundSize->x);
+		a3boolean withinY = intersection.y >= (plane->center->y - plane->boundSize->y) && intersection.y <= (plane->center->y + plane->boundSize->y);
+
+		return withinX && withinY;
+	}
+	else
+	{
+		return false;
+	}
 }
 
 //-----------------------------------------------------------------------------
