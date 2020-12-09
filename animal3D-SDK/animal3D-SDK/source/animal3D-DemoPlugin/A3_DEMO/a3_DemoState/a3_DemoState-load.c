@@ -204,7 +204,7 @@ void a3demo_loadGeometry(a3_DemoState *demoState)
 
 	// procedural scene objects
 	// attempt to load stream if requested
-	if (demoState->streaming && a3fileStreamOpenRead(fileStream, geometryStream))
+	if (!demoState->streaming && a3fileStreamOpenRead(fileStream, geometryStream))
 	{
 		// read from stream
 
