@@ -177,6 +177,9 @@
     <ClCompile Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\_animation\_src\a3_Tree.c">
       <Filter>Source Files\common\A3_DEMO\_animation\_src</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\_animation\_src\a3_Raycasting.c">
+      <Filter>Source Files\common\A3_DEMO\_animation\_src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\a3_DemoState.h">
@@ -231,6 +234,9 @@
       <Filter>Header Files\A3_DEMO\_animation</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\_animation\a3_Tree.h">
+      <Filter>Header Files\A3_DEMO\_animation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\_animation\a3_Raycasting.h">
       <Filter>Header Files\A3_DEMO\_animation</Filter>
     </ClInclude>
   </ItemGroup>

@@ -36,6 +36,7 @@
 #include "../_animation/a3_Tree.h"
 
 #include "../a3_DemoState.h"
+#include "A3_DEMO/_animation/a3_Raycasting.h"
 
 
 //-----------------------------------------------------------------------------
@@ -110,9 +111,8 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	hierarchy = demoMode->hierarchy_skel;
 	hierarchyPoseGroup = demoMode->hierarchyPoseGroup_skel;
 
-
 	// stream animation assets
-	if (demoState->streaming && a3fileStreamOpenRead(fileStream, geometryStream))
+	if (!demoState->streaming && a3fileStreamOpenRead(fileStream, geometryStream))
 	{
 		// load hierarchy assets
 		a3hierarchyLoadBinary(demoMode->sceneGraph, fileStream);
@@ -394,29 +394,29 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		hierarchyPoseGroup->hierarchy = 0;
 		a3hierarchyPoseGroupLoadHTR(hierarchyPoseGroup, hierarchy,
 			//"../../../../resource/animdata/egnaro/egnaro_skel_anim.htr");
-			"../../../../resource/animdata/xbot/xbot_loco.htr");
+			"../../../../resource/animdata/wolf-htr/wolf_loco.htr");
 
 		// edit assets as needed
 		// mixamo assets have the wrong base pose; use first key as base and subtract from all
-		p = 1;
-		a3hierarchyPoseCopy(hierarchyPoseGroup->hpose, hierarchyPoseGroup->hpose + p, hierarchy->numNodes);
-		for (; p < hierarchyPoseGroup->hposeCount; ++p)
-			a3hierarchyPoseDeconcat(hierarchyPoseGroup->hpose + p, hierarchyPoseGroup->hpose + p,
-				hierarchyPoseGroup->hpose, hierarchy->numNodes);
+		//p = 1;
+		//a3hierarchyPoseCopy(hierarchyPoseGroup->hpose, hierarchyPoseGroup->hpose + p, hierarchy->numNodes);
+		//for (; p < hierarchyPoseGroup->hposeCount; ++p)
+		//	a3hierarchyPoseDeconcat(hierarchyPoseGroup->hpose + p, hierarchyPoseGroup->hpose + p,
+		//		hierarchyPoseGroup->hpose, hierarchy->numNodes);
 
-		// furthermore, end joints were removed, so they have no animation data; initialize it as identity
-		for (j = a3hierarchyGetNodeIndex(hierarchy, "HeadTop_End"), p = 1;
-			p < hierarchyPoseGroup->hposeCount; ++p)
-			a3spatialPoseReset(hierarchyPoseGroup->hpose[p].pose + j);
-		for (j = a3hierarchyGetNodeIndex(hierarchy, "LeftToe_End"), p = 1;
-			p < hierarchyPoseGroup->hposeCount; ++p)
-			a3spatialPoseReset(hierarchyPoseGroup->hpose[p].pose + j);
-		for (j = a3hierarchyGetNodeIndex(hierarchy, "RightToe_End"), p = 1;
-			p < hierarchyPoseGroup->hposeCount; ++p)
-			a3spatialPoseReset(hierarchyPoseGroup->hpose[p].pose + j);
+		//// furthermore, end joints were removed, so they have no animation data; initialize it as identity
+		//for (j = a3hierarchyGetNodeIndex(hierarchy, "HeadTop_End"), p = 1;
+		//	p < hierarchyPoseGroup->hposeCount; ++p)
+		//	a3spatialPoseReset(hierarchyPoseGroup->hpose[p].pose + j);
+		//for (j = a3hierarchyGetNodeIndex(hierarchy, "LeftToe_End"), p = 1;
+		//	p < hierarchyPoseGroup->hposeCount; ++p)
+		//	a3spatialPoseReset(hierarchyPoseGroup->hpose[p].pose + j);
+		//for (j = a3hierarchyGetNodeIndex(hierarchy, "RightToe_End"), p = 1;
+		//	p < hierarchyPoseGroup->hposeCount; ++p)
+		//	a3spatialPoseReset(hierarchyPoseGroup->hpose[p].pose + j);
 
 		// finally, append prefix names to match what is expected for skinning
-		a3hierarchyPrefixNodeNames(demoMode->hierarchy_skel, "mixamorig:");
+		//a3hierarchyPrefixNodeNames(demoMode->hierarchy_skel, "mixamorig:");
 
 		// save hierarchy assets
 		a3hierarchySaveBinary(demoMode->sceneGraph, fileStream);
@@ -427,6 +427,21 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		a3fileStreamClose(fileStream);
 	}
 
+	a3_Ray ray[1];
+	a3_Plane plane[1];
+
+	a3vec3 origin = { 1, -2, -1 };
+	a3vec3 dir = { 2, 3, 4 };
+	
+	a3vec3 center = { 1, 2, 0 };
+	a3vec3 norm = { 1, 2, -2 };
+	a3vec3 bounds = { 3, 3, 1 }; // basically the "localScale" of the plane, a 3x3 square in this instance
+
+	a3createRay(ray, &origin, &dir);
+	a3createPlane(plane, &center, &norm, &bounds);
+
+	a3vec3 intersection = a3vec3_zero;
+	a3raycastGetCollisionUnboundedPlane(ray, plane, &intersection);
 
 	// map relevant objects to scene graph
 	demoMode->obj_world_root->sceneGraphIndex = a3hierarchyGetNodeIndex(demoMode->sceneGraph, "scene_world_root");
@@ -456,34 +471,11 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	// clips and controllers
 	{
 		a3byte const* clipName[] = {
-			"xbot",
-			"xbot_base",
-			"xbot_ymca",
-			"xbot_idle_pistol",
-			"xbot_skintest",
-			"xbot_gangnam",
-			"xbot_samba",
-			"xbot_backflip",
-			"xbot_idle_f",
-			"xbot_jump_f",
-			"xbot_walk_f",
-			"xbot_run_f",
-			"xbot_walk_s_l_f",
-			"xbot_strafe_l_f",
-			"xbot_turn_l_f",
-			"xbot_walk_s_r_f",
-			"xbot_strafe_r_f",
-			"xbot_turn_r_f",
-			"xbot_idle_m",
-			"xbot_jump_m",
-			"xbot_walk_m",
-			"xbot_run_m",
-			"xbot_walk_s_l_m",
-			"xbot_strafe_l_m",
-			"xbot_turn_l_m",
-			"xbot_walk_s_r_m",
-			"xbot_strafe_r_m",
-			"xbot_turn_r_m",
+			"wolf",
+			"wolf_walk",
+			"wolf_run",
+			"wolf_idle",
+			"wolf_creep",
 		};
 		// forward branch transition list
 		a3ivec2 clipIndexForward[] = {
@@ -492,29 +484,6 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 			{2, 2},
 			{3, 3},
 			{4, 4},
-			{18,5},
-			{6, 6},
-			{7, 7},
-			{8, 8},
-			{8, 8},  // jump transitions backwards
-			{8,8},
-			{8,8},
-			{12,12},
-			{13,13},
-			{14,14},
-			{15,15},
-			{16,16},
-			{17,17},
-			{18,5},
-			{19,19},
-			{20,20},
-			{21,21},
-			{22,22},
-			{23,23},
-			{24,24},
-			{25,25},
-			{26,26},
-			{27,27}
 		};
 
 		// reverse branch transition list
@@ -524,29 +493,6 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 			{2, 2},
 			{3, 3},
 			{4, 4},
-			{18,5},
-			{6, 6},
-			{7, 7},
-			{8, 8},
-			{8, 8}, // jump transitions backwards
-			{8,8},
-			{8,8},
-			{12,12},
-			{13,13},
-			{14,14},
-			{15,15},
-			{16,16},
-			{17,17},
-			{18,5},
-			{19,19},
-			{20,20},
-			{21,21},
-			{22,22},
-			{23,23},
-			{24,24},
-			{25,25},
-			{26,26},
-			{27,27}
 		};
 
 		a3ui32 const clipCount = sizeof(clipName) / sizeof(*clipName);
@@ -683,7 +629,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		{
 			a3animation_update_animation(demoMode, 0.0, 0);
 			a3animation_update_sceneGraph(demoMode, 0.0);
-			a3animation_load_resetEffectors(demoMode, demoMode->hierarchyState_skel_fk, hierarchyPoseGroup);
+			//a3animation_load_resetEffectors(demoMode, demoMode->hierarchyState_skel_fk, hierarchyPoseGroup);
 		}
 	}
 }

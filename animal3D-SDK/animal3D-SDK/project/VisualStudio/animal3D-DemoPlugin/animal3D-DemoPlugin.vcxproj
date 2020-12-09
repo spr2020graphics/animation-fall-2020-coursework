@@ -215,6 +215,7 @@
     <ClCompile Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\_animation\_src\a3_KeyframeAnimation.c" />
     <ClCompile Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\_animation\_src\a3_KeyframeAnimationController.c" />
     <ClCompile Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\_animation\_src\a3_Kinematics.c" />
+    <ClCompile Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\_animation\_src\a3_Raycasting.c" />
     <ClCompile Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\_animation\_src\a3_SpatialPose.c" />
     <ClCompile Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\_animation\_src\a3_Tree.c" />
     <ClCompile Include="_src_win\main_dll.c" />
@@ -235,6 +236,7 @@
     <ClInclude Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\_animation\a3_KeyframeAnimation.h" />
     <ClInclude Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\_animation\a3_KeyframeAnimationController.h" />
     <ClInclude Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\_animation\a3_Kinematics.h" />
+    <ClInclude Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\_animation\a3_Raycasting.h" />
     <ClInclude Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\_animation\a3_SpatialPose.h" />
     <ClInclude Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\_animation\a3_Tree.h" />
     <ClInclude Include="..\..\..\source\animal3D-DemoPlugin\_a3_dylib_config_export.h" />
