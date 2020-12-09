@@ -33,6 +33,7 @@
 //-----------------------------------------------------------------------------
 
 #include "../a3_DemoMode1_Animation.h"
+#include "../_animation/a3_Tree.h"
 
 #include "../a3_DemoState.h"
 
@@ -611,6 +612,29 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		// set up jump transition action
 		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_jump_f");
 		//a3clipTransitionBindAction(demoMode->clipCtrlA->clipPool->clip[j].transitionForward, &a3characterToggleIsJumping);
+
+		a3_TreeNode* nodes = malloc(sizeof(a3_TreeNode) * 6);
+		for (int i = 0; i < 5; i++)
+		{
+			a3TreeNodeInit(nodes + i, 3);
+		}
+		nodes[0].value = 0;
+		nodes[1].value = 1;
+		nodes[2].value = 2;
+		nodes[3].value = 3;
+		nodes[4].value = 4;
+		nodes[5].value = 5;
+
+		a3TreeNodeAddChildNode(nodes, nodes + 1);
+		a3TreeNodeAddChildNode(nodes, nodes + 2);
+		a3TreeNodeAddChildNode(nodes + 1, nodes + 3);
+		a3TreeNodeAddChildNode(nodes + 1, nodes + 4);
+		a3TreeNodeAddChildNode(nodes + 2, nodes + 4);
+		a3TreeNodeAddChildNode(nodes + 2, nodes + 5);
+
+		a3TreeEnsureUnique(nodes, 6, 0, 5);
+
+		a3_TreeNode* n = a3TreeRetrieveNodeWithValue(nodes, 4, 6);
 	}
 
 	// finally set up hierarchy states

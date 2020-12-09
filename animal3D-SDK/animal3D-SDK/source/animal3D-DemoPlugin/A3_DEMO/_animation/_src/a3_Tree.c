@@ -3,7 +3,7 @@
 
 a3i32 a3TreeNodeInit(a3_TreeNode* node, a3i32 maxChildren)
 {
-	if (node && !node->children && maxChildren >= 0)
+	if (node && maxChildren >= 0)
 	{
 		node->children = malloc(sizeof(a3_TreeNode*) * maxChildren);
 		node->value = 0;
@@ -162,4 +162,120 @@ a3i32 a3TreeGetDescendantCount(a3_TreeNode* node)
 		return result;
 	}
 	return -1;
+}
+
+a3i32 a3TreeEnsureUnique(a3_TreeNode* root, a3ui32 maxScanDepth, a3ui32 minVal, a3ui32 maxVal)
+{
+	if (root && maxVal >= minVal)
+	{
+		a3ui32 valCt = maxVal - minVal + 1;
+		a3_TreeNode** foundValueNodes = malloc(sizeof(a3_TreeNode*) * valCt);
+		for (a3ui32 i = 0; i < valCt; i++)
+		{
+			foundValueNodes[i] = NULL;
+		}
+		a3ui32 indexOffset = minVal;
+
+		a3_TreeNode** nodeStack = malloc(sizeof(a3_TreeNode*) * maxScanDepth);
+		a3i32* indexStack = malloc(sizeof(int) * maxScanDepth);
+		for (a3ui32 i = 0; i < maxScanDepth; i++)
+		{
+			nodeStack[i] = NULL;
+			indexStack[i] = 0;
+		}
+		a3ui32 stackSize = 0;
+
+		nodeStack[0] = root;
+		stackSize = 1;
+
+		while (stackSize > 0)
+		{
+			a3_TreeNode* currentNode = nodeStack[stackSize - 1];
+			if (foundValueNodes[currentNode->value - indexOffset] && foundValueNodes[currentNode->value - indexOffset] != currentNode)
+			{
+				return -2; //two distinct nodes of the same value
+			}
+			foundValueNodes[currentNode->value - indexOffset] = currentNode;
+			if (currentNode->childCount > 0)
+			{
+				if (indexStack[stackSize - 1] < currentNode->childCount)
+				{
+					nodeStack[stackSize] = currentNode->children[indexStack[stackSize - 1]];
+					indexStack[stackSize - 1]++;
+					stackSize++;
+					if (stackSize < maxScanDepth)
+					{
+						indexStack[stackSize - 1] = 0;
+					}
+					continue;
+				}
+				else //no more children to examine, go up one
+				{
+					nodeStack[stackSize - 1] = NULL;
+					stackSize--;
+					continue;
+				}
+			}
+			else
+			{
+				nodeStack[stackSize - 1] = NULL;
+				stackSize--;
+			}
+		}
+		return 1;
+	}
+	return -1;
+}
+
+a3_TreeNode* a3TreeRetrieveNodeWithValue(a3_TreeNode* root, a3i32 value, a3ui32 scanDepth)
+{
+	if (root)
+	{
+		a3_TreeNode** nodeStack = malloc(sizeof(a3_TreeNode*) * scanDepth);
+		a3i32* indexStack = malloc(sizeof(int) * scanDepth);
+		for (a3ui32 i = 0; i < scanDepth; i++)
+		{
+			nodeStack[i] = NULL;
+			indexStack[i] = 0;
+		}
+		a3ui32 stackSize = 0;
+
+		nodeStack[0] = root;
+		stackSize = 1;
+
+		while (stackSize > 0)
+		{
+			a3_TreeNode* currentNode = nodeStack[stackSize - 1];
+			if (currentNode->value == value)
+			{
+				return currentNode;
+			}
+			if (currentNode->childCount > 0)
+			{
+				if (indexStack[stackSize - 1] < currentNode->childCount)
+				{
+					nodeStack[stackSize] = currentNode->children[indexStack[stackSize - 1]];
+					indexStack[stackSize - 1]++;
+					stackSize++;
+					if (stackSize < scanDepth)
+					{
+						indexStack[stackSize - 1] = 0;
+					}
+					continue;
+				}
+				else //no more children to examine, go up one
+				{
+					nodeStack[stackSize - 1] = NULL;
+					stackSize--;
+					continue;
+				}
+			}
+			else
+			{
+				nodeStack[stackSize - 1] = NULL;
+				stackSize--;
+			}
+		}
+	}
+	return NULL;
 }

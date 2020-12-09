@@ -41,4 +41,7 @@ a3i32 a3TreeNodeResizeChildArray(a3_TreeNode* node, a3i32 newMax);
 
 a3i32 a3TreeNodeRelease(a3_TreeNode* node);
 a3i32 a3TreeGetDescendantCount(a3_TreeNode* node);
+
+a3i32 a3TreeEnsureUnique(a3_TreeNode* root, a3ui32 maxScanDepth, a3ui32 minVal, a3ui32 maxVal);
+a3_TreeNode* a3TreeRetrieveNodeWithValue(a3_TreeNode* root, a3i32 value, a3ui32 scanDepth);
 #endif

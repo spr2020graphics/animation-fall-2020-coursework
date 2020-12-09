@@ -94,7 +94,9 @@ a3i32 a3hierarchyBlendTreeCreate(a3_HierarchyBlendTree* blendTree_out, int size,
 a3i32 a3hierarchyBlendTreeStoreNode(a3_HierarchyBlendTree* tree, a3_HierarchyBlendNode* node);
 
 //adds a node in the BlendTree's array to the internal tree, creating a parent-child relationship. Currently needs to be done in root->leaf order and in input order.
-a3i32 a3hierarchyBlendTreeAddNodeToTree(a3_HierarchyBlendTree*blendTree, int node, int sourceNode);
+a3i32 a3hierarchyBlendTreeAddNodeToTree(a3_HierarchyBlendTree* blendTree, int node, int sourceNode);
+
+a3i32 a3hierarchyBlendTreeBindStates(a3_HierarchyBlendTree* blendTree, a3_Hierarchy* hierarchy, a3_HierarchyState** optStates);
 
 //a3i32 a3hierarchyBlendTreeLoad(a3_HierarchyBlendTree* blendTree_out, a3_Hierarchy* hierarchy_out, const a3byte* resourceFilePath);
 //a3i32 a3hierarchyblendTreeUpdate(a3_HierarchyBlendTree* blendTree_out);

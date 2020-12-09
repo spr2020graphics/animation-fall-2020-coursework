@@ -665,17 +665,108 @@ a3i32 a3hierarchyBlendTreeStoreNode(a3_HierarchyBlendTree* tree, a3_HierarchyBle
 	return -1;
 }
 
-a3i32 a3hierarchyBlendTreeAddNodeToTree(a3_HierarchyBlendTree* blendTree, int node, int sourceNode)
+a3i32 a3hierarchyBlendTreeAddNodeToTree(a3_HierarchyBlendTree* blendTree, int nodeIndex, int sourceNodeIndex)
 {
 	if (blendTree)
 	{
-		if (sourceNode == -1)
+		if (sourceNodeIndex == -1)
 		{
-			blendTree->tree->value = node;
+			blendTree->tree->value = nodeIndex;
 		}
 		else
 		{
-			//tree nodes need unique values! No way to find the source node otherwise.
+			a3_TreeNode* parentNode = a3TreeRetrieveNodeWithValue(blendTree->tree, sourceNodeIndex, blendTree->nodeCount);
+			a3_TreeNode* childNode = a3TreeRetrieveNodeWithValue(blendTree->tree, nodeIndex, blendTree->nodeCount);
+			if (!parentNode)
+			{
+				printf("Tree could not be built.");
+				return -2;
+			}
+			if (!childNode)
+			{
+				a3TreeNodeAddChildValue(parentNode, nodeIndex);
+			}
+			else
+			{
+				if (a3TreeRetrieveNodeWithValue(childNode, sourceNodeIndex, blendTree->nodeCount))
+				{
+					printf("A node cannot have its parent as a child.");
+					return -3;
+				}
+				a3TreeNodeAddChildNode(parentNode, childNode);
+			}
+		}
+		return 1;
+	}
+	return -1;
+}
+
+a3i32 a3hierarchyBlendTreeBindStates(a3_HierarchyBlendTree* blendTree, a3_Hierarchy* hierarchy, a3_HierarchyState** optStates)
+{
+	if (blendTree && blendTree->tree && hierarchy)
+	{
+		a3i32 stateCount = blendTree->nodeCount;
+		a3_HierarchyState* states = malloc(sizeof(a3_HierarchyState) * stateCount);
+		if (optStates != NULL)
+		{
+			(*optStates) = states;
+		}
+		for (int i = 0; i < stateCount; i++)
+		{
+			blendTree->blendNodes[i]->state_out = states + i; //add states
+		}
+
+
+		a3_TreeNode** nodeStack = malloc(sizeof(a3_TreeNode*) * stateCount);
+		a3i32* indexStack = malloc(sizeof(int) * stateCount);
+		for (a3i32 i = 0; i < stateCount; i++)
+		{
+			nodeStack[i] = NULL;
+			indexStack[i] = 0;
+		}
+		a3i32 stackSize = 0;
+
+		nodeStack[0] = blendTree->tree;
+		stackSize = 1;
+
+		while (stackSize > 0)
+		{
+			a3_TreeNode* currentNode = nodeStack[stackSize - 1]; //grab node at top of stack
+			if (currentNode->childCount > 0) //if node has children, go down as far as we can.
+			{
+				if (indexStack[stackSize - 1] < currentNode->childCount)
+				{
+					nodeStack[stackSize] = currentNode->children[indexStack[stackSize - 1]]; //add node to stack
+					indexStack[stackSize - 1]++; //increment child index so when we return we go to a different node
+					stackSize++; //move into new node
+					if (stackSize < stateCount)
+					{
+						indexStack[stackSize - 1] = 0; //we've increased the stack position, so we're emptying out the next counter
+					}
+					continue;
+				}
+				else //if we're at a leaf node OR we're done iterating through a given node's children
+				{
+					if (stackSize > 1) //if we're not at the root
+					{
+						a3_TreeNode* parentNode = nodeStack[stackSize - 2]; //grab this node's parent
+						a3_HierarchyBlendNode * parentBlendNode = blendTree->blendNodes[parentNode->value]; //find the corresponding blendNode
+						for (int i = 0; i < parentNode->childCount; i++)
+						{
+							a3_HierarchyBlendNode* childBlendNode = blendTree->blendNodes[currentNode->value];
+							parentBlendNode->controlStates[i] = childBlendNode->state_out; //attach output
+						}
+					}
+					nodeStack[stackSize - 1] = NULL; //clear stack position
+					stackSize--; //back out of stack
+					continue;
+				}
+			}
+			else
+			{
+				nodeStack[stackSize - 1] = NULL;
+				stackSize--;
+			}
 		}
 		return 1;
 	}
