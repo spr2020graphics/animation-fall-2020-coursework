@@ -561,7 +561,7 @@ void a3animation_update_animation(a3_DemoMode1_Animation* demoMode, a3f64 const 
 		// invert object-space
 		a3hierarchyStateUpdateObjectInverse(activeHS_ik);
 		// run solvers
-		a3animation_update_applyEffectors(demoMode, activeHS_ik, baseHS, poseGroup);
+		//a3animation_update_applyEffectors(demoMode, activeHS_ik, baseHS, poseGroup);
 		// run full IK pipeline (if not resolving with effectors)
 		//a3animation_update_ik(activeHS_ik, baseHS, poseGroup);
 	}

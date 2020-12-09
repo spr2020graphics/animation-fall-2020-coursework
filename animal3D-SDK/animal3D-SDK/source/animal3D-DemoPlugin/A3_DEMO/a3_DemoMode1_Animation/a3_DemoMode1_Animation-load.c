@@ -462,9 +462,9 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	* WOLF CLIPS
 	* 
 	* walk  - 49 frames  (0-48)
-	* run   - 21 frames  (49-70)
-	* idle  - 231 frames (71-302)
-	* creep - 49 frames  (303-352)
+	* run   - 21 frames  (49-69)
+	* idle  - 231 frames (70-300)
+	* creep - 49 frames  (301-349)
 	* 
 	*/
 
@@ -497,10 +497,10 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 
 		a3ui32 const clipCount = sizeof(clipName) / sizeof(*clipName);
 		a3ui32 const sampleIndexFirst[] = {
-			1,1,25,134,167,222,519,1092,1233,1434,1475,1499,1517,1540,1557,1586,1609,1626,1655,1856,1909,1935,1953,1979,1996,2019,2045,2062,
+			1,1,50,71,302
 		};
 		a3ui32 const sampleIndexFinal[] = {
-			2084,24,133,166,221,518,1091,1232,1433,1474,1498,1516,1539,1556,1585,1608,1625,1654,1855,1908,1934,1952,1978,1995,2018,2044,2061,2084,
+			350,49,70,301,350
 		};
 		a3ui32 const rate = 24;
 		a3f64 const fps = (a3f64)rate;
@@ -522,26 +522,26 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 			a3clipCalculateDuration(demoMode->clipPool, j, fps);
 		}
 
-		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot");
-		a3clipControllerInit(demoMode->clipCtrl, "xbot_ctrl", demoMode->clipPool, j, rate, fps);
-		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_idle_f");
-		a3clipControllerInit(demoMode->clipCtrlA, "xbot_ctrlA", demoMode->clipPool, j, rate, fps);
-		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_skintest");
-		a3clipControllerInit(demoMode->clipCtrlB, "xbot_ctrlB", demoMode->clipPool, j, rate, fps);
+		j = a3clipGetIndexInPool(demoMode->clipPool, "wolf");
+		a3clipControllerInit(demoMode->clipCtrl, "wolf_ctrl", demoMode->clipPool, j, rate, fps);
+		j = a3clipGetIndexInPool(demoMode->clipPool, "wolf_idle");
+		a3clipControllerInit(demoMode->clipCtrlA, "wolf_ctrlA", demoMode->clipPool, j, rate, fps);
+		j = a3clipGetIndexInPool(demoMode->clipPool, "wolf_walk");
+		a3clipControllerInit(demoMode->clipCtrlB, "wolf_ctrlB", demoMode->clipPool, j, rate, fps);
 
 		a3ui32 temp[4];
 
 		// set up the character controller's target idle, jump, walk, and run indices
-		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_idle_f");
+		j = a3clipGetIndexInPool(demoMode->clipPool, "wolf_idle");
 		demoMode->character->idleClipIndex = j;
 		temp[0] = j;
-		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_walk_f");
+		j = a3clipGetIndexInPool(demoMode->clipPool, "wolf_walk");
 		demoMode->character->walkClipIndex = j;
 		temp[1] = j;
-		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_run_f");
+		j = a3clipGetIndexInPool(demoMode->clipPool, "wolf_run");
 		demoMode->character->runClipIndex = j;
 		temp[2] = j;
-		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_jump_f");
+		j = a3clipGetIndexInPool(demoMode->clipPool, "wolf_creep");
 		demoMode->character->jumpClipIndex = j;
 		temp[3] = j;
 
@@ -556,7 +556,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		a3characterControllerInit(demoMode->character, demoMode->characterAnimControllers, demoMode->obj_skeleton_ctrl, hierarchyPoseGroup, &demoMode->jumpTrigger, demoMode->walkThreshold);
 
 		// set up jump transition action
-		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_jump_f");
+		j = a3clipGetIndexInPool(demoMode->clipPool, "wolf_creep");
 		//a3clipTransitionBindAction(demoMode->clipCtrlA->clipPool->clip[j].transitionForward, &a3characterToggleIsJumping);
 
 		a3_TreeNode* nodes = malloc(sizeof(a3_TreeNode) * 6);

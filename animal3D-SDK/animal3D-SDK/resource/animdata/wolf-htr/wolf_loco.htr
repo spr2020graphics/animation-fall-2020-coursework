@@ -6,7 +6,7 @@ NumSegments 48
 NumFrames 350
 DataFrameRate 30
 EulerRotationOrder ZYX
-CalibrationUnits mm
+CalibrationUnits cm
 RotationUnits Degrees
 GlobalAxisofGravity Y
 BoneLengthAxis Y
