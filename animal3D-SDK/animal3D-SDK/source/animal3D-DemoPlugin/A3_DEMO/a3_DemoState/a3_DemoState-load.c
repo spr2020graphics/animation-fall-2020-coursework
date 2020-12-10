@@ -201,10 +201,10 @@ void a3demo_loadGeometry(a3_DemoState *demoState)
 	a3_IndexFormatDescriptor sceneCommonIndexFormat[1] = { 0 };
 	a3ui32 bufferOffset, *const bufferOffsetPtr = &bufferOffset;
 
-
+	demoState->streaming = false;
 	// procedural scene objects
 	// attempt to load stream if requested
-	if (!demoState->streaming && a3fileStreamOpenRead(fileStream, geometryStream))
+	if (demoState->streaming && a3fileStreamOpenRead(fileStream, geometryStream))
 	{
 		// read from stream
 
