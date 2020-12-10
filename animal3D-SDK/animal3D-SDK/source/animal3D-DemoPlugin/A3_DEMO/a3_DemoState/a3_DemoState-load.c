@@ -237,8 +237,7 @@ void a3demo_loadGeometry(a3_DemoState *demoState)
 		const a3_DemoStateLoadedModel loadedShapes[3] = {
 			{ A3_DEMO_OBJ"teapot/teapot.obj", 0, downscale20x_y2z_x2y.mm, a3model_calculateVertexTangents },
 			//{ A3_DEMO_OBJ"egnaro/egnaro_mesh.obj", A3_DEMO_OBJ"egnaro/egnaro_skin.xml", a3mat4_identity.mm, a3model_calculateVertexTangents },
-			{ A3_DEMO_OBJ"wolf/Wolf_One_obj.obj", A3_DEMO_OBJ"xbot/xbot_surface.xml", scale1x_z2y.mm, a3model_calculateVertexTangents },
-			{ A3_DEMO_OBJ"wolf/Wolf_One_obj.obj", A3_DEMO_OBJ"xbot/xbot_joints.xml", scale1x_z2y.mm, a3model_calculateVertexTangents },
+			{ A3_DEMO_OBJ"wolf/Wolf_One_obj.obj", A3_DEMO_OBJ"wolf/Wolf_Skinning.xml", scale1x_z2y.mm, a3model_calculateVertexTangents },
 		};
 		const a3_DemoStateLoadedModel morphShapes[1][5] = {
 			{
