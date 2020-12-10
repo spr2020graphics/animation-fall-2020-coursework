@@ -23,6 +23,8 @@ inline a3ui32 a3characterControllerInit(a3_CharacterController* controller_out, 
 	controller_out->object = obj;
 	controller_out->isJumping = false;
 
+	controller_out->jumpDuration = a3clipGetClipDuration(controllers[3].clipPool, controller_out->jumpClipIndex, controllers[3].playback_stepPerSec);
+
 	controller_out->activeAnimController = &controller_out->animControllers[0];
 
 	return 1;
@@ -122,7 +124,7 @@ inline void a3characterToggleIsJumping(a3_CharacterController* controller)
 	if (!controller->isJumping)
 	{
 		controller->isJumping = true;
-		controller->jumpRemaining = JUMP_DURATION;
+		controller->jumpRemaining = controller->jumpDuration;
 		a3clipControllerSetClip(&controller->animControllers[3], controller->animControllers[3].clipPool, controller->jumpClipIndex, controller->animControllers[3].playback_step, controller->animControllers[3].playback_stepPerSec);
 		controller->animControllers[3].clipTime_sec = 0.0f;
 		controller->animControllers[3].clipParam = 0.0f;

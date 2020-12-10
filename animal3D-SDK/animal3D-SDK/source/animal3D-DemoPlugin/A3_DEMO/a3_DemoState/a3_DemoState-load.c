@@ -184,7 +184,7 @@ void a3demo_loadGeometry(a3_DemoState *demoState)
 	// geometry data
 	a3_GeometryData displayShapesData[4] = { 0 };
 	a3_GeometryData proceduralShapesData[6] = { 0 };
-	a3_GeometryData loadedModelsData[3] = { 0 };
+	a3_GeometryData loadedModelsData[2] = { 0 };
 	a3_GeometryData morphTargetsData[1][5] = { 0 };
 	const a3ui32 displayShapesCount = sizeof(displayShapesData) / sizeof(a3_GeometryData);
 	const a3ui32 proceduralShapesCount = sizeof(proceduralShapesData) / sizeof(a3_GeometryData);
@@ -234,7 +234,7 @@ void a3demo_loadGeometry(a3_DemoState *demoState)
 		// create new data
 		a3_ProceduralGeometryDescriptor displayShapes[4] = { a3geomShape_none };
 		a3_ProceduralGeometryDescriptor proceduralShapes[6] = { a3geomShape_none };
-		const a3_DemoStateLoadedModel loadedShapes[3] = {
+		const a3_DemoStateLoadedModel loadedShapes[2] = {
 			{ A3_DEMO_OBJ"teapot/teapot.obj", 0, downscale20x_y2z_x2y.mm, a3model_calculateVertexTangents },
 			//{ A3_DEMO_OBJ"egnaro/egnaro_mesh.obj", A3_DEMO_OBJ"egnaro/egnaro_skin.xml", a3mat4_identity.mm, a3model_calculateVertexTangents },
 			{ A3_DEMO_OBJ"wolf/Wolf_One_obj.obj", A3_DEMO_OBJ"wolf/Wolf_Skinning.xml", scale1x_z2y.mm, a3model_calculateVertexTangents },

@@ -47,6 +47,24 @@ inline a3i32 a3clipCalculateDuration(a3_ClipPool const* clipPool, const a3ui32 c
 	return -1;
 }
 
+inline a3f32 a3clipGetClipDuration(a3_ClipPool const* clipPool, const a3ui32 clipIndex, const a3f64 playback_stepPerSec)
+{
+	a3f32 result = -1.0f;
+	a3i32 duration_step = 0;
+
+	if (clipPool && clipPool->clip && clipIndex < clipPool->clipCount && playback_stepPerSec > 0.0)
+	{
+		a3_Clip* clip = clipPool->clip + clipIndex;
+		a3i32 i, k;
+		for (i = 0, k = clip->keyframeIndex_first; i < clip->keyframeCount; ++i, k += clip->keyframeDirection)
+			duration_step += clipPool->keyframe[k].duration_step;
+		result = (a3f32)((a3f32)clip->duration_step / playback_stepPerSec);
+		return result;
+	}
+
+	return result;
+}
+
 // calculate keyframes' durations by distributing clip's duration
 inline a3i32 a3clipDistributeDuration(a3_ClipPool const* clipPool, const a3ui32 clipIndex, const a3f64 playback_stepPerSec)
 {

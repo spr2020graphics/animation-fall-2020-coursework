@@ -37,6 +37,7 @@ struct a3_CharacterController
 	a3f32* jumpTrigger;
 	a3boolean isJumping;
 	a3f32 jumpRemaining; //between 41/30 and 0
+	a3f32 jumpDuration;
 
 	// this is an input threshold to trigger the walk cycle
 	a3f32 maxWalkVelocity;
