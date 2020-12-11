@@ -139,8 +139,8 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		a3hierarchySetNode(demoMode->sceneGraph, 7, 4, "scene_skeleton_wristCon_r_ctrl");
 		a3hierarchySetNode(demoMode->sceneGraph, 8, 4, "scene_skeleton");
 		a3hierarchySetNode(demoMode->sceneGraph, 9, 0, "scene_plane");
-		a3hierarchySetNode(demoMode->sceneGraph, 10, 0, "scene_ramp");
-		a3hierarchySetNode(demoMode->sceneGraph, 11, 0, "scene_landing");
+		a3hierarchySetNode(demoMode->sceneGraph, 10, 9, "scene_ramp");
+		a3hierarchySetNode(demoMode->sceneGraph, 11, 9, "scene_landing");
 
 	/*
 		// manually set up a skeleton
@@ -464,18 +464,19 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	demoMode->obj_plane->scaleMode = 1;
 	//demoMode->obj_plane->position.y += 10.0f;
 	demoMode->obj_plane->euler.x = 90.0f;
-	demoMode->obj_plane->scale.z *= 12.0f;
+	demoMode->obj_plane->scale.x = 4.0f;
 
-	demoMode->obj_ramp->position.y += 2.0f;
-	demoMode->obj_ramp->position.z += 0.5f;
-	demoMode->obj_ramp->euler.x = 120.0f;
-	demoMode->obj_ramp->scale.z *= 12.0f;
+	demoMode->obj_ramp->scaleMode = 1;
+	demoMode->obj_ramp->position.z -= 1.866f;
+	demoMode->obj_ramp->position.y += 0.5f;
+	demoMode->obj_ramp->euler.x = 30.0f;
+	demoMode->obj_ramp->scale.x = 1.0f;
 
-	demoMode->obj_landing->position.y += 4.0f;
-	demoMode->obj_landing->position.z += 1.0f;
-	demoMode->obj_landing->euler.x = 90.0f;
-	demoMode->obj_landing->scale.z *= 12.0f;
-					   
+	demoMode->obj_landing->scaleMode = 1;
+	demoMode->obj_landing->position.z -= 1.866f * 2.0f;
+	demoMode->obj_landing->position.y += 1.0f;
+	demoMode->obj_landing->scale.x = 1.0f;
+
 	// scene graph state
 	demoMode->sceneGraphState->hierarchy = 0;
 	a3hierarchyStateCreate(demoMode->sceneGraphState, demoMode->sceneGraph);

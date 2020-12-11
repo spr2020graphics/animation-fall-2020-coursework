@@ -446,7 +446,7 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 
 		a3textureActivate(texture_dm[j], a3tex_unit00);
 		a3textureActivate(texture_dm[j], a3tex_unit01);
-		a3real4x4Product(modelViewMat.m, activeCameraObject->modelMatInv.m, currentSceneObject->modelMat.m);
+		a3real4x4Product(modelViewMat.m, activeCameraObject->modelMatInv.m, demoMode->sceneGraphState->objectSpace->pose[currentSceneObject->sceneGraphIndex].transformMat.m);
 		a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uMV, 1, modelViewMat.mm);
 		a3demo_quickInvertTranspose_internal(modelViewMat.m);
 		modelViewMat.v3 = a3vec4_zero;
@@ -464,7 +464,7 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 
 		a3textureActivate(texture_dm[j], a3tex_unit00);
 		a3textureActivate(texture_dm[j], a3tex_unit01);
-		a3real4x4Product(modelViewMat.m, activeCameraObject->modelMatInv.m, currentSceneObject->modelMat.m);
+		a3real4x4Product(modelViewMat.m, activeCameraObject->modelMatInv.m, demoMode->sceneGraphState->objectSpace->pose[currentSceneObject->sceneGraphIndex].transformMat.m);
 		a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uMV, 1, modelViewMat.mm);
 		a3demo_quickInvertTranspose_internal(modelViewMat.m);
 		modelViewMat.v3 = a3vec4_zero;
