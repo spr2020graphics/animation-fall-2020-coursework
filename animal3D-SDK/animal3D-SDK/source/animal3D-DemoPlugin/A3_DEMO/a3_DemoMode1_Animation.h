@@ -219,7 +219,9 @@ typedef enum a3_DemoMode1_Animation_InputMode				a3_DemoMode1_Animation_InputMod
 					obj_skeleton_wristConstraint_r_ctrl[1],
 					obj_skeleton[1];
 				a3_DemoSceneObject
-					obj_plane[1];
+					obj_plane[1],
+					obj_ramp[1],
+					obj_landing[1];
 			};
 		};
 		union {
