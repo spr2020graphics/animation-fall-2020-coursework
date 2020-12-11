@@ -457,6 +457,10 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	demoMode->obj_skeleton->sceneGraphIndex = a3hierarchyGetNodeIndex(demoMode->sceneGraph, "scene_skeleton");
 	demoMode->obj_plane->sceneGraphIndex = a3hierarchyGetNodeIndex(demoMode->sceneGraph, "scene_plane");
 
+	demoMode->obj_plane->position.y += 10.0f;
+	demoMode->obj_plane->euler.z = 180.0f;
+	demoMode->obj_plane->scale.z *= 12.0f;
+					   
 	// scene graph state
 	demoMode->sceneGraphState->hierarchy = 0;
 	a3hierarchyStateCreate(demoMode->sceneGraphState, demoMode->sceneGraph);
