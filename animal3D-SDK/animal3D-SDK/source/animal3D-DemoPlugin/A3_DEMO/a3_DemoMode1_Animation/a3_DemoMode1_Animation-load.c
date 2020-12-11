@@ -138,6 +138,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		a3hierarchySetNode(demoMode->sceneGraph, 6, 4, "scene_skeleton_wristEff_r_ctrl");
 		a3hierarchySetNode(demoMode->sceneGraph, 7, 4, "scene_skeleton_wristCon_r_ctrl");
 		a3hierarchySetNode(demoMode->sceneGraph, 8, 4, "scene_skeleton");
+		a3hierarchySetNode(demoMode->sceneGraph, 9, 0, "scene_plane");
 
 	/*
 		// manually set up a skeleton
@@ -454,6 +455,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	demoMode->obj_skeleton_wristEffector_r_ctrl->sceneGraphIndex = a3hierarchyGetNodeIndex(demoMode->sceneGraph, "scene_skeleton_wristEff_r_ctrl");
 	demoMode->obj_skeleton_wristConstraint_r_ctrl->sceneGraphIndex = a3hierarchyGetNodeIndex(demoMode->sceneGraph, "scene_skeleton_wristCon_r_ctrl");
 	demoMode->obj_skeleton->sceneGraphIndex = a3hierarchyGetNodeIndex(demoMode->sceneGraph, "scene_skeleton");
+	demoMode->obj_plane->sceneGraphIndex = a3hierarchyGetNodeIndex(demoMode->sceneGraph, "scene_plane");
 
 	// scene graph state
 	demoMode->sceneGraphState->hierarchy = 0;

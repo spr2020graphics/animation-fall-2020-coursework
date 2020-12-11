@@ -245,7 +245,8 @@ struct a3_DemoState
 				draw_character_skin_alt[1],					// can't not have a skinnable character alternative
 				draw_character_skin[1],						// can't not have a skinnable character
 				draw_teapot_morph[1],						// can't not have a morphing Utah teapot
-				draw_teapot[1];								// can't not have a Utah teapot
+				draw_teapot[1],								// can't not have a Utah teapo,
+				draw_plane[1];
 		};
 	};
 
