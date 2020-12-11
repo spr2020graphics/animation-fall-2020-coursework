@@ -8,6 +8,7 @@
 
 
 #include "a3_KeyframeAnimationController.h"
+#include "../_animation/a3_HierarchyBlendNode.h"
 
 #ifdef __cplusplus
 extern "C"
@@ -21,6 +22,7 @@ typedef struct a3_CharacterController		a3_CharacterController;
 
 struct a3_CharacterController
 {
+	a3_HierarchyBlendTree blendTree[1];
 	// reference to the set of animation controllers for this character (0 = idle, 1 = walk, 2 = run, 3 = jump)
 	a3_ClipController* animControllers;
 

@@ -34,6 +34,7 @@
 
 #include "../a3_DemoMode1_Animation.h"
 #include "../_animation/a3_Tree.h"
+#include "../_animation/a3_HierarchyBlendNode.h"
 
 #include "../a3_DemoState.h"
 #include "A3_DEMO/_animation/a3_Raycasting.h"
@@ -559,28 +560,28 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		j = a3clipGetIndexInPool(demoMode->clipPool, "wolf_creep");
 		//a3clipTransitionBindAction(demoMode->clipCtrlA->clipPool->clip[j].transitionForward, &a3characterToggleIsJumping);
 
-		a3_TreeNode* nodes = malloc(sizeof(a3_TreeNode) * 6);
-		for (int i = 0; i < 5; i++)
-		{
-			a3TreeNodeInit(nodes + i, 3);
-		}
-		nodes[0].value = 0;
-		nodes[1].value = 1;
-		nodes[2].value = 2;
-		nodes[3].value = 3;
-		nodes[4].value = 4;
-		nodes[5].value = 5;
 
-		a3TreeNodeAddChildNode(nodes, nodes + 1);
-		a3TreeNodeAddChildNode(nodes, nodes + 2);
-		a3TreeNodeAddChildNode(nodes + 1, nodes + 3);
-		a3TreeNodeAddChildNode(nodes + 1, nodes + 4);
-		a3TreeNodeAddChildNode(nodes + 2, nodes + 4);
-		a3TreeNodeAddChildNode(nodes + 2, nodes + 5);
+		a3hierarchyBlendTreeCreate(demoMode->character->blendTree, 4, true);
 
-		a3TreeEnsureUnique(nodes, 6, 0, 5);
+		a3hierarchyBlendNodeCreate(demoMode->character->blendTree->blendNodes[0], copyClip); //idle
+		a3hierarchyBlendNodeBindClipController(demoMode->character->blendTree->blendNodes[0], &demoMode->characterAnimControllers[0], 0);
 
-		a3_TreeNode* n = a3TreeRetrieveNodeWithValue(nodes, 4, 6);
+		a3hierarchyBlendNodeCreate(demoMode->character->blendTree->blendNodes[1], lerpClip); //walk and run
+		a3hierarchyBlendNodeBindClipController(demoMode->character->blendTree->blendNodes[1], &demoMode->characterAnimControllers[1], 0);
+		a3hierarchyBlendNodeBindClipController(demoMode->character->blendTree->blendNodes[1], &demoMode->characterAnimControllers[2], 1);
+		//a3hierarchyBlendNodeAddControl(demoMode->character->blendTree->blendNodes[1], 0, &demoMode->character->currentVelocity); //incorrect but a good start
+
+		a3hierarchyBlendNodeCreate(demoMode->character->blendTree->blendNodes[2], copyClip); //crawl
+		a3hierarchyBlendNodeBindClipController(demoMode->character->blendTree->blendNodes[2], &demoMode->characterAnimControllers[3], 0);
+
+		a3hierarchyBlendNodeCreate(demoMode->character->blendTree->blendNodes[3], triangular); //idle + walk/run + crawl
+
+		a3hierarchyBlendTreeAddNodeToTree(demoMode->character->blendTree, 3, -1);
+		a3hierarchyBlendTreeAddNodeToTree(demoMode->character->blendTree, 0, 3);
+		a3hierarchyBlendTreeAddNodeToTree(demoMode->character->blendTree, 1, 3);
+		a3hierarchyBlendTreeAddNodeToTree(demoMode->character->blendTree, 2, 3);
+
+		a3hierarchyBlendTreeBindStates(demoMode->character->blendTree, hierarchy, NULL);
 	}
 
 	// finally set up hierarchy states

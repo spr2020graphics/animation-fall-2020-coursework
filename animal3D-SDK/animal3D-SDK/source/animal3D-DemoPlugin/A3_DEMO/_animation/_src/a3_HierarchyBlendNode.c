@@ -560,7 +560,7 @@ a3i32 a3hierarchyBlendNodeCreate(a3_HierarchyBlendNode* blendNode_out, NodeType 
 				blendNode_out->clipControllers[i] = NULL;
 			}
 		}
-		return -1;
+		return 1;
 	}
 	return -1;
 }
