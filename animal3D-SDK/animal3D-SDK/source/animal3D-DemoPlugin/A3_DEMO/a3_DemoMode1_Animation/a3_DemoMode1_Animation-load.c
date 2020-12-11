@@ -461,6 +461,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	demoMode->obj_ramp->sceneGraphIndex = a3hierarchyGetNodeIndex(demoMode->sceneGraph, "scene_ramp");
 	demoMode->obj_landing->sceneGraphIndex = a3hierarchyGetNodeIndex(demoMode->sceneGraph, "scene_landing");
 
+	demoMode->obj_plane->scaleMode = 1;
 	//demoMode->obj_plane->position.y += 10.0f;
 	demoMode->obj_plane->euler.x = 90.0f;
 	demoMode->obj_plane->scale.z *= 12.0f;
