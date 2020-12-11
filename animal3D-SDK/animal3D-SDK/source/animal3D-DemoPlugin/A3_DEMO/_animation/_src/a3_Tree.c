@@ -5,7 +5,7 @@ a3i32 a3TreeNodeInit(a3_TreeNode* node, a3i32 maxChildren)
 {
 	if (node && maxChildren >= 0)
 	{
-		node->children = malloc(sizeof(a3_TreeNode*) * maxChildren);
+		node->children = calloc(sizeof(a3_TreeNode*), maxChildren);
 		node->value = 0;
 		node->childCount = 0;
 		node->maxChildren = maxChildren;
@@ -28,7 +28,7 @@ a3i32 a3TreeNodeAddChildValue(a3_TreeNode* node, a3i32 childValue)
 {
 	if (node && node->childCount < node->maxChildren)
 	{
-		a3_TreeNode* child = malloc(sizeof(a3_TreeNode));
+		a3_TreeNode* child = calloc(sizeof(a3_TreeNode), 1);
 		if (child)
 		{
 			a3TreeNodeInit(child, node->maxChildren);
