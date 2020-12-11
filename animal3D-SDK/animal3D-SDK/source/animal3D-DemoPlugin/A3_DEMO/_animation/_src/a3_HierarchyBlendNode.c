@@ -434,6 +434,7 @@ a3i32 a3hierarchyBlendNodeCreate(a3_HierarchyBlendNode* blendNode_out, NodeType 
 	if (blendNode_out)
 	{
 		blendNode_out->exec = a3hierarchyBlendNodeGetExec(nodeType);
+		blendNode_out->nodeType = nodeType;
 		switch (nodeType)
 		{
 		case addClip:
@@ -632,9 +633,9 @@ a3i32 a3hierarchyBlendTreeCreate(a3_HierarchyBlendTree* blendTree_out, int size,
 {
 	if (blendTree_out && !blendTree_out->blendNodes && !blendTree_out->tree)
 	{
-		blendTree_out->tree = malloc(sizeof(a3_TreeNode));
+		blendTree_out->tree = calloc(sizeof(a3_TreeNode), 1);
 		a3TreeNodeInit(blendTree_out->tree, size);
-		blendTree_out->blendNodes = malloc(sizeof(a3_HierarchyBlendNode*) * size);
+		blendTree_out->blendNodes = calloc(sizeof(a3_HierarchyBlendNode*), size);
 		blendTree_out->maxNodes = size;
 		blendTree_out->nodeCount = 0;
 		if (!blendTree_out->blendNodes)
@@ -645,7 +646,7 @@ a3i32 a3hierarchyBlendTreeCreate(a3_HierarchyBlendTree* blendTree_out, int size,
 		{
 			for (int i = 0; i < size; i++)
 			{
-				blendTree_out->blendNodes[i] = malloc(sizeof(a3_HierarchyBlendNode));
+				blendTree_out->blendNodes[i] = calloc(sizeof(a3_HierarchyBlendNode), 1);
 			}
 			blendTree_out->nodeCount = size;
 		}
@@ -706,7 +707,11 @@ a3i32 a3hierarchyBlendTreeBindStates(a3_HierarchyBlendTree* blendTree, a3_Hierar
 	if (blendTree && blendTree->tree && hierarchy)
 	{
 		a3i32 stateCount = blendTree->nodeCount;
-		a3_HierarchyState* states = malloc(sizeof(a3_HierarchyState) * stateCount);
+		a3_HierarchyState* states = calloc(sizeof(a3_HierarchyState), stateCount);
+		for (int i = 0; i < stateCount; i++)
+		{
+			a3hierarchyStateCreate(&states[i], hierarchy);
+		}
 		if (optStates != NULL)
 		{
 			(*optStates) = states;
@@ -717,13 +722,8 @@ a3i32 a3hierarchyBlendTreeBindStates(a3_HierarchyBlendTree* blendTree, a3_Hierar
 		}
 
 
-		a3_TreeNode** nodeStack = malloc(sizeof(a3_TreeNode*) * stateCount);
-		a3i32* indexStack = malloc(sizeof(int) * stateCount);
-		for (a3i32 i = 0; i < stateCount; i++)
-		{
-			nodeStack[i] = NULL;
-			indexStack[i] = 0;
-		}
+		a3_TreeNode** nodeStack = calloc(sizeof(a3_TreeNode*), stateCount);
+		a3i32* indexStack = calloc(sizeof(int), stateCount);
 		a3i32 stackSize = 0;
 
 		nodeStack[0] = blendTree->tree;
