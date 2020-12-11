@@ -993,32 +993,59 @@ a3i32 a3hierarchyBlendTreeLoad(a3_HierarchyBlendTree* blendTree_out, a3_Hierarch
 //need to entirely rewrite FK/IK because that only operates on a single pose and doesn't work with this system since it returns mat4
 //probably need a different exec for the clipOps because those require timing information
 
-/*
 /// <summary>
 /// Update tree
 /// </summary>
 /// <param name="blendTree_out"></param>
 /// <returns></returns>
-a3i32 a3hierarchyblendTreeUpdate(a3_HierarchyBlendTree* blendTree_out)
+a3i32 a3hierarchyblendTreeUpdate(a3_HierarchyBlendTree* blendTree)
 {
-	if (!blendTree_out)
+	if (blendTree && blendTree->tree)
 	{
-		return -1;
-	}
-	//a3_HierarchyState const* baseHS = demoMode->hierarchyState_skel_base;
-	//Rules for the tree are that all prereqs for a node must be earlier than the node, thus this order works.
-	for (a3ui32 nodeInd = 0; nodeInd < blendTree_out->bt_hierarchy->numNodes; nodeInd++)
-	{
-		a3_HierarchyBlendNode* node = &blendTree_out->blendNodes[nodeInd];
-		node->exec(node);
-		//the HTR nodes currently are pre-concated, so no concat call here.
-		//a3hierarchyPoseOpCopy(node->state_out->localHPose, node->state_out->animPose, node->poseGroup->hierarchy->numNodes);
-		//TODO switch to a concat with the animPose and baseHS, then run convert
-		a3hierarchyPoseOpConvert(node->state_out->localSpace, node->poseGroup->hierarchy->numNodes);
+		a3boolean* completedUpdates = calloc(sizeof(a3boolean), blendTree->nodeCount);
+		a3_TreeNode** nodeStack = calloc(sizeof(a3_TreeNode*), blendTree->nodeCount);
+		a3i32* indexStack = calloc(sizeof(int), blendTree->nodeCount);
+		a3i32 stackSize = 0;
 
-		//outputs from local to object
-		a3kinematicsSolveForward(node->state_out);
+		nodeStack[0] = blendTree->tree;
+		stackSize = 1;
+
+		while (stackSize > 0)
+		{
+			a3_TreeNode* currentNode = nodeStack[stackSize - 1]; //grab node at top of stack
+			if (currentNode->childCount > 0) //if node has children, go down as far as we can.
+			{
+				if (indexStack[stackSize - 1] < currentNode->childCount)
+				{
+					nodeStack[stackSize] = currentNode->children[indexStack[stackSize - 1]]; //add node to stack
+					indexStack[stackSize - 1]++; //increment child index so when we return we go to a different node
+					stackSize++; //move into new node
+					if (stackSize < blendTree->nodeCount)
+					{
+						indexStack[stackSize - 1] = 0; //we've increased the stack position, so we're emptying out the next counter
+					}
+					continue;
+				}
+				else //if we're at a leaf node OR we're done iterating through a given node's children
+				{
+					if (!completedUpdates[currentNode->value]) //if the node hasn't been updated
+					{
+						a3_HierarchyBlendNode* node = blendTree->blendNodes[currentNode->value];
+						node->exec(node);
+						completedUpdates[currentNode->value] = true;
+					}
+					nodeStack[stackSize - 1] = NULL; //clear stack position
+					stackSize--; //back out of stack
+					continue;
+				}
+			}
+			else
+			{
+				nodeStack[stackSize - 1] = NULL;
+				stackSize--;
+			}
+		}
+		return 1;
 	}
-	return 1;
+	return -1;
 }
-*/
