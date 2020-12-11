@@ -606,6 +606,10 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		a3hierarchyBlendTreeAddNodeToTree(demoMode->character->blendTree, 1, 3);
 		a3hierarchyBlendTreeAddNodeToTree(demoMode->character->blendTree, 2, 3);
 
+		if (a3TreeEnsureUnique(demoMode->character->blendTree->tree, 3, 0, 3) != 1)
+		{
+			printf("Tree is not unique, something went wrong in tree assembly.\n");
+		}
 		a3hierarchyBlendTreeBindStates(demoMode->character->blendTree, hierarchy, NULL);
 	}
 
