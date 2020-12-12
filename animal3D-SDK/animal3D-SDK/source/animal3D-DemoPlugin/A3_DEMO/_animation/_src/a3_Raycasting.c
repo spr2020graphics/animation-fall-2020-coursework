@@ -52,9 +52,12 @@ a3boolean a3raycastGetCollisionUnboundedPlane(const a3_Ray* ray, const a3_Plane*
 	// y = y0 + tb
 	// z = z0 + tc
 
+	// difference: ray_origin - center
+	// dot:
 
 	a3real plane_d;
-	plane_d = -(plane->normal->x * -plane->center->x + plane->normal->y * -plane->center->y + plane->normal->z * -plane->center->z);	// negated because it needs to be on the "other' side of the equation
+	// THIS IS THE PLANE EQUATION nx + ny + nz = d
+	plane_d = (plane->normal->x * plane->center->x + plane->normal->y * plane->center->y + plane->normal->z * plane->center->z);	// negated because it needs to be on the "other' side of the equation
 
 	a3real x_t = plane->normal->x * ray->direction->x;
 	a3real x = plane->normal->x * ray->origin->x;
@@ -103,6 +106,10 @@ a3boolean a3raycastGetCollisionBoundedPlane(const a3_Ray* ray, const a3_Plane* p
 
 	if (a3raycastGetCollisionUnboundedPlane(ray, plane, &intersection))
 	{
+		// v3 of plane transform mat is the normal, other cols are T and B (Right, Up, Out)
+		// diff from origin to point for sq. distance
+		// compare sq. distance with square dot of diff and tangent
+
 		a3boolean withinX = intersection.x >= (plane->center->x - plane->boundSize->x) && intersection.x <= (plane->center->x + plane->boundSize->x);
 		a3boolean withinY = intersection.y >= (plane->center->y - plane->boundSize->y) && intersection.y <= (plane->center->y + plane->boundSize->y);
 
