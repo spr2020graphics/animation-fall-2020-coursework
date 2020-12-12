@@ -99,5 +99,5 @@ a3i32 a3hierarchyBlendTreeAddNodeToTree(a3_HierarchyBlendTree* blendTree, int no
 a3i32 a3hierarchyBlendTreeBindStates(a3_HierarchyBlendTree* blendTree, a3_Hierarchy* hierarchy, a3_HierarchyState** optStates);
 
 //a3i32 a3hierarchyBlendTreeLoad(a3_HierarchyBlendTree* blendTree_out, a3_Hierarchy* hierarchy_out, const a3byte* resourceFilePath);
-//a3i32 a3hierarchyblendTreeUpdate(a3_HierarchyBlendTree* blendTree_out);
+a3i32 a3hierarchyblendTreeUpdate(a3_HierarchyBlendTree* blendTree_out);
 #endif // !A3_HIERARCHYBLENDNODE_H
