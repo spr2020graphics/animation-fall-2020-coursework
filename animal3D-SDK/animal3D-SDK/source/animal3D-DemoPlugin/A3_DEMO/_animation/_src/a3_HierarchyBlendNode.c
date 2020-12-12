@@ -707,6 +707,13 @@ a3i32 a3hierarchyBlendTreeBindStates(a3_HierarchyBlendTree* blendTree, a3_Hierar
 	if (blendTree && blendTree->tree && hierarchy)
 	{
 		a3i32 stateCount = blendTree->nodeCount;
+		for (int i = 0; i < blendTree->nodeCount; i++)
+		{
+			if (blendTree->blendNodes[i]->nodeType <= copyClip)
+			{
+				stateCount += blendTree->blendNodes[i]->clipCount;
+			}
+		}
 		a3_HierarchyState* states = calloc(sizeof(a3_HierarchyState), stateCount);
 		for (int i = 0; i < stateCount; i++)
 		{
@@ -716,9 +723,22 @@ a3i32 a3hierarchyBlendTreeBindStates(a3_HierarchyBlendTree* blendTree, a3_Hierar
 		{
 			(*optStates) = states;
 		}
-		for (int i = 0; i < stateCount; i++)
+		for (int i = 0; i < blendTree->nodeCount; i++)
 		{
-			blendTree->blendNodes[i]->state_out = states + i; //add states
+			blendTree->blendNodes[i]->state_out = states + i; //add output states
+		}
+		int usedStates = blendTree->nodeCount;
+		for (int i = 0; i < blendTree->nodeCount; i++) //clip control states
+		{
+			if (blendTree->blendNodes[i]->nodeType > copyClip)
+			{
+				continue;
+			}
+			for (a3ui32 j = 0; j < blendTree->blendNodes[i]->clipCount; j++)
+			{
+				blendTree->blendNodes[i]->controlStates[j] = &states[usedStates];
+				usedStates++;
+			}
 		}
 
 
@@ -1041,6 +1061,12 @@ a3i32 a3hierarchyblendTreeUpdate(a3_HierarchyBlendTree* blendTree)
 			}
 			else
 			{
+				if (!completedUpdates[currentNode->value]) //if the node hasn't been updated
+				{
+					a3_HierarchyBlendNode* node = blendTree->blendNodes[currentNode->value];
+					node->exec(node);
+					completedUpdates[currentNode->value] = true;
+				}
 				nodeStack[stackSize - 1] = NULL;
 				stackSize--;
 			}
