@@ -765,24 +765,21 @@ a3i32 a3hierarchyBlendTreeBindStates(a3_HierarchyBlendTree* blendTree, a3_Hierar
 					}
 					continue;
 				}
-				else //if we're at a leaf node OR we're done iterating through a given node's children
+				else //not a leaf node, but we're exiting after this because indexStack[stackSize - 1] == currentNode->childCount
 				{
-					if (stackSize > 1) //if we're not at the root
+					a3_HierarchyBlendNode* blendNode = blendTree->blendNodes[currentNode->value];
+					for (int i = 0; i < currentNode->childCount; i++)
 					{
-						a3_TreeNode* parentNode = nodeStack[stackSize - 2]; //grab this node's parent
-						a3_HierarchyBlendNode * parentBlendNode = blendTree->blendNodes[parentNode->value]; //find the corresponding blendNode
-						for (int i = 0; i < parentNode->childCount; i++)
-						{
-							a3_HierarchyBlendNode* childBlendNode = blendTree->blendNodes[currentNode->value];
-							parentBlendNode->controlStates[i] = childBlendNode->state_out; //attach output
-						}
+						a3_TreeNode* childNode = currentNode->children[i];
+						a3_HierarchyBlendNode* childBlendNode = blendTree->blendNodes[childNode->value];
+						blendNode->controlStates[i] = childBlendNode->state_out; //attach output
 					}
 					nodeStack[stackSize - 1] = NULL; //clear stack position
 					stackSize--; //back out of stack
 					continue;
 				}
 			}
-			else
+			else //leaf node
 			{
 				nodeStack[stackSize - 1] = NULL;
 				stackSize--;
