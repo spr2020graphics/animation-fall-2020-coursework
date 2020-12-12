@@ -434,11 +434,11 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	a3_Ray ray[1];
 	a3_Plane plane[1];
 
-	a3vec3 origin = { 1, -2, -1 };
-	a3vec3 dir = { 2, 3, 4 };
+	a3vec3 origin = { 2, 1, 0 };
+	a3vec3 dir = { -1, 1, 3 };
 	
-	a3vec3 center = { 1, 2, 0 };
-	a3vec3 norm = { 1, 2, -2 };
+	a3vec3 center = { 3, 0, 1 };
+	a3vec3 norm = { 3, -2, 1 };
 	a3vec3 bounds = { 3, 3, 1 }; // basically the "localScale" of the plane, a 3x3 square in this instance
 
 	a3createRay(ray, &origin, &dir);
