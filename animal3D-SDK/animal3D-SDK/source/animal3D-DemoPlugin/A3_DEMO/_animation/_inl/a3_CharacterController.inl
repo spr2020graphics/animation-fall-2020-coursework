@@ -57,11 +57,11 @@ inline a3ui32 a3characterControllerUpdate(a3_CharacterController* controller, a3
 	if (controller)
 	{
 		a3real u = controller->currentVelocity / controller->maxWalkVelocity;
-
 		if (u > 1.0f)
 		{
 			u = 1.0f;
 		}
+		controller->normalizedVelocity = u;
 		float walkDT = dt / getWalkScale(u); //dt is scaled to 1/0.75 at u = 1
 		float runDT = dt * getRunScale(u); //dt is scaled to 0.75 at u = 0
 

@@ -47,6 +47,8 @@ struct a3_CharacterController
 	// the character's current velocity
 	a3f32 currentVelocity;
 
+	a3f32 normalizedVelocity;
+
 	// used to transition into a jump
 	a3f32 jumpTransitionVal;
 
