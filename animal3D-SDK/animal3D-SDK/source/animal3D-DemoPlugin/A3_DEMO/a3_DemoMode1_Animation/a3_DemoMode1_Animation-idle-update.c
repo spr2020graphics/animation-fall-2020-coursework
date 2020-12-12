@@ -493,7 +493,7 @@ void a3animation_update_animation(a3_DemoMode1_Animation* demoMode, a3f64 const 
 	// switch controller to see different states
 	// A is idle, arms down; B is skin test, arms out
 	a3_ClipController* clipCtrl_fk = demoMode->clipCtrlA;
-	a3ui32 sampleIndex0, sampleIndex1;
+	//a3ui32 sampleIndex0, sampleIndex1;
 
 	a3_HierarchyPose movingPose[1], idlePose[1];
 	a3hierarchyPoseOpCreate(movingPose, activeHS_fk->hierarchy->numNodes);
@@ -508,40 +508,42 @@ void a3animation_update_animation(a3_DemoMode1_Animation* demoMode, a3f64 const 
 	a3clipControllerUpdate(clipCtrl_fk, dt);
 
 	//characte->animControllers[0] is the idle controller for a Character Controller
-	sampleIndex0 = demoMode->clipPool->keyframe[demoMode->character->animControllers[0].keyframeIndex].sampleIndex0;
-	sampleIndex1 = demoMode->clipPool->keyframe[demoMode->character->animControllers[0].keyframeIndex].sampleIndex1;
+	//sampleIndex0 = demoMode->clipPool->keyframe[demoMode->character->animControllers[0].keyframeIndex].sampleIndex0;
+	//sampleIndex1 = demoMode->clipPool->keyframe[demoMode->character->animControllers[0].keyframeIndex].sampleIndex1;
 
 	movingPose->pose[0].translate.x = demoMode->sceneGraphState->objectSpace->pose[demoMode->character->object->sceneGraphIndex].translate.x;
 	//movingPose->pose[0].translate.y = demoMode->sceneGraphState->objectSpace->pose[demoMode->character->object->sceneGraphIndex].translate.y;
 	movingPose->pose[0].translate.z = demoMode->sceneGraphState->objectSpace->pose[demoMode->character->object->sceneGraphIndex].translate.z;
 
-	a3hierarchyPoseLerp(idlePose,
-		poseGroup->hpose + sampleIndex0, poseGroup->hpose + sampleIndex1,
-		(a3real)clipCtrl_fk->keyframeParam, activeHS_fk->hierarchy->numNodes);
+	//a3hierarchyPoseLerp(idlePose,
+	//	poseGroup->hpose + sampleIndex0, poseGroup->hpose + sampleIndex1,
+	//	(a3real)clipCtrl_fk->keyframeParam, activeHS_fk->hierarchy->numNodes);
+	//
+	//a3real u = demoMode->character->currentVelocity / demoMode->character->maxWalkVelocity;
 
-	a3real u = demoMode->character->currentVelocity / demoMode->character->maxWalkVelocity;
+	//if (u > 1.0f)
+	//{
+	//	u = 1.0f;
+	//}
+	//
+	//if (demoMode->character->isJumping)
+	//{
+	//	if (demoMode->character->currentVelocity <= 0.01f) //jumping while still, use the transition value to lerp between idle and jump
+	//	{
+	//		a3hierarchyPoseLerp(activeHS_fk->animPose, idlePose, movingPose, demoMode->character->jumpTransitionVal, activeHS_fk->hierarchy->numNodes);
+	//	}
+	//	else //jumping while moving, just rely on the "movingPose" (which is a lerp between walk/run AND jump)
+	//	{
+	//		a3hierarchyPoseLerp(activeHS_fk->animPose, idlePose, movingPose, 1, activeHS_fk->hierarchy->numNodes);	// 1 for now, will always be moving pose
+	//	}
+	//
+	//}
+	//else //lerp between idle and walk/run.
+	//{
+	//	a3hierarchyPoseLerp(activeHS_fk->animPose, idlePose, movingPose, u, activeHS_fk->hierarchy->numNodes);
+	//}
 
-	if (u > 1.0f)
-	{
-		u = 1.0f;
-	}
-	
-	if (demoMode->character->isJumping)
-	{
-		if (demoMode->character->currentVelocity <= 0.01f) //jumping while still, use the transition value to lerp between idle and jump
-		{
-			a3hierarchyPoseLerp(activeHS_fk->animPose, idlePose, movingPose, demoMode->character->jumpTransitionVal, activeHS_fk->hierarchy->numNodes);
-		}
-		else //jumping while moving, just rely on the "movingPose" (which is a lerp between walk/run AND jump)
-		{
-			a3hierarchyPoseLerp(activeHS_fk->animPose, idlePose, movingPose, 1, activeHS_fk->hierarchy->numNodes);	// 1 for now, will always be moving pose
-		}
-
-	}
-	else //lerp between idle and walk/run.
-	{
-		a3hierarchyPoseLerp(activeHS_fk->animPose, idlePose, movingPose, u, activeHS_fk->hierarchy->numNodes);
-	}
+	a3hierarchyPoseCopy(activeHS_fk->animPose, movingPose, activeHS_fk->hierarchy->numNodes);
 
 	// run FK pipeline
 	a3animation_update_fk(activeHS_fk, baseHS, poseGroup);
@@ -555,8 +557,8 @@ void a3animation_update_animation(a3_DemoMode1_Animation* demoMode, a3f64 const 
 		activeHS_ik->hierarchy->numNodes);
 	// run FK
 	a3animation_update_fk(activeHS_ik, baseHS, poseGroup);
-	if (updateIK)
-	//if (false)
+	//if (updateIK)
+	if (false)
 	{
 		// invert object-space
 		a3hierarchyStateUpdateObjectInverse(activeHS_ik);
