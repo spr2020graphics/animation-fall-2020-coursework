@@ -614,7 +614,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		}
 		a3hierarchyBlendTreeBindStates(demoMode->character->blendTree, hierarchy, NULL);
 
-		a3hierarchyblendTreeUpdate(demoMode->character->blendTree);
+		//a3hierarchyblendTreeUpdate(demoMode->character->blendTree);
 	}
 
 	// finally set up hierarchy states

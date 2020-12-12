@@ -61,7 +61,6 @@ inline a3ui32 a3characterControllerUpdate(a3_CharacterController* controller, a3
 {
 	if (controller)
 	{
-		printf("Test");
 		a3real u = controller->currentVelocity / controller->maxWalkVelocity;
 		u = a3clamp(0, 1, u);
 		controller->normalizedVelocity = u;
@@ -120,7 +119,7 @@ inline a3ui32 a3characterControllerUpdate(a3_CharacterController* controller, a3
 
 		a3hierarchyblendTreeUpdate(controller->blendTree);
 
-		a3_HierarchyPose* const tmp = (a3_HierarchyPose* const)controller->blendTree->blendNodes[controller->blendTree->tree->value];
+		a3_HierarchyPose* const tmp = controller->blendTree->blendNodes[controller->blendTree->tree->value]->state_out->animPose;
 		a3hierarchyPoseOpCopy(output, tmp, controller->poseGroup->hierarchy->numNodes); //copy to output
 
 		return 1;
