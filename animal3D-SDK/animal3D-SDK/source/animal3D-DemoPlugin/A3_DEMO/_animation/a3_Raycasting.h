@@ -53,6 +53,7 @@ struct a3_Plane
 	a3vec3* center;
 	a3vec3* normal;
 	a3mat4* transform;
+	a3mat4* parentObjInv;
 
 	// basically the "localScale" of the plane, a plane's z-scale should always be 1 in animal (the vertical axis, since they have no thickness)
 	a3vec3* boundSize;
@@ -60,10 +61,10 @@ struct a3_Plane
 
 a3_Ray* a3createRay(a3_Ray* out, a3vec3* orig, a3vec3* dir);
 
-a3_Plane* a3createPlane(a3_Plane* out, a3mat4* trans);
+a3_Plane* a3createPlane(a3_Plane* out, a3mat4* trans, a3mat4* parObjInv);
 
-a3boolean a3raycastGetCollisionUnboundedPlane(const a3_Ray* ray, const a3_Plane* plane, a3vec3* out_point);
-a3boolean a3raycastGetCollisionBoundedPlane(const a3_Ray* ray, const a3_Plane* plane, a3vec3* out_point);
+a3boolean a3raycastGetCollisionUnboundedPlane(a3_Ray* ray, a3_Plane* plane, a3vec3* out_point);
+a3boolean a3raycastGetCollisionBoundedPlane(a3_Ray* ray, a3_Plane* plane, a3vec3* out_point);
 
 //-----------------------------------------------------------------------------
 

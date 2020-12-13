@@ -33,7 +33,7 @@ a3_Ray* a3createRay(a3_Ray* out, a3vec3* orig, a3vec3* dir)
 	return out;
 }
 
-a3_Plane* a3createPlane(a3_Plane* out, a3mat4* trans)
+a3_Plane* a3createPlane(a3_Plane* out, a3mat4* trans, a3mat4* parObjInv)
 {
 	out->center = &trans->v3.xyz;
 	out->normal = &trans->v1.xyz;
@@ -41,11 +41,12 @@ a3_Plane* a3createPlane(a3_Plane* out, a3mat4* trans)
 	a3real3Normalize(out->normal->v);
 
 	out->transform = trans;
+	out->parentObjInv = parObjInv;
 
 	return out;
 }
 
-a3boolean a3raycastGetCollisionUnboundedPlane(const a3_Ray* ray, const a3_Plane* plane, a3vec3* out_point)
+a3boolean a3raycastGetCollisionUnboundedPlane(a3_Ray* ray, a3_Plane* plane, a3vec3* out_point)
 {
 	a3boolean result = false;
 
@@ -57,6 +58,9 @@ a3boolean a3raycastGetCollisionUnboundedPlane(const a3_Ray* ray, const a3_Plane*
 
 	// difference: ray_origin - center
 	// dot:
+
+	a3real3Normalize(plane->normal->v);
+	//a3real3Normalize(ray->direction->v);
 
 	a3real plane_d;
 	// THIS IS THE PLANE EQUATION nx + ny + nz = d
@@ -87,23 +91,27 @@ a3boolean a3raycastGetCollisionUnboundedPlane(const a3_Ray* ray, const a3_Plane*
 	}
 	else
 	{
-		// there is a single-point solution, determine point here
-		result = true;
-
 		a3real rhs = plane_d - regular_term;
 
 		a3real t_solution = rhs / t_term;
 
-		out_point->x = ray->origin->x + ray->direction->x * t_solution;
-		out_point->y = ray->origin->y + ray->direction->y * t_solution;
-		out_point->z = ray->origin->z + ray->direction->z * t_solution;
+		if (t_solution < 0.0f)
+		{
+			// there is a single-point solution, determine point here
+			result = true;
+
+			out_point->x = ray->origin->x + ray->direction->x * t_solution;
+			//out_point->x = t_solution;
+			out_point->y = ray->origin->y + ray->direction->y * t_solution;
+			out_point->z = ray->origin->z + ray->direction->z * t_solution;
+		}
 	}
 
 	
 	return result;
 }
 
-a3boolean a3raycastGetCollisionBoundedPlane(const a3_Ray* ray, const a3_Plane* plane, a3vec3* out_point)
+a3boolean a3raycastGetCollisionBoundedPlane(a3_Ray* ray, a3_Plane* plane, a3vec3* out_point)
 {
 	a3vec4 intersection = a3vec4_zero;
 
@@ -113,12 +121,10 @@ a3boolean a3raycastGetCollisionBoundedPlane(const a3_Ray* ray, const a3_Plane* p
 		// diff from origin to point for sq. distance
 		// compare sq. distance with square dot of diff and tangent
 
-		a3real4x4MulTransform(&intersection.v, &plane->transform->mm);
+		a3real4MulTransform(intersection.v, plane->parentObjInv->m);
 
 		a3boolean withinX = intersection.x >= (plane->center->x - plane->boundSize->x) && intersection.x <= (plane->center->x + plane->boundSize->x);
 		a3boolean withinY = intersection.y >= (plane->center->y - plane->boundSize->y) && intersection.y <= (plane->center->y + plane->boundSize->y);
-
-
 
 		return withinX && withinY;
 	}

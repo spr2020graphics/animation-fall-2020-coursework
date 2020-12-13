@@ -663,8 +663,10 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	}
 
 	//demoMode->sceneGraphState->objectSpace->pose[demoMode->obj_camera_main->sceneGraphIndex].transformMat.v1;
-	a3createRay(demoMode->ray, &demoMode->sceneGraphState->objectSpace->pose[demoMode->obj_camera_main->sceneGraphIndex].transformMat.v1.xyz, &demoMode->sceneGraphState->objectSpace->pose[demoMode->obj_camera_main->sceneGraphIndex].transformMat.v1.xyz);
-	a3createPlane(demoMode->plane, &demoMode->sceneGraphState->objectSpace->pose[demoMode->obj_plane->sceneGraphIndex].transformMat);
+	a3createRay(demoMode->ray, &demoMode->sceneGraphState->objectSpace->pose[demoMode->obj_camera_main->sceneGraphIndex].transformMat.v3.xyz, &demoMode->sceneGraphState->objectSpace->pose[demoMode->obj_camera_main->sceneGraphIndex].transformMat.v1.xyz);
+	a3ui32 parentInd = demoMode->sceneGraphState->hierarchy->nodes[demoMode->obj_ramp->sceneGraphIndex].parentIndex;
+	a3createPlane(demoMode->plane, &demoMode->sceneGraphState->objectSpace->pose[demoMode->obj_ramp->sceneGraphIndex].transformMat, &demoMode->sceneGraphState->objectSpaceInv->pose[parentInd].transformMat);
+	demoMode->plane->boundSize = &demoMode->obj_ramp->scale;
 }
 
 
