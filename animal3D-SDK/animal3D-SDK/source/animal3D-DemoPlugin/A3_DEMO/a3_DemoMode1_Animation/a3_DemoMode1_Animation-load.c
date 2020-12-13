@@ -431,21 +431,16 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		a3fileStreamClose(fileStream);
 	}
 
-	a3_Ray ray[1];
-	a3_Plane plane[1];
+	//a3_Ray ray[1];
+	//a3_Plane plane[1];
 
-	a3vec3 origin = { 2, 1, 0 };
-	a3vec3 dir = { -1, 1, 3 };
-	
-	a3vec3 center = { 3, 0, 1 };
-	a3vec3 norm = { 3, -2, 1 };
-	a3vec3 bounds = { 3, 3, 1 }; // basically the "localScale" of the plane, a 3x3 square in this instance
+	//a3vec3 origin = { 2, 1, 0 };
+	//a3vec3 dir = { -1, 1, 3 };
+	//
+	//a3vec3 center = { 3, 0, 1 };
+	//a3vec3 norm = { 3, -2, 1 };
+	//a3vec3 bounds = { 3, 3, 1 }; // basically the "localScale" of the plane, a 3x3 square in this instance
 
-	a3createRay(ray, &origin, &dir);
-	a3createPlane(plane, &center, &norm, &bounds);
-
-	a3vec3 intersection = a3vec3_zero;
-	a3raycastGetCollisionUnboundedPlane(ray, plane, &intersection);
 
 	// map relevant objects to scene graph
 	demoMode->obj_world_root->sceneGraphIndex = a3hierarchyGetNodeIndex(demoMode->sceneGraph, "scene_world_root");
@@ -480,6 +475,10 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	// scene graph state
 	demoMode->sceneGraphState->hierarchy = 0;
 	a3hierarchyStateCreate(demoMode->sceneGraphState, demoMode->sceneGraph);
+
+	//demoMode->sceneGraphState->objectSpace->pose[demoMode->obj_camera_main->sceneGraphIndex].transformMat.v1;
+	a3createRay(demoMode->ray, &demoMode->sceneGraphState->objectSpace->pose[demoMode->obj_camera_main->sceneGraphIndex].transformMat.v1.xyz, &demoMode->sceneGraphState->objectSpace->pose[demoMode->obj_camera_main->sceneGraphIndex].transformMat.v1.xyz);
+	a3createPlane(demoMode->plane, &demoMode->sceneGraphState->objectSpace->pose[demoMode->obj_plane->sceneGraphIndex].transformMat);
 
 	/*
 	* WOLF CLIPS
@@ -613,7 +612,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		}
 		a3hierarchyBlendTreeBindStates(demoMode->character->blendTree, hierarchy, NULL);
 
-		a3hierarchyblendTreeUpdate(demoMode->character->blendTree);
+		//a3hierarchyblendTreeUpdate(demoMode->character->blendTree);
 	}
 
 	// finally set up hierarchy states

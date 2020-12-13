@@ -37,6 +37,7 @@
 #include "_animation/a3_KeyframeAnimationController.h"
 #include "_animation/a3_HierarchyStateBlend.h"
 #include "_animation/a3_CharacterController.h"
+#include "_animation/a3_Raycasting.h"
 
 //-----------------------------------------------------------------------------
 
@@ -198,6 +199,9 @@ typedef enum a3_DemoMode1_Animation_InputMode				a3_DemoMode1_Animation_InputMod
 		a3f32 jumpTrigger;
 		a3f32 walkThreshold;
 		a3f32 runThreshold;
+
+		a3_Plane plane[1];
+		a3_Ray ray[1];
 
 		// objects
 		union {

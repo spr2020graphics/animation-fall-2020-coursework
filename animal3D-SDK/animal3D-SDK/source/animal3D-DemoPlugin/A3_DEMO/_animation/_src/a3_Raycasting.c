@@ -33,11 +33,11 @@ a3_Ray* a3createRay(a3_Ray* out, a3vec3* orig, a3vec3* dir)
 	return out;
 }
 
-a3_Plane* a3createPlane(a3_Plane* out, a3vec3* cent, a3vec3* norm, a3vec3* bounds)
+a3_Plane* a3createPlane(a3_Plane* out, a3mat4* trans)
 {
-	out->center = cent;
-	out->normal = norm;
-	out->boundSize = bounds;
+	out->center = &trans->v3.xyz;
+	out->normal = &trans->v2.xyz;
+	out->transform = trans;
 
 	return out;
 }
@@ -102,16 +102,20 @@ a3boolean a3raycastGetCollisionUnboundedPlane(const a3_Ray* ray, const a3_Plane*
 
 a3boolean a3raycastGetCollisionBoundedPlane(const a3_Ray* ray, const a3_Plane* plane, a3vec3* out_point)
 {
-	a3vec3 intersection = a3vec3_zero;
+	a3vec4 intersection = a3vec4_zero;
 
-	if (a3raycastGetCollisionUnboundedPlane(ray, plane, &intersection))
+	if (a3raycastGetCollisionUnboundedPlane(ray, plane, &intersection.xyz))
 	{
-		// v3 of plane transform mat is the normal, other cols are T and B (Right, Up, Out)
+		// v2 of plane transform mat is the normal, other cols are T and B (Right, Up, Out)
 		// diff from origin to point for sq. distance
 		// compare sq. distance with square dot of diff and tangent
 
+		a3real4x4MulTransform(&intersection.v, &plane->transform->mm);
+
 		a3boolean withinX = intersection.x >= (plane->center->x - plane->boundSize->x) && intersection.x <= (plane->center->x + plane->boundSize->x);
 		a3boolean withinY = intersection.y >= (plane->center->y - plane->boundSize->y) && intersection.y <= (plane->center->y + plane->boundSize->y);
+
+
 
 		return withinX && withinY;
 	}
