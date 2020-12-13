@@ -785,6 +785,16 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 				modelMat = demoMode->sceneGraphState->objectSpace->pose[currentSceneObject->sceneGraphIndex].transformMat;
 				a3demo_drawModelSimple(modelViewProjectionMat.m, viewProjectionMat.m, modelMat.m, currentDemoProgram);
 			}
+
+			for (currentSceneObject = demoMode->obj_plane, endSceneObject = demoMode->obj_landing;
+				currentSceneObject < endSceneObject;
+				++currentSceneObject)
+			{
+				j = (a3ui32)(currentSceneObject - demoMode->object_scene);
+				modelMat = demoMode->sceneGraphState->objectSpace->pose[currentSceneObject->sceneGraphIndex].transformMat;
+				a3demo_drawModelSimple(modelViewProjectionMat.m, viewProjectionMat.m, modelMat.m, currentDemoProgram);
+			}
+
 		}
 	}
 }
