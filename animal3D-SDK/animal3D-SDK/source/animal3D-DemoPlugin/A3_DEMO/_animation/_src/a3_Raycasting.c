@@ -59,22 +59,22 @@ a3boolean a3raycastGetCollisionUnboundedPlane(a3_Ray* ray, a3_Plane* plane, a3bo
 
 	// difference: ray_origin - center
 	// dot:
-
-	a3real3Normalize(plane->normal->v);
+	a3vec3 norm = a3vec3_zero;
+	a3real3GetUnit(norm.v,plane->normal->v);
 	//a3real3Normalize(ray->direction->v);
 
 	a3real plane_d;
 	// THIS IS THE PLANE EQUATION nx + ny + nz = d
-	plane_d = (plane->normal->x * plane->center->x + plane->normal->y * plane->center->y + plane->normal->z * plane->center->z);	// negated because it needs to be on the "other' side of the equation
+	plane_d = (norm.x * plane->center->x + norm.y * plane->center->y + norm.z * plane->center->z);	// negated because it needs to be on the "other' side of the equation
 
-	a3real x_t = plane->normal->x * ray->direction->x;
-	a3real x = plane->normal->x * ray->origin->x;
+	a3real x_t = norm.x * ray->direction->x;
+	a3real x = norm.x * ray->origin->x;
 
-	a3real y_t = plane->normal->y * ray->direction->y;
-	a3real y = plane->normal->y * ray->origin->y;
+	a3real y_t = norm.y * ray->direction->y;
+	a3real y = norm.y * ray->origin->y;
 
-	a3real z_t = plane->normal->z * ray->direction->z;
-	a3real z = plane->normal->z * ray->origin->z;
+	a3real z_t = norm.z * ray->direction->z;
+	a3real z = norm.z * ray->origin->z;
 
 	// get solutions for t term and regular term
 	a3real t_term = x_t + y_t + z_t;
