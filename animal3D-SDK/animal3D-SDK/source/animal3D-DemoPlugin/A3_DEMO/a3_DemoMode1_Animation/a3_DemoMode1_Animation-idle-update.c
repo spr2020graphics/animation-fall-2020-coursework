@@ -647,7 +647,8 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 	a3vec3 point = a3vec3_zero;
 	a3boolean collisionResult = a3raycastGetCollisionUnboundedPlane(demoMode->ray, demoMode->plane, &point);
 	//printf("%i\n", collisionResult);
-	printf("%f, %f, %f\n", demoMode->ray->direction->x, demoMode->ray->direction->y, demoMode->ray->direction->z);
+	//printf("%f, %f, %f\n", demoMode->ray->direction->x, demoMode->ray->direction->y, demoMode->ray->direction->z);
+	//printf("%f, %f, %f\n", demoMode->plane->normal->x, demoMode->plane->normal->y, demoMode->plane->normal->z);
 
 	// ****TO-DO:
 	// process input

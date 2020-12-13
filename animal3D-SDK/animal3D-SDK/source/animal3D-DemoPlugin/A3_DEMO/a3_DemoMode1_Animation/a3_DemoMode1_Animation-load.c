@@ -476,10 +476,6 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	demoMode->sceneGraphState->hierarchy = 0;
 	a3hierarchyStateCreate(demoMode->sceneGraphState, demoMode->sceneGraph);
 
-	//demoMode->sceneGraphState->objectSpace->pose[demoMode->obj_camera_main->sceneGraphIndex].transformMat.v1;
-	a3createRay(demoMode->ray, &demoMode->sceneGraphState->objectSpace->pose[demoMode->obj_camera_main->sceneGraphIndex].transformMat.v1.xyz, &demoMode->sceneGraphState->objectSpace->pose[demoMode->obj_camera_main->sceneGraphIndex].transformMat.v1.xyz);
-	a3createPlane(demoMode->plane, &demoMode->sceneGraphState->objectSpace->pose[demoMode->obj_plane->sceneGraphIndex].transformMat);
-
 	/*
 	* WOLF CLIPS
 	* 
@@ -665,6 +661,10 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 			//a3animation_load_resetEffectors(demoMode, demoMode->hierarchyState_skel_fk, hierarchyPoseGroup);
 		}
 	}
+
+	//demoMode->sceneGraphState->objectSpace->pose[demoMode->obj_camera_main->sceneGraphIndex].transformMat.v1;
+	a3createRay(demoMode->ray, &demoMode->sceneGraphState->objectSpace->pose[demoMode->obj_camera_main->sceneGraphIndex].transformMat.v1.xyz, &demoMode->sceneGraphState->objectSpace->pose[demoMode->obj_camera_main->sceneGraphIndex].transformMat.v1.xyz);
+	a3createPlane(demoMode->plane, &demoMode->sceneGraphState->objectSpace->pose[demoMode->obj_plane->sceneGraphIndex].transformMat);
 }
 
 

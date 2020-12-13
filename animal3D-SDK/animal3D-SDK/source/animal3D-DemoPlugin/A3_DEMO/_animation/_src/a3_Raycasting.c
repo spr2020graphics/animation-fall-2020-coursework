@@ -36,7 +36,10 @@ a3_Ray* a3createRay(a3_Ray* out, a3vec3* orig, a3vec3* dir)
 a3_Plane* a3createPlane(a3_Plane* out, a3mat4* trans)
 {
 	out->center = &trans->v3.xyz;
-	out->normal = &trans->v2.xyz;
+	out->normal = &trans->v1.xyz;
+
+	a3real3Normalize(out->normal->v);
+
 	out->transform = trans;
 
 	return out;
