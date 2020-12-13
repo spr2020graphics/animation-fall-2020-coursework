@@ -593,13 +593,14 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		a3hierarchyBlendNodeBindClipController(demoMode->character->blendTree->blendNodes[1], &demoMode->characterAnimControllers[2], 1);
 		a3hierarchyBlendNodeAddControl(demoMode->character->blendTree->blendNodes[1], 0, &demoMode->character->normalizedVelocity);
 		demoMode->character->blendTree->blendNodes[1]->poseGroup = hierarchyPoseGroup;
-		//a3hierarchyBlendNodeAddControl(demoMode->character->blendTree->blendNodes[1], 0, &demoMode->character->currentVelocity); //incorrect but a good start
 
 		a3hierarchyBlendNodeCreate(demoMode->character->blendTree->blendNodes[2], copyClip); //crawl
 		a3hierarchyBlendNodeBindClipController(demoMode->character->blendTree->blendNodes[2], &demoMode->characterAnimControllers[3], 0);
 		demoMode->character->blendTree->blendNodes[2]->poseGroup = hierarchyPoseGroup;
 
 		a3hierarchyBlendNodeCreate(demoMode->character->blendTree->blendNodes[3], triangular); //idle + walk/run + crawl
+		a3hierarchyBlendNodeAddControl(demoMode->character->blendTree->blendNodes[3], 0, &demoMode->character->triLerpVelocity);
+		a3hierarchyBlendNodeAddControl(demoMode->character->blendTree->blendNodes[3], 1, &demoMode->character->crouchVal);
 
 		a3hierarchyBlendTreeAddNodeToTree(demoMode->character->blendTree, 3, -1);
 		a3hierarchyBlendTreeAddNodeToTree(demoMode->character->blendTree, 0, 3);

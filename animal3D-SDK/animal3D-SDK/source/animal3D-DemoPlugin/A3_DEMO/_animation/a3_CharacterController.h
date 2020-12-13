@@ -48,6 +48,8 @@ struct a3_CharacterController
 	a3f32 currentVelocity;
 
 	a3f32 normalizedVelocity;
+	a3f32 crouchVal;
+	a3f32 triLerpVelocity;
 
 	// used to transition into a jump
 	a3f32 jumpTransitionVal;
@@ -63,6 +65,8 @@ a3ui32 a3characterControllerInit(a3_CharacterController* controller_out, a3_Clip
 a3ui32 a3characterControllerApplyInput(a3_CharacterController* controller, a3vec2* position, a3real rotation, a3real dt);
 
 a3ui32 a3characterControllerUpdate(a3_CharacterController* controller, a3_HierarchyPose* output, a3real dt);
+
+a3i32 a3characterControllerUpdateCrouch(a3_CharacterController* controller, a3real dt);
 
 // play jump anim + modify vertical position
 a3ui32 a3characterControllerJump(a3_CharacterController* controller, a3_HierarchyPose* output, a3real dt);

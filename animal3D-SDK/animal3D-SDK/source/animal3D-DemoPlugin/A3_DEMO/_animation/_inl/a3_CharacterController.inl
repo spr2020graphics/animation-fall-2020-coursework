@@ -20,6 +20,11 @@ inline a3ui32 a3characterControllerInit(a3_CharacterController* controller_out, 
 	controller_out->poseGroup = poses;
 	controller_out->maxWalkVelocity = walkThreshold;
 	controller_out->currentVelocity = 0.0f;
+
+	controller_out->normalizedVelocity = 0.0f;
+	controller_out->crouchVal = 0.0f;
+	controller_out->triLerpVelocity = 0.0f;
+
 	controller_out->object = obj;
 	controller_out->isJumping = false;
 
@@ -57,11 +62,12 @@ inline a3ui32 a3characterControllerUpdate(a3_CharacterController* controller, a3
 	if (controller)
 	{
 		a3real u = controller->currentVelocity / controller->maxWalkVelocity;
-		if (u > 1.0f)
-		{
-			u = 1.0f;
-		}
+		u = a3clamp(0, 1, u);
 		controller->normalizedVelocity = u;
+		a3characterControllerUpdateCrouch(controller, dt); //gives us a crouch value between 0 and 0.5
+		controller->triLerpVelocity = u * (1 - controller->crouchVal);
+
+
 		float walkDT = dt / getWalkScale(u); //dt is scaled to 1/0.75 at u = 1
 		float runDT = dt * getRunScale(u); //dt is scaled to 0.75 at u = 0
 
@@ -70,48 +76,51 @@ inline a3ui32 a3characterControllerUpdate(a3_CharacterController* controller, a3
 		a3clipControllerUpdate(&controller->animControllers[2], runDT);
 		a3clipControllerUpdate(&controller->animControllers[3], dt);
 
-		if (*controller->jumpTrigger == 1.0f)
-		{
-			a3characterToggleIsJumping(controller);
-			// jump
-			*controller->jumpTrigger = 0.0f;
+		//if (*controller->jumpTrigger == 1.0f)
+		//{
+		//	a3characterToggleIsJumping(controller);
+		//	// jump
+		//	*controller->jumpTrigger = 0.0f;
+		//
+		//	//controller->activeAnimController = &controller->animControllers[3];
+		//}
+		//if (controller->jumpRemaining > 0.0f)
+		//{
+		//	controller->jumpRemaining -= dt;
+		//	if (controller->jumpRemaining <= 0.0f)
+		//	{
+		//		controller->isJumping = false;
+		//	}
+		//}
+		//
+		////we have a pose that's just the sampled idle pose
+		//a3_HierarchyPose result[1];
+		//
+		//a3hierarchyPoseOpCreate(result, controller->poseGroup->hierarchy->numNodes);
+		//a3hierarchyPoseOpIdentity(result, controller->poseGroup->hierarchy->numNodes);
+		//a3clipOpSampleClip(result, controller->poseGroup, &controller->animControllers[0]);
+		////if we're walking, the pose is replaced with walking
+		//if (controller->currentVelocity > 0.01f)
+		//{
+		//	a3characterControllerWalk(controller, result);
+		//}
+		////if we're jumping, lerp between walk and jump
+		//
+		//if (controller->isJumping)
+		//{
+		//	a3_HierarchyPose postJumpResult[1];
+		//	a3hierarchyPoseOpCreate(postJumpResult, controller->poseGroup->hierarchy->numNodes);
+		//	a3hierarchyPoseOpIdentity(postJumpResult, controller->poseGroup->hierarchy->numNodes);
+		//	//a3characterControllerJump(controller, output, dt); //rewrite this function so we take _in_ walk run blend (as result) and output the final pose to the output variable
+		//	a3characterControllerBlendJump(controller, postJumpResult, result, dt);
+		//
+		//	a3hierarchyPoseOpCopy(result, postJumpResult, controller->poseGroup->hierarchy->numNodes); //replace old result with new result
+		//}
 
-			//controller->activeAnimController = &controller->animControllers[3];
-		}
-		if (controller->jumpRemaining > 0.0f)
-		{
-			controller->jumpRemaining -= dt;
-			if (controller->jumpRemaining <= 0.0f)
-			{
-				controller->isJumping = false;
-			}
-		}
+		a3hierarchyblendTreeUpdate(controller->blendTree);
 
-		//we have a pose that's just the sampled idle pose
-		a3_HierarchyPose result[1];
-
-		a3hierarchyPoseOpCreate(result, controller->poseGroup->hierarchy->numNodes);
-		a3hierarchyPoseOpIdentity(result, controller->poseGroup->hierarchy->numNodes);
-		a3clipOpSampleClip(result, controller->poseGroup, &controller->animControllers[0]);
-		//if we're walking, the pose is replaced with walking
-		if (controller->currentVelocity > 0.01f)
-		{
-			a3characterControllerWalk(controller, result);
-		}
-		//if we're jumping, lerp between walk and jump
-
-		if (controller->isJumping)
-		{
-			a3_HierarchyPose postJumpResult[1];
-			a3hierarchyPoseOpCreate(postJumpResult, controller->poseGroup->hierarchy->numNodes);
-			a3hierarchyPoseOpIdentity(postJumpResult, controller->poseGroup->hierarchy->numNodes);
-			//a3characterControllerJump(controller, output, dt); //rewrite this function so we take _in_ walk run blend (as result) and output the final pose to the output variable
-			a3characterControllerBlendJump(controller, postJumpResult, result, dt);
-
-			a3hierarchyPoseOpCopy(result, postJumpResult, controller->poseGroup->hierarchy->numNodes); //replace old result with new result
-		}
-
-		a3hierarchyPoseOpCopy(output, result, controller->poseGroup->hierarchy->numNodes); //copy to output
+		a3_HierarchyPose* const tmp = controller->blendTree->blendNodes[controller->blendTree->tree->value]->state_out->animPose;
+		a3hierarchyPoseOpCopy(output, tmp, controller->poseGroup->hierarchy->numNodes); //copy to output
 
 		return 1;
 	}
@@ -134,6 +143,25 @@ inline void a3characterToggleIsJumping(a3_CharacterController* controller)
 		//set clip
 	}
 	// this is just a stub from experimenting with "events"
+}
+
+inline a3i32 a3characterControllerUpdateCrouch(a3_CharacterController* controller, a3f32 dt)
+{
+	if (controller)
+	{
+		a3real transitionMultiplier = 1.5f;
+
+		if (*(controller->jumpTrigger))
+		{
+			controller->crouchVal = min(controller->crouchVal + transitionMultiplier * dt, 0.5f);
+		}
+		else
+		{
+			controller->crouchVal = max(controller->crouchVal - transitionMultiplier * dt, 0.0f);
+		}
+		return 1;
+	}
+	return -1;
 }
 
 inline a3ui32 a3characterControllerJump(a3_CharacterController* controller, a3_HierarchyPose* output, a3real dt)
