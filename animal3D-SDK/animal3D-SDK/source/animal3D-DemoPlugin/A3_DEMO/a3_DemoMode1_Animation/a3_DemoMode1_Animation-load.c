@@ -458,7 +458,6 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 
 	demoMode->obj_plane->scaleMode = 1;
 	//demoMode->obj_plane->position.y += 10.0f;
-	demoMode->obj_plane->euler.x = 90.0f;
 	demoMode->obj_plane->scale.x = 4.0f;
 
 	demoMode->obj_ramp->scaleMode = 1;
