@@ -63,8 +63,8 @@ a3_Ray* a3createRay(a3_Ray* out, a3vec3* orig, a3vec3* dir);
 
 a3_Plane* a3createPlane(a3_Plane* out, a3mat4* trans, a3mat4* parObjInv);
 
-a3boolean a3raycastGetCollisionUnboundedPlane(a3_Ray* ray, a3_Plane* plane, a3vec3* out_point);
-a3boolean a3raycastGetCollisionBoundedPlane(a3_Ray* ray, a3_Plane* plane, a3vec3* out_point);
+a3boolean a3raycastGetCollisionUnboundedPlane(a3_Ray* ray, a3_Plane* plane, a3boolean isRayBackwards, a3vec3* out_point);
+a3boolean a3raycastGetCollisionBoundedPlane(a3_Ray* ray, a3_Plane* plane, a3boolean isRayBackwards, a3vec3* out_point);
 
 //-----------------------------------------------------------------------------
 

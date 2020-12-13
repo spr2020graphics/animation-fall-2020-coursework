@@ -47,7 +47,7 @@ a3_Plane* a3createPlane(a3_Plane* out, a3mat4* trans, a3mat4* parObjInv)
 	return out;
 }
 
-a3boolean a3raycastGetCollisionUnboundedPlane(a3_Ray* ray, a3_Plane* plane, a3vec3* out_point)
+a3boolean a3raycastGetCollisionUnboundedPlane(a3_Ray* ray, a3_Plane* plane, a3boolean isRayBackwards, a3vec3* out_point)
 {
 	a3boolean result = false;
 
@@ -96,15 +96,31 @@ a3boolean a3raycastGetCollisionUnboundedPlane(a3_Ray* ray, a3_Plane* plane, a3ve
 
 		a3real t_solution = rhs / t_term;
 
-		if (t_solution < 0.0f)
+		if (isRayBackwards)
 		{
-			// there is a single-point solution, determine point here
-			result = true;
+			if (t_solution < 0.0f)
+			{
+				// there is a single-point solution, determine point here
+				result = true;
 
-			out_point->x = ray->origin->x + ray->direction->x * t_solution;
-			//out_point->x = t_solution;
-			out_point->y = ray->origin->y + ray->direction->y * t_solution;
-			out_point->z = ray->origin->z + ray->direction->z * t_solution;
+				out_point->x = ray->origin->x + ray->direction->x * t_solution;
+				//out_point->x = t_solution;
+				out_point->y = ray->origin->y + ray->direction->y * t_solution;
+				out_point->z = ray->origin->z + ray->direction->z * t_solution;
+			}
+		}
+		else
+		{
+			if (t_solution > 0.0f)
+			{
+				// there is a single-point solution, determine point here
+				result = true;
+
+				out_point->x = ray->origin->x + ray->direction->x * t_solution;
+				//out_point->x = t_solution;
+				out_point->y = ray->origin->y + ray->direction->y * t_solution;
+				out_point->z = ray->origin->z + ray->direction->z * t_solution;
+			}
 		}
 	}
 
@@ -112,11 +128,11 @@ a3boolean a3raycastGetCollisionUnboundedPlane(a3_Ray* ray, a3_Plane* plane, a3ve
 	return result;
 }
 
-a3boolean a3raycastGetCollisionBoundedPlane(a3_Ray* ray, a3_Plane* plane, a3vec3* out_point)
+a3boolean a3raycastGetCollisionBoundedPlane(a3_Ray* ray, a3_Plane* plane, a3boolean isRayBackwards, a3vec3* out_point)
 {
 	a3vec4 intersection = a3vec4_zero;
 
-	if (a3raycastGetCollisionUnboundedPlane(ray, plane, &intersection.xyz))
+	if (a3raycastGetCollisionUnboundedPlane(ray, plane, isRayBackwards, &intersection.xyz))
 	{
 		a3mat4 m = a3mat4_identity;
 		a3real4x4TransformInverse(m.m, plane->transform->m);
