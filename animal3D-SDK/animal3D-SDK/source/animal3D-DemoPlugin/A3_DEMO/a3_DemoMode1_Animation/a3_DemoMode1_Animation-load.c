@@ -667,6 +667,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	a3ui32 parentInd = demoMode->sceneGraphState->hierarchy->nodes[demoMode->obj_ramp->sceneGraphIndex].parentIndex;
 	a3createPlane(demoMode->plane, &demoMode->sceneGraphState->objectSpace->pose[demoMode->obj_ramp->sceneGraphIndex].transformMat, &demoMode->sceneGraphState->objectSpaceInv->pose[parentInd].transformMat);
 	demoMode->plane->boundSize = &demoMode->obj_ramp->scale;
+	demoMode->intersectionPoint = a3vec3_zero;
 }
 
 

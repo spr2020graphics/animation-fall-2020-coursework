@@ -202,6 +202,7 @@ typedef enum a3_DemoMode1_Animation_InputMode				a3_DemoMode1_Animation_InputMod
 
 		a3_Plane plane[1];
 		a3_Ray ray[1];
+		a3vec3 intersectionPoint;
 
 		// objects
 		union {
