@@ -662,7 +662,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		}
 	}
 
-	a3_DemoSceneObject* planeObj = demoMode->obj_ramp;
+	a3_DemoSceneObject* planeObj = demoMode->obj_landing;
 	//demoMode->sceneGraphState->objectSpace->pose[demoMode->obj_camera_main->sceneGraphIndex].transformMat.v1;
 	a3createRay(demoMode->ray, &demoMode->sceneGraphState->objectSpace->pose[demoMode->obj_camera_main->sceneGraphIndex].transformMat.v3.xyz, &demoMode->sceneGraphState->objectSpace->pose[demoMode->obj_camera_main->sceneGraphIndex].transformMat.v2.xyz);
 	//a3ui32 parentInd = demoMode->sceneGraphState->hierarchy->nodes[planeObj->sceneGraphIndex].parentIndex;
