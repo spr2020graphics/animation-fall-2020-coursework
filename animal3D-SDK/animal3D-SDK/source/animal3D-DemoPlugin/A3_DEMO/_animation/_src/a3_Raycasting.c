@@ -134,17 +134,25 @@ a3boolean a3raycastGetCollisionBoundedPlane(a3_Ray* ray, a3_Plane* plane, a3bool
 
 	if (a3raycastGetCollisionUnboundedPlane(ray, plane, isRayBackwards, &intersection.xyz))
 	{
-		a3mat4 m = a3mat4_identity;
-		a3real4x4TransformInverse(m.m, plane->transform->m);
 		// v2 of plane transform mat is the normal, other cols are T and B (Right, Up, Out)
 		// diff from origin to point for sq. distance
 		// compare sq. distance with square dot of diff and tangent
 		//printf("Before: %f, %f, %f\n", intersection.x, intersection.y, intersection.z);
 		a3vec4 output = a3vec4_zero;
-		a3real4TransformProduct(output.v, m.m, intersection.v);
+		a3real4TransformProduct(output.v, plane->parentObjInv->m, intersection.v);
+		a3vec4 tmp = a3vec4_zero;
+
+		a3vec3 col;
+		a3real scale = 0.0f;
+		col.x = plane->parentObjInv->m00;
+		col.y = plane->parentObjInv->m01;
+		col.z = plane->parentObjInv->m02;
+		scale = a3real3Length(col.v);
+		a3real3ProductS(tmp.v, plane->center->v, scale);
+		a3real3Add(output.v, tmp.v);
 		printf("After: %f, %f, %f\n", output.x, output.y, output.z);
 		a3boolean withinX = intersection.x >= (-plane->boundSize->x) && intersection.x <= (plane->boundSize->x);
-		a3boolean withinY = intersection.y >= (-plane->boundSize->y) && intersection.y <= (plane->boundSize->y);
+		a3boolean withinY = intersection.y >= (-plane->boundSize->x) && intersection.y <= (plane->boundSize->x);
 		printf("%i\n", withinX && withinY);
 		return withinX && withinY;
 	}

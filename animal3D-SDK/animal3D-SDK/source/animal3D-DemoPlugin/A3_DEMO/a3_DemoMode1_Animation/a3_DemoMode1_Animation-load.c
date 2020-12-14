@@ -465,12 +465,12 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	demoMode->obj_ramp->position.y += 0.5f + a3sqrt(3)/4.0f;
 	demoMode->obj_ramp->position.z += 0.25;
 	demoMode->obj_ramp->euler.x = 30.0f;
-	//demoMode->obj_ramp->scale.x = 1.0f;
+	demoMode->obj_ramp->scale.x = 1.0f;
 
 	//demoMode->obj_landing->scaleMode = 1;
 	demoMode->obj_landing->position.y += 1.0f + a3sqrt(3)/2.0f;
 	demoMode->obj_landing->position.z += 0.5f;
-	//demoMode->obj_landing->scale.x = 1.0f;
+	demoMode->obj_landing->scale.x = 1.0f;
 
 	// scene graph state
 	demoMode->sceneGraphState->hierarchy = 0;
@@ -662,7 +662,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		}
 	}
 
-	a3_DemoSceneObject* planeObj = demoMode->obj_plane;
+	a3_DemoSceneObject* planeObj = demoMode->obj_ramp;
 	//demoMode->sceneGraphState->objectSpace->pose[demoMode->obj_camera_main->sceneGraphIndex].transformMat.v1;
 	a3createRay(demoMode->ray, &demoMode->sceneGraphState->objectSpace->pose[demoMode->obj_camera_main->sceneGraphIndex].transformMat.v3.xyz, &demoMode->sceneGraphState->objectSpace->pose[demoMode->obj_camera_main->sceneGraphIndex].transformMat.v2.xyz);
 	//a3ui32 parentInd = demoMode->sceneGraphState->hierarchy->nodes[planeObj->sceneGraphIndex].parentIndex;
