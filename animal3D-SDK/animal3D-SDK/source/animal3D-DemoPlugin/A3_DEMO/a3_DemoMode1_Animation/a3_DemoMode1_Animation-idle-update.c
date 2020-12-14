@@ -236,6 +236,21 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 		a3mat4 jointTransform_neck = a3mat4_identity, jointTransform_wrist = a3mat4_identity, jointTransform_elbow = a3mat4_identity, jointTransform_shoulder = a3mat4_identity;
 		a3ui32 j_neck, j_wrist, j_elbow, j_shoulder;
 
+		/*
+		WOLF SOLVER NOTES
+
+		2 separate solvers, one for the "upper leg" chain, one for JUST the ankle node
+
+		"end effector" of upper leg is driven by base effector of lower leg
+
+		calculate foot + ankle first, toe to ankle, using actual effector to position toe
+		calculate leg chain second, essentially using the ankle as the effector
+
+		ALTERNATE SYSTEM (CRAFTY TIME)
+		
+		"reverse foot" solver
+
+		*/
 
 		//get limb length from base pose. Possibly store on load
 		// NECK LOOK-AT
