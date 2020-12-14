@@ -324,7 +324,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 
 	demoMode->obj_plane->scaleMode = 1;
 	//demoMode->obj_plane->position.y += 10.0f;
-	demoMode->obj_plane->scale.x = 4.0f;
+	demoMode->obj_plane->scale.x = 8.0f;
 
 
 	//demoMode->obj_ramp->scaleMode = 1;
@@ -337,6 +337,8 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	demoMode->obj_landing->position.y += 1.0f + a3sqrt(3)/2.0f;
 	demoMode->obj_landing->position.z += 0.5f;
 	demoMode->obj_landing->scale.x = 1.0f;
+
+	//demoMode->obj_skeleton->position.z += 3.0f;
 
 	// scene graph state
 	demoMode->sceneGraphState->hierarchy = 0;

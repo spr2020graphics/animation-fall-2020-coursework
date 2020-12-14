@@ -150,10 +150,10 @@ a3boolean a3raycastGetCollisionBoundedPlane(a3_Ray* ray, a3_Plane* plane, a3bool
 		a3real3Sub(localCoord.v, ctrdivScale.v);
 
 
-		printf("After: %f, %f, %f\n", localCoord.x, localCoord.y, localCoord.z);
+		//printf("After: %f, %f, %f\n", localCoord.x, localCoord.y, localCoord.z);
 		a3boolean withinX = localCoord.x >= (-0.5f) && localCoord.x <= (0.5f);
 		a3boolean withinY = localCoord.y >= (-0.5f) && localCoord.y <= (0.5f);
-		printf("%i\n", withinX && withinY);
+		//printf("%i\n", withinX && withinY);
 
 		out_point->x = intersection.x;
 		out_point->y = intersection.y;

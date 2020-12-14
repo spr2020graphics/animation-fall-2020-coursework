@@ -495,7 +495,7 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 		}
 	}
 }
-
+a3boolean firstFrame = true;
 void a3animation_update_animation(a3_DemoMode1_Animation* demoMode, a3f64 const dt,
 	a3boolean const updateIK)
 {
@@ -530,39 +530,29 @@ void a3animation_update_animation(a3_DemoMode1_Animation* demoMode, a3f64 const 
 	//movingPose->pose[0].translate.y = demoMode->sceneGraphState->objectSpace->pose[demoMode->character->object->sceneGraphIndex].translate.y;
 	movingPose->pose[0].translate.z = demoMode->sceneGraphState->objectSpace->pose[demoMode->character->object->sceneGraphIndex].translate.z;
 
-	//a3hierarchyPoseLerp(idlePose,
-	//	poseGroup->hpose + sampleIndex0, poseGroup->hpose + sampleIndex1,
-	//	(a3real)clipCtrl_fk->keyframeParam, activeHS_fk->hierarchy->numNodes);
-	//
-	//a3real u = demoMode->character->currentVelocity / demoMode->character->maxWalkVelocity;
-
-	//if (u > 1.0f)
-	//{
-	//	u = 1.0f;
-	//}
-	//
-	//if (demoMode->character->isJumping)
-	//{
-	//	if (demoMode->character->currentVelocity <= 0.01f) //jumping while still, use the transition value to lerp between idle and jump
-	//	{
-	//		a3hierarchyPoseLerp(activeHS_fk->animPose, idlePose, movingPose, demoMode->character->jumpTransitionVal, activeHS_fk->hierarchy->numNodes);
-	//	}
-	//	else //jumping while moving, just rely on the "movingPose" (which is a lerp between walk/run AND jump)
-	//	{
-	//		a3hierarchyPoseLerp(activeHS_fk->animPose, idlePose, movingPose, 1, activeHS_fk->hierarchy->numNodes);	// 1 for now, will always be moving pose
-	//	}
-	//
-	//}
-	//else //lerp between idle and walk/run.
-	//{
-	//	a3hierarchyPoseLerp(activeHS_fk->animPose, idlePose, movingPose, u, activeHS_fk->hierarchy->numNodes);
-	//}
-
 	a3hierarchyPoseCopy(activeHS_fk->animPose, movingPose, activeHS_fk->hierarchy->numNodes);
 
 	// run FK pipeline
 	a3animation_update_fk(activeHS_fk, baseHS, poseGroup);
 
+	//if (firstFrame)
+	{
+		a3i32 jUpLeg = a3hierarchyGetNodeIndex(activeHS_fk->hierarchy, "Oberarm_L");
+		a3i32 jFoot = a3hierarchyGetNodeIndex(activeHS_fk->hierarchy, "Vorderpfote_L");
+		a3_SpatialPose* upLegObj = &activeHS_fk->objectSpace->pose[jUpLeg];
+		a3_SpatialPose* footObj = &activeHS_fk->objectSpace->pose[jFoot];
+		a3vec3 vector;
+		a3real3Diff(vector.v, footObj->transformMat.v3.xyz.v, upLegObj->transformMat.v3.xyz.v);
+		
+		demoMode->character->frontLegMaxLengthSq = a3real3LengthSquared(vector.v);
+
+		jUpLeg = a3hierarchyGetNodeIndex(activeHS_fk->hierarchy, "Oberschenkel_L");
+		jFoot = a3hierarchyGetNodeIndex(activeHS_fk->hierarchy, "Pfote2_L");
+		a3real3Diff(vector.v, footObj->transformMat.v3.xyz.v, upLegObj->transformMat.v3.xyz.v);
+
+		demoMode->character->backLegMaxLengthSq = a3real3LengthSquared(vector.v);
+		firstFrame = false;
+	}
 	// resolve IK state
 	// copy FK to IK
 	a3hierarchyPoseCopy(
