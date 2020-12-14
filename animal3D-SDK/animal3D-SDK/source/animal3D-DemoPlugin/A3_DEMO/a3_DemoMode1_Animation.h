@@ -62,7 +62,7 @@ typedef enum a3_DemoMode1_Animation_InputMode				a3_DemoMode1_Animation_InputMod
 	// maximum unique objects
 	enum a3_DemoMode1_Animation_ObjectMaxCount
 	{
-		animationMaxCount_sceneObject = 16,
+		animationMaxCount_sceneObject = 17,
 		animationMaxCount_projector = 1,
 	};
 
@@ -227,6 +227,11 @@ typedef enum a3_DemoMode1_Animation_InputMode				a3_DemoMode1_Animation_InputMod
 					obj_plane[1],
 					obj_ramp[1],
 					obj_landing[1];
+				a3_DemoSceneObject
+					obj_wolf_effector_FL[1],
+					obj_wolf_effector_FR[1],
+					obj_wolf_constraint_FL[1],
+					obj_wolf_constraint_FR[1];
 			};
 		};
 		union {

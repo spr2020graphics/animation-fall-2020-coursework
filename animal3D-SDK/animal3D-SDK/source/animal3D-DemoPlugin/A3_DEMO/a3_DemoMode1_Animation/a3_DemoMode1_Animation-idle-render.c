@@ -723,6 +723,18 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 			currentDemoProgram = demoState->prog_drawColorUnif;
 			a3shaderProgramActivate(currentDemoProgram->program);
 
+			for (currentSceneObject = demoMode->obj_wolf_effector_FL, endSceneObject = demoMode->obj_wolf_constraint_FR;
+				currentSceneObject <= endSceneObject; ++currentSceneObject)
+			{
+				j = (a3ui32)(currentSceneObject - demoMode->object_scene);
+				modelMat = demoMode->sceneGraphState->objectSpace->pose[j].transformMat;
+				a3real4x4Product(modelViewProjectionMat.m, viewProjectionMat.m, modelMat.m);
+				a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uMVP, 1, modelViewProjectionMat.mm);
+				a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, cyan);
+				a3vertexDrawableActivateAndRender(demoState->draw_node);
+			}
+
+			/*
 			i = (a3ui32)(demoMode->obj_skeleton_neckLookat_ctrl - demoMode->object_scene);
 			modelMat = demoMode->sceneGraphState->objectSpace->pose[i].transformMat;
 			a3real4x4Product(modelViewProjectionMat.m, viewProjectionMat.m, modelMat.m);
@@ -743,6 +755,7 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 			a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uMVP, 1, modelViewProjectionMat.mm);
 			a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, yellow);
 			a3vertexDrawableActivateAndRender(drawable[i]);
+			*/
 
 			// draw skeletal joint orientations
 			if (demoState->displayObjectAxes)
@@ -777,7 +790,7 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 			//modelMat = demoMode->sceneGraphState->objectSpace->pose[j].transformMat;
 			//a3demo_drawModelSimple(modelViewProjectionMat.m, viewProjectionMat.m, modelMat.m, currentDemoProgram);
 		
-			for (currentSceneObject = demoMode->obj_skeleton_ctrl, endSceneObject = demoMode->obj_skeleton;
+			for (currentSceneObject = demoMode->obj_wolf_effector_FL, endSceneObject = demoMode->obj_wolf_constraint_FR;
 				currentSceneObject < endSceneObject;
 				++currentSceneObject)
 			{
