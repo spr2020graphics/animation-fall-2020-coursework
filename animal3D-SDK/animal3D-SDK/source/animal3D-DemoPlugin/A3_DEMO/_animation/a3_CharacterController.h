@@ -56,6 +56,9 @@ struct a3_CharacterController
 
 	// so we can easily access these clips in the controller
 	a3ui32 walkClipIndex, runClipIndex, jumpClipIndex, idleClipIndex;
+
+
+	a3f32 frontLegMaxLengthSq, backLegMaxLengthSq;
 };
 
 // init a character controller

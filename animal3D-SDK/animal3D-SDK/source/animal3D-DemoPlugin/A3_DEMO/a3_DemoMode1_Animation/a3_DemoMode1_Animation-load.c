@@ -327,6 +327,8 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	demoMode->obj_landing->position.z += 0.5f;
 	demoMode->obj_landing->scale.x = 1.0f;
 
+	//demoMode->obj_skeleton->position.z += 3.0f;
+
 	// scene graph state
 	demoMode->sceneGraphState->hierarchy = 0;
 	a3hierarchyStateCreate(demoMode->sceneGraphState, demoMode->sceneGraph);
