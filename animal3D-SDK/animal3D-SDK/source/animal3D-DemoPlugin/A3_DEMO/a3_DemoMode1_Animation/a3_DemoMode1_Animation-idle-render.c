@@ -413,30 +413,33 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 			a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uMV_nrm, 1, modelViewMat.mm);
 			a3shaderUniformSendInt(a3unif_single, currentDemoProgram->uIndex, 1, &j);
 			a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, orange);
-			a3vertexDrawableActivateAndRender(demoState->draw_character_skin);
+			//a3vertexDrawableActivateAndRender(demoState->draw_character_skin);
 			a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, sky);
-			a3vertexDrawableActivateAndRender(demoState->draw_character_skin_alt);
+			//a3vertexDrawableActivateAndRender(demoState->draw_character_skin_alt);
 		}
 
 		i = (j * 2 + 11) % hueCount;
-		currentSceneObject = demoMode->obj_plane;
-
 		currentDemoProgram = demoState->prog_drawPhong;
 		a3shaderProgramActivate(currentDemoProgram->program);
 		a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uP, 1, activeCamera->projectionMat.mm);
 		a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uAtlas, 1, a3mat4_identity.mm);
 
-		a3textureActivate(texture_dm[j], a3tex_unit00);
-		a3textureActivate(texture_dm[j], a3tex_unit01);
-		a3real4x4Product(modelViewMat.m, activeCameraObject->modelMatInv.m, demoMode->sceneGraphState->objectSpace->pose[currentSceneObject->sceneGraphIndex].transformMat.m);
-		a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uMV, 1, modelViewMat.mm);
-		a3demo_quickInvertTranspose_internal(modelViewMat.m);
-		modelViewMat.v3 = a3vec4_zero;
-		a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uMV_nrm, 1, modelViewMat.mm);
-		a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, rgba4[i].v);
-		a3shaderUniformSendInt(a3unif_single, currentDemoProgram->uIndex, 1, &j);
-		a3vertexDrawableActivateAndRender(demoState->draw_plane);
+		for (currentSceneObject = demoMode->obj_plane, endSceneObject = demoMode->obj_landing;
+			currentSceneObject <= endSceneObject; ++currentSceneObject)
+		{
+			a3textureActivate(texture_dm[j], a3tex_unit00);
+			a3textureActivate(texture_dm[j], a3tex_unit01);
+			a3real4x4Product(modelViewMat.m, activeCameraObject->modelMatInv.m, demoMode->sceneGraphState->objectSpace->pose[currentSceneObject->sceneGraphIndex].transformMat.m);
+			a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uMV, 1, modelViewMat.mm);
+			a3demo_quickInvertTranspose_internal(modelViewMat.m);
+			modelViewMat.v3 = a3vec4_zero;
+			a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uMV_nrm, 1, modelViewMat.mm);
+			a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, rgba4[i].v);
+			a3shaderUniformSendInt(a3unif_single, currentDemoProgram->uIndex, 1, &j);
+			a3vertexDrawableActivateAndRender(demoState->draw_plane);
+		}
 
+		/*
 		currentSceneObject = demoMode->obj_ramp;
 
 		currentDemoProgram = demoState->prog_drawPhong;
@@ -472,7 +475,7 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 		a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, rgba4[i].v);
 		a3shaderUniformSendInt(a3unif_single, currentDemoProgram->uIndex, 1, &j);
 		a3vertexDrawableActivateAndRender(demoState->draw_plane);
-
+		*/
 		a3mat4 sphereMat = a3mat4_identity;
 		sphereMat.v3.xyz = demoMode->intersectionPoint;
 		// draw sphere at intersection point
@@ -723,6 +726,7 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 			currentDemoProgram = demoState->prog_drawColorUnif;
 			a3shaderProgramActivate(currentDemoProgram->program);
 
+			// Draw wolf effectors in cyan
 			for (currentSceneObject = demoMode->obj_wolf_effector_FL, endSceneObject = demoMode->obj_wolf_effector_BR;
 				currentSceneObject <= endSceneObject; ++currentSceneObject)
 			{
@@ -734,6 +738,7 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 				a3vertexDrawableActivateAndRender(demoState->draw_node);
 			}
 
+			// Draw wolf constraints in yellow
 			for (currentSceneObject = demoMode->obj_wolf_constraint_FL, endSceneObject = demoMode->obj_wolf_constraint_BR;
 				currentSceneObject <= endSceneObject; ++currentSceneObject)
 			{
@@ -801,6 +806,7 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 			//modelMat = demoMode->sceneGraphState->objectSpace->pose[j].transformMat;
 			//a3demo_drawModelSimple(modelViewProjectionMat.m, viewProjectionMat.m, modelMat.m, currentDemoProgram);
 		
+			// Render axes for all wolf effectors and constraints
 			for (currentSceneObject = demoMode->obj_wolf_effector_FL, endSceneObject = demoMode->obj_wolf_constraint_BR;
 				currentSceneObject < endSceneObject;
 				++currentSceneObject)
@@ -810,6 +816,7 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 				a3demo_drawModelSimple(modelViewProjectionMat.m, viewProjectionMat.m, modelMat.m, currentDemoProgram);
 			}
 
+			// Render axes for planes
 			for (currentSceneObject = demoMode->obj_plane, endSceneObject = demoMode->obj_landing;
 				currentSceneObject < endSceneObject;
 				++currentSceneObject)

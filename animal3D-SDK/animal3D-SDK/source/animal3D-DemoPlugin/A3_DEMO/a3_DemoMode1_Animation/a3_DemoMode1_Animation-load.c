@@ -260,11 +260,11 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 
 		// edit assets as needed
 		// mixamo assets have the wrong base pose; use first key as base and subtract from all
-		//p = 1;
-		//a3hierarchyPoseCopy(hierarchyPoseGroup->hpose, hierarchyPoseGroup->hpose + p, hierarchy->numNodes);
-		//for (; p < hierarchyPoseGroup->hposeCount; ++p)
-		//	a3hierarchyPoseDeconcat(hierarchyPoseGroup->hpose + p, hierarchyPoseGroup->hpose + p,
-		//		hierarchyPoseGroup->hpose, hierarchy->numNodes);
+		p = 1;
+		a3hierarchyPoseCopy(hierarchyPoseGroup->hpose, hierarchyPoseGroup->hpose + p, hierarchy->numNodes);
+		for (; p < hierarchyPoseGroup->hposeCount; ++p)
+			a3hierarchyPoseDeconcat(hierarchyPoseGroup->hpose + p, hierarchyPoseGroup->hpose + p,
+				hierarchyPoseGroup->hpose, hierarchy->numNodes);
 
 		//// furthermore, end joints were removed, so they have no animation data; initialize it as identity
 		//for (j = a3hierarchyGetNodeIndex(hierarchy, "HeadTop_End"), p = 1;
@@ -288,16 +288,6 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		// done
 		a3fileStreamClose(fileStream);
 	}
-
-	//a3_Ray ray[1];
-	//a3_Plane plane[1];
-
-	//a3vec3 origin = { 2, 1, 0 };
-	//a3vec3 dir = { -1, 1, 3 };
-	//
-	//a3vec3 center = { 3, 0, 1 };
-	//a3vec3 norm = { 3, -2, 1 };
-	//a3vec3 bounds = { 3, 3, 1 }; // basically the "localScale" of the plane, a 3x3 square in this instance
 
 
 	// map relevant objects to scene graph
@@ -323,7 +313,6 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	demoMode->obj_wolf_constraint_BR->sceneGraphIndex = a3hierarchyGetNodeIndex(demoMode->sceneGraph, "scene_wolf_con_BR");
 
 	demoMode->obj_plane->scaleMode = 1;
-	//demoMode->obj_plane->position.y += 10.0f;
 	demoMode->obj_plane->scale.x = 4.0f;
 
 
@@ -444,6 +433,8 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		//a3clipTransitionBindAction(demoMode->clipCtrlA->clipPool->clip[j].transitionForward, &a3characterToggleIsJumping);
 
 
+
+		// Construct the blend tree for the character
 		a3hierarchyBlendTreeCreate(demoMode->character->blendTree, 4, true);
 
 		a3hierarchyBlendNodeCreate(demoMode->character->blendTree->blendNodes[0], copyClip); //idle
