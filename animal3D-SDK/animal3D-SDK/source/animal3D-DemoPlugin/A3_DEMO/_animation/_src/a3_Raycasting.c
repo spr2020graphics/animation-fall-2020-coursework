@@ -138,21 +138,25 @@ a3boolean a3raycastGetCollisionBoundedPlane(a3_Ray* ray, a3_Plane* plane, a3bool
 		// diff from origin to point for sq. distance
 		// compare sq. distance with square dot of diff and tangent
 		//printf("Before: %f, %f, %f\n", intersection.x, intersection.y, intersection.z);
-		a3vec4 output = a3vec4_zero;
-		a3real4TransformProduct(output.v, plane->parentObjInv->m, intersection.v);
-		a3vec4 tmp = a3vec4_zero;
 
+		a3vec4 inttmp = intersection;
+
+		a3vec4 output;
+		a3real4TransformProduct(output.v, plane->parentObjInv->m, inttmp.v);
+		a3vec4 ctrdivScale;
 		a3vec3 col;
 		a3real scale = 0.0f;
 		col.x = plane->parentObjInv->m00;
 		col.y = plane->parentObjInv->m01;
 		col.z = plane->parentObjInv->m02;
 		scale = a3real3Length(col.v);
-		a3real3ProductS(tmp.v, plane->center->v, scale);
-		a3real3Add(output.v, tmp.v);
+		a3real3ProductS(ctrdivScale.v, plane->center->v, scale);
+		a3real3Sub(output.v, ctrdivScale.v);
+
+
 		printf("After: %f, %f, %f\n", output.x, output.y, output.z);
-		a3boolean withinX = intersection.x >= (-plane->boundSize->x) && intersection.x <= (plane->boundSize->x);
-		a3boolean withinY = intersection.y >= (-plane->boundSize->x) && intersection.y <= (plane->boundSize->x);
+		a3boolean withinX = output.x >= (-0.5f) && output.x <= (0.5f);
+		a3boolean withinY = output.y >= (-0.5f) && output.y <= (0.5f);
 		printf("%i\n", withinX && withinY);
 		return withinX && withinY;
 	}
