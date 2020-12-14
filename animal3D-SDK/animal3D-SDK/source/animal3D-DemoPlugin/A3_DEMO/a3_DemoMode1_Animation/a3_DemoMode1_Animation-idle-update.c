@@ -645,9 +645,9 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 	}
 
 	//a3vec3 point = a3vec3_zero;
-	a3boolean collisionResult = a3raycastGetCollisionUnboundedPlane(demoMode->ray, demoMode->plane, true, &demoMode->intersectionPoint);
-	a3vec3 coll2Point;
-	a3boolean coll2 = a3raycastGetCollisionBoundedPlane(demoMode->ray, demoMode->plane, true, &coll2Point);
+	//a3boolean collisionResult = a3raycastGetCollisionUnboundedPlane(demoMode->ray, demoMode->plane, true, &demoMode->intersectionPoint);
+	//a3vec3 coll2Point;
+	a3boolean coll2 = a3raycastGetCollisionBoundedPlane(demoMode->ray, demoMode->plane, true, &demoMode->intersectionPoint);
 	//printf("%i\n", collisionResult);
 	//printf("%f, %f, %f\n", demoMode->ray->direction->x, demoMode->ray->direction->y, demoMode->ray->direction->z);
 	//printf("%f, %f, %f\n", demoMode->plane->normal->x, demoMode->plane->normal->y, demoMode->plane->normal->z);
