@@ -723,7 +723,7 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 			currentDemoProgram = demoState->prog_drawColorUnif;
 			a3shaderProgramActivate(currentDemoProgram->program);
 
-			for (currentSceneObject = demoMode->obj_wolf_effector_FL, endSceneObject = demoMode->obj_wolf_constraint_FR;
+			for (currentSceneObject = demoMode->obj_wolf_effector_FL, endSceneObject = demoMode->obj_wolf_effector_BR;
 				currentSceneObject <= endSceneObject; ++currentSceneObject)
 			{
 				j = (a3ui32)(currentSceneObject - demoMode->object_scene);
@@ -731,6 +731,17 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 				a3real4x4Product(modelViewProjectionMat.m, viewProjectionMat.m, modelMat.m);
 				a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uMVP, 1, modelViewProjectionMat.mm);
 				a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, cyan);
+				a3vertexDrawableActivateAndRender(demoState->draw_node);
+			}
+
+			for (currentSceneObject = demoMode->obj_wolf_constraint_FL, endSceneObject = demoMode->obj_wolf_constraint_BR;
+				currentSceneObject <= endSceneObject; ++currentSceneObject)
+			{
+				j = (a3ui32)(currentSceneObject - demoMode->object_scene);
+				modelMat = demoMode->sceneGraphState->objectSpace->pose[j].transformMat;
+				a3real4x4Product(modelViewProjectionMat.m, viewProjectionMat.m, modelMat.m);
+				a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uMVP, 1, modelViewProjectionMat.mm);
+				a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, yellow);
 				a3vertexDrawableActivateAndRender(demoState->draw_node);
 			}
 
@@ -790,7 +801,7 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 			//modelMat = demoMode->sceneGraphState->objectSpace->pose[j].transformMat;
 			//a3demo_drawModelSimple(modelViewProjectionMat.m, viewProjectionMat.m, modelMat.m, currentDemoProgram);
 		
-			for (currentSceneObject = demoMode->obj_wolf_effector_FL, endSceneObject = demoMode->obj_wolf_constraint_FR;
+			for (currentSceneObject = demoMode->obj_wolf_effector_FL, endSceneObject = demoMode->obj_wolf_constraint_BR;
 				currentSceneObject < endSceneObject;
 				++currentSceneObject)
 			{

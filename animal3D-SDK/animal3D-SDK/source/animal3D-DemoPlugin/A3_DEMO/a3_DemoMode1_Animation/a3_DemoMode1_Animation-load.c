@@ -60,10 +60,11 @@ void a3animation_load_resetEffectors(a3_DemoMode1_Animation* demoMode,
 	Vorderpfote = Forepaws
 
 	Oberschenkel = upper leg
-	Unterschenkel = lowe leg
+	Unterschenkel = lower leg
 	
 	These are just rig-specific naming things:
 
+	Rear paws/ankles:
 	Pfote1 = ankle
 	Pfote2 = paw
 	*/
@@ -89,6 +90,26 @@ void a3animation_load_resetEffectors(a3_DemoMode1_Animation* demoMode,
 	sceneObject->scale.x = a3real_third;
 	sceneObject->scaleMode = 1;
 
+	j = a3hierarchyGetNodeIndex(demoMode->hierarchy_skel, "Pfote2_L");	// BL paw
+	sceneObject = demoMode->obj_wolf_effector_BL;
+	a3real4Real4x4Product(controlLocator.v, skeletonToControl.m,
+		hierarchyState->objectSpace->pose[j].transformMat.v3.v);
+	sceneObject->position.x = controlLocator.x;
+	sceneObject->position.y = controlLocator.y + 1.0f;
+	sceneObject->position.z = controlLocator.z + 1.0f;
+	sceneObject->scale.x = a3real_third;
+	sceneObject->scaleMode = 1;
+
+	j = a3hierarchyGetNodeIndex(demoMode->hierarchy_skel, "Pfote2_R");	// BR paw
+	sceneObject = demoMode->obj_wolf_effector_BR;
+	a3real4Real4x4Product(controlLocator.v, skeletonToControl.m,
+		hierarchyState->objectSpace->pose[j].transformMat.v3.v);
+	sceneObject->position.x = controlLocator.x;
+	sceneObject->position.y = controlLocator.y + 1.0f;
+	sceneObject->position.z = controlLocator.z + 1.0f;
+	sceneObject->scale.x = a3real_third;
+	sceneObject->scaleMode = 1;
+
 	// wolf constraints
 	j = a3hierarchyGetNodeIndex(demoMode->hierarchy_skel, "Unterarm_L");	//FL elbow
 	sceneObject = demoMode->obj_wolf_constraint_FL;
@@ -102,6 +123,26 @@ void a3animation_load_resetEffectors(a3_DemoMode1_Animation* demoMode,
 
 	j = a3hierarchyGetNodeIndex(demoMode->hierarchy_skel, "Unterarm_R");	//FR elbow
 	sceneObject = demoMode->obj_wolf_constraint_FR;
+	a3real4Real4x4Product(controlLocator.v, skeletonToControl.m,
+		hierarchyState->objectSpace->pose[j].transformMat.v3.v);
+	sceneObject->position.x = controlLocator.x;
+	sceneObject->position.y = controlLocator.y - a3real_half;
+	sceneObject->position.z = controlLocator.z;
+	sceneObject->scale.x = a3real_third;
+	sceneObject->scaleMode = 1;
+
+	j = a3hierarchyGetNodeIndex(demoMode->hierarchy_skel, "Unterschenkel_L");	//BL elbow
+	sceneObject = demoMode->obj_wolf_constraint_BL;
+	a3real4Real4x4Product(controlLocator.v, skeletonToControl.m,
+		hierarchyState->objectSpace->pose[j].transformMat.v3.v);
+	sceneObject->position.x = controlLocator.x;
+	sceneObject->position.y = controlLocator.y - a3real_half;
+	sceneObject->position.z = controlLocator.z;
+	sceneObject->scale.x = a3real_third;
+	sceneObject->scaleMode = 1;
+
+	j = a3hierarchyGetNodeIndex(demoMode->hierarchy_skel, "Unterschenkel_R");	//BR elbow
+	sceneObject = demoMode->obj_wolf_constraint_BR;
 	a3real4Real4x4Product(controlLocator.v, skeletonToControl.m,
 		hierarchyState->objectSpace->pose[j].transformMat.v3.v);
 	sceneObject->position.x = controlLocator.x;
@@ -201,6 +242,14 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		a3hierarchySetNode(demoMode->sceneGraph, 9, 0, "scene_plane");
 		a3hierarchySetNode(demoMode->sceneGraph, 10, 9, "scene_ramp");
 		a3hierarchySetNode(demoMode->sceneGraph, 11, 9, "scene_landing");
+		a3hierarchySetNode(demoMode->sceneGraph, 12, 4, "scene_wolf_eff_FL");
+		a3hierarchySetNode(demoMode->sceneGraph, 13, 4, "scene_wolf_eff_FR");
+		a3hierarchySetNode(demoMode->sceneGraph, 14, 4, "scene_wolf_eff_BL");
+		a3hierarchySetNode(demoMode->sceneGraph, 15, 4, "scene_wolf_eff_BR");
+		a3hierarchySetNode(demoMode->sceneGraph, 16, 4, "scene_wolf_con_FL");
+		a3hierarchySetNode(demoMode->sceneGraph, 17, 4, "scene_wolf_con_FR");
+		a3hierarchySetNode(demoMode->sceneGraph, 18, 4, "scene_wolf_con_BL");
+		a3hierarchySetNode(demoMode->sceneGraph, 19, 4, "scene_wolf_con_BR");
 
 
 		// load skeletal data from file
@@ -264,6 +313,14 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	demoMode->obj_plane->sceneGraphIndex = a3hierarchyGetNodeIndex(demoMode->sceneGraph, "scene_plane");
 	demoMode->obj_ramp->sceneGraphIndex = a3hierarchyGetNodeIndex(demoMode->sceneGraph, "scene_ramp");
 	demoMode->obj_landing->sceneGraphIndex = a3hierarchyGetNodeIndex(demoMode->sceneGraph, "scene_landing");
+	demoMode->obj_wolf_effector_FL->sceneGraphIndex = a3hierarchyGetNodeIndex(demoMode->sceneGraph, "scene_wolf_eff_FL");
+	demoMode->obj_wolf_effector_FR->sceneGraphIndex = a3hierarchyGetNodeIndex(demoMode->sceneGraph, "scene_wolf_eff_FR");
+	demoMode->obj_wolf_effector_BL->sceneGraphIndex = a3hierarchyGetNodeIndex(demoMode->sceneGraph, "scene_wolf_eff_BL");
+	demoMode->obj_wolf_effector_BR->sceneGraphIndex = a3hierarchyGetNodeIndex(demoMode->sceneGraph, "scene_wolf_eff_BR");
+	demoMode->obj_wolf_constraint_FL->sceneGraphIndex = a3hierarchyGetNodeIndex(demoMode->sceneGraph, "scene_wolf_con_FL");
+	demoMode->obj_wolf_constraint_FR->sceneGraphIndex = a3hierarchyGetNodeIndex(demoMode->sceneGraph, "scene_wolf_con_FR");
+	demoMode->obj_wolf_constraint_BL->sceneGraphIndex = a3hierarchyGetNodeIndex(demoMode->sceneGraph, "scene_wolf_con_BL");
+	demoMode->obj_wolf_constraint_BR->sceneGraphIndex = a3hierarchyGetNodeIndex(demoMode->sceneGraph, "scene_wolf_con_BR");
 
 	demoMode->obj_plane->scaleMode = 1;
 	//demoMode->obj_plane->position.y += 10.0f;
