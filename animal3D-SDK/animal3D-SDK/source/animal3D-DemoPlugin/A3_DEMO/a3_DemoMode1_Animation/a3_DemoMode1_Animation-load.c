@@ -313,7 +313,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	demoMode->obj_wolf_constraint_BR->sceneGraphIndex = a3hierarchyGetNodeIndex(demoMode->sceneGraph, "scene_wolf_con_BR");
 
 	demoMode->obj_plane->scaleMode = 1;
-	demoMode->obj_plane->scale.x = 4.0f;
+	demoMode->obj_plane->scale.x = 8.0f;
 
 
 	//demoMode->obj_ramp->scaleMode = 1;
@@ -327,12 +327,12 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	demoMode->obj_landing->position.z += 0.5f;
 	demoMode->obj_landing->scale.x = 1.0f;
 
-	//demoMode->obj_skeleton->position.z += 3.0f;
-
 	// scene graph state
 	demoMode->sceneGraphState->hierarchy = 0;
 	a3hierarchyStateCreate(demoMode->sceneGraphState, demoMode->sceneGraph);
 
+
+	demoMode->obj_skeleton_ctrl->position.z += 4.0f; //+3
 	/*
 	* WOLF CLIPS
 	* 
@@ -521,13 +521,46 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		}
 	}
 
-	a3_DemoSceneObject* planeObj = demoMode->obj_landing;
-	//demoMode->sceneGraphState->objectSpace->pose[demoMode->obj_camera_main->sceneGraphIndex].transformMat.v1;
-	a3createRay(demoMode->ray, &demoMode->sceneGraphState->objectSpace->pose[demoMode->obj_camera_main->sceneGraphIndex].transformMat.v3.xyz, &demoMode->sceneGraphState->objectSpace->pose[demoMode->obj_camera_main->sceneGraphIndex].transformMat.v2.xyz);
-	//a3ui32 parentInd = demoMode->sceneGraphState->hierarchy->nodes[planeObj->sceneGraphIndex].parentIndex;
-	a3createPlane(demoMode->plane, &demoMode->sceneGraphState->objectSpace->pose[planeObj->sceneGraphIndex].transformMat, &demoMode->sceneGraphState->objectSpaceInv->pose[planeObj->sceneGraphIndex].transformMat);
-	demoMode->plane->boundSize = &planeObj->scale;
-	demoMode->intersectionPoint = a3vec3_zero;
+
+	
+
+	a3_HierarchyState* state = demoMode->hierarchyState_skel_ik;
+
+	demoMode->rayDirection.x = 0;
+	demoMode->rayDirection.y = 0;
+	demoMode->rayDirection.z = -1;
+	a3i32 jFoot = a3hierarchyGetNodeIndex(hierarchy, "Vorderpfote_L");
+	a3createRay(&demoMode->ray[0], &state->objectSpace->pose[jFoot].transformMat.v3.xyz, &demoMode->rayDirection);
+	jFoot = a3hierarchyGetNodeIndex(hierarchy, "Vorderpfote_R");
+	a3createRay(&demoMode->ray[1], &state->objectSpace->pose[jFoot].transformMat.v3.xyz, &demoMode->rayDirection);
+	jFoot = a3hierarchyGetNodeIndex(hierarchy, "Pfote2_L");
+	a3createRay(&demoMode->ray[2], &state->objectSpace->pose[jFoot].transformMat.v3.xyz, &demoMode->rayDirection);
+	jFoot = a3hierarchyGetNodeIndex(hierarchy, "Pfote2_R");
+	a3createRay(&demoMode->ray[3], &state->objectSpace->pose[jFoot].transformMat.v3.xyz, &demoMode->rayDirection);
+
+
+	a3_DemoSceneObject* planeObj = demoMode->obj_plane;
+	a3createPlane(&demoMode->plane[0], &demoMode->sceneGraphState->objectSpace->pose[planeObj->sceneGraphIndex].transformMat, &demoMode->sceneGraphState->objectSpaceInv->pose[planeObj->sceneGraphIndex].transformMat);
+	demoMode->plane[0].boundSize = &planeObj->scale;
+
+	planeObj = demoMode->obj_ramp;
+	a3createPlane(&demoMode->plane[1], &demoMode->sceneGraphState->objectSpace->pose[planeObj->sceneGraphIndex].transformMat, &demoMode->sceneGraphState->objectSpaceInv->pose[planeObj->sceneGraphIndex].transformMat);
+	demoMode->plane[1].boundSize = &planeObj->scale;
+
+	planeObj = demoMode->obj_landing;
+	a3createPlane(&demoMode->plane[2], &demoMode->sceneGraphState->objectSpace->pose[planeObj->sceneGraphIndex].transformMat, &demoMode->sceneGraphState->objectSpaceInv->pose[planeObj->sceneGraphIndex].transformMat);
+	demoMode->plane[2].boundSize = &planeObj->scale;
+	
+	demoMode->intersectionPoint[0] = a3vec3_zero;
+	demoMode->intersectionPoint[1] = a3vec3_zero;
+	demoMode->intersectionPoint[2] = a3vec3_zero;
+	demoMode->intersectionPoint[3] = a3vec3_zero;
+
+	demoMode->raycastPositions = calloc(4, sizeof(a3vec3*)); //4 feet, 3 raycasts
+	for (int i = 0; i < 4; i++)
+	{
+		demoMode->raycastPositions[i] = calloc(3, sizeof(a3vec3));
+	}
 }
 
 

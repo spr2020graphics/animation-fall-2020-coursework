@@ -496,6 +496,31 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 	}
 }
 a3boolean firstFrame = true;
+
+void updateRaycasts(a3_DemoMode1_Animation* demoMode, a3_HierarchyState* state)
+{
+	a3_Ray negatedRay;
+	a3vec3 negatedOrigin;
+	for (int i = 0; i < 4; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+
+			a3real3GetNegative(negatedOrigin.v, demoMode->ray[i].origin->v);
+			a3createRay(&negatedRay, &negatedOrigin, demoMode->ray[i].direction);
+			a3raycastGetCollisionBoundedPlane(&negatedRay, demoMode->plane + j, false, &(demoMode->raycastPositions[i][j]));
+			if (i == 0 && j == 0)
+			{
+				a3vec3 orig = *negatedRay.origin;
+				orig.z += demoMode->obj_skeleton_ctrl->position.z;
+				a3vec3 pos = a3vec3_zero;
+				a3real3Sum(pos.v, orig.v, negatedRay.direction->v);
+				demoMode->intersectionPoint[0] = pos;
+			}
+		}
+	}
+}
+
 void a3animation_update_animation(a3_DemoMode1_Animation* demoMode, a3f64 const dt,
 	a3boolean const updateIK)
 {
@@ -535,7 +560,7 @@ void a3animation_update_animation(a3_DemoMode1_Animation* demoMode, a3f64 const 
 	// run FK pipeline
 	a3animation_update_fk(activeHS_fk, baseHS, poseGroup);
 
-	//if (firstFrame)
+	if (firstFrame)
 	{
 		a3i32 jUpLeg = a3hierarchyGetNodeIndex(activeHS_fk->hierarchy, "Oberarm_L");
 		a3i32 jFoot = a3hierarchyGetNodeIndex(activeHS_fk->hierarchy, "Vorderpfote_L");
@@ -562,11 +587,13 @@ void a3animation_update_animation(a3_DemoMode1_Animation* demoMode, a3f64 const 
 		activeHS_ik->hierarchy->numNodes);
 	// run FK
 	a3animation_update_fk(activeHS_ik, baseHS, poseGroup);
-	//if (updateIK)
-	if (false)
+	if (updateIK)
+	//if (false)
 	{
 		// invert object-space
 		a3hierarchyStateUpdateObjectInverse(activeHS_ik);
+
+		updateRaycasts(demoMode, activeHS_ik);
 		// run solvers
 		//a3animation_update_applyEffectors(demoMode, activeHS_ik, baseHS, poseGroup);
 		// run full IK pipeline (if not resolving with effectors)
@@ -652,7 +679,7 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 	//a3vec3 point = a3vec3_zero;
 	//a3boolean collisionResult = a3raycastGetCollisionUnboundedPlane(demoMode->ray, demoMode->plane, true, &demoMode->intersectionPoint);
 	//a3vec3 coll2Point;
-	a3boolean coll2 = a3raycastGetCollisionBoundedPlane(demoMode->ray, demoMode->plane, true, &demoMode->intersectionPoint);
+	a3boolean coll2 = a3raycastGetCollisionBoundedPlane(demoMode->ray, demoMode->plane, true, &(demoMode->intersectionPoint[0]));
 	//printf("%i\n", collisionResult);
 	//printf("%f, %f, %f\n", demoMode->ray->direction->x, demoMode->ray->direction->y, demoMode->ray->direction->z);
 	//printf("%f, %f, %f\n", demoMode->plane->normal->x, demoMode->plane->normal->y, demoMode->plane->normal->z);

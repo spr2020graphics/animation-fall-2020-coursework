@@ -45,7 +45,7 @@ inline a3ui32 a3characterControllerApplyInput(a3_CharacterController* controller
 	a3vec3 tempVel;
 	a3real3QuotientS(tempVel.v, a3real3Diff(tempVel.v, tempPos.v, controller->object->position.v), dt);
 
-	controller->currentVelocity = a3real3Length(tempVel.v);
+	controller->currentVelocity = a3real2Length(tempVel.v);
 
 	controller->object->position.x = +(position->x);
 	controller->object->position.y = +(position->y);

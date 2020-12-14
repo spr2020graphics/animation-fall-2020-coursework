@@ -477,7 +477,7 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 		a3vertexDrawableActivateAndRender(demoState->draw_plane);
 		*/
 		a3mat4 sphereMat = a3mat4_identity;
-		sphereMat.v3.xyz = demoMode->intersectionPoint;
+		sphereMat.v3.xyz = demoMode->intersectionPoint[0];
 		// draw sphere at intersection point
 		a3real4x4Product(modelViewMat.m, activeCameraObject->modelMatInv.m, sphereMat.m);
 		a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uMV, 1, modelViewMat.mm);
