@@ -329,9 +329,35 @@ void updateBackIK(a3_DemoMode1_Animation* demoMode, a3_HierarchyState* activeHS,
 	a3real4 ctrlLoc_eff, a3real4 ctrlLoc_con, a3real4 ctrlLoc_base, a3mat4* pTrans_toe, a3mat4* pTrans_paw, a3mat4* pTrans_elbow, a3mat4* pTrans_base,
 	a3ui32 j_toe, a3ui32 j_paw, a3ui32 j_elbow, a3ui32 j_base)
 {
-	// solve ankle independently, use ik_solve_single
+	a3mat4 jTrans_base = *pTrans_base;
+	a3mat4 jTrans_elbow = *pTrans_elbow;
+	a3mat4 jTrans_paw = *pTrans_paw;
+	a3mat4 jTrans_toe = *pTrans_toe;
+
+	a3vec3 pawToToe;
+	a3real3Diff(pawToToe.v, jTrans_paw.v3.xyz.v, jTrans_toe.v3.xyz.v);
+
+	// solve ankle and toe independently, assigning toe location directly
+	jTrans_toe.v3.xyz.x = ctrlLoc_eff[0];
+	jTrans_toe.v3.xyz.y = ctrlLoc_eff[1];
+	jTrans_toe.v3.xyz.z = ctrlLoc_eff[2];
+
+	a3real3Sum(jTrans_paw.v3.xyz.v, jTrans_toe.v3.xyz.v, pawToToe.v);
 
 	// use updateFrontIK using base, constraint joint, ankle as effector
+	updateFrontIK(demoMode, activeHS, baseHS, poseGroup,
+		jTrans_paw.v3.v, ctrlLoc_con, ctrlLoc_base, &jTrans_paw, &jTrans_elbow, &jTrans_base,
+		j_paw, j_elbow, j_base);
+
+	activeHS->objectSpace->pose[j_base].transformMat = jTrans_base;
+	activeHS->objectSpace->pose[j_elbow].transformMat = jTrans_elbow;
+	activeHS->objectSpace->pose[j_paw].transformMat = jTrans_paw;
+	activeHS->objectSpace->pose[j_toe].transformMat = jTrans_toe;
+
+	a3_animation_updateIK_single(activeHS, baseHS, j_base, &jTrans_base);
+	a3_animation_updateIK_single(activeHS, baseHS, j_elbow, &jTrans_elbow);
+	a3_animation_updateIK_single(activeHS, baseHS, j_paw, &jTrans_paw);
+	a3_animation_updateIK_single(activeHS, baseHS, j_toe, &jTrans_toe);
 }
 
 void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
@@ -480,6 +506,18 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 					updateFrontIK(demoMode, activeHS, baseHS, poseGroup, controlLocator_eff_FR.v,
 						controlLocator_con_FR.v, controlLocator_base_FR.v, &jTrans_paw_FR, &jTrans_elbow_FR,
 						&jTrans_base_FR, j_paw_FR, j_elbow_FR, j_base_FR);
+				}
+				if (i == 2)
+				{
+					updateBackIK(demoMode, activeHS, baseHS, poseGroup, controlLocator_eff_BL.v,
+						controlLocator_con_BL.v, controlLocator_base_BL.v, &jTrans_toe_BL, &jTrans_paw_BL, &jTrans_elbow_BL,
+						&jTrans_base_BL, j_toe_BL, j_paw_BL, j_elbow_BL, j_base_BL);
+				}
+				if (i == 3)
+				{
+					updateBackIK(demoMode, activeHS, baseHS, poseGroup, controlLocator_eff_BR.v,
+						controlLocator_con_BR.v, controlLocator_base_BR.v, &jTrans_toe_BR, &jTrans_paw_BR, &jTrans_elbow_BR,
+						&jTrans_base_BR, j_toe_BR, j_paw_BR, j_elbow_BR, j_base_BR);
 				}
 			}
 		}
