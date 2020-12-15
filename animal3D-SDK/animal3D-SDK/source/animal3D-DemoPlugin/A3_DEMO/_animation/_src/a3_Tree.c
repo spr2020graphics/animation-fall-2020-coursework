@@ -1,3 +1,8 @@
+/*
+	Animation Framework Addons by Scott Dagen and Cameron Schneider
+	a3_Tree.c: A general-purpose tree that stores integers. Useful as a backing structure for another array.
+*/
+
 #include "..\a3_Tree.h"
 #include <stdlib.h>
 
