@@ -499,41 +499,50 @@ a3boolean firstFrame = true;
 
 void updateRaycasts(a3_DemoMode1_Animation* demoMode, a3_HierarchyState* state)
 {
-	a3_Ray negatedRay;
-	a3vec3 negatedOrigin;
-
+	a3_Ray* ray = calloc(1, sizeof(a3_Ray));
+	a3vec3 newOrigin = a3vec3_zero;
 	a3vec3 raycastOutput;
 	for (int i = 0; i < 4; i++)
 	{
 		for (int j = 0; j < 3; j++)
 		{
-
-			a3real3GetNegative(negatedOrigin.v, demoMode->ray[i].origin->v);
-			a3createRay(&negatedRay, &negatedOrigin, demoMode->ray[i].direction);
+			a3real3Sum(newOrigin.v, demoMode->ray[i].origin->v, demoMode->obj_skeleton_ctrl->position.v);
+			a3createRay(ray, &newOrigin, demoMode->ray[i].direction);
+			//a3real3GetNegative(negatedOrigin.v, demoMode->ray[i].origin->v);
 			demoMode->raycastHits[i][j] = false;
 			//if we've collided with the plane
-			if (a3raycastGetCollisionBoundedPlane(&negatedRay, demoMode->plane + j, false, &raycastOutput))
+			if (a3raycastGetCollisionBoundedPlane(ray, demoMode->plane + j, false, &raycastOutput))
 			{
 				demoMode->raycastPositions[i][j] = raycastOutput;
 				demoMode->raycastHits[i][j] = true;
+				demoMode->lastHitPositions[i] = raycastOutput;
 			}
 			if (i == 0 && j == 0)
 			{
-				a3vec3 orig = *negatedRay.origin;
-				orig.z += demoMode->obj_skeleton_ctrl->position.z;
-				a3vec3 pos = a3vec3_zero;
-				a3real3Sum(pos.v, orig.v, negatedRay.direction->v);
+				a3vec3 orig = *ray->origin;
+				a3vec3 pos = orig;
+				a3real3Sum(pos.v, orig.v, demoMode->ray[i].direction->v);
 				demoMode->intersectionPoint[0] = pos;
 				a3f32 tmp = pos.y;
-				demoMode->obj_wolf_effector_FL->position = pos;
+				
 			}
 		}
 	}
 	for (int i = 0; i < 4; i++)
 	{
+		a3boolean foundFloor = false;
 		for (int j = 0; j < 3; j++)
 		{
-
+			if (demoMode->raycastHits[i][j]) //one of the raycasts hit the floor, no need to set effector.
+			{
+				foundFloor = true;
+			}
+		}
+		if (!foundFloor)
+		{
+			a3vec3 newPt = a3vec3_zero;
+			a3real3Diff(newPt.v, demoMode->lastHitPositions[i].v, demoMode->obj_skeleton_ctrl->position.v);
+			demoMode->obj_wolf_effector_FL->position = newPt;
 		}
 	}
 }
@@ -696,7 +705,7 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 	//a3vec3 point = a3vec3_zero;
 	//a3boolean collisionResult = a3raycastGetCollisionUnboundedPlane(demoMode->ray, demoMode->plane, true, &demoMode->intersectionPoint);
 	//a3vec3 coll2Point;
-	a3boolean coll2 = a3raycastGetCollisionBoundedPlane(demoMode->ray, demoMode->plane, true, &(demoMode->intersectionPoint[0]));
+	//a3boolean coll2 = a3raycastGetCollisionBoundedPlane(demoMode->ray, demoMode->plane, true, &(demoMode->intersectionPoint[0]));
 	//printf("%i\n", collisionResult);
 	//printf("%f, %f, %f\n", demoMode->ray->direction->x, demoMode->ray->direction->y, demoMode->ray->direction->z);
 	//printf("%f, %f, %f\n", demoMode->plane->normal->x, demoMode->plane->normal->y, demoMode->plane->normal->z);

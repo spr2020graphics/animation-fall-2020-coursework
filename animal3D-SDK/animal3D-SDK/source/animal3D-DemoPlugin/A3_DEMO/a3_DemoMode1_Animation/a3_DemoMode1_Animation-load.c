@@ -75,8 +75,8 @@ void a3animation_load_resetEffectors(a3_DemoMode1_Animation* demoMode,
 	a3real4Real4x4Product(controlLocator.v, skeletonToControl.m,
 		hierarchyState->objectSpace->pose[j].transformMat.v3.v);
 	sceneObject->position.x = controlLocator.x;
-	sceneObject->position.y = controlLocator.y + 1.0f;
-	sceneObject->position.z = controlLocator.z + 1.0f;
+	sceneObject->position.y = controlLocator.y;
+	sceneObject->position.z = controlLocator.z;
 	sceneObject->scale.x = a3real_third;
 	sceneObject->scaleMode = 1;
 
@@ -558,6 +558,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 
 	demoMode->raycastPositions = calloc(4, sizeof(a3vec3*)); //4 feet, 3 raycasts
 	demoMode->raycastHits = calloc(4, sizeof(a3boolean*));
+	demoMode->lastHitPositions = calloc(4, sizeof(a3vec3));
 	for (int i = 0; i < 4; i++)
 	{
 		demoMode->raycastPositions[i] = calloc(3, sizeof(a3vec3));
