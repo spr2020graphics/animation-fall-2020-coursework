@@ -354,9 +354,9 @@ void updateBackIK(a3_DemoMode1_Animation* demoMode, a3_HierarchyState* activeHS,
 	activeHS->objectSpace->pose[j_paw].transformMat = jTrans_paw;
 	activeHS->objectSpace->pose[j_toe].transformMat = jTrans_toe;
 
-	a3_animation_updateIK_single(activeHS, baseHS, j_base, &jTrans_base);
-	a3_animation_updateIK_single(activeHS, baseHS, j_elbow, &jTrans_elbow);
-	a3_animation_updateIK_single(activeHS, baseHS, j_paw, &jTrans_paw);
+	//a3_animation_updateIK_single(activeHS, baseHS, j_base, &jTrans_base);
+	//a3_animation_updateIK_single(activeHS, baseHS, j_elbow, &jTrans_elbow);
+	//a3_animation_updateIK_single(activeHS, baseHS, j_paw, &jTrans_paw);
 	a3_animation_updateIK_single(activeHS, baseHS, j_toe, &jTrans_toe);
 }
 
@@ -509,15 +509,15 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 				}
 				if (i == 2)
 				{
-					updateBackIK(demoMode, activeHS, baseHS, poseGroup, controlLocator_eff_BL.v,
-						controlLocator_con_BL.v, controlLocator_base_BL.v, &jTrans_toe_BL, &jTrans_paw_BL, &jTrans_elbow_BL,
-						&jTrans_base_BL, j_toe_BL, j_paw_BL, j_elbow_BL, j_base_BL);
+					//updateBackIK(demoMode, activeHS, baseHS, poseGroup, controlLocator_eff_BL.v,
+					//	controlLocator_con_BL.v, controlLocator_base_BL.v, &jTrans_toe_BL, &jTrans_paw_BL, &jTrans_elbow_BL,
+					//	&jTrans_base_BL, j_toe_BL, j_paw_BL, j_elbow_BL, j_base_BL);
 				}
 				if (i == 3)
 				{
-					updateBackIK(demoMode, activeHS, baseHS, poseGroup, controlLocator_eff_BR.v,
-						controlLocator_con_BR.v, controlLocator_base_BR.v, &jTrans_toe_BR, &jTrans_paw_BR, &jTrans_elbow_BR,
-						&jTrans_base_BR, j_toe_BR, j_paw_BR, j_elbow_BR, j_base_BR);
+					//updateBackIK(demoMode, activeHS, baseHS, poseGroup, controlLocator_eff_BR.v,
+					//	controlLocator_con_BR.v, controlLocator_base_BR.v, &jTrans_toe_BR, &jTrans_paw_BR, &jTrans_elbow_BR,
+					//	&jTrans_base_BR, j_toe_BR, j_paw_BR, j_elbow_BR, j_base_BR);
 				}
 			}
 		}
@@ -528,6 +528,7 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 		jTrans_base_FR = activeHS->objectSpace->pose[j_base_FR].transformMat;
 
 		a3f32 maxFrontShoulder = 0;
+		a3f32 maxBackShoulder = 0;
 		a3vec3 dist = a3vec3_zero;
 
 		a3real3Diff(dist.v, controlLocator_eff_FL.xyz.v, jTrans_base_FL.v3.xyz.v);
@@ -535,14 +536,29 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 		a3real3Diff(dist.v, controlLocator_eff_FR.xyz.v, jTrans_base_FR.v3.xyz.v);
 		maxFrontShoulder = max(maxFrontShoulder, a3real3Length(dist.v));
 		a3f32 propDist = a3sqrt(demoMode->character->frontLegMaxLengthSq);
-		if (maxFrontShoulder > propDist * 1.2f)
+		//if (maxFrontShoulder > propDist * 1.2f)
+		//{
+		//	a3f32 diff = maxFrontShoulder - (propDist * 1.2f);
+		//	demoMode->obj_skeleton_ctrl->position.z -= diff;
+		//}
+		//else if (maxFrontShoulder < propDist / 1.2f)
+		//{
+		//	a3f32 diff = (propDist / 1.2f) - maxFrontShoulder;
+		//	demoMode->obj_skeleton_ctrl->position.z += diff;
+		//}
+		a3real3Diff(dist.v, controlLocator_eff_BL.xyz.v, jTrans_base_BL.v3.xyz.v);
+		maxBackShoulder = max(maxBackShoulder, a3real3Length(dist.v));
+		a3real3Diff(dist.v, controlLocator_eff_BR.xyz.v, jTrans_base_BR.v3.xyz.v);
+		maxBackShoulder = max(maxBackShoulder, a3real3Length(dist.v));
+		propDist = a3sqrt(demoMode->character->backLegMaxLengthSq);
+		if (maxBackShoulder > propDist * 1.2f)
 		{
-			a3f32 diff = maxFrontShoulder - (propDist * 1.2f);
+			a3f32 diff = maxBackShoulder - (propDist * 1.2f);
 			demoMode->obj_skeleton_ctrl->position.z -= diff;
 		}
-		else if (maxFrontShoulder < propDist / 1.2f)
+		else if (maxBackShoulder < propDist / 1.2f)
 		{
-			a3f32 diff = (propDist / 1.2f) - maxFrontShoulder;
+			a3f32 diff = (propDist / 1.2f) - maxBackShoulder;
 			demoMode->obj_skeleton_ctrl->position.z += diff;
 		}
 		
@@ -649,17 +665,32 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 		if (firstFrame)
 		{
 			a3i32 jUpLeg = a3hierarchyGetNodeIndex(activeHS_fk->hierarchy, "Oberarm_L");
+			a3i32 jDownLeg = a3hierarchyGetNodeIndex(activeHS_fk->hierarchy, "Unterarm_L");
 			a3i32 jFoot = a3hierarchyGetNodeIndex(activeHS_fk->hierarchy, "Vorderpfote_L");
 			a3_SpatialPose* upLegObj = &activeHS_fk->objectSpace->pose[jUpLeg];
+			a3_SpatialPose* downLegObj = &activeHS_fk->objectSpace->pose[jDownLeg];
 			a3_SpatialPose* footObj = &activeHS_fk->objectSpace->pose[jFoot];
-			a3vec3 vector;
-			a3real3Diff(vector.v, footObj->transformMat.v3.xyz.v, upLegObj->transformMat.v3.xyz.v);
+			a3vec3 vector, v1, v2, v3, v4;
+			a3real3Diff(v1.v, footObj->transformMat.v3.xyz.v, downLegObj->transformMat.v3.xyz.v);
+			a3real3Diff(v2.v, downLegObj->transformMat.v3.xyz.v, upLegObj->transformMat.v3.xyz.v);
+			a3real3Sum(vector.v, v1.v, v2.v);
 
 			demoMode->character->frontLegMaxLengthSq = a3real3LengthSquared(vector.v);
 
 			jUpLeg = a3hierarchyGetNodeIndex(activeHS_fk->hierarchy, "Oberschenkel_L");
-			jFoot = a3hierarchyGetNodeIndex(activeHS_fk->hierarchy, "Pfote2_L");
-			a3real3Diff(vector.v, footObj->transformMat.v3.xyz.v, upLegObj->transformMat.v3.xyz.v);
+			jDownLeg = a3hierarchyGetNodeIndex(activeHS_fk->hierarchy, "Unterschenkel_L");
+			jFoot = a3hierarchyGetNodeIndex(activeHS_fk->hierarchy, "Vorderpfote_L");
+			a3i32 jToe = a3hierarchyGetNodeIndex(activeHS_fk->hierarchy, "Pfote2_L");
+
+			upLegObj = &activeHS_fk->objectSpace->pose[jUpLeg];
+			downLegObj = &activeHS_fk->objectSpace->pose[jDownLeg];
+			footObj = &activeHS_fk->objectSpace->pose[jFoot];
+			a3_SpatialPose* toeObj = &activeHS_fk->objectSpace->pose[jToe];
+			a3real3Diff(v1.v, footObj->transformMat.v3.xyz.v, downLegObj->transformMat.v3.xyz.v);
+			a3real3Diff(v2.v, downLegObj->transformMat.v3.xyz.v, upLegObj->transformMat.v3.xyz.v);
+			a3real3Diff(v3.v, toeObj->transformMat.v3.xyz.v, footObj->transformMat.v3.xyz.v);
+			a3real3Sum(v4.v, v1.v, v2.v);
+			a3real3Sum(vector.v, v3.v, v4.v);
 
 			demoMode->character->backLegMaxLengthSq = a3real3LengthSquared(vector.v);
 			firstFrame = false;
