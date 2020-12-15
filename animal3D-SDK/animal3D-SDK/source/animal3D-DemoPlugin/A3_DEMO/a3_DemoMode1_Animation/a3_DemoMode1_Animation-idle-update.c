@@ -325,6 +325,15 @@ void updateFrontIK(a3_DemoMode1_Animation* demoMode, a3_HierarchyState* activeHS
 	a3_animation_updateIK_single(activeHS, baseHS, j_paw, &jTrans_paw);
 }
 
+void updateBackIK(a3_DemoMode1_Animation* demoMode, a3_HierarchyState* activeHS, a3_HierarchyState const* baseHS, a3_HierarchyPoseGroup const* poseGroup,
+	a3real4 ctrlLoc_eff, a3real4 ctrlLoc_con, a3real4 ctrlLoc_base, a3mat4* pTrans_toe, a3mat4* pTrans_paw, a3mat4* pTrans_elbow, a3mat4* pTrans_base,
+	a3ui32 j_toe, a3ui32 j_paw, a3ui32 j_elbow, a3ui32 j_base)
+{
+	// solve ankle independently, use ik_solve_single
+
+	// use updateFrontIK using base, constraint joint, ankle as effector
+}
+
 void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 	a3_HierarchyState* activeHS, a3_HierarchyState const* baseHS, a3_HierarchyPoseGroup const* poseGroup)
 {
