@@ -46,7 +46,7 @@ inline a3ui32 a3characterControllerApplyInput(a3_CharacterController* controller
 	a3real3QuotientS(tempVel.v, a3real3Diff(tempVel.v, tempPos.v, controller->object->position.v), dt);
 
 	controller->currentVelocity = a3real2Length(tempVel.v);
-	controller->currentDir = position->y > 0 ? -1 : 1;
+	controller->currentDir = tempVel.y > 0 ? -1 : 1;
 
 	controller->object->position.x = +(position->x);
 	controller->object->position.y = +(position->y);
@@ -75,7 +75,7 @@ inline a3ui32 a3characterControllerUpdate(a3_CharacterController* controller, a3
 		a3clipControllerUpdate(&controller->animControllers[0], dt);
 		a3clipControllerUpdate(&controller->animControllers[1], walkDT);
 		a3clipControllerUpdate(&controller->animControllers[2], runDT);
-		a3clipControllerUpdate(&controller->animControllers[3], dt);
+		a3clipControllerUpdate(&controller->animControllers[3], 0);
 
 		//if (*controller->jumpTrigger == 1.0f)
 		//{
