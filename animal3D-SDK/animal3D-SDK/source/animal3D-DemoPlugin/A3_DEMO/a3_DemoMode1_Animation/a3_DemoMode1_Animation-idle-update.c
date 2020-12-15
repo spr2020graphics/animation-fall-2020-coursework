@@ -516,15 +516,11 @@ void updateRaycasts(a3_DemoMode1_Animation* demoMode, a3_HierarchyState* state)
 				demoMode->raycastPositions[i][j] = raycastOutput;
 				demoMode->raycastHits[i][j] = true;
 				demoMode->lastHitPositions[i] = raycastOutput;
-			}
-			if (i == 0 && j == 0)
-			{
 				a3vec3 orig = *ray->origin;
 				a3vec3 pos = orig;
 				a3real3Sum(pos.v, orig.v, demoMode->ray[i].direction->v);
-				demoMode->intersectionPoint[0] = pos;
+				demoMode->intersectionPoint[i] = pos;
 				a3f32 tmp = pos.y;
-				
 			}
 		}
 	}
@@ -538,11 +534,11 @@ void updateRaycasts(a3_DemoMode1_Animation* demoMode, a3_HierarchyState* state)
 				foundFloor = true;
 			}
 		}
-		if (!foundFloor)
+		//if (!foundFloor)
 		{
 			a3vec3 newPt = a3vec3_zero;
 			a3real3Diff(newPt.v, demoMode->lastHitPositions[i].v, demoMode->obj_skeleton_ctrl->position.v);
-			demoMode->obj_wolf_effector_FL->position = newPt;
+			(demoMode->obj_wolf_effector_FL + i)->position = newPt;
 		}
 	}
 }
