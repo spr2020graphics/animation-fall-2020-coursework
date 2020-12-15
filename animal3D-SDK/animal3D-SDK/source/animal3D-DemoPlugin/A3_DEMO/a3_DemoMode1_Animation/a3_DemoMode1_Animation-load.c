@@ -239,6 +239,8 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		a3hierarchySetNode(demoMode->sceneGraph, 6, 4, "scene_skeleton_wristEff_r_ctrl");
 		a3hierarchySetNode(demoMode->sceneGraph, 7, 4, "scene_skeleton_wristCon_r_ctrl");
 		a3hierarchySetNode(demoMode->sceneGraph, 8, 4, "scene_skeleton");
+
+		// All new scene objects
 		a3hierarchySetNode(demoMode->sceneGraph, 9, 0, "scene_plane");
 		a3hierarchySetNode(demoMode->sceneGraph, 10, 9, "scene_ramp");
 		a3hierarchySetNode(demoMode->sceneGraph, 11, 9, "scene_landing");
@@ -260,6 +262,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 
 		// edit assets as needed
 		// mixamo assets have the wrong base pose; use first key as base and subtract from all
+		// Wolf asset also has the wrong base pose
 		p = 1;
 		a3hierarchyPoseCopy(hierarchyPoseGroup->hpose, hierarchyPoseGroup->hpose + p, hierarchy->numNodes);
 		for (; p < hierarchyPoseGroup->hposeCount; ++p)
@@ -312,6 +315,8 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	demoMode->obj_wolf_constraint_BL->sceneGraphIndex = a3hierarchyGetNodeIndex(demoMode->sceneGraph, "scene_wolf_con_BL");
 	demoMode->obj_wolf_constraint_BR->sceneGraphIndex = a3hierarchyGetNodeIndex(demoMode->sceneGraph, "scene_wolf_con_BR");
 
+	// Set up default plane transforms
+
 	demoMode->obj_plane->scaleMode = 1;
 	demoMode->obj_plane->scale.x = 8.0f;
 
@@ -332,7 +337,10 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	a3hierarchyStateCreate(demoMode->sceneGraphState, demoMode->sceneGraph);
 
 
+	// Shift skeleton up 4 units
 	demoMode->obj_skeleton_ctrl->position.z += 4.0f; //+3
+
+
 	/*
 	* WOLF CLIPS
 	* 
@@ -457,6 +465,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		a3hierarchyBlendNodeAddControl(demoMode->character->blendTree->blendNodes[3], 0, &demoMode->character->triLerpVelocity);
 		a3hierarchyBlendNodeAddControl(demoMode->character->blendTree->blendNodes[3], 1, &demoMode->character->crouchVal);
 
+		// Construct the hierarchical structure of the tree, with the TriLerp node as the root, and the others feeding into it
 		a3hierarchyBlendTreeAddNodeToTree(demoMode->character->blendTree, 3, -1);
 		a3hierarchyBlendTreeAddNodeToTree(demoMode->character->blendTree, 0, 3);
 		a3hierarchyBlendTreeAddNodeToTree(demoMode->character->blendTree, 1, 3);
@@ -466,6 +475,8 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		{
 			printf("Tree is not unique, something went wrong in tree assembly.\n");
 		}
+
+		// Bind blend tree to hierarchy
 		a3hierarchyBlendTreeBindStates(demoMode->character->blendTree, hierarchy, NULL);
 
 		//a3hierarchyblendTreeUpdate(demoMode->character->blendTree);
@@ -526,9 +537,12 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	//initialize planes and rays
 	a3_HierarchyState* state = demoMode->hierarchyState_skel_ik;
 
+	// All foot rays cast downwards first
 	demoMode->rayDirection.x = 0;
 	demoMode->rayDirection.y = 0;
 	demoMode->rayDirection.z = -1;
+
+	// Create rays at each paw (Pfote2 is back, vorderpfote is front)
 	a3i32 jFoot = a3hierarchyGetNodeIndex(hierarchy, "Vorderpfote_L");
 	a3createRay(&demoMode->ray[0], &state->objectSpace->pose[jFoot].transformMat.v3.xyz, &demoMode->rayDirection);
 	jFoot = a3hierarchyGetNodeIndex(hierarchy, "Vorderpfote_R");
@@ -538,7 +552,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	jFoot = a3hierarchyGetNodeIndex(hierarchy, "Pfote2_R");
 	a3createRay(&demoMode->ray[3], &state->objectSpace->pose[jFoot].transformMat.v3.xyz, &demoMode->rayDirection);
 
-
+	// Construct planes
 	a3_DemoSceneObject* planeObj = demoMode->obj_plane;
 	a3createPlane(&demoMode->plane[0], &demoMode->sceneGraphState->objectSpace->pose[planeObj->sceneGraphIndex].transformMat, &demoMode->sceneGraphState->objectSpaceInv->pose[planeObj->sceneGraphIndex].transformMat);
 	demoMode->plane[0].boundSize = &planeObj->scale;
@@ -556,6 +570,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	demoMode->intersectionPoint[2] = a3vec3_zero;
 	demoMode->intersectionPoint[3] = a3vec3_zero;
 
+	// allocate space for the raycast result data
 	demoMode->raycastPositions = calloc(4, sizeof(a3vec3*)); //4 feet, 3 raycasts
 	demoMode->raycastHits = calloc(4, sizeof(int*));
 	demoMode->lastHitPositions = calloc(4, sizeof(a3vec3));

@@ -334,6 +334,7 @@ void updateBackIK(a3_DemoMode1_Animation* demoMode, a3_HierarchyState* activeHS,
 	a3mat4 jTrans_paw = *pTrans_paw;
 	a3mat4 jTrans_toe = *pTrans_toe;
 
+	// First chain: solve toe + paw (toe + ankle)
 	a3vec3 pawToToe;
 	a3real3Diff(pawToToe.v, jTrans_paw.v3.xyz.v, jTrans_toe.v3.xyz.v);
 
@@ -342,7 +343,11 @@ void updateBackIK(a3_DemoMode1_Animation* demoMode, a3_HierarchyState* activeHS,
 	jTrans_toe.v3.xyz.y = ctrlLoc_eff[1];
 	jTrans_toe.v3.xyz.z = ctrlLoc_eff[2];
 
+	// assign paw location relative to the new toe location.
 	a3real3Sum(jTrans_paw.v3.xyz.v, jTrans_toe.v3.xyz.v, pawToToe.v);
+
+
+	// Second Chain: hip + knee + ankle
 
 	// use updateFrontIK using base, constraint joint, ankle as effector
 	updateFrontIK(demoMode, activeHS, baseHS, poseGroup,
@@ -354,9 +359,7 @@ void updateBackIK(a3_DemoMode1_Animation* demoMode, a3_HierarchyState* activeHS,
 	activeHS->objectSpace->pose[j_paw].transformMat = jTrans_paw;
 	activeHS->objectSpace->pose[j_toe].transformMat = jTrans_toe;
 
-	//a3_animation_updateIK_single(activeHS, baseHS, j_base, &jTrans_base);
-	//a3_animation_updateIK_single(activeHS, baseHS, j_elbow, &jTrans_elbow);
-	//a3_animation_updateIK_single(activeHS, baseHS, j_paw, &jTrans_paw);
+	// Paw, Base, and Elbow are all updated in updateFrontIK
 	a3_animation_updateIK_single(activeHS, baseHS, j_toe, &jTrans_toe);
 }
 
@@ -486,6 +489,8 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 		jTrans_base_BR = activeHS->objectSpace->pose[j].transformMat;
 		controlLocator_base_BR = jTrans_base_BR.v3;
 
+
+		// Loop through each raycast result (updated prior to this function). If the raycastStatus == 2, that means we need to use IK to update foot position.
 		for (int i = 0; i < 4; i++)
 		{
 			a3i32 raycastStatus = 0;
@@ -493,21 +498,22 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 			{
 				raycastStatus = max(raycastStatus, demoMode->raycastHits[i][j]);
 			}
+
 			if (raycastStatus == 2)
 			{
-				if (i == 0)
+				if (i == 0)	//FL foot
 				{
 					updateFrontIK(demoMode, activeHS, baseHS, poseGroup, controlLocator_eff_FL.v,
 						controlLocator_con_FL.v, controlLocator_base_FL.v, &jTrans_paw_FL, &jTrans_elbow_FL,
 						&jTrans_base_FL, j_paw_FL, j_elbow_FL, j_base_FL);
 				}
-				if (i == 1)
+				if (i == 1) //FR foot
 				{
 					updateFrontIK(demoMode, activeHS, baseHS, poseGroup, controlLocator_eff_FR.v,
 						controlLocator_con_FR.v, controlLocator_base_FR.v, &jTrans_paw_FR, &jTrans_elbow_FR,
 						&jTrans_base_FR, j_paw_FR, j_elbow_FR, j_base_FR);
 				}
-				if (i == 2)
+				if (i == 2) //BL foot
 				{
 					//updateFrontIK(demoMode, activeHS, baseHS, poseGroup, controlLocator_eff_BL.v,
 					//	controlLocator_con_BL.v, jTrans_elbow_BL.v3.v, &jTrans_toe_BL, &jTrans_paw_BL,
@@ -516,7 +522,7 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 					//	controlLocator_con_BL.v, controlLocator_base_BL.v, &jTrans_toe_BL, &jTrans_paw_BL, &jTrans_elbow_BL,
 					//	&jTrans_base_BL, j_toe_BL, j_paw_BL, j_elbow_BL, j_base_BL);
 				}
-				if (i == 3)
+				if (i == 3) //BR foot
 				{
 					//updateFrontIK(demoMode, activeHS, baseHS, poseGroup, controlLocator_eff_BR.v,
 					//	controlLocator_con_BR.v, jTrans_elbow_BR.v3.v, &jTrans_toe_BR, &jTrans_paw_BR,
@@ -527,16 +533,21 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 				}
 			}
 		}
+
+
 		jTrans_paw_FL = activeHS->objectSpace->pose[j_paw_FL].transformMat;
 		jTrans_base_FL = activeHS->objectSpace->pose[j_base_FL].transformMat;
 
 		jTrans_paw_FR = activeHS->objectSpace->pose[j_paw_FR].transformMat;
 		jTrans_base_FR = activeHS->objectSpace->pose[j_base_FR].transformMat;
 
+
+		// Manual height calculation since we don't have physics
 		a3f32 maxFrontShoulder = 0;
 		a3f32 maxBackShoulder = 0;
 		a3vec3 dist = a3vec3_zero;
 
+		// Front leg height calculation
 		a3real3Diff(dist.v, controlLocator_eff_FL.xyz.v, jTrans_base_FL.v3.xyz.v);
 		maxFrontShoulder = max(maxFrontShoulder, a3real3Length(dist.v));
 		a3real3Diff(dist.v, controlLocator_eff_FR.xyz.v, jTrans_base_FR.v3.xyz.v);
@@ -564,6 +575,8 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 		a3real3Diff(dist.v, controlLocator_eff_BR.xyz.v, jTrans_base_BR.v3.xyz.v);
 		maxBackShoulder = max(maxBackShoulder, a3real3Length(dist.v));
 		propDist = a3sqrt(demoMode->character->backLegMaxLengthSq);
+
+		// Back leg height calculation, doesn't work well
 		//if (maxBackShoulder > propDist * 1.2f)
 		//{
 		//	a3f32 diff = maxBackShoulder - (propDist * 1.2f);
@@ -577,6 +590,8 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 
 	}
 }
+
+
 a3boolean firstFrame = true;
 
 void updateRaycasts(a3_DemoMode1_Animation* demoMode, a3_HierarchyState* state)
@@ -584,29 +599,42 @@ void updateRaycasts(a3_DemoMode1_Animation* demoMode, a3_HierarchyState* state)
 	a3_Ray* ray = calloc(1, sizeof(a3_Ray));
 	a3vec3 newOrigin = a3vec3_zero;
 	a3vec3 raycastOutput;
+
+	// Iterate through each foot (i), then through each plane (j) to determine if any raycast succeeds
 	for (int i = 0; i < 4; i++)
 	{
+		// This is a janky way of putting the ray origin into world space, accounting for the skeleton_ctrl offset. Needs to be matrix multiplication.
 		a3real3Sum(newOrigin.v, demoMode->ray[i].origin->v, demoMode->obj_skeleton_ctrl->position.v);
 		a3createRay(ray, &newOrigin, demoMode->ray[i].direction);
+
+		// Plane iteration
 		for (int j = 0; j < 3; j++)
 		{
-			//a3real3GetNegative(negatedOrigin.v, demoMode->ray[i].origin->v);
+			// 0 means no collisions
 			demoMode->raycastHits[i][j] = 0;
-			//if we've collided with the plane
+
+
+			//if we've collided with a plane underneath the foot
 			if (a3raycastGetCollisionBoundedPlane(ray, demoMode->plane + j, false, &raycastOutput))
 			{
+				// 1 means underneath the foot
 				demoMode->raycastHits[i][j] = 1;
 			}
 			else
 			{
+				// If we didn't collide with a plane under the foot, test above the foot to see if we went through a plane (i.e we will need to use IK)
 				if (a3raycastGetCollisionBoundedPlane(ray, demoMode->plane + j, true, &raycastOutput))
 				{
+					// 2 means above the foot
 					demoMode->raycastHits[i][j] = 2;
 				}
+
 				//if no raycast at all, snap effectors to feet.
 				//in IK: if all j in an i are false, use IK to manip limb. For rear leg, offset ankle by something
 				//then do normal IK with triangle stuff
 			}
+
+			// If we hit a plane at all (1 or 2), store the intersection point
 			if (demoMode->raycastHits[i][j] > 0)
 			{
 				demoMode->raycastPositions[i][j] = raycastOutput;
@@ -617,6 +645,8 @@ void updateRaycasts(a3_DemoMode1_Animation* demoMode, a3_HierarchyState* state)
 				demoMode->intersectionPoint[i] = pos;
 			}
 		}
+
+		// Determine if any planes were hit
 		a3i32 anyTrue = 0;
 		for (int j = 0; j < 3; j++)
 		{
@@ -627,10 +657,12 @@ void updateRaycasts(a3_DemoMode1_Animation* demoMode, a3_HierarchyState* state)
 			demoMode->lastHitPositions[i] = *(ray->origin);
 		}
 	}
+
+	// Now we can loop through effectors and assign their positions based on valid raycasts
 	for (int i = 0; i < 4; i++)
 	{
 		a3vec3 newPt = a3vec3_zero;
-		a3real3Diff(newPt.v, demoMode->lastHitPositions[i].v, demoMode->obj_skeleton_ctrl->position.v);
+		a3real3Diff(newPt.v, demoMode->lastHitPositions[i].v, demoMode->obj_skeleton_ctrl->position.v);	// again, janky way of handling the skeleton offsets
 		(demoMode->obj_wolf_effector_FL + i)->position = newPt;
 	}
 }
@@ -674,6 +706,7 @@ void a3animation_update_animation(a3_DemoMode1_Animation* demoMode, a3f64 const 
 	// run FK pipeline
 	a3animation_update_fk(activeHS_fk, baseHS, poseGroup);
 
+	// We need to calculate the max leg lengths, but it has to happen on the first frame rather than on load due to the asset setup.
 	if (firstFrame)
 	{
 		a3i32 jUpLeg = a3hierarchyGetNodeIndex(activeHS_fk->hierarchy, "Oberarm_L");
@@ -722,9 +755,13 @@ void a3animation_update_animation(a3_DemoMode1_Animation* demoMode, a3f64 const 
 		// invert object-space
 		a3hierarchyStateUpdateObjectInverse(activeHS_ik);
 
+		// update the raycasts for each foot
 		updateRaycasts(demoMode, activeHS_ik);
+
+
 		// run solvers
 		a3animation_update_applyEffectors(demoMode, activeHS_ik, baseHS, poseGroup);
+
 		// run full IK pipeline (if not resolving with effectors)
 		//a3animation_update_ik(activeHS_ik, baseHS, poseGroup);
 	}

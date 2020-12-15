@@ -76,7 +76,7 @@ a3boolean a3raycastGetCollisionUnboundedPlane(a3_Ray* ray, a3_Plane* plane, a3bo
 	a3real z_t = norm.z * ray->direction->z;
 	a3real z = norm.z * ray->origin->z;
 
-	// get solutions for t term and regular term
+	// get solutions for t term and regular term (regular term being just a number, T term would be like 2t or -12t)
 	a3real t_term = x_t + y_t + z_t;
 	a3real regular_term = x + y + z;
 
@@ -98,6 +98,7 @@ a3boolean a3raycastGetCollisionUnboundedPlane(a3_Ray* ray, a3_Plane* plane, a3bo
 
 		if (isRayBackwards)
 		{
+			// if we're backwards && t_solution < 0.0f, determine point. t_solution < 0.0f means backwards, and we only want to accept backwards collisions if isRayBackwards is true
 			if (t_solution < 0.0f)
 			{
 				// there is a single-point solution, determine point here
@@ -111,6 +112,7 @@ a3boolean a3raycastGetCollisionUnboundedPlane(a3_Ray* ray, a3_Plane* plane, a3bo
 		}
 		else
 		{
+			// if we're NOT backwards && t_solution > 0.0f, determine point again. t_solution > 0.0f means forward, and we only want to accept forward collisions if isRayBackwards is false.
 			if (t_solution > 0.0f)
 			{
 				// there is a single-point solution, determine point here
@@ -132,17 +134,18 @@ a3boolean a3raycastGetCollisionBoundedPlane(a3_Ray* ray, a3_Plane* plane, a3bool
 {
 	a3vec4 intersection = a3vec4_zero;
 
+	// If we collide with the undounded plane, we can continue calculations for the bounded plane
 	if (a3raycastGetCollisionUnboundedPlane(ray, plane, isRayBackwards, &intersection.xyz))
 	{
-		// v2 of plane transform mat is the normal, other cols are T and B (Right, Up, Out)
-		// diff from origin to point for sq. distance
-		// compare sq. distance with square dot of diff and tangent
 		//printf("Before: %f, %f, %f\n", intersection.x, intersection.y, intersection.z);
 
 		a3vec4 inttmp = intersection;
 
+		// Transform the temporary intersection variable into the plane's local space
 		a3vec4 localCoord;
 		a3real4TransformProduct(localCoord.v, plane->objInv->m, inttmp.v);
+
+		// We're using uniform scale, which is why this works. Extract X scale, scale the plane center point by that scale, then subtract from localCoord. This is all to account for scaled planes, but should be using matrices better.
 		a3vec4 ctrdivScale;
 		a3real scale = 0.0f;
 		scale = a3real3Length(plane->objInv->v0.xyz.v);
@@ -150,11 +153,13 @@ a3boolean a3raycastGetCollisionBoundedPlane(a3_Ray* ray, a3_Plane* plane, a3bool
 		a3real3Sub(localCoord.v, ctrdivScale.v);
 
 
+		// Since our localCoord is in local space, ranges will always be between -0.5 and 0.5, and we only need to worry about 2 dimensions because we're in local space on a plane.
 		//printf("After: %f, %f, %f\n", localCoord.x, localCoord.y, localCoord.z);
 		a3boolean withinX = localCoord.x >= (-0.5f) && localCoord.x <= (0.5f);
 		a3boolean withinY = localCoord.y >= (-0.5f) && localCoord.y <= (0.5f);
 		//printf("%i\n", withinX && withinY);
 
+		// the out_point needs to be intersection, since we need to keep track of the world space coordinate
 		out_point->x = intersection.x;
 		out_point->y = intersection.y;
 		out_point->z = intersection.z;
