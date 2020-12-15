@@ -237,11 +237,11 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 		a3vec4 controlLocator_con_FL, controlLocator_con_FR, controlLocator_con_BL, controlLocator_con_BR;
 		a3vec4 controlLocator_base_FL, controlLocator_base_FR, controlLocator_base_BL, controlLocator_base_BR;
 
-		a3mat4 jTrans_eff_FL = a3mat4_identity, jTrans_eff_FR = a3mat4_identity, jTrans_eff_BL = a3mat4_identity, jTrans_eff_BR = a3mat4_identity,
+		a3mat4 jTrans_paw_FL = a3mat4_identity, jTrans_paw_FR = a3mat4_identity, jTrans_toe_BL = a3mat4_identity, jTrans_toe_BR = a3mat4_identity, jTrans_paw_BL = a3mat4_identity, jTrans_paw_BR = a3mat4_identity,
 			jTrans_elbow_FL = a3mat4_identity, jTrans_elbow_FR = a3mat4_identity, jTrans_elbow_BL = a3mat4_identity, jTrans_elbow_BR = a3mat4_identity,
 			jTrans_base_FL = a3mat4_identity, jTrans_base_FR = a3mat4_identity, jTrans_base_BL = a3mat4_identity, jTrans_base_BR = a3mat4_identity;
 
-		a3ui32 j_paw_FL, j_paw_FR, j_paw_BL, j_paw_BR;
+		a3ui32 j_paw_FL, j_paw_FR, j_toe_BL, j_toe_BR, j_paw_BL, j_paw_BR;
 		a3ui32 j_elbow_FL, j_elbow_FR, j_elbow_BL, j_elbow_BR;
 		a3ui32 j_base_FL, j_base_FR, j_base_BL, j_base_BR;
 
@@ -267,28 +267,34 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 			a3real4Real4x4Product(controlLocator_eff_FL.v, controlToSkeleton.m,
 				demoMode->sceneGraphState->localSpace->pose[sceneObject->sceneGraphIndex].transformMat.v3.v);
 			j = j_paw_FL = a3hierarchyGetNodeIndex(activeHS->hierarchy, "Vorderpfote_L");
-			jTrans_eff_FL = activeHS->objectSpace->pose[j].transformMat;
+			jTrans_paw_FL = activeHS->objectSpace->pose[j].transformMat;
 
 			// FR effector
 			sceneObject = demoMode->obj_wolf_effector_FR;
 			a3real4Real4x4Product(controlLocator_eff_FR.v, controlToSkeleton.m,
 				demoMode->sceneGraphState->localSpace->pose[sceneObject->sceneGraphIndex].transformMat.v3.v);
 			j = j_paw_FR = a3hierarchyGetNodeIndex(activeHS->hierarchy, "Vorderpfote_R");
-			jTrans_eff_FR = activeHS->objectSpace->pose[j].transformMat;
+			jTrans_paw_FR = activeHS->objectSpace->pose[j].transformMat;
 
 			// BL effector
 			sceneObject = demoMode->obj_wolf_effector_BL;
 			a3real4Real4x4Product(controlLocator_eff_BL.v, controlToSkeleton.m,
 				demoMode->sceneGraphState->localSpace->pose[sceneObject->sceneGraphIndex].transformMat.v3.v);
-			j = j_paw_BL = a3hierarchyGetNodeIndex(activeHS->hierarchy, "Pfote2_L");
-			jTrans_eff_BL = activeHS->objectSpace->pose[j].transformMat;
+			j = j_toe_BL = a3hierarchyGetNodeIndex(activeHS->hierarchy, "Pfote2_L");
+			jTrans_toe_BL = activeHS->objectSpace->pose[j].transformMat;
 
 			// BR effector
 			sceneObject = demoMode->obj_wolf_effector_BR;
 			a3real4Real4x4Product(controlLocator_eff_BR.v, controlToSkeleton.m,
 				demoMode->sceneGraphState->localSpace->pose[sceneObject->sceneGraphIndex].transformMat.v3.v);
-			j = j_paw_BR = a3hierarchyGetNodeIndex(activeHS->hierarchy, "Pfote2_R");
-			jTrans_eff_BR = activeHS->objectSpace->pose[j].transformMat;
+			j = j_toe_BR = a3hierarchyGetNodeIndex(activeHS->hierarchy, "Pfote2_R");
+			jTrans_toe_BR = activeHS->objectSpace->pose[j].transformMat;
+
+			j = j_paw_BL = a3hierarchyGetNodeIndex(activeHS->hierarchy, "Pfote1_L");
+			jTrans_paw_BL = activeHS->objectSpace->pose[j].transformMat;
+
+			j = j_paw_BR = a3hierarchyGetNodeIndex(activeHS->hierarchy, "Pfote1_R");
+			jTrans_paw_BR = activeHS->objectSpace->pose[j].transformMat;
 
 
 
