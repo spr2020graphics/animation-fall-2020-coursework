@@ -814,7 +814,7 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 		
 			// Render axes for all wolf effectors and constraints
 			for (currentSceneObject = demoMode->obj_wolf_effector_FL, endSceneObject = demoMode->obj_wolf_constraint_BR;
-				currentSceneObject < endSceneObject;
+				currentSceneObject <= endSceneObject;
 				++currentSceneObject)
 			{
 				j = (a3ui32)(currentSceneObject - demoMode->object_scene);
@@ -824,7 +824,7 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 
 			// Render axes for planes
 			for (currentSceneObject = demoMode->obj_plane, endSceneObject = demoMode->obj_landing;
-				currentSceneObject < endSceneObject;
+				currentSceneObject <= endSceneObject;
 				++currentSceneObject)
 			{
 				j = (a3ui32)(currentSceneObject - demoMode->object_scene);
