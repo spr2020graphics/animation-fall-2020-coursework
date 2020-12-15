@@ -116,7 +116,7 @@ void a3animation_load_resetEffectors(a3_DemoMode1_Animation* demoMode,
 	a3real4Real4x4Product(controlLocator.v, skeletonToControl.m,
 		hierarchyState->objectSpace->pose[j].transformMat.v3.v);
 	sceneObject->position.x = controlLocator.x;
-	sceneObject->position.y = controlLocator.y - a3real_half;
+	sceneObject->position.y = controlLocator.y + a3real_half;
 	sceneObject->position.z = controlLocator.z;
 	sceneObject->scale.x = a3real_third;
 	sceneObject->scaleMode = 1;
@@ -126,7 +126,7 @@ void a3animation_load_resetEffectors(a3_DemoMode1_Animation* demoMode,
 	a3real4Real4x4Product(controlLocator.v, skeletonToControl.m,
 		hierarchyState->objectSpace->pose[j].transformMat.v3.v);
 	sceneObject->position.x = controlLocator.x;
-	sceneObject->position.y = controlLocator.y - a3real_half;
+	sceneObject->position.y = controlLocator.y + a3real_half;
 	sceneObject->position.z = controlLocator.z;
 	sceneObject->scale.x = a3real_third;
 	sceneObject->scaleMode = 1;
@@ -136,7 +136,7 @@ void a3animation_load_resetEffectors(a3_DemoMode1_Animation* demoMode,
 	a3real4Real4x4Product(controlLocator.v, skeletonToControl.m,
 		hierarchyState->objectSpace->pose[j].transformMat.v3.v);
 	sceneObject->position.x = controlLocator.x;
-	sceneObject->position.y = controlLocator.y - a3real_half;
+	sceneObject->position.y = controlLocator.y + a3real_half;
 	sceneObject->position.z = controlLocator.z;
 	sceneObject->scale.x = a3real_third;
 	sceneObject->scaleMode = 1;
@@ -146,7 +146,7 @@ void a3animation_load_resetEffectors(a3_DemoMode1_Animation* demoMode,
 	a3real4Real4x4Product(controlLocator.v, skeletonToControl.m,
 		hierarchyState->objectSpace->pose[j].transformMat.v3.v);
 	sceneObject->position.x = controlLocator.x;
-	sceneObject->position.y = controlLocator.y - a3real_half;
+	sceneObject->position.y = controlLocator.y + a3real_half;
 	sceneObject->position.z = controlLocator.z;
 	sceneObject->scale.x = a3real_third;
 	sceneObject->scaleMode = 1;
