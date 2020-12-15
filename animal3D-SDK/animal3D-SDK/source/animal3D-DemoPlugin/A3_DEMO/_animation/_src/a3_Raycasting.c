@@ -42,7 +42,7 @@ a3_Plane* a3createPlane(a3_Plane* out, a3mat4* trans, a3mat4* parObjInv)
 	a3real3Normalize(out->normal->v);
 
 	out->transform = trans;
-	out->parentObjInv = parObjInv;
+	out->objInv = parObjInv;
 
 	return out;
 }
@@ -142,10 +142,10 @@ a3boolean a3raycastGetCollisionBoundedPlane(a3_Ray* ray, a3_Plane* plane, a3bool
 		a3vec4 inttmp = intersection;
 
 		a3vec4 localCoord;
-		a3real4TransformProduct(localCoord.v, plane->parentObjInv->m, inttmp.v);
+		a3real4TransformProduct(localCoord.v, plane->objInv->m, inttmp.v);
 		a3vec4 ctrdivScale;
 		a3real scale = 0.0f;
-		scale = a3real3Length(plane->parentObjInv->v0.xyz.v);
+		scale = a3real3Length(plane->objInv->v0.xyz.v);
 		a3real3ProductS(ctrdivScale.v, plane->center->v, scale);
 		a3real3Sub(localCoord.v, ctrdivScale.v);
 

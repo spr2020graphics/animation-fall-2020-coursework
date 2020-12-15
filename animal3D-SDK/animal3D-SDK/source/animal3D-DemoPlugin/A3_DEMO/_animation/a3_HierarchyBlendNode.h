@@ -70,10 +70,7 @@ struct a3_HierarchyBlendNode
 
 struct a3_HierarchyBlendTree
 {
-	//this hierarchy is reversed
-	//a3_Hierarchy bt_hierarchy[1];
 	a3_TreeNode* tree;
-	//iterate forward through this
 	a3_HierarchyBlendNode** blendNodes;
 	a3i32 maxNodes;
 	a3i32 nodeCount;

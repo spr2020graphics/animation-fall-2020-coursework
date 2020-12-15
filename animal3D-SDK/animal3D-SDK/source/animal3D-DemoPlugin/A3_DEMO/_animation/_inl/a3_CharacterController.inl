@@ -77,47 +77,6 @@ inline a3ui32 a3characterControllerUpdate(a3_CharacterController* controller, a3
 		a3clipControllerUpdate(&controller->animControllers[2], runDT);
 		a3clipControllerUpdate(&controller->animControllers[3], 0);
 
-		//if (*controller->jumpTrigger == 1.0f)
-		//{
-		//	a3characterToggleIsJumping(controller);
-		//	// jump
-		//	*controller->jumpTrigger = 0.0f;
-		//
-		//	//controller->activeAnimController = &controller->animControllers[3];
-		//}
-		//if (controller->jumpRemaining > 0.0f)
-		//{
-		//	controller->jumpRemaining -= dt;
-		//	if (controller->jumpRemaining <= 0.0f)
-		//	{
-		//		controller->isJumping = false;
-		//	}
-		//}
-		//
-		////we have a pose that's just the sampled idle pose
-		//a3_HierarchyPose result[1];
-		//
-		//a3hierarchyPoseOpCreate(result, controller->poseGroup->hierarchy->numNodes);
-		//a3hierarchyPoseOpIdentity(result, controller->poseGroup->hierarchy->numNodes);
-		//a3clipOpSampleClip(result, controller->poseGroup, &controller->animControllers[0]);
-		////if we're walking, the pose is replaced with walking
-		//if (controller->currentVelocity > 0.01f)
-		//{
-		//	a3characterControllerWalk(controller, result);
-		//}
-		////if we're jumping, lerp between walk and jump
-		//
-		//if (controller->isJumping)
-		//{
-		//	a3_HierarchyPose postJumpResult[1];
-		//	a3hierarchyPoseOpCreate(postJumpResult, controller->poseGroup->hierarchy->numNodes);
-		//	a3hierarchyPoseOpIdentity(postJumpResult, controller->poseGroup->hierarchy->numNodes);
-		//	//a3characterControllerJump(controller, output, dt); //rewrite this function so we take _in_ walk run blend (as result) and output the final pose to the output variable
-		//	a3characterControllerBlendJump(controller, postJumpResult, result, dt);
-		//
-		//	a3hierarchyPoseOpCopy(result, postJumpResult, controller->poseGroup->hierarchy->numNodes); //replace old result with new result
-		//}
-
 		a3hierarchyblendTreeUpdate(controller->blendTree);
 
 		a3_HierarchyPose* const tmp = controller->blendTree->blendNodes[controller->blendTree->tree->value]->state_out->animPose;

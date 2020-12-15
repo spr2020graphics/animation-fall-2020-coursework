@@ -53,7 +53,7 @@ struct a3_Plane
 	a3vec3* center;
 	a3vec3* normal;
 	a3mat4* transform;
-	a3mat4* parentObjInv;
+	a3mat4* objInv;
 
 	// basically the "localScale" of the plane, a plane's z-scale should always be 1 in animal (the vertical axis, since they have no thickness)
 	a3vec3* boundSize;
