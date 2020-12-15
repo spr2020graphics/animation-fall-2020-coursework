@@ -513,31 +513,27 @@ void updateRaycasts(a3_DemoMode1_Animation* demoMode, a3_HierarchyState* state)
 			//if we've collided with the plane
 			if (a3raycastGetCollisionBoundedPlane(ray, demoMode->plane + j, false, &raycastOutput))
 			{
-				demoMode->raycastPositions[i][j] = raycastOutput;
 				demoMode->raycastHits[i][j] = 1;
-				demoMode->lastHitPositions[i] = raycastOutput;
-				a3vec3 orig = *ray->origin;
-				a3vec3 pos = orig;
-				a3real3Sum(pos.v, orig.v, demoMode->ray[i].direction->v);
-				demoMode->intersectionPoint[i] = pos;
-				a3f32 tmp = pos.y;
 			}
 			else
 			{
 				if (a3raycastGetCollisionBoundedPlane(ray, demoMode->plane + j, true, &raycastOutput))
 				{
-					demoMode->raycastPositions[i][j] = raycastOutput;
 					demoMode->raycastHits[i][j] = 2;
-					demoMode->lastHitPositions[i] = raycastOutput;
-					a3vec3 orig = *ray->origin;
-					a3vec3 pos = orig;
-					a3real3Sum(pos.v, orig.v, demoMode->ray[i].direction->v);
-					demoMode->intersectionPoint[i] = pos;
-					a3f32 tmp = pos.y;
 				}
 				//if no raycast at all, snap effectors to feet.
 				//in IK: if all j in an i are false, use IK to manip limb. For rear leg, offset ankle by something
 				//then do normal IK with triangle stuff
+			}
+			if (demoMode->raycastHits[i][j] > 0)
+			{
+				demoMode->raycastPositions[i][j] = raycastOutput;
+				demoMode->lastHitPositions[i] = raycastOutput;
+				a3vec3 orig = *ray->origin;
+				a3vec3 pos = orig;
+				a3real3Sum(pos.v, orig.v, demoMode->ray[i].direction->v);
+				demoMode->intersectionPoint[i] = pos;
+				a3f32 tmp = pos.y; //mascot
 			}
 		}
 		a3i32 anyTrue = 0;
