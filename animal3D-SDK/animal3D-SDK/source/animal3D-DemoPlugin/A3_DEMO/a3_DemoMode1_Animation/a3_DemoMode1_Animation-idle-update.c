@@ -504,17 +504,17 @@ void updateRaycasts(a3_DemoMode1_Animation* demoMode, a3_HierarchyState* state)
 	a3vec3 raycastOutput;
 	for (int i = 0; i < 4; i++)
 	{
+		a3real3Sum(newOrigin.v, demoMode->ray[i].origin->v, demoMode->obj_skeleton_ctrl->position.v);
+		a3createRay(ray, &newOrigin, demoMode->ray[i].direction);
 		for (int j = 0; j < 3; j++)
 		{
-			a3real3Sum(newOrigin.v, demoMode->ray[i].origin->v, demoMode->obj_skeleton_ctrl->position.v);
-			a3createRay(ray, &newOrigin, demoMode->ray[i].direction);
 			//a3real3GetNegative(negatedOrigin.v, demoMode->ray[i].origin->v);
-			demoMode->raycastHits[i][j] = false;
+			demoMode->raycastHits[i][j] = 0;
 			//if we've collided with the plane
 			if (a3raycastGetCollisionBoundedPlane(ray, demoMode->plane + j, false, &raycastOutput))
 			{
 				demoMode->raycastPositions[i][j] = raycastOutput;
-				demoMode->raycastHits[i][j] = true;
+				demoMode->raycastHits[i][j] = 1;
 				demoMode->lastHitPositions[i] = raycastOutput;
 				a3vec3 orig = *ray->origin;
 				a3vec3 pos = orig;
@@ -527,7 +527,7 @@ void updateRaycasts(a3_DemoMode1_Animation* demoMode, a3_HierarchyState* state)
 				if (a3raycastGetCollisionBoundedPlane(ray, demoMode->plane + j, true, &raycastOutput))
 				{
 					demoMode->raycastPositions[i][j] = raycastOutput;
-					demoMode->raycastHits[i][j] = false;
+					demoMode->raycastHits[i][j] = 2;
 					demoMode->lastHitPositions[i] = raycastOutput;
 					a3vec3 orig = *ray->origin;
 					a3vec3 pos = orig;
@@ -539,6 +539,15 @@ void updateRaycasts(a3_DemoMode1_Animation* demoMode, a3_HierarchyState* state)
 				//in IK: if all j in an i are false, use IK to manip limb. For rear leg, offset ankle by something
 				//then do normal IK with triangle stuff
 			}
+		}
+		a3i32 anyTrue = 0;
+		for (int j = 0; j < 3; j++)
+		{
+			anyTrue = max(demoMode->raycastHits[i][j], anyTrue);
+		}
+		if (anyTrue == 0)
+		{
+			demoMode->lastHitPositions[i] = *(ray->origin);
 		}
 	}
 	for (int i = 0; i < 4; i++)

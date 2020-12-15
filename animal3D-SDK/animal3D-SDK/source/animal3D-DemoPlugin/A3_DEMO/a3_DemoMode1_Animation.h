@@ -207,7 +207,7 @@ typedef enum a3_DemoMode1_Animation_InputMode				a3_DemoMode1_Animation_InputMod
 		a3vec3 intersectionPoint[4];
 
 		a3vec3** raycastPositions;
-		a3boolean** raycastHits;
+		a3i32** raycastHits;
 		a3vec3* lastHitPositions;
 
 		// objects

@@ -557,12 +557,12 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	demoMode->intersectionPoint[3] = a3vec3_zero;
 
 	demoMode->raycastPositions = calloc(4, sizeof(a3vec3*)); //4 feet, 3 raycasts
-	demoMode->raycastHits = calloc(4, sizeof(a3boolean*));
+	demoMode->raycastHits = calloc(4, sizeof(int*));
 	demoMode->lastHitPositions = calloc(4, sizeof(a3vec3));
 	for (int i = 0; i < 4; i++)
 	{
 		demoMode->raycastPositions[i] = calloc(3, sizeof(a3vec3));
-		demoMode->raycastHits[i] = calloc(3, sizeof(a3boolean));
+		demoMode->raycastHits[i] = calloc(3, sizeof(int));
 	}
 }
 
