@@ -501,6 +501,8 @@ void updateRaycasts(a3_DemoMode1_Animation* demoMode, a3_HierarchyState* state)
 {
 	a3_Ray negatedRay;
 	a3vec3 negatedOrigin;
+
+	a3vec3 raycastOutput;
 	for (int i = 0; i < 4; i++)
 	{
 		for (int j = 0; j < 3; j++)
@@ -508,7 +510,13 @@ void updateRaycasts(a3_DemoMode1_Animation* demoMode, a3_HierarchyState* state)
 
 			a3real3GetNegative(negatedOrigin.v, demoMode->ray[i].origin->v);
 			a3createRay(&negatedRay, &negatedOrigin, demoMode->ray[i].direction);
-			a3raycastGetCollisionBoundedPlane(&negatedRay, demoMode->plane + j, false, &(demoMode->raycastPositions[i][j]));
+			demoMode->raycastHits[i][j] = false;
+			//if we've collided with the plane
+			if (a3raycastGetCollisionBoundedPlane(&negatedRay, demoMode->plane + j, false, &raycastOutput))
+			{
+				demoMode->raycastPositions[i][j] = raycastOutput;
+				demoMode->raycastHits[i][j] = true;
+			}
 			if (i == 0 && j == 0)
 			{
 				a3vec3 orig = *negatedRay.origin;
@@ -516,7 +524,16 @@ void updateRaycasts(a3_DemoMode1_Animation* demoMode, a3_HierarchyState* state)
 				a3vec3 pos = a3vec3_zero;
 				a3real3Sum(pos.v, orig.v, negatedRay.direction->v);
 				demoMode->intersectionPoint[0] = pos;
+				a3f32 tmp = pos.y;
+				demoMode->obj_wolf_effector_FL->position = pos;
 			}
+		}
+	}
+	for (int i = 0; i < 4; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+
 		}
 	}
 }

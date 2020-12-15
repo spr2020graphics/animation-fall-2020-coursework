@@ -501,12 +501,12 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	//demoMode->obj_skeleton->euler.x = -a3real_ninety;
 
 	// xbot
-	demoMode->obj_skeleton->euler.x = a3real_ninety;
-	demoMode->obj_skeleton->euler.y = a3real_oneeighty;
+	//demoMode->obj_skeleton->euler.x = a3real_ninety;
+	//demoMode->obj_skeleton->euler.y = a3real_oneeighty;
 
 	// control node
 	//demoMode->obj_skeleton_ctrl->position.y = +a3real_four;
-	demoMode->obj_skeleton_ctrl->euler.z = a3real_oneeighty;
+	//demoMode->obj_skeleton_ctrl->euler.z = a3real_oneeighty;
 
 	// effectors
 	// do one update to get first pose for target IK frame
@@ -557,9 +557,11 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	demoMode->intersectionPoint[3] = a3vec3_zero;
 
 	demoMode->raycastPositions = calloc(4, sizeof(a3vec3*)); //4 feet, 3 raycasts
+	demoMode->raycastHits = calloc(4, sizeof(a3boolean*));
 	for (int i = 0; i < 4; i++)
 	{
 		demoMode->raycastPositions[i] = calloc(3, sizeof(a3vec3));
+		demoMode->raycastHits[i] = calloc(3, sizeof(a3boolean));
 	}
 }
 

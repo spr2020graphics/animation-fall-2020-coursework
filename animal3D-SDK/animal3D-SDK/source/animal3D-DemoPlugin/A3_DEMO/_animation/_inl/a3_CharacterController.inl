@@ -50,7 +50,7 @@ inline a3ui32 a3characterControllerApplyInput(a3_CharacterController* controller
 	controller->object->position.x = +(position->x);
 	controller->object->position.y = +(position->y);
 
-	controller->object->euler.z = -a3trigValid_sind(rotation);
+	//controller->object->euler.z = -a3trigValid_sind(rotation);
 
 	//printf("%f \n", controller->currentVelocity);
 
