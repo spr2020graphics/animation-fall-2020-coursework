@@ -261,12 +261,12 @@ inline a3ui32 a3characterControllerWalk(a3_CharacterController* controller, a3_H
 
 inline float getWalkScale(float u)
 {
-	return (float)pow(0.75f, u);
+	return (float)pow(21.0f/49.0f, u);
 }
 
 inline float getRunScale(float u)
 {
-	return (float)pow(0.75f, 1.0f - u);
+	return (float)pow(21.0f / 49.0f, 1.0f - u);
 }
 
 //-----------------------------------------------------------------------------

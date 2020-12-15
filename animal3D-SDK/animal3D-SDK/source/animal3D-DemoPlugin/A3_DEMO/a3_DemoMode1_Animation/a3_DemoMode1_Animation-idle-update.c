@@ -521,6 +521,31 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 				}
 			}
 		}
+		jTrans_paw_FL = activeHS->objectSpace->pose[j_paw_FL].transformMat;
+		jTrans_base_FL = activeHS->objectSpace->pose[j_base_FL].transformMat;
+
+		jTrans_paw_FR = activeHS->objectSpace->pose[j_paw_FR].transformMat;
+		jTrans_base_FR = activeHS->objectSpace->pose[j_base_FR].transformMat;
+
+		a3f32 maxFrontShoulder = 0;
+		a3vec3 dist = a3vec3_zero;
+
+		a3real3Diff(dist.v, controlLocator_eff_FL.xyz.v, jTrans_base_FL.v3.xyz.v);
+		maxFrontShoulder = max(maxFrontShoulder, a3real3Length(dist.v));
+		a3real3Diff(dist.v, controlLocator_eff_FR.xyz.v, jTrans_base_FR.v3.xyz.v);
+		maxFrontShoulder = max(maxFrontShoulder, a3real3Length(dist.v));
+		a3f32 propDist = a3sqrt(demoMode->character->frontLegMaxLengthSq);
+		if (maxFrontShoulder > propDist * 1.2f)
+		{
+			a3f32 diff = maxFrontShoulder - (propDist * 1.2f);
+			demoMode->obj_skeleton_ctrl->position.z -= diff;
+		}
+		else if (maxFrontShoulder < propDist / 1.2f)
+		{
+			a3f32 diff = (propDist / 1.2f) - maxFrontShoulder;
+			demoMode->obj_skeleton_ctrl->position.z += diff;
+		}
+		
 	}
 }
 	a3boolean firstFrame = true;
@@ -714,6 +739,9 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 
 		// update scene graph local transforms
 		a3animation_update_sceneGraph(demoMode, dt);
+		printf("%f", demoMode->sceneGraphState->objectSpace->pose[4].transformMat.v3.x);
+		printf(", %f", demoMode->sceneGraphState->objectSpace->pose[4].transformMat.v3.y);
+		printf(", %f\n", demoMode->sceneGraphState->objectSpace->pose[4].transformMat.v3.z);
 
 		// update matrix stack data using scene graph
 		for (i = 0; i < animationMaxCount_sceneObject; ++i)
