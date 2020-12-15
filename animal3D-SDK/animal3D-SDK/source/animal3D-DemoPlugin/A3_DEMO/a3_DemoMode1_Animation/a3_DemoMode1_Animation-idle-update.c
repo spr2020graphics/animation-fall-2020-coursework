@@ -17,7 +17,7 @@
 /*
 	animal3D SDK: Minimal 3D Animation Framework
 	By Daniel S. Buckstein
-	
+
 	a3_DemoMode1_Animation-idle-update.c
 	Demo mode implementations: animation scene.
 
@@ -247,7 +247,7 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 		calculate leg chain second, essentially using the ankle as the effector
 
 		ALTERNATE SYSTEM (CRAFTY TIME)
-		
+
 		"reverse foot" solver
 
 		*/
@@ -312,7 +312,7 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 			// 1) check if solution exists
 			//	-> get vector between base and end effector; if it extends max length, straighten limb
 			//	-> position of end effector's target is at the minimum possible distance along this vector
-			
+
 			a3vec3 shoulderToEffector = a3vec3_zero; //also known as DVec
 			a3real3Diff(shoulderToEffector.v, controlLocator_wristEffector.xyz.v, baseHS->objectSpace->pose[j_shoulder].transformMat.v3.v);
 			a3vec3 shoulderToElbow = a3vec3_zero;
@@ -394,24 +394,24 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 				a3_animation_updateIK_single(activeHS, baseHS, j_elbow, &jointTransform_elbow);
 				a3_animation_updateIK_single(activeHS, baseHS, j_wrist, &jointTransform_wrist);
 			}
-			
+
 			else
 			{
 				//find the length from shoulder to constraint
 				a3vec3 shoulderToConstraint = a3vec3_zero;
 				a3real3Diff(shoulderToConstraint.v, controlLocator_wristConstraint.xyz.v, jointTransform_shoulder.v3.v);
-				
+
 				a3vec3 nVecNormal = a3vec3_zero; //the non-normalized Normal Vector to the plane
 				a3real3CrossUnit(nVecNormal.v, shoulderToEffector.v, shoulderToConstraint.v);
-				
+
 				//unit vector from shoulder to effector
 				a3vec3 dNormal = a3vec3_zero;
 				a3real3QuotientS(dNormal.v, shoulderToEffector.v, shoulderEffectorLen);
-				
+
 				//find vector perpendicular to normal and d vec
 				a3vec3 hVecNormal = a3vec3_zero;
 				a3real3CrossUnit(hVecNormal.v, nVecNormal.v, dNormal.v);
-				
+
 				//heron's formula
 				a3real L1 = shoulderElbowLen;
 				a3real L2 = elbowWristLen;
@@ -421,11 +421,11 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 				a3real heronH = 2 * heronA / shoulderEffectorLen;
 				a3vec3 hVec = a3vec3_zero;
 				a3real3ProductS(hVec.v, hVecNormal.v, heronH);
-				
+
 				//pythagorean theorem
 				a3real L1Sq = L1 * L1;
 				a3real D = a3sqrt(L1Sq - (heronH * heronH));
-				
+
 				a3vec3 elbowDVec = shoulderToEffector;
 				a3real3Normalize(elbowDVec.v);
 				a3real3MulS(elbowDVec.v, D);
@@ -522,24 +522,30 @@ void updateRaycasts(a3_DemoMode1_Animation* demoMode, a3_HierarchyState* state)
 				demoMode->intersectionPoint[i] = pos;
 				a3f32 tmp = pos.y;
 			}
+			else
+			{
+				if (a3raycastGetCollisionBoundedPlane(ray, demoMode->plane + j, true, &raycastOutput))
+				{
+					demoMode->raycastPositions[i][j] = raycastOutput;
+					demoMode->raycastHits[i][j] = false;
+					demoMode->lastHitPositions[i] = raycastOutput;
+					a3vec3 orig = *ray->origin;
+					a3vec3 pos = orig;
+					a3real3Sum(pos.v, orig.v, demoMode->ray[i].direction->v);
+					demoMode->intersectionPoint[i] = pos;
+					a3f32 tmp = pos.y;
+				}
+				//if no raycast at all, snap effectors to feet.
+				//in IK: if all j in an i are false, use IK to manip limb. For rear leg, offset ankle by something
+				//then do normal IK with triangle stuff
+			}
 		}
 	}
 	for (int i = 0; i < 4; i++)
 	{
-		a3boolean foundFloor = false;
-		for (int j = 0; j < 3; j++)
-		{
-			if (demoMode->raycastHits[i][j]) //one of the raycasts hit the floor, no need to set effector.
-			{
-				foundFloor = true;
-			}
-		}
-		//if (!foundFloor)
-		{
-			a3vec3 newPt = a3vec3_zero;
-			a3real3Diff(newPt.v, demoMode->lastHitPositions[i].v, demoMode->obj_skeleton_ctrl->position.v);
-			(demoMode->obj_wolf_effector_FL + i)->position = newPt;
-		}
+		a3vec3 newPt = a3vec3_zero;
+		a3real3Diff(newPt.v, demoMode->lastHitPositions[i].v, demoMode->obj_skeleton_ctrl->position.v);
+		(demoMode->obj_wolf_effector_FL + i)->position = newPt;
 	}
 }
 
@@ -590,7 +596,7 @@ void a3animation_update_animation(a3_DemoMode1_Animation* demoMode, a3f64 const 
 		a3_SpatialPose* footObj = &activeHS_fk->objectSpace->pose[jFoot];
 		a3vec3 vector;
 		a3real3Diff(vector.v, footObj->transformMat.v3.xyz.v, upLegObj->transformMat.v3.xyz.v);
-		
+
 		demoMode->character->frontLegMaxLengthSq = a3real3LengthSquared(vector.v);
 
 		jUpLeg = a3hierarchyGetNodeIndex(activeHS_fk->hierarchy, "Oberschenkel_L");
@@ -610,7 +616,7 @@ void a3animation_update_animation(a3_DemoMode1_Animation* demoMode, a3f64 const 
 	// run FK
 	a3animation_update_fk(activeHS_ik, baseHS, poseGroup);
 	if (updateIK)
-	//if (false)
+		//if (false)
 	{
 		// invert object-space
 		a3hierarchyStateUpdateObjectInverse(activeHS_ik);
