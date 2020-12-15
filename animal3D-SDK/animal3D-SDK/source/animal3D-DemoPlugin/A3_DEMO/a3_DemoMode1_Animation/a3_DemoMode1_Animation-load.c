@@ -523,7 +523,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 
 
 	
-
+	//initialize planes and rays
 	a3_HierarchyState* state = demoMode->hierarchyState_skel_ik;
 
 	demoMode->rayDirection.x = 0;

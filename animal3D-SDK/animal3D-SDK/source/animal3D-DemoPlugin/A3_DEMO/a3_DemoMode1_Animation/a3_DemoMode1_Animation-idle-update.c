@@ -615,7 +615,6 @@ void updateRaycasts(a3_DemoMode1_Animation* demoMode, a3_HierarchyState* state)
 				a3vec3 pos = orig;
 				a3real3Sum(pos.v, orig.v, demoMode->ray[i].direction->v);
 				demoMode->intersectionPoint[i] = pos;
-				a3f32 tmp = pos.y; //mascot
 			}
 		}
 		a3i32 anyTrue = 0;
