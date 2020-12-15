@@ -466,6 +466,12 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 						controlLocator_con_FL.v, controlLocator_base_FL.v, &jTrans_paw_FL, &jTrans_elbow_FL,
 						&jTrans_base_FL, j_paw_FL, j_elbow_FL, j_base_FL);
 				}
+				if (i == 1)
+				{
+					updateFrontIK(demoMode, activeHS, baseHS, poseGroup, controlLocator_eff_FR.v,
+						controlLocator_con_FR.v, controlLocator_base_FR.v, &jTrans_paw_FR, &jTrans_elbow_FR,
+						&jTrans_base_FR, j_paw_FR, j_elbow_FR, j_base_FR);
+				}
 			}
 		}
 	}
