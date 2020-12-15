@@ -509,12 +509,18 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 				}
 				if (i == 2)
 				{
+					//updateFrontIK(demoMode, activeHS, baseHS, poseGroup, controlLocator_eff_BL.v,
+					//	controlLocator_con_BL.v, jTrans_elbow_BL.v3.v, &jTrans_toe_BL, &jTrans_paw_BL,
+					//	&jTrans_elbow_BL, j_toe_BL, j_paw_BL, j_elbow_BL);
 					//updateBackIK(demoMode, activeHS, baseHS, poseGroup, controlLocator_eff_BL.v,
 					//	controlLocator_con_BL.v, controlLocator_base_BL.v, &jTrans_toe_BL, &jTrans_paw_BL, &jTrans_elbow_BL,
 					//	&jTrans_base_BL, j_toe_BL, j_paw_BL, j_elbow_BL, j_base_BL);
 				}
 				if (i == 3)
 				{
+					//updateFrontIK(demoMode, activeHS, baseHS, poseGroup, controlLocator_eff_BR.v,
+					//	controlLocator_con_BR.v, jTrans_elbow_BR.v3.v, &jTrans_toe_BR, &jTrans_paw_BR,
+					//	&jTrans_elbow_BR, j_toe_BR, j_paw_BR, j_elbow_BR);
 					//updateBackIK(demoMode, activeHS, baseHS, poseGroup, controlLocator_eff_BR.v,
 					//	controlLocator_con_BR.v, controlLocator_base_BR.v, &jTrans_toe_BR, &jTrans_paw_BR, &jTrans_elbow_BR,
 					//	&jTrans_base_BR, j_toe_BR, j_paw_BR, j_elbow_BR, j_base_BR);
@@ -536,490 +542,497 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 		a3real3Diff(dist.v, controlLocator_eff_FR.xyz.v, jTrans_base_FR.v3.xyz.v);
 		maxFrontShoulder = max(maxFrontShoulder, a3real3Length(dist.v));
 		a3f32 propDist = a3sqrt(demoMode->character->frontLegMaxLengthSq);
-		//if (maxFrontShoulder > propDist * 1.2f)
-		//{
-		//	a3f32 diff = maxFrontShoulder - (propDist * 1.2f);
-		//	demoMode->obj_skeleton_ctrl->position.z -= diff;
-		//}
-		//else if (maxFrontShoulder < propDist / 1.2f)
-		//{
-		//	a3f32 diff = (propDist / 1.2f) - maxFrontShoulder;
-		//	demoMode->obj_skeleton_ctrl->position.z += diff;
-		//}
+		if (maxFrontShoulder > propDist)
+		{
+			a3f32 diff = maxFrontShoulder - (propDist);
+			demoMode->obj_skeleton_ctrl->position.z -= diff;
+		}
+		else if (maxFrontShoulder < propDist / 1.2f)
+		{
+			a3f32 diff = (propDist / 1.2f) - maxFrontShoulder;
+			demoMode->obj_skeleton_ctrl->position.z += diff;
+		}
+
+		jTrans_paw_BL = activeHS->objectSpace->pose[j_paw_BL].transformMat;
+		jTrans_base_BL = activeHS->objectSpace->pose[j_base_BL].transformMat;
+
+		jTrans_paw_BR = activeHS->objectSpace->pose[j_paw_BR].transformMat;
+		jTrans_base_BR = activeHS->objectSpace->pose[j_base_BR].transformMat;
+
 		a3real3Diff(dist.v, controlLocator_eff_BL.xyz.v, jTrans_base_BL.v3.xyz.v);
 		maxBackShoulder = max(maxBackShoulder, a3real3Length(dist.v));
 		a3real3Diff(dist.v, controlLocator_eff_BR.xyz.v, jTrans_base_BR.v3.xyz.v);
 		maxBackShoulder = max(maxBackShoulder, a3real3Length(dist.v));
 		propDist = a3sqrt(demoMode->character->backLegMaxLengthSq);
-		if (maxBackShoulder > propDist * 1.2f)
-		{
-			a3f32 diff = maxBackShoulder - (propDist * 1.2f);
-			demoMode->obj_skeleton_ctrl->position.z -= diff;
-		}
-		else if (maxBackShoulder < propDist / 1.2f)
-		{
-			a3f32 diff = (propDist / 1.2f) - maxBackShoulder;
-			demoMode->obj_skeleton_ctrl->position.z += diff;
-		}
-		
+		//if (maxBackShoulder > propDist * 1.2f)
+		//{
+		//	a3f32 diff = maxBackShoulder - (propDist * 1.2f);
+		//	demoMode->obj_skeleton_ctrl->position.z -= diff;
+		//}
+		//else if (maxBackShoulder < propDist / 1.2f)
+		//{
+		//	a3f32 diff = (propDist / 1.2f) - maxBackShoulder;
+		//	demoMode->obj_skeleton_ctrl->position.z += diff;
+		//}
+
 	}
 }
-	a3boolean firstFrame = true;
+a3boolean firstFrame = true;
 
-	void updateRaycasts(a3_DemoMode1_Animation * demoMode, a3_HierarchyState * state)
+void updateRaycasts(a3_DemoMode1_Animation* demoMode, a3_HierarchyState* state)
+{
+	a3_Ray* ray = calloc(1, sizeof(a3_Ray));
+	a3vec3 newOrigin = a3vec3_zero;
+	a3vec3 raycastOutput;
+	for (int i = 0; i < 4; i++)
 	{
-		a3_Ray* ray = calloc(1, sizeof(a3_Ray));
-		a3vec3 newOrigin = a3vec3_zero;
-		a3vec3 raycastOutput;
-		for (int i = 0; i < 4; i++)
+		a3real3Sum(newOrigin.v, demoMode->ray[i].origin->v, demoMode->obj_skeleton_ctrl->position.v);
+		a3createRay(ray, &newOrigin, demoMode->ray[i].direction);
+		for (int j = 0; j < 3; j++)
 		{
-			a3real3Sum(newOrigin.v, demoMode->ray[i].origin->v, demoMode->obj_skeleton_ctrl->position.v);
-			a3createRay(ray, &newOrigin, demoMode->ray[i].direction);
-			for (int j = 0; j < 3; j++)
+			//a3real3GetNegative(negatedOrigin.v, demoMode->ray[i].origin->v);
+			demoMode->raycastHits[i][j] = 0;
+			//if we've collided with the plane
+			if (a3raycastGetCollisionBoundedPlane(ray, demoMode->plane + j, false, &raycastOutput))
 			{
-				//a3real3GetNegative(negatedOrigin.v, demoMode->ray[i].origin->v);
-				demoMode->raycastHits[i][j] = 0;
-				//if we've collided with the plane
-				if (a3raycastGetCollisionBoundedPlane(ray, demoMode->plane + j, false, &raycastOutput))
-				{
-					demoMode->raycastHits[i][j] = 1;
-				}
-				else
-				{
-					if (a3raycastGetCollisionBoundedPlane(ray, demoMode->plane + j, true, &raycastOutput))
-					{
-						demoMode->raycastHits[i][j] = 2;
-					}
-					//if no raycast at all, snap effectors to feet.
-					//in IK: if all j in an i are false, use IK to manip limb. For rear leg, offset ankle by something
-					//then do normal IK with triangle stuff
-				}
-				if (demoMode->raycastHits[i][j] > 0)
-				{
-					demoMode->raycastPositions[i][j] = raycastOutput;
-					demoMode->lastHitPositions[i] = raycastOutput;
-					a3vec3 orig = *ray->origin;
-					a3vec3 pos = orig;
-					a3real3Sum(pos.v, orig.v, demoMode->ray[i].direction->v);
-					demoMode->intersectionPoint[i] = pos;
-					a3f32 tmp = pos.y; //mascot
-				}
+				demoMode->raycastHits[i][j] = 1;
 			}
-			a3i32 anyTrue = 0;
-			for (int j = 0; j < 3; j++)
+			else
 			{
-				anyTrue = max(demoMode->raycastHits[i][j], anyTrue);
+				if (a3raycastGetCollisionBoundedPlane(ray, demoMode->plane + j, true, &raycastOutput))
+				{
+					demoMode->raycastHits[i][j] = 2;
+				}
+				//if no raycast at all, snap effectors to feet.
+				//in IK: if all j in an i are false, use IK to manip limb. For rear leg, offset ankle by something
+				//then do normal IK with triangle stuff
 			}
-			if (anyTrue == 0)
+			if (demoMode->raycastHits[i][j] > 0)
 			{
-				demoMode->lastHitPositions[i] = *(ray->origin);
+				demoMode->raycastPositions[i][j] = raycastOutput;
+				demoMode->lastHitPositions[i] = raycastOutput;
+				a3vec3 orig = *ray->origin;
+				a3vec3 pos = orig;
+				a3real3Sum(pos.v, orig.v, demoMode->ray[i].direction->v);
+				demoMode->intersectionPoint[i] = pos;
+				a3f32 tmp = pos.y; //mascot
 			}
 		}
-		for (int i = 0; i < 4; i++)
+		a3i32 anyTrue = 0;
+		for (int j = 0; j < 3; j++)
 		{
-			a3vec3 newPt = a3vec3_zero;
-			a3real3Diff(newPt.v, demoMode->lastHitPositions[i].v, demoMode->obj_skeleton_ctrl->position.v);
-			(demoMode->obj_wolf_effector_FL + i)->position = newPt;
+			anyTrue = max(demoMode->raycastHits[i][j], anyTrue);
+		}
+		if (anyTrue == 0)
+		{
+			demoMode->lastHitPositions[i] = *(ray->origin);
 		}
 	}
-
-	void a3animation_update_animation(a3_DemoMode1_Animation * demoMode, a3f64 const dt,
-		a3boolean const updateIK)
+	for (int i = 0; i < 4; i++)
 	{
-		a3_HierarchyState* activeHS_fk = demoMode->hierarchyState_skel_fk;
-		a3_HierarchyState* activeHS_ik = demoMode->hierarchyState_skel_ik;
-		a3_HierarchyState* activeHS = demoMode->hierarchyState_skel_final;
-		a3_HierarchyState const* baseHS = demoMode->hierarchyState_skel_base;
-		a3_HierarchyPoseGroup const* poseGroup = demoMode->hierarchyPoseGroup_skel;
-
-		// switch controller to see different states
-		// A is idle, arms down; B is skin test, arms out
-		a3_ClipController* clipCtrl_fk = demoMode->clipCtrlA;
-		//a3ui32 sampleIndex0, sampleIndex1;
-
-		a3_HierarchyPose movingPose[1], idlePose[1];
-		a3hierarchyPoseOpCreate(movingPose, activeHS_fk->hierarchy->numNodes);
-		a3hierarchyPoseOpIdentity(movingPose, activeHS_fk->hierarchy->numNodes);
-		a3hierarchyPoseOpCreate(idlePose, activeHS_fk->hierarchy->numNodes);
-		a3hierarchyPoseOpIdentity(idlePose, activeHS_fk->hierarchy->numNodes);
-
-		a3characterControllerUpdate(demoMode->character, movingPose, (a3real)dt);
-
-		// resolve FK state
-		// update clip controller, keyframe lerp
-		a3clipControllerUpdate(clipCtrl_fk, dt);
-
-		//characte->animControllers[0] is the idle controller for a Character Controller
-		//sampleIndex0 = demoMode->clipPool->keyframe[demoMode->character->animControllers[0].keyframeIndex].sampleIndex0;
-		//sampleIndex1 = demoMode->clipPool->keyframe[demoMode->character->animControllers[0].keyframeIndex].sampleIndex1;
-
-		movingPose->pose[0].translate.x = demoMode->sceneGraphState->objectSpace->pose[demoMode->character->object->sceneGraphIndex].translate.x;
-		//movingPose->pose[0].translate.y = demoMode->sceneGraphState->objectSpace->pose[demoMode->character->object->sceneGraphIndex].translate.y;
-		movingPose->pose[0].translate.z = demoMode->sceneGraphState->objectSpace->pose[demoMode->character->object->sceneGraphIndex].translate.z;
-
-		a3hierarchyPoseCopy(activeHS_fk->animPose, movingPose, activeHS_fk->hierarchy->numNodes);
-
-		// run FK pipeline
-		a3animation_update_fk(activeHS_fk, baseHS, poseGroup);
-
-		if (firstFrame)
-		{
-			a3i32 jUpLeg = a3hierarchyGetNodeIndex(activeHS_fk->hierarchy, "Oberarm_L");
-			a3i32 jDownLeg = a3hierarchyGetNodeIndex(activeHS_fk->hierarchy, "Unterarm_L");
-			a3i32 jFoot = a3hierarchyGetNodeIndex(activeHS_fk->hierarchy, "Vorderpfote_L");
-			a3_SpatialPose* upLegObj = &activeHS_fk->objectSpace->pose[jUpLeg];
-			a3_SpatialPose* downLegObj = &activeHS_fk->objectSpace->pose[jDownLeg];
-			a3_SpatialPose* footObj = &activeHS_fk->objectSpace->pose[jFoot];
-			a3vec3 vector, v1, v2, v3, v4;
-			a3real3Diff(v1.v, footObj->transformMat.v3.xyz.v, downLegObj->transformMat.v3.xyz.v);
-			a3real3Diff(v2.v, downLegObj->transformMat.v3.xyz.v, upLegObj->transformMat.v3.xyz.v);
-			a3real3Sum(vector.v, v1.v, v2.v);
-
-			demoMode->character->frontLegMaxLengthSq = a3real3LengthSquared(vector.v);
-
-			jUpLeg = a3hierarchyGetNodeIndex(activeHS_fk->hierarchy, "Oberschenkel_L");
-			jDownLeg = a3hierarchyGetNodeIndex(activeHS_fk->hierarchy, "Unterschenkel_L");
-			jFoot = a3hierarchyGetNodeIndex(activeHS_fk->hierarchy, "Vorderpfote_L");
-			a3i32 jToe = a3hierarchyGetNodeIndex(activeHS_fk->hierarchy, "Pfote2_L");
-
-			upLegObj = &activeHS_fk->objectSpace->pose[jUpLeg];
-			downLegObj = &activeHS_fk->objectSpace->pose[jDownLeg];
-			footObj = &activeHS_fk->objectSpace->pose[jFoot];
-			a3_SpatialPose* toeObj = &activeHS_fk->objectSpace->pose[jToe];
-			a3real3Diff(v1.v, footObj->transformMat.v3.xyz.v, downLegObj->transformMat.v3.xyz.v);
-			a3real3Diff(v2.v, downLegObj->transformMat.v3.xyz.v, upLegObj->transformMat.v3.xyz.v);
-			a3real3Diff(v3.v, toeObj->transformMat.v3.xyz.v, footObj->transformMat.v3.xyz.v);
-			a3real3Sum(v4.v, v1.v, v2.v);
-			a3real3Sum(vector.v, v3.v, v4.v);
-
-			demoMode->character->backLegMaxLengthSq = a3real3LengthSquared(vector.v);
-			firstFrame = false;
-		}
-		// resolve IK state
-		// copy FK to IK
-		a3hierarchyPoseCopy(
-			activeHS_ik->animPose,	// dst: IK anim
-			activeHS_fk->animPose,	// src: FK anim
-			//baseHS->animPose,	// src: base anim
-			activeHS_ik->hierarchy->numNodes);
-		// run FK
-		a3animation_update_fk(activeHS_ik, baseHS, poseGroup);
-		if (updateIK)
-			//if (false)
-		{
-			// invert object-space
-			a3hierarchyStateUpdateObjectInverse(activeHS_ik);
-
-			updateRaycasts(demoMode, activeHS_ik);
-			// run solvers
-			a3animation_update_applyEffectors(demoMode, activeHS_ik, baseHS, poseGroup);
-			// run full IK pipeline (if not resolving with effectors)
-			//a3animation_update_ik(activeHS_ik, baseHS, poseGroup);
-		}
-
-		// blend FK/IK to final
-		// testing: copy source to final
-		a3hierarchyPoseCopy(activeHS->animPose,	// dst: final anim
-			//activeHS_fk->animPose,	// src: FK anim
-			activeHS_ik->animPose,	// src: IK anim
-			//baseHS->animPose,	// src: base anim (identity)
-			activeHS->hierarchy->numNodes);
-		// run FK pipeline (skinning optional)
-		a3animation_update_fk(activeHS, baseHS, poseGroup);
-		a3animation_update_skin(activeHS, baseHS);
+		a3vec3 newPt = a3vec3_zero;
+		a3real3Diff(newPt.v, demoMode->lastHitPositions[i].v, demoMode->obj_skeleton_ctrl->position.v);
+		(demoMode->obj_wolf_effector_FL + i)->position = newPt;
 	}
+}
 
-	void a3animation_update_sceneGraph(a3_DemoMode1_Animation * demoMode, a3f64 const dt)
+void a3animation_update_animation(a3_DemoMode1_Animation* demoMode, a3f64 const dt,
+	a3boolean const updateIK)
+{
+	a3_HierarchyState* activeHS_fk = demoMode->hierarchyState_skel_fk;
+	a3_HierarchyState* activeHS_ik = demoMode->hierarchyState_skel_ik;
+	a3_HierarchyState* activeHS = demoMode->hierarchyState_skel_final;
+	a3_HierarchyState const* baseHS = demoMode->hierarchyState_skel_base;
+	a3_HierarchyPoseGroup const* poseGroup = demoMode->hierarchyPoseGroup_skel;
+
+	// switch controller to see different states
+	// A is idle, arms down; B is skin test, arms out
+	a3_ClipController* clipCtrl_fk = demoMode->clipCtrlA;
+	//a3ui32 sampleIndex0, sampleIndex1;
+
+	a3_HierarchyPose movingPose[1], idlePose[1];
+	a3hierarchyPoseOpCreate(movingPose, activeHS_fk->hierarchy->numNodes);
+	a3hierarchyPoseOpIdentity(movingPose, activeHS_fk->hierarchy->numNodes);
+	a3hierarchyPoseOpCreate(idlePose, activeHS_fk->hierarchy->numNodes);
+	a3hierarchyPoseOpIdentity(idlePose, activeHS_fk->hierarchy->numNodes);
+
+	a3characterControllerUpdate(demoMode->character, movingPose, (a3real)dt);
+
+	// resolve FK state
+	// update clip controller, keyframe lerp
+	a3clipControllerUpdate(clipCtrl_fk, dt);
+
+	//characte->animControllers[0] is the idle controller for a Character Controller
+	//sampleIndex0 = demoMode->clipPool->keyframe[demoMode->character->animControllers[0].keyframeIndex].sampleIndex0;
+	//sampleIndex1 = demoMode->clipPool->keyframe[demoMode->character->animControllers[0].keyframeIndex].sampleIndex1;
+
+	movingPose->pose[0].translate.x = demoMode->sceneGraphState->objectSpace->pose[demoMode->character->object->sceneGraphIndex].translate.x;
+	//movingPose->pose[0].translate.y = demoMode->sceneGraphState->objectSpace->pose[demoMode->character->object->sceneGraphIndex].translate.y;
+	movingPose->pose[0].translate.z = demoMode->sceneGraphState->objectSpace->pose[demoMode->character->object->sceneGraphIndex].translate.z;
+
+	a3hierarchyPoseCopy(activeHS_fk->animPose, movingPose, activeHS_fk->hierarchy->numNodes);
+
+	// run FK pipeline
+	a3animation_update_fk(activeHS_fk, baseHS, poseGroup);
+
+	if (firstFrame)
 	{
-		a3ui32 i;
-		a3mat4 scaleMat = a3mat4_identity;
+		a3i32 jUpLeg = a3hierarchyGetNodeIndex(activeHS_fk->hierarchy, "Oberarm_L");
+		a3i32 jDownLeg = a3hierarchyGetNodeIndex(activeHS_fk->hierarchy, "Unterarm_L");
+		a3i32 jFoot = a3hierarchyGetNodeIndex(activeHS_fk->hierarchy, "Vorderpfote_L");
+		a3_SpatialPose* upLegObj = &activeHS_fk->objectSpace->pose[jUpLeg];
+		a3_SpatialPose* downLegObj = &activeHS_fk->objectSpace->pose[jDownLeg];
+		a3_SpatialPose* footObj = &activeHS_fk->objectSpace->pose[jFoot];
+		a3vec3 vector, v1, v2, v3, v4;
+		a3real3Diff(v1.v, footObj->transformMat.v3.xyz.v, downLegObj->transformMat.v3.xyz.v);
+		a3real3Diff(v2.v, downLegObj->transformMat.v3.xyz.v, upLegObj->transformMat.v3.xyz.v);
+		a3real3Sum(vector.v, v1.v, v2.v);
 
-		a3demo_update_objects(dt, demoMode->object_scene, animationMaxCount_sceneObject, 0, 0);
-		a3demo_update_objects(dt, demoMode->obj_camera_main, 1, 1, 0);
+		demoMode->character->frontLegMaxLengthSq = a3real3LengthSquared(vector.v);
 
-		a3demo_updateProjectorViewProjectionMat(demoMode->proj_camera_main);
+		jUpLeg = a3hierarchyGetNodeIndex(activeHS_fk->hierarchy, "Oberschenkel_L");
+		jDownLeg = a3hierarchyGetNodeIndex(activeHS_fk->hierarchy, "Unterschenkel_L");
+		jFoot = a3hierarchyGetNodeIndex(activeHS_fk->hierarchy, "Vorderpfote_L");
+		a3i32 jToe = a3hierarchyGetNodeIndex(activeHS_fk->hierarchy, "Pfote2_L");
 
-		// apply scales to objects
-		for (i = 0; i < animationMaxCount_sceneObject; ++i)
-		{
-			a3demo_applyScale_internal(demoMode->object_scene + i, scaleMat.m);
-		}
+		upLegObj = &activeHS_fk->objectSpace->pose[jUpLeg];
+		downLegObj = &activeHS_fk->objectSpace->pose[jDownLeg];
+		footObj = &activeHS_fk->objectSpace->pose[jFoot];
+		a3_SpatialPose* toeObj = &activeHS_fk->objectSpace->pose[jToe];
+		a3real3Diff(v1.v, footObj->transformMat.v3.xyz.v, downLegObj->transformMat.v3.xyz.v);
+		a3real3Diff(v2.v, downLegObj->transformMat.v3.xyz.v, upLegObj->transformMat.v3.xyz.v);
+		a3real3Diff(v3.v, toeObj->transformMat.v3.xyz.v, footObj->transformMat.v3.xyz.v);
+		a3real3Sum(v4.v, v1.v, v2.v);
+		a3real3Sum(vector.v, v3.v, v4.v);
 
-		// update skybox
-		a3demo_update_bindSkybox(demoMode->obj_camera_main, demoMode->obj_skybox);
-
-		for (i = 0; i < animationMaxCount_sceneObject; ++i)
-			demoMode->sceneGraphState->localSpace->pose[i].transformMat = demoMode->object_scene[i].modelMat;
-		a3kinematicsSolveForward(demoMode->sceneGraphState);
-		a3hierarchyStateUpdateLocalInverse(demoMode->sceneGraphState);
-		a3hierarchyStateUpdateObjectInverse(demoMode->sceneGraphState);
+		demoMode->character->backLegMaxLengthSq = a3real3LengthSquared(vector.v);
+		firstFrame = false;
 	}
-
-	void a3animation_update(a3_DemoState * demoState, a3_DemoMode1_Animation * demoMode, a3f64 const dt)
+	// resolve IK state
+	// copy FK to IK
+	a3hierarchyPoseCopy(
+		activeHS_ik->animPose,	// dst: IK anim
+		activeHS_fk->animPose,	// src: FK anim
+		//baseHS->animPose,	// src: base anim
+		activeHS_ik->hierarchy->numNodes);
+	// run FK
+	a3animation_update_fk(activeHS_ik, baseHS, poseGroup);
+	if (updateIK)
+		//if (false)
 	{
-		a3ui32 i;
-		a3_DemoModelMatrixStack matrixStack[animationMaxCount_sceneObject];
+		// invert object-space
+		a3hierarchyStateUpdateObjectInverse(activeHS_ik);
 
-		// active camera
-		a3_DemoProjector const* activeCamera = demoMode->projector + demoMode->activeCamera;
-		a3_DemoSceneObject const* activeCameraObject = activeCamera->sceneObject;
-
-		// skeletal
-		if (demoState->updateAnimation)
-			a3animation_update_animation(demoMode, dt, 1);
-
-		// update scene graph local transforms
-		a3animation_update_sceneGraph(demoMode, dt);
-		printf("%f", demoMode->sceneGraphState->objectSpace->pose[4].transformMat.v3.x);
-		printf(", %f", demoMode->sceneGraphState->objectSpace->pose[4].transformMat.v3.y);
-		printf(", %f\n", demoMode->sceneGraphState->objectSpace->pose[4].transformMat.v3.z);
-
-		// update matrix stack data using scene graph
-		for (i = 0; i < animationMaxCount_sceneObject; ++i)
-		{
-			a3demo_updateModelMatrixStack(matrixStack + i,
-				activeCamera->projectionMat.m,
-				demoMode->sceneGraphState->objectSpace->pose[demoMode->obj_camera_main->sceneGraphIndex].transformMat.m,
-				demoMode->sceneGraphState->objectSpaceInv->pose[demoMode->obj_camera_main->sceneGraphIndex].transformMat.m,
-				demoMode->sceneGraphState->objectSpace->pose[demoMode->object_scene[i].sceneGraphIndex].transformMat.m,
-				a3mat4_identity.m);
-		}
-
-		// prepare and upload graphics data
-		a3animation_update_graphics(demoState, demoMode, matrixStack, demoMode->hierarchyState_skel_final);
-
-		// testing: reset IK effectors to lock them to FK result
-		{
-			//void a3animation_load_resetEffectors(a3_DemoMode1_Animation * demoMode,
-			//	a3_HierarchyState * hierarchyState, a3_HierarchyPoseGroup const* poseGroup);
-			//a3animation_load_resetEffectors(demoMode,
-			//	demoMode->hierarchyState_skel_final, demoMode->hierarchyPoseGroup_skel);
-		}
-
-		//a3vec3 point = a3vec3_zero;
-		//a3boolean collisionResult = a3raycastGetCollisionUnboundedPlane(demoMode->ray, demoMode->plane, true, &demoMode->intersectionPoint);
-		//a3vec3 coll2Point;
-		//a3boolean coll2 = a3raycastGetCollisionBoundedPlane(demoMode->ray, demoMode->plane, true, &(demoMode->intersectionPoint[0]));
-		//printf("%i\n", collisionResult);
-		//printf("%f, %f, %f\n", demoMode->ray->direction->x, demoMode->ray->direction->y, demoMode->ray->direction->z);
-		//printf("%f, %f, %f\n", demoMode->plane->normal->x, demoMode->plane->normal->y, demoMode->plane->normal->z);
-		//printf("%f, %f, %f\n", demoMode->intersectionPoint.x, demoMode->intersectionPoint.y, demoMode->intersectionPoint.z);
-		//printf("%i\n", coll2);
-		//printf("%f, %f, %f\n", coll2Point.x, coll2Point.y, coll2Point.z);
-		//printf("%f\n", point.x);
-
-		// ****TO-DO:
-		// process input
-		demoMode->axis_r[0] *= 180.0f;
-		demoMode->axis_l[0] *= 4.0f;
-		demoMode->axis_l[1] *= 4.0f;
-		switch (demoMode->ctrl_position)
-		{
-		case animation_input_direct:
-			demoMode->pos.x = (a3real)demoMode->axis_l[0];
-			demoMode->pos.y = (a3real)demoMode->axis_l[1];
-
-			break;
-		case animation_input_euler:
-		{
-			//Put raw values into container variables (a3real3 because that's what our integration functions run on)
-
-			demoMode->vel.x = (a3real)demoMode->axis_l[0];
-			demoMode->vel.y = (a3real)demoMode->axis_l[1];
-			demoMode->acc = a3vec2_zero;
-
-			/* let it be known, cameron, when left on autopilot, will manually calculate completely uncesessary values
-			* yes, this calculates acceleration from temp variables.
-			a3real3 dxdt, dxrdt;
-			dxdt[0] = (tempVel[0] - demoMode->vel.x) / (a3real)dt;
-			dxdt[1] = (tempVel[1] - demoMode->vel.y) / (a3real)dt;
-			dxdt[2] = 0.0f;
-
-			dxrdt[0] = (tempVelR[0] - demoMode->velr) / (a3real)dt;
-			dxrdt[1] = 0.0f;
-			dxrdt[2] = 0.0f;
-			*/
-
-			a3vec3 velIn = { demoMode->vel.x, demoMode->vel.y, 0 };
-			a3vec3 posIn = { demoMode->pos.x, demoMode->pos.y, 0 };
-			a3vec3 posOut = a3vec3_zero;
-
-			a3EulerIntegration(posOut.v, posIn.v, velIn.v, (a3real)dt);
-
-			demoMode->pos.x = posOut.x;
-			demoMode->pos.y = posOut.y;
-		}
-		break;
-		case animation_input_kinematic:
-			demoMode->acc.x = (a3real)demoMode->axis_l[0] * 4.0f;
-			demoMode->acc.y = (a3real)demoMode->axis_l[1] * 4.0f;
-
-			a3vec3 accIn = { demoMode->acc.x, demoMode->acc.y, 0 };
-
-			a3vec3 velIn = { demoMode->vel.x, demoMode->vel.y, 0 };
-			a3vec3 posIn = { demoMode->pos.x, demoMode->pos.y, 0 };
-
-			a3vec3 velOut = a3vec3_zero;
-			a3vec3 posOut = a3vec3_zero;
-
-			a3KinematicIntegration(posOut.v, velOut.v, posIn.v, velIn.v, accIn.v, (a3real)dt);
-
-			demoMode->pos.x = posOut.x;
-			demoMode->pos.y = posOut.y;
-			demoMode->vel.x = velOut.x;
-			demoMode->vel.y = velOut.y;
-
-			break;
-		case animation_input_interpolate1:
-		{
-			a3real2 targetPos;
-			targetPos[0] = (a3real)demoMode->axis_l[0];
-			targetPos[1] = (a3real)demoMode->axis_l[1];
-
-
-			a3real2Lerp(demoMode->pos.v, demoMode->pos.v, targetPos, 0.4f);
-		}
-		break;
-		case animation_input_interpolate2:
-		{
-			a3vec3 velIn = { demoMode->vel.x, demoMode->vel.y, 0 };
-
-			a3vec3 posIn = { demoMode->pos.x, demoMode->pos.y, 0 };
-			a3vec3 posOut = a3vec3_zero;
-			a3EulerIntegration(posOut.v, posIn.v, velIn.v, (a3real)dt);
-
-			a3real2 targetVel = { (a3real)demoMode->axis_l[0], (a3real)demoMode->axis_l[1] };
-
-			a3vec3 velOut = a3vec3_zero;
-			a3real2Lerp(velOut.v, velIn.v, targetVel, 0.4f);
-
-			demoMode->pos.x = posOut.x;
-			demoMode->pos.y = posOut.y;
-
-			demoMode->vel.x = velOut.x;
-			demoMode->vel.y = velOut.y;
-
-		}
-		break;
-		case animation_input_interpolate3:
-		{
-			a3vec3 accIn = { demoMode->acc.x, demoMode->acc.y, 0 };
-
-			a3vec3 velIn = { demoMode->vel.x, demoMode->vel.y, 0 };
-			a3vec3 posIn = { demoMode->pos.x, demoMode->pos.y, 0 };
-			a3vec3 posOut = a3vec3_zero;
-			a3vec3 velOut = a3vec3_zero;
-			a3KinematicIntegration(posOut.v, velOut.v, posIn.v, velIn.v, accIn.v, (a3real)dt);
-
-			demoMode->pos.x = posOut.x;
-			demoMode->pos.y = posOut.y;
-
-			demoMode->vel.x = velOut.x;
-			demoMode->vel.y = velOut.y;
-
-			a3real2 targetAcc = { (a3real)demoMode->axis_l[0], (a3real)demoMode->axis_l[1] };
-			a3vec3 accOut = a3vec3_zero;
-			a3real2Lerp(accOut.v, accIn.v, targetAcc, 0.6f);
-
-			demoMode->acc.x = accOut.x;
-			demoMode->acc.y = accOut.y;
-		}
-		break;
-		}
-
-		switch (demoMode->ctrl_rotation)
-		{
-		case animation_input_direct:
-			demoMode->rot = (a3real)a3clamp(-180.0f, 180.0f, demoMode->axis_r[0]);	//Clamp between -180 and +180 degrees
-
-			break;
-		case animation_input_euler:
-		{
-			demoMode->velr = (a3real)demoMode->axis_r[0];
-			demoMode->accr = 0;
-
-			a3vec3 rVelIn = { demoMode->velr, 0, 0 };
-			a3vec3 rotIn = { demoMode->rot, 0, 0 };
-			a3vec3 rotOut = a3vec3_zero;
-			a3EulerIntegration(rotOut.v, rotIn.v, rVelIn.v, (a3real)dt);
-
-			demoMode->rot = (float)fmod(rotOut.x, 360.0f);
-		}
-		break;
-		case animation_input_kinematic:
-			demoMode->accr = (a3real)demoMode->axis_r[0];
-
-			a3vec3 rAccIn = { demoMode->accr, 0, 0 };
-
-			a3vec3 rVelIn = { demoMode->velr, 0, 0 };
-			a3vec3 rotIn = { demoMode->rot, 0, 0 };
-
-			a3vec3 rVelOut = a3vec3_zero;
-			a3vec3 rotOut = a3vec3_zero;
-
-			a3KinematicIntegration(rotOut.v, rVelOut.v, rotIn.v, rVelIn.v, rAccIn.v, (a3real)dt);
-
-			demoMode->rot = (float)fmod(rotOut.x, 360.0f);
-			demoMode->velr = rVelOut.x;
-			break;
-		case animation_input_interpolate1:
-		{
-			demoMode->accr = 0;
-			demoMode->velr = 0;
-			a3real targetRot;
-
-			targetRot = ((a3real)demoMode->axis_r[0]);
-
-			a3real rotOut = a3lerp(demoMode->rot, targetRot, 0.4f);
-			demoMode->rot = rotOut;
-		}
-		break;
-		case animation_input_interpolate2:
-		{
-			demoMode->accr = 0;
-			a3vec3 rVelIn = { demoMode->velr, 0, 0 };
-
-			a3vec3 rotIn = { demoMode->rot, 0, 0 };
-			a3vec3 rotOut = a3vec3_zero;
-			a3EulerIntegration(rotOut.v, rotIn.v, rVelIn.v, (a3real)dt);
-
-			a3real targetRVel = (a3real)demoMode->axis_r[0];
-
-			a3real rVelOut = a3lerp(demoMode->velr, targetRVel, 0.4f);
-			demoMode->velr = rVelOut;
-
-			demoMode->rot = (float)fmod(rotOut.x, 360.0f);
-		}
-		break;
-		case animation_input_interpolate3:
-		{
-			a3vec3 rAccIn = { demoMode->accr, 0, 0 };
-
-			a3vec3 rVelIn = { demoMode->velr, 0, 0 };
-			a3vec3 rotIn = { demoMode->rot, 0, 0 };
-			a3vec3 rotOut = a3vec3_zero;
-			a3vec3 rVelOut = a3vec3_zero;
-			a3KinematicIntegration(rotOut.v, rVelOut.v, rotIn.v, rVelIn.v, rAccIn.v, (a3real)dt);
-
-			demoMode->rot = rotOut.x;
-
-			demoMode->velr = rVelOut.x;
-
-			a3real targetRAcc = (a3real)demoMode->axis_r[0];
-
-			a3real rAccOut = a3lerp(demoMode->accr, targetRAcc, 0.6f);
-
-			demoMode->accr = rAccOut;
-		}
-		break;
-		}
-		// apply input
-		a3characterControllerApplyInput(demoMode->character, &demoMode->pos, demoMode->rot, (a3real)dt);
-
-		//demoMode->obj_skeleton_ctrl->position.x = +(demoMode->pos.x);
-		//demoMode->obj_skeleton_ctrl->position.y = +(demoMode->pos.y);
-		//demoMode->obj_skeleton_ctrl->euler.z = -a3trigValid_sind(demoMode->rot);
+		updateRaycasts(demoMode, activeHS_ik);
+		// run solvers
+		a3animation_update_applyEffectors(demoMode, activeHS_ik, baseHS, poseGroup);
+		// run full IK pipeline (if not resolving with effectors)
+		//a3animation_update_ik(activeHS_ik, baseHS, poseGroup);
 	}
 
+	// blend FK/IK to final
+	// testing: copy source to final
+	a3hierarchyPoseCopy(activeHS->animPose,	// dst: final anim
+		//activeHS_fk->animPose,	// src: FK anim
+		activeHS_ik->animPose,	// src: IK anim
+		//baseHS->animPose,	// src: base anim (identity)
+		activeHS->hierarchy->numNodes);
+	// run FK pipeline (skinning optional)
+	a3animation_update_fk(activeHS, baseHS, poseGroup);
+	a3animation_update_skin(activeHS, baseHS);
+}
 
-	//-----------------------------------------------------------------------------
+void a3animation_update_sceneGraph(a3_DemoMode1_Animation* demoMode, a3f64 const dt)
+{
+	a3ui32 i;
+	a3mat4 scaleMat = a3mat4_identity;
+
+	a3demo_update_objects(dt, demoMode->object_scene, animationMaxCount_sceneObject, 0, 0);
+	a3demo_update_objects(dt, demoMode->obj_camera_main, 1, 1, 0);
+
+	a3demo_updateProjectorViewProjectionMat(demoMode->proj_camera_main);
+
+	// apply scales to objects
+	for (i = 0; i < animationMaxCount_sceneObject; ++i)
+	{
+		a3demo_applyScale_internal(demoMode->object_scene + i, scaleMat.m);
+	}
+
+	// update skybox
+	a3demo_update_bindSkybox(demoMode->obj_camera_main, demoMode->obj_skybox);
+
+	for (i = 0; i < animationMaxCount_sceneObject; ++i)
+		demoMode->sceneGraphState->localSpace->pose[i].transformMat = demoMode->object_scene[i].modelMat;
+	a3kinematicsSolveForward(demoMode->sceneGraphState);
+	a3hierarchyStateUpdateLocalInverse(demoMode->sceneGraphState);
+	a3hierarchyStateUpdateObjectInverse(demoMode->sceneGraphState);
+}
+
+void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode, a3f64 const dt)
+{
+	a3ui32 i;
+	a3_DemoModelMatrixStack matrixStack[animationMaxCount_sceneObject];
+
+	// active camera
+	a3_DemoProjector const* activeCamera = demoMode->projector + demoMode->activeCamera;
+	a3_DemoSceneObject const* activeCameraObject = activeCamera->sceneObject;
+
+	// skeletal
+	if (demoState->updateAnimation)
+		a3animation_update_animation(demoMode, dt, 1);
+
+	// update scene graph local transforms
+	a3animation_update_sceneGraph(demoMode, dt);
+	printf("%f", demoMode->sceneGraphState->objectSpace->pose[4].transformMat.v3.x);
+	printf(", %f", demoMode->sceneGraphState->objectSpace->pose[4].transformMat.v3.y);
+	printf(", %f\n", demoMode->sceneGraphState->objectSpace->pose[4].transformMat.v3.z);
+
+	// update matrix stack data using scene graph
+	for (i = 0; i < animationMaxCount_sceneObject; ++i)
+	{
+		a3demo_updateModelMatrixStack(matrixStack + i,
+			activeCamera->projectionMat.m,
+			demoMode->sceneGraphState->objectSpace->pose[demoMode->obj_camera_main->sceneGraphIndex].transformMat.m,
+			demoMode->sceneGraphState->objectSpaceInv->pose[demoMode->obj_camera_main->sceneGraphIndex].transformMat.m,
+			demoMode->sceneGraphState->objectSpace->pose[demoMode->object_scene[i].sceneGraphIndex].transformMat.m,
+			a3mat4_identity.m);
+	}
+
+	// prepare and upload graphics data
+	a3animation_update_graphics(demoState, demoMode, matrixStack, demoMode->hierarchyState_skel_final);
+
+	// testing: reset IK effectors to lock them to FK result
+	{
+		//void a3animation_load_resetEffectors(a3_DemoMode1_Animation * demoMode,
+		//	a3_HierarchyState * hierarchyState, a3_HierarchyPoseGroup const* poseGroup);
+		//a3animation_load_resetEffectors(demoMode,
+		//	demoMode->hierarchyState_skel_final, demoMode->hierarchyPoseGroup_skel);
+	}
+
+	//a3vec3 point = a3vec3_zero;
+	//a3boolean collisionResult = a3raycastGetCollisionUnboundedPlane(demoMode->ray, demoMode->plane, true, &demoMode->intersectionPoint);
+	//a3vec3 coll2Point;
+	//a3boolean coll2 = a3raycastGetCollisionBoundedPlane(demoMode->ray, demoMode->plane, true, &(demoMode->intersectionPoint[0]));
+	//printf("%i\n", collisionResult);
+	//printf("%f, %f, %f\n", demoMode->ray->direction->x, demoMode->ray->direction->y, demoMode->ray->direction->z);
+	//printf("%f, %f, %f\n", demoMode->plane->normal->x, demoMode->plane->normal->y, demoMode->plane->normal->z);
+	//printf("%f, %f, %f\n", demoMode->intersectionPoint.x, demoMode->intersectionPoint.y, demoMode->intersectionPoint.z);
+	//printf("%i\n", coll2);
+	//printf("%f, %f, %f\n", coll2Point.x, coll2Point.y, coll2Point.z);
+	//printf("%f\n", point.x);
+
+	// ****TO-DO:
+	// process input
+	demoMode->axis_r[0] *= 180.0f;
+	demoMode->axis_l[0] *= 4.0f;
+	demoMode->axis_l[1] *= 4.0f;
+	switch (demoMode->ctrl_position)
+	{
+	case animation_input_direct:
+		demoMode->pos.x = (a3real)demoMode->axis_l[0];
+		demoMode->pos.y = (a3real)demoMode->axis_l[1];
+
+		break;
+	case animation_input_euler:
+	{
+		//Put raw values into container variables (a3real3 because that's what our integration functions run on)
+
+		demoMode->vel.x = (a3real)demoMode->axis_l[0];
+		demoMode->vel.y = (a3real)demoMode->axis_l[1];
+		demoMode->acc = a3vec2_zero;
+
+		/* let it be known, cameron, when left on autopilot, will manually calculate completely uncesessary values
+		* yes, this calculates acceleration from temp variables.
+		a3real3 dxdt, dxrdt;
+		dxdt[0] = (tempVel[0] - demoMode->vel.x) / (a3real)dt;
+		dxdt[1] = (tempVel[1] - demoMode->vel.y) / (a3real)dt;
+		dxdt[2] = 0.0f;
+
+		dxrdt[0] = (tempVelR[0] - demoMode->velr) / (a3real)dt;
+		dxrdt[1] = 0.0f;
+		dxrdt[2] = 0.0f;
+		*/
+
+		a3vec3 velIn = { demoMode->vel.x, demoMode->vel.y, 0 };
+		a3vec3 posIn = { demoMode->pos.x, demoMode->pos.y, 0 };
+		a3vec3 posOut = a3vec3_zero;
+
+		a3EulerIntegration(posOut.v, posIn.v, velIn.v, (a3real)dt);
+
+		demoMode->pos.x = posOut.x;
+		demoMode->pos.y = posOut.y;
+	}
+	break;
+	case animation_input_kinematic:
+		demoMode->acc.x = (a3real)demoMode->axis_l[0] * 4.0f;
+		demoMode->acc.y = (a3real)demoMode->axis_l[1] * 4.0f;
+
+		a3vec3 accIn = { demoMode->acc.x, demoMode->acc.y, 0 };
+
+		a3vec3 velIn = { demoMode->vel.x, demoMode->vel.y, 0 };
+		a3vec3 posIn = { demoMode->pos.x, demoMode->pos.y, 0 };
+
+		a3vec3 velOut = a3vec3_zero;
+		a3vec3 posOut = a3vec3_zero;
+
+		a3KinematicIntegration(posOut.v, velOut.v, posIn.v, velIn.v, accIn.v, (a3real)dt);
+
+		demoMode->pos.x = posOut.x;
+		demoMode->pos.y = posOut.y;
+		demoMode->vel.x = velOut.x;
+		demoMode->vel.y = velOut.y;
+
+		break;
+	case animation_input_interpolate1:
+	{
+		a3real2 targetPos;
+		targetPos[0] = (a3real)demoMode->axis_l[0];
+		targetPos[1] = (a3real)demoMode->axis_l[1];
+
+
+		a3real2Lerp(demoMode->pos.v, demoMode->pos.v, targetPos, 0.4f);
+	}
+	break;
+	case animation_input_interpolate2:
+	{
+		a3vec3 velIn = { demoMode->vel.x, demoMode->vel.y, 0 };
+
+		a3vec3 posIn = { demoMode->pos.x, demoMode->pos.y, 0 };
+		a3vec3 posOut = a3vec3_zero;
+		a3EulerIntegration(posOut.v, posIn.v, velIn.v, (a3real)dt);
+
+		a3real2 targetVel = { (a3real)demoMode->axis_l[0], (a3real)demoMode->axis_l[1] };
+
+		a3vec3 velOut = a3vec3_zero;
+		a3real2Lerp(velOut.v, velIn.v, targetVel, 0.4f);
+
+		demoMode->pos.x = posOut.x;
+		demoMode->pos.y = posOut.y;
+
+		demoMode->vel.x = velOut.x;
+		demoMode->vel.y = velOut.y;
+
+	}
+	break;
+	case animation_input_interpolate3:
+	{
+		a3vec3 accIn = { demoMode->acc.x, demoMode->acc.y, 0 };
+
+		a3vec3 velIn = { demoMode->vel.x, demoMode->vel.y, 0 };
+		a3vec3 posIn = { demoMode->pos.x, demoMode->pos.y, 0 };
+		a3vec3 posOut = a3vec3_zero;
+		a3vec3 velOut = a3vec3_zero;
+		a3KinematicIntegration(posOut.v, velOut.v, posIn.v, velIn.v, accIn.v, (a3real)dt);
+
+		demoMode->pos.x = posOut.x;
+		demoMode->pos.y = posOut.y;
+
+		demoMode->vel.x = velOut.x;
+		demoMode->vel.y = velOut.y;
+
+		a3real2 targetAcc = { (a3real)demoMode->axis_l[0], (a3real)demoMode->axis_l[1] };
+		a3vec3 accOut = a3vec3_zero;
+		a3real2Lerp(accOut.v, accIn.v, targetAcc, 0.6f);
+
+		demoMode->acc.x = accOut.x;
+		demoMode->acc.y = accOut.y;
+	}
+	break;
+	}
+
+	switch (demoMode->ctrl_rotation)
+	{
+	case animation_input_direct:
+		demoMode->rot = (a3real)a3clamp(-180.0f, 180.0f, demoMode->axis_r[0]);	//Clamp between -180 and +180 degrees
+
+		break;
+	case animation_input_euler:
+	{
+		demoMode->velr = (a3real)demoMode->axis_r[0];
+		demoMode->accr = 0;
+
+		a3vec3 rVelIn = { demoMode->velr, 0, 0 };
+		a3vec3 rotIn = { demoMode->rot, 0, 0 };
+		a3vec3 rotOut = a3vec3_zero;
+		a3EulerIntegration(rotOut.v, rotIn.v, rVelIn.v, (a3real)dt);
+
+		demoMode->rot = (float)fmod(rotOut.x, 360.0f);
+	}
+	break;
+	case animation_input_kinematic:
+		demoMode->accr = (a3real)demoMode->axis_r[0];
+
+		a3vec3 rAccIn = { demoMode->accr, 0, 0 };
+
+		a3vec3 rVelIn = { demoMode->velr, 0, 0 };
+		a3vec3 rotIn = { demoMode->rot, 0, 0 };
+
+		a3vec3 rVelOut = a3vec3_zero;
+		a3vec3 rotOut = a3vec3_zero;
+
+		a3KinematicIntegration(rotOut.v, rVelOut.v, rotIn.v, rVelIn.v, rAccIn.v, (a3real)dt);
+
+		demoMode->rot = (float)fmod(rotOut.x, 360.0f);
+		demoMode->velr = rVelOut.x;
+		break;
+	case animation_input_interpolate1:
+	{
+		demoMode->accr = 0;
+		demoMode->velr = 0;
+		a3real targetRot;
+
+		targetRot = ((a3real)demoMode->axis_r[0]);
+
+		a3real rotOut = a3lerp(demoMode->rot, targetRot, 0.4f);
+		demoMode->rot = rotOut;
+	}
+	break;
+	case animation_input_interpolate2:
+	{
+		demoMode->accr = 0;
+		a3vec3 rVelIn = { demoMode->velr, 0, 0 };
+
+		a3vec3 rotIn = { demoMode->rot, 0, 0 };
+		a3vec3 rotOut = a3vec3_zero;
+		a3EulerIntegration(rotOut.v, rotIn.v, rVelIn.v, (a3real)dt);
+
+		a3real targetRVel = (a3real)demoMode->axis_r[0];
+
+		a3real rVelOut = a3lerp(demoMode->velr, targetRVel, 0.4f);
+		demoMode->velr = rVelOut;
+
+		demoMode->rot = (float)fmod(rotOut.x, 360.0f);
+	}
+	break;
+	case animation_input_interpolate3:
+	{
+		a3vec3 rAccIn = { demoMode->accr, 0, 0 };
+
+		a3vec3 rVelIn = { demoMode->velr, 0, 0 };
+		a3vec3 rotIn = { demoMode->rot, 0, 0 };
+		a3vec3 rotOut = a3vec3_zero;
+		a3vec3 rVelOut = a3vec3_zero;
+		a3KinematicIntegration(rotOut.v, rVelOut.v, rotIn.v, rVelIn.v, rAccIn.v, (a3real)dt);
+
+		demoMode->rot = rotOut.x;
+
+		demoMode->velr = rVelOut.x;
+
+		a3real targetRAcc = (a3real)demoMode->axis_r[0];
+
+		a3real rAccOut = a3lerp(demoMode->accr, targetRAcc, 0.6f);
+
+		demoMode->accr = rAccOut;
+	}
+	break;
+	}
+	// apply input
+	a3characterControllerApplyInput(demoMode->character, &demoMode->pos, demoMode->rot, (a3real)dt);
+
+	//demoMode->obj_skeleton_ctrl->position.x = +(demoMode->pos.x);
+	//demoMode->obj_skeleton_ctrl->position.y = +(demoMode->pos.y);
+	//demoMode->obj_skeleton_ctrl->euler.z = -a3trigValid_sind(demoMode->rot);
+}
+
+
+//-----------------------------------------------------------------------------

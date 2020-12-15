@@ -46,6 +46,7 @@ struct a3_CharacterController
 
 	// the character's current velocity
 	a3f32 currentVelocity;
+	a3i32 currentDir;
 
 	a3f32 normalizedVelocity;
 	a3f32 crouchVal;

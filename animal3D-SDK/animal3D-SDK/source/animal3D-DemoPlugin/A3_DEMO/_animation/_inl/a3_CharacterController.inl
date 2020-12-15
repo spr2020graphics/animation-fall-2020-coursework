@@ -46,6 +46,7 @@ inline a3ui32 a3characterControllerApplyInput(a3_CharacterController* controller
 	a3real3QuotientS(tempVel.v, a3real3Diff(tempVel.v, tempPos.v, controller->object->position.v), dt);
 
 	controller->currentVelocity = a3real2Length(tempVel.v);
+	controller->currentDir = position->y > 0 ? -1 : 1;
 
 	controller->object->position.x = +(position->x);
 	controller->object->position.y = +(position->y);
@@ -68,8 +69,8 @@ inline a3ui32 a3characterControllerUpdate(a3_CharacterController* controller, a3
 		controller->triLerpVelocity = u * (1 - controller->crouchVal);
 
 
-		float walkDT = dt / getWalkScale(u); //dt is scaled to 1/0.75 at u = 1
-		float runDT = dt * getRunScale(u); //dt is scaled to 0.75 at u = 0
+		float walkDT = controller->currentDir * dt / getWalkScale(u); //dt is scaled to 1/0.75 at u = 1
+		float runDT = controller->currentDir * dt * getRunScale(u); //dt is scaled to 0.75 at u = 0
 
 		a3clipControllerUpdate(&controller->animControllers[0], dt);
 		a3clipControllerUpdate(&controller->animControllers[1], walkDT);
