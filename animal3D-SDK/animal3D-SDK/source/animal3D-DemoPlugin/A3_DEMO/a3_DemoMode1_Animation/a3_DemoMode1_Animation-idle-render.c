@@ -476,17 +476,23 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 		a3shaderUniformSendInt(a3unif_single, currentDemoProgram->uIndex, 1, &j);
 		a3vertexDrawableActivateAndRender(demoState->draw_plane);
 		*/
+
 		a3mat4 sphereMat = a3mat4_identity;
-		sphereMat.v3.xyz = demoMode->intersectionPoint[0];
-		// draw sphere at intersection point
-		a3real4x4Product(modelViewMat.m, activeCameraObject->modelMatInv.m, sphereMat.m);
-		a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uMV, 1, modelViewMat.mm);
-		a3demo_quickInvertTranspose_internal(modelViewMat.m);
-		modelViewMat.v3 = a3vec4_zero;
-		a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uMV_nrm, 1, modelViewMat.mm);
-		a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, rgba4[i].v);
-		a3shaderUniformSendInt(a3unif_single, currentDemoProgram->uIndex, 1, &j);
-		a3vertexDrawableActivateAndRender(demoState->draw_unit_sphere);
+		for (a3ui32 index = 0; index < 4; index++)
+		{
+			a3real4x4SetScale(&sphereMat.mm, 0.5f);
+			sphereMat.v3.xyz = demoMode->intersectionPoint[index];
+
+			// draw sphere at intersection point
+			a3real4x4Product(modelViewMat.m, activeCameraObject->modelMatInv.m, sphereMat.m);
+			a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uMV, 1, modelViewMat.mm);
+			a3demo_quickInvertTranspose_internal(modelViewMat.m);
+			modelViewMat.v3 = a3vec4_zero;
+			a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uMV_nrm, 1, modelViewMat.mm);
+			a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, rgba4[i].v);
+			a3shaderUniformSendInt(a3unif_single, currentDemoProgram->uIndex, 1, &j);
+			a3vertexDrawableActivateAndRender(demoState->draw_unit_sphere);
+		}
 		
 
 	}	break;
