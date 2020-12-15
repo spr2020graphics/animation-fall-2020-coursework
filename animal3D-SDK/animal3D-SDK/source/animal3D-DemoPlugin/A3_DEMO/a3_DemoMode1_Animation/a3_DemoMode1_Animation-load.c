@@ -317,13 +317,13 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 
 
 	//demoMode->obj_ramp->scaleMode = 1;
-	demoMode->obj_ramp->position.y += 0.5f + a3sqrt(3)/4.0f;
+	demoMode->obj_ramp->position.y -= 0.5f + a3sqrt(3)/4.0f;
 	demoMode->obj_ramp->position.z += 0.25;
-	demoMode->obj_ramp->euler.x = 30.0f;
+	demoMode->obj_ramp->euler.x = -30.0f;
 	demoMode->obj_ramp->scale.x = 1.0f;
 
 	//demoMode->obj_landing->scaleMode = 1;
-	demoMode->obj_landing->position.y += 1.0f + a3sqrt(3)/2.0f;
+	demoMode->obj_landing->position.y -= 1.0f + a3sqrt(3)/2.0f;
 	demoMode->obj_landing->position.z += 0.5f;
 	demoMode->obj_landing->scale.x = 1.0f;
 
