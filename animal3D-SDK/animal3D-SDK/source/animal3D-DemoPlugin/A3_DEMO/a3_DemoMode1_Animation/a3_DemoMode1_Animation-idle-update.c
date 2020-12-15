@@ -232,9 +232,18 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 
 		// need to properly transform joints to their parent frame and vice-versa
 		a3mat4 const controlToSkeleton = demoMode->sceneGraphState->localSpaceInv->pose[j].transformMat;
-		a3vec4 controlLocator_neckLookat, controlLocator_wristEffector, controlLocator_wristConstraint, controlLocator_wristBase;
-		a3mat4 jointTransform_neck = a3mat4_identity, jointTransform_wrist = a3mat4_identity, jointTransform_elbow = a3mat4_identity, jointTransform_shoulder = a3mat4_identity;
-		a3ui32 j_neck, j_wrist, j_elbow, j_shoulder;
+
+		a3vec4 controlLocator_eff_FL, controlLocator_eff_FR, controlLocator_eff_BL, controlLocator_eff_BR;
+		a3vec4 controlLocator_con_FL, controlLocator_con_FR, controlLocator_con_BL, controlLocator_con_BR;
+		a3vec4 controlLocator_base_FL, controlLocator_base_FR, controlLocator_base_BL, controlLocator_base_BR;
+
+		a3mat4 jTrans_eff_FL = a3mat4_identity, jTrans_eff_FR = a3mat4_identity, jTrans_eff_BL = a3mat4_identity, jTrans_eff_BR = a3mat4_identity,
+			jTrans_elbow_FL = a3mat4_identity, jTrans_elbow_FR = a3mat4_identity, jTrans_elbow_BL = a3mat4_identity, jTrans_elbow_BR = a3mat4_identity,
+			jTrans_base_FL = a3mat4_identity, jTrans_base_FR = a3mat4_identity, jTrans_base_BL = a3mat4_identity, jTrans_base_BR = a3mat4_identity;
+
+		a3ui32 j_paw_FL, j_paw_FR, j_paw_BL, j_paw_BR;
+		a3ui32 j_elbow_FL, j_elbow_FR, j_elbow_BL, j_elbow_BR;
+		a3ui32 j_base_FL, j_base_FR, j_base_BL, j_base_BR;
 
 		/*
 		WOLF SOLVER NOTES
@@ -252,67 +261,90 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 
 		*/
 
-		//get limb length from base pose. Possibly store on load
-		// NECK LOOK-AT
 		{
-			// look-at effector
-			sceneObject = demoMode->obj_skeleton_neckLookat_ctrl;
-			a3real4Real4x4Product(controlLocator_neckLookat.v, controlToSkeleton.m,
+			// FL effector
+			sceneObject = demoMode->obj_wolf_effector_FL;
+			a3real4Real4x4Product(controlLocator_eff_FL.v, controlToSkeleton.m,
 				demoMode->sceneGraphState->localSpace->pose[sceneObject->sceneGraphIndex].transformMat.v3.v);
-			j = j_neck = a3hierarchyGetNodeIndex(activeHS->hierarchy, "mixamorig:Neck");
-			jointTransform_neck = activeHS->objectSpace->pose[j].transformMat;
+			j = j_paw_FL = a3hierarchyGetNodeIndex(activeHS->hierarchy, "Vorderpfote_L");
+			jTrans_eff_FL = activeHS->objectSpace->pose[j].transformMat;
 
-			// ****TO-DO: 
-			// make "look-at" matrix
-			// in this example, +Z is towards locator, +Y is up
-
-			//tangent = normalized vector between effector and neck
-			a3vec3 z = a3vec3_zero;
-			a3real3Diff(z.v, controlLocator_neckLookat.xyz.v, jointTransform_neck.v3.xyz.v);
-			a3real3Normalize(z.v);
-			jointTransform_neck.v2.xyz = z;
-			//'x' = VecUp cross z
-			a3vec3 x = a3vec3_zero;
-			a3vec3 up = { 0, 1, 0 };
-			a3real3Cross(x.v, up.v, jointTransform_neck.v2.xyz.v);
-			a3real3Normalize(x.v);
-			jointTransform_neck.v0.xyz = x;
-
-			//'y' = z cross x
-			a3real3Cross(jointTransform_neck.v1.xyz.v, jointTransform_neck.v2.xyz.v, jointTransform_neck.v0.xyz.v);
-
-			activeHS->objectSpace->pose[j_neck].transformMat = jointTransform_neck;
-
-		}
-
-		// RIGHT ARM REACH
-		{
-			// right wrist effector
-			sceneObject = demoMode->obj_skeleton_wristEffector_r_ctrl;
-			a3real4Real4x4Product(controlLocator_wristEffector.v, controlToSkeleton.m,
+			// FR effector
+			sceneObject = demoMode->obj_wolf_effector_FR;
+			a3real4Real4x4Product(controlLocator_eff_FR.v, controlToSkeleton.m,
 				demoMode->sceneGraphState->localSpace->pose[sceneObject->sceneGraphIndex].transformMat.v3.v);
-			j = j_wrist = a3hierarchyGetNodeIndex(activeHS->hierarchy, "mixamorig:RightHand");
-			jointTransform_wrist = activeHS->objectSpace->pose[j].transformMat;
+			j = j_paw_FR = a3hierarchyGetNodeIndex(activeHS->hierarchy, "Vorderpfote_R");
+			jTrans_eff_FR = activeHS->objectSpace->pose[j].transformMat;
 
-			// right wrist constraint
-			sceneObject = demoMode->obj_skeleton_wristConstraint_r_ctrl;
-			a3real4Real4x4Product(controlLocator_wristConstraint.v, controlToSkeleton.m,
+			// BL effector
+			sceneObject = demoMode->obj_wolf_effector_BL;
+			a3real4Real4x4Product(controlLocator_eff_BL.v, controlToSkeleton.m,
 				demoMode->sceneGraphState->localSpace->pose[sceneObject->sceneGraphIndex].transformMat.v3.v);
-			j = j_elbow = a3hierarchyGetNodeIndex(activeHS->hierarchy, "mixamorig:RightForeArm");
-			jointTransform_elbow = activeHS->objectSpace->pose[j].transformMat;
+			j = j_paw_BL = a3hierarchyGetNodeIndex(activeHS->hierarchy, "Pfote2_L");
+			jTrans_eff_BL = activeHS->objectSpace->pose[j].transformMat;
 
-			// right wrist base
-			j = j_shoulder = a3hierarchyGetNodeIndex(activeHS->hierarchy, "mixamorig:RightArm");
-			jointTransform_shoulder = activeHS->objectSpace->pose[j].transformMat;
-			controlLocator_wristBase = jointTransform_shoulder.v3;
+			// BR effector
+			sceneObject = demoMode->obj_wolf_effector_BR;
+			a3real4Real4x4Product(controlLocator_eff_BR.v, controlToSkeleton.m,
+				demoMode->sceneGraphState->localSpace->pose[sceneObject->sceneGraphIndex].transformMat.v3.v);
+			j = j_paw_BR = a3hierarchyGetNodeIndex(activeHS->hierarchy, "Pfote2_R");
+			jTrans_eff_BR = activeHS->objectSpace->pose[j].transformMat;
 
-			// ****TO-DO: 
-			// solve positions and orientations for joints
-			// in this example, +X points away from child, +Y is normal
-			// 1) check if solution exists
-			//	-> get vector between base and end effector; if it extends max length, straighten limb
-			//	-> position of end effector's target is at the minimum possible distance along this vector
 
+
+			// FL constraint
+			sceneObject = demoMode->obj_wolf_constraint_FL;
+			a3real4Real4x4Product(controlLocator_con_FL.v, controlToSkeleton.m,
+				demoMode->sceneGraphState->localSpace->pose[sceneObject->sceneGraphIndex].transformMat.v3.v);
+			j = j_elbow_FL = a3hierarchyGetNodeIndex(activeHS->hierarchy, "Unterarm_L");
+			jTrans_elbow_FL = activeHS->objectSpace->pose[j].transformMat;
+
+			// FR constraint
+			sceneObject = demoMode->obj_wolf_constraint_FR;
+			a3real4Real4x4Product(controlLocator_con_FR.v, controlToSkeleton.m,
+				demoMode->sceneGraphState->localSpace->pose[sceneObject->sceneGraphIndex].transformMat.v3.v);
+			j = j_elbow_FR = a3hierarchyGetNodeIndex(activeHS->hierarchy, "Unterarm_R");
+			jTrans_elbow_FR = activeHS->objectSpace->pose[j].transformMat;
+
+			// BL constraint
+			sceneObject = demoMode->obj_wolf_constraint_BL;
+			a3real4Real4x4Product(controlLocator_con_BL.v, controlToSkeleton.m,
+				demoMode->sceneGraphState->localSpace->pose[sceneObject->sceneGraphIndex].transformMat.v3.v);
+			j = j_elbow_BL = a3hierarchyGetNodeIndex(activeHS->hierarchy, "Unterschenkel_L");
+			jTrans_elbow_BL = activeHS->objectSpace->pose[j].transformMat;
+
+			// BR constraint
+			sceneObject = demoMode->obj_wolf_constraint_BR;
+			a3real4Real4x4Product(controlLocator_con_BR.v, controlToSkeleton.m,
+				demoMode->sceneGraphState->localSpace->pose[sceneObject->sceneGraphIndex].transformMat.v3.v);
+			j = j_elbow_BR = a3hierarchyGetNodeIndex(activeHS->hierarchy, "Unterschenkel_R");
+			jTrans_elbow_BR = activeHS->objectSpace->pose[j].transformMat;
+
+
+
+			// FL base
+			j = j_base_FL = a3hierarchyGetNodeIndex(activeHS->hierarchy, "Oberarm_L");
+			jTrans_base_FL = activeHS->objectSpace->pose[j].transformMat;
+			controlLocator_base_FL = jTrans_base_FL.v3;
+
+			// FR base
+			j = j_base_FR = a3hierarchyGetNodeIndex(activeHS->hierarchy, "Oberarm_R");
+			jTrans_base_FR = activeHS->objectSpace->pose[j].transformMat;
+			controlLocator_base_FR = jTrans_base_FR.v3;
+
+			// BL base
+			j = j_base_BL = a3hierarchyGetNodeIndex(activeHS->hierarchy, "Oberschenkel_L");
+			jTrans_base_BL = activeHS->objectSpace->pose[j].transformMat;
+			controlLocator_base_BL = jTrans_base_BL.v3;
+
+			// BR base
+			j = j_base_BR = a3hierarchyGetNodeIndex(activeHS->hierarchy, "Oberschenkel_R");
+			jTrans_base_BR = activeHS->objectSpace->pose[j].transformMat;
+			controlLocator_base_BR = jTrans_base_BR.v3;
+
+
+			// OLD ARM CODE
+			/*
 			a3vec3 shoulderToEffector = a3vec3_zero; //also known as DVec
 			a3real3Diff(shoulderToEffector.v, controlLocator_wristEffector.xyz.v, baseHS->objectSpace->pose[j_shoulder].transformMat.v3.v);
 			a3vec3 shoulderToElbow = a3vec3_zero;
@@ -349,7 +381,7 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 
 				//find NVec from constraint. Not common in this algorithm, but it looks nicer and gives more control over rotation
 				a3vec3 shoulderToConstraint = a3vec3_zero;
-				a3real3Diff(shoulderToConstraint.v, controlLocator_wristConstraint.v, jointTransform_shoulder.v3.v);
+				a3real3Diff(shoulderToConstraint.v, controlLocator_wristConstraint.v, jTrans_base_FL.v3.v);
 
 				a3vec3 nVec = a3vec3_zero; //the non-normalized Normal Vector to the plane
 				a3real3Cross(nVec.v, shoulderToConstraint.v, shoulderToEffector.v);
@@ -357,49 +389,49 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 				a3vec3 nVecNormal = a3vec3_zero; //normalized version of nVec
 				a3real3GetUnit(nVecNormal.v, nVec.v);
 
-				a3real3Diff(elbowToWrist.v, jointTransform_wrist.v3.v, jointTransform_elbow.v3.v);
-				a3real3Diff(shoulderToElbow.v, jointTransform_elbow.v3.v, jointTransform_shoulder.v3.v);
+				a3real3Diff(elbowToWrist.v, jTrans_eff_FL.v3.v, jTrans_elbow_FL.v3.v);
+				a3real3Diff(shoulderToElbow.v, jTrans_elbow_FL.v3.v, jTrans_base_FL.v3.v);
 
 				//create shoulder rotation. We know the shoulder's x vector, so we solve for z and then y
-				jointTransform_shoulder.v0.xyz = shoulderToEffector;
-				a3real3Normalize(jointTransform_shoulder.v0.xyz.v);
-				a3real3Negate(jointTransform_shoulder.v0.xyz.v);
-				a3real3Cross(jointTransform_shoulder.v2.xyz.v, jointTransform_shoulder.v0.xyz.v, nVecNormal.v);
-				a3real3Normalize(jointTransform_shoulder.v2.xyz.v);
-				a3real3Cross(jointTransform_shoulder.v1.xyz.v, jointTransform_shoulder.v2.xyz.v, jointTransform_shoulder.v0.xyz.v);
+				jTrans_base_FL.v0.xyz = shoulderToEffector;
+				a3real3Normalize(jTrans_base_FL.v0.xyz.v);
+				a3real3Negate(jTrans_base_FL.v0.xyz.v);
+				a3real3Cross(jTrans_base_FL.v2.xyz.v, jTrans_base_FL.v0.xyz.v, nVecNormal.v);
+				a3real3Normalize(jTrans_base_FL.v2.xyz.v);
+				a3real3Cross(jTrans_base_FL.v1.xyz.v, jTrans_base_FL.v2.xyz.v, jTrans_base_FL.v0.xyz.v);
 
 				//resolve elbow position
 				a3vec3 newElbowPos = a3vec3_zero;
 				a3real3GetUnit(newElbowPos.v, shoulderToEffector.v);
 				a3real3MulS(newElbowPos.v, shoulderElbowLen);
-				a3real3Sum(newElbowPos.v, newElbowPos.v, jointTransform_shoulder.v3.v);
-				jointTransform_elbow.v3.xyz = newElbowPos;
+				a3real3Sum(newElbowPos.v, newElbowPos.v, jTrans_base_FL.v3.v);
+				jTrans_elbow_FL.v3.xyz = newElbowPos;
 
 				//resolve elbow rotation
-				jointTransform_elbow.v0.xyz = shoulderToEffector;
-				a3real3Normalize(jointTransform_elbow.v0.xyz.v);
-				a3real3Negate(jointTransform_elbow.v0.xyz.v);
-				a3real3Cross(jointTransform_elbow.v2.xyz.v, jointTransform_elbow.v0.xyz.v, nVecNormal.v);
-				a3real3Normalize(jointTransform_elbow.v2.xyz.v);
-				a3real3Cross(jointTransform_elbow.v1.xyz.v, jointTransform_elbow.v2.xyz.v, jointTransform_elbow.v0.xyz.v);
+				jTrans_elbow_FL.v0.xyz = shoulderToEffector;
+				a3real3Normalize(jTrans_elbow_FL.v0.xyz.v);
+				a3real3Negate(jTrans_elbow_FL.v0.xyz.v);
+				a3real3Cross(jTrans_elbow_FL.v2.xyz.v, jTrans_elbow_FL.v0.xyz.v, nVecNormal.v);
+				a3real3Normalize(jTrans_elbow_FL.v2.xyz.v);
+				a3real3Cross(jTrans_elbow_FL.v1.xyz.v, jTrans_elbow_FL.v2.xyz.v, jTrans_elbow_FL.v0.xyz.v);
 
 				//get wrist as close to effector as possible
 				a3vec3 newWristPos = a3vec3_zero;
 				a3real3GetUnit(newWristPos.v, shoulderToEffector.v);
 				a3real3MulS(newWristPos.v, elbowWristLen);
-				a3real3Add(newWristPos.v, jointTransform_elbow.v3.v);
-				jointTransform_wrist.v3.xyz = newWristPos;
+				a3real3Add(newWristPos.v, jTrans_elbow_FL.v3.v);
+				jTrans_eff_FL.v3.xyz = newWristPos;
 
-				a3_animation_updateIK_single(activeHS, baseHS, j_shoulder, &jointTransform_shoulder);
-				a3_animation_updateIK_single(activeHS, baseHS, j_elbow, &jointTransform_elbow);
-				a3_animation_updateIK_single(activeHS, baseHS, j_wrist, &jointTransform_wrist);
+				a3_animation_updateIK_single(activeHS, baseHS, j_shoulder, &jTrans_base_FL);
+				a3_animation_updateIK_single(activeHS, baseHS, j_elbow, &jTrans_elbow_FL);
+				a3_animation_updateIK_single(activeHS, baseHS, j_wrist, &jTrans_eff_FL);
 			}
 
 			else
 			{
 				//find the length from shoulder to constraint
 				a3vec3 shoulderToConstraint = a3vec3_zero;
-				a3real3Diff(shoulderToConstraint.v, controlLocator_wristConstraint.xyz.v, jointTransform_shoulder.v3.v);
+				a3real3Diff(shoulderToConstraint.v, controlLocator_wristConstraint.xyz.v, jTrans_base_FL.v3.v);
 
 				a3vec3 nVecNormal = a3vec3_zero; //the non-normalized Normal Vector to the plane
 				a3real3CrossUnit(nVecNormal.v, shoulderToEffector.v, shoulderToConstraint.v);
@@ -432,49 +464,49 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 
 
 				//calculate new elbow position
-				a3vec3 newElbowPos = jointTransform_shoulder.v3.xyz;
+				a3vec3 newElbowPos = jTrans_base_FL.v3.xyz;
 				a3real3Add(newElbowPos.v, elbowDVec.v);
 				a3real3Add(newElbowPos.v, hVec.v);
 
 				//assign wrist and elbow positions. Wrist assignment doesn't work for unknown reason. We think they're in the same coord space? Manual variable inspection indicates it.
-				jointTransform_elbow.v3.xyz = newElbowPos;
-				jointTransform_wrist.v3.xyz = controlLocator_wristEffector.xyz;
+				jTrans_elbow_FL.v3.xyz = newElbowPos;
+				jTrans_eff_FL.v3.xyz = controlLocator_wristEffector.xyz;
 
 				//Set rotations (shoulder first, then elbow)
-				a3real3Diff(shoulderToElbow.v, jointTransform_elbow.v3.xyz.v, jointTransform_shoulder.v3.xyz.v);
-				jointTransform_shoulder.v0.xyz = shoulderToElbow;
+				a3real3Diff(shoulderToElbow.v, jTrans_elbow_FL.v3.xyz.v, jTrans_base_FL.v3.xyz.v);
+				jTrans_base_FL.v0.xyz = shoulderToElbow;
 
-				a3real3Normalize(jointTransform_shoulder.v0.xyz.v);
-				a3real3Negate(jointTransform_shoulder.v0.xyz.v);
+				a3real3Normalize(jTrans_base_FL.v0.xyz.v);
+				a3real3Negate(jTrans_base_FL.v0.xyz.v);
 
-				jointTransform_shoulder.v1.xyz = nVecNormal;
-				a3real3Cross(jointTransform_shoulder.v2.xyz.v, jointTransform_shoulder.v0.xyz.v, jointTransform_shoulder.v1.xyz.v);
-
-
+				jTrans_base_FL.v1.xyz = nVecNormal;
+				a3real3Cross(jTrans_base_FL.v2.xyz.v, jTrans_base_FL.v0.xyz.v, jTrans_base_FL.v1.xyz.v);
 
 
-				a3real3Diff(elbowToWrist.v, jointTransform_wrist.v3.xyz.v, jointTransform_elbow.v3.v);
-				jointTransform_elbow.v0.xyz = elbowToWrist;
 
-				a3real3Normalize(jointTransform_elbow.v0.xyz.v);
-				a3real3Negate(jointTransform_elbow.v0.xyz.v);
 
-				jointTransform_elbow.v1.xyz = nVecNormal;
-				a3real3Cross(jointTransform_elbow.v2.xyz.v, jointTransform_elbow.v0.xyz.v, jointTransform_elbow.v1.xyz.v);
+				a3real3Diff(elbowToWrist.v, jTrans_eff_FL.v3.xyz.v, jTrans_elbow_FL.v3.v);
+				jTrans_elbow_FL.v0.xyz = elbowToWrist;
+
+				a3real3Normalize(jTrans_elbow_FL.v0.xyz.v);
+				a3real3Negate(jTrans_elbow_FL.v0.xyz.v);
+
+				jTrans_elbow_FL.v1.xyz = nVecNormal;
+				a3real3Cross(jTrans_elbow_FL.v2.xyz.v, jTrans_elbow_FL.v0.xyz.v, jTrans_elbow_FL.v1.xyz.v);
 			}
 			//
 			// ****TO-DO: 
 			// reassign resolved transforms to OBJECT-SPACE matrices
 			// work from root to leaf too get correct transformations
 
-			activeHS->objectSpace->pose[j_shoulder].transformMat = jointTransform_shoulder;
-			activeHS->objectSpace->pose[j_elbow].transformMat = jointTransform_elbow;
-			activeHS->objectSpace->pose[j_wrist].transformMat = jointTransform_wrist;
+			activeHS->objectSpace->pose[j_shoulder].transformMat = jTrans_base_FL;
+			activeHS->objectSpace->pose[j_elbow].transformMat = jTrans_elbow_FL;
+			activeHS->objectSpace->pose[j_wrist].transformMat = jTrans_eff_FL;
 
-			a3_animation_updateIK_single(activeHS, baseHS, j_shoulder, &jointTransform_shoulder);
-			a3_animation_updateIK_single(activeHS, baseHS, j_elbow, &jointTransform_elbow);
-			a3_animation_updateIK_single(activeHS, baseHS, j_wrist, &jointTransform_wrist);
-
+			a3_animation_updateIK_single(activeHS, baseHS, j_shoulder, &jTrans_base_FL);
+			a3_animation_updateIK_single(activeHS, baseHS, j_elbow, &jTrans_elbow_FL);
+			a3_animation_updateIK_single(activeHS, baseHS, j_wrist, &jTrans_eff_FL);
+			*/
 			/*a3real4x4TransformInverseIgnoreScale(activeHS->objectSpaceInv->pose[j_shoulder].transformMat.m, jointTransform_shoulder.m);
 			a3real4x4TransformInverseIgnoreScale(activeHS->objectSpaceInv->pose[j_elbow].transformMat.m, jointTransform_elbow.m);
 			a3real4x4TransformInverseIgnoreScale(activeHS->objectSpaceInv->pose[j_wrist].transformMat.m, jointTransform_wrist.m);
